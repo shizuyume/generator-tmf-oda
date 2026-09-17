@@ -229,10 +229,14 @@ if (runtimeBackend) {
     // hardcode the rev-sharing component's base path, resource and DTO. Against
     // a rev-sharing service they pass; against ANY OTHER service all three fail
     // because that service has no partyRevSharingAlgorithm resource - so
-    // `--runtime <some-other-backend>` ends at 5 failed gates, not 2, and 3 of
-    // those 5 say nothing about the service under test. Parameterising them
-    // from the backend's own manifest is a separate follow-up; do not "fix"
-    // these failures in the emitters.
+    // `--runtime <some-other-backend>` ends at AT LEAST 5 failed gates, not 2,
+    // and 3 of those say nothing about the service under test.
+    // ('boot + hub smoke' above is not resource-specific, but it gives the boot
+    // 20s (40 x 500ms in tools/smoke.mjs) and a large component - TMF642, ~80
+    // entities - can still be running TypeORM synchronize when that runs out,
+    // which is a 6th failure and equally not a regression.)
+    // Parameterising these three from the backend's own manifest is a separate
+    // follow-up; do not "fix" these failures in the emitters.
     {
       name: 'CRUD round trip',
       cmd: ['tools/crud-smoke.mjs', runtimeBackend,
