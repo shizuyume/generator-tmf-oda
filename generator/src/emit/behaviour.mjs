@@ -71,6 +71,24 @@ export const EMPTY_TRAILER_VALUE = '';
 export const SORT_ORDER_FALLBACK = 0;
 
 /**
+ * Whether `@type` survives attribute selection (`?fields=`). The two CTK
+ * generations demand the OPPOSITE and cannot both be satisfied: v4 kits assert
+ * "instance has only id, href and the filtered attribute" and fail
+ * TMF704/705/706/707 when `@type` is kept, while v5 profiles schema-validate
+ * every response and fail TMF736/738 when it is dropped. So it is decided per
+ * component from the spec's major version.
+ *
+ * scaffold/newService.mjs writes the answer into
+ * common/utils/tmf-resource.util.ts as INCLUDE_ATYPE_IN_FIELD_SELECTION; the
+ * per-resource spec asserts the same side of it. A second copy of `>= 5` in the
+ * spec emitter would let a change to one leave the other asserting the old
+ * behaviour as correct.
+ */
+export function includeAtTypeInFieldSelection(versionMajor) {
+  return Number(versionMajor) >= 5;
+}
+
+/**
  * Newest-first ordering over the subscription store. Three places read it and
  * must agree: the listener controller's "most recent subscription" fallback
  * (emit/wiring.mjs), SubscriptionService.findAll (the static scaffold template

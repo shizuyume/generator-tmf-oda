@@ -115,6 +115,17 @@ function scalarPayload(): AnyRec {
 /** Single refs: normalised into rows of their own, written before the aggregate. */
 const REF_PROPS = ['reportingSystem', 'source'] as const;
 
+/**
+ * A sort key and a selected attribute. They are named differently on
+ * purpose: applyBaseFilters turns `sort` straight into `e.<key>` SQL, so
+ * that one is the COLUMN name, while projectFields matches `fields`
+ * against the keys of the MAPPED row, which are the response keys.
+ */
+const SORT_KEY = 'correlationId';
+const SELECTED = 'correlationId';
+/** One the client did not ask for, which selection must then drop. */
+const NOT_SELECTED = 'description';
+
 function entity(over: AnyRec = {}): AnyRec {
   return {
     id: 'res-1',
@@ -293,6 +304,62 @@ describe('EventService', () => {
       const persisted = repo.save.mock.calls[0][0];
       expect(persisted.id).toBe('from-hook');
       expect(persisted.correlationId).toBe('res-from-hook');
+    });
+  });
+
+  describe('findAll', () => {
+    it('maps every row and reports the unpaged total', async () => {
+      repo.createQueryBuilder.mockReturnValue(
+        makeQueryBuilder([entity(), entity({ id: 'res-2' })]),
+      );
+      const { data, total } = await service.findAll({} as never);
+      expect(total).toBe(2);
+      expect(data.map((d) => d.id)).toEqual([ID, 'res-2']);
+      for (const w of Object.keys(SCALARS)) {
+        expect(data[0][w]).toBe(`res-${SCALARS[w]}`);
+      }
+    });
+
+    it('excludes soft-deleted rows and narrows by id', async () => {
+      const qb = makeQueryBuilder([entity()]);
+      repo.createQueryBuilder.mockReturnValue(qb);
+      await service.findAll({ id: ID } as never);
+      expect(qb.where).toHaveBeenCalledWith('e.deletedAt IS NULL');
+      expect(qb.andWhere).toHaveBeenCalledWith('e.id = :id', { id: ID });
+    });
+
+    it('pages with the supplied window', async () => {
+      const qb = makeQueryBuilder([entity()]);
+      repo.createQueryBuilder.mockReturnValue(qb);
+      // deliberately not the defaults asserted below
+      await service.findAll({ offset: 40, limit: 25 } as never);
+      expect(qb.skip).toHaveBeenCalledWith(40);
+      expect(qb.take).toHaveBeenCalledWith(25);
+    });
+
+    it('defaults to 20 rows from offset 0', async () => {
+      const qb = makeQueryBuilder([entity()]);
+      repo.createQueryBuilder.mockReturnValue(qb);
+      await service.findAll({} as never);
+      expect(qb.skip).toHaveBeenCalledWith(0);
+      expect(qb.take).toHaveBeenCalledWith(20);
+    });
+
+    it('orders by the requested sort key', async () => {
+      const qb = makeQueryBuilder([entity()]);
+      repo.createQueryBuilder.mockReturnValue(qb);
+      await service.findAll({ sort: `-${SORT_KEY}` } as never);
+      expect(qb.addOrderBy).toHaveBeenCalledWith(`e.${SORT_KEY}`, 'DESC');
+    });
+
+    it('projects only the requested fields, keeping id and href', async () => {
+      repo.createQueryBuilder.mockReturnValue(makeQueryBuilder([entity()]));
+      const { data } = await service.findAll({ fields: SELECTED } as never);
+      expect(data[0][SELECTED]).toBe(`res-${SCALARS[SELECTED]}`);
+      expect(data[0].id).toBe(ID);
+      expect(data[0].href).toBe(HREF);
+      expect(Object.keys(data[0])).not.toContain('@type');
+      expect(Object.keys(data[0])).not.toContain(NOT_SELECTED);
     });
   });
 });

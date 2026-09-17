@@ -3,6 +3,7 @@ import path from 'node:path';
 import url from 'node:url';
 import { kebab, snake, pascal, camel } from '../ir/naming.mjs';
 import { readManifest, writeManifest, componentEntry, writeWiring } from '../emit/wiring.mjs';
+import { includeAtTypeInFieldSelection } from '../emit/behaviour.mjs';
 
 const here = path.dirname(url.fileURLToPath(import.meta.url));
 const templatesDir = path.resolve(here, '..', '..', 'templates');
@@ -326,7 +327,7 @@ export function scaffoldService(ir, options) {
     PORT: String(ctx.port),
     // v5+ conformance profiles require @type in every response, including under
     // ?fields=; the v4 kits assert the opposite. See tmf-resource.util.ts.
-    INCLUDE_ATYPE: String(Number(ctx.versionMajor) >= 5),
+    INCLUDE_ATYPE: String(includeAtTypeInFieldSelection(ctx.versionMajor)),
   };
 
   const written = [];

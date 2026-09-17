@@ -1,6 +1,9 @@
 import { kebab } from '../../ir/naming.mjs';
 import {
   defaultAtType,
+  includeAtTypeInFieldSelection,
+  DEFAULT_OFFSET,
+  DEFAULT_LIMIT,
   SOFT_DELETE_TIMESTAMP_COLUMN,
   SOFT_DELETE_ATTRIBUTION_COLUMNS,
   SORT_ORDER_FALLBACK,
@@ -109,6 +112,12 @@ function isHousekeeping(c) {
 }
 
 const IDENT = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+
+/** `a`, `a and b`, `a, b and c` - a list of names read out in a test title. */
+function prose(names) {
+  if (names.length < 2) return names.join('');
+  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+}
 
 /** A single-quoted TS string literal. */
 function q(s) {
@@ -277,8 +286,8 @@ const REPO_FIXTURE = [
 ];
 
 /**
- * The service describe - `create` only for now; the other operations follow in
- * their own slices.
+ * The service describe - `create` and `findAll` for now; the other operations
+ * follow in their own slices.
  *
  * WHAT EACH `it()` IS GATED ON, and why. emit/service.mjs emits `create`
  * unconditionally (the seed runner calls it even for a read-only resource), but
@@ -428,6 +437,25 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       '/** A collection whose rows carry a normalised ref row of their own. */',
       ...stringConst('NESTED_COLLECTION', nestedCase.collection),
       ...stringConst('NESTED_REF', nestedCase.refProp),
+    );
+  }
+  if (firstScalarCol) {
+    consts.push(
+      '',
+      '/**',
+      ' * A sort key and a selected attribute. They are named differently on',
+      ' * purpose: applyBaseFilters turns `sort` straight into `e.<key>` SQL, so',
+      " * that one is the COLUMN name, while projectFields matches `fields`",
+      ' * against the keys of the MAPPED row, which are the response keys.',
+      ' */',
+      ...stringConst('SORT_KEY', firstScalarCol),
+      ...stringConst('SELECTED', scalars[0][0]),
+      ...(scalars.length > 1
+        ? [
+            '/** One the client did not ask for, which selection must then drop. */',
+            ...stringConst('NOT_SELECTED', scalars[1][0]),
+          ]
+        : []),
     );
   }
 
@@ -671,6 +699,115 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
     '    });',
   );
 
+  /* ── describe('findAll') ──────────────────────────────────────────────
+   *
+   * UNGATED, because renderService emits findAll for every resource whether or
+   * not the spec declares a list operation - the seed runner calls it to decide
+   * whether the table already holds rows, and a resource without it failed to
+   * COMPILE. So the describe always has its four window/filter it()s; only the
+   * two that name an attribute are gated, on the resource having a settable
+   * scalar to name.
+   *
+   * The page window and the soft-delete column come from behaviour.mjs,
+   * including the DEFAULT WINDOW'S TEST TITLE: plan 2 left "the first page of
+   * twenty" in prose, where raising DEFAULT_LIMIT would move the assertion and
+   * leave the sentence describing a behaviour the service no longer has.
+   */
+  const findAll = [
+    "    it('maps every row and reports the unpaged total', async () => {",
+    ...callLines('      ', 'repo.createQueryBuilder.mockReturnValue', [
+      `makeQueryBuilder([entity(), entity({ ${key(pk)}: 'res-2' })])`,
+    ]),
+    '      const { data, total } = await service.findAll({} as never);',
+    '      expect(total).toBe(2);',
+    ...expectEqualArray('      ', `data.map((d) => d${pkKey})`, ['ID', q('res-2')]),
+    ...(scalars.length
+      ? [
+          '      for (const w of Object.keys(SCALARS)) {',
+          '        expect(data[0][w]).toBe(`res-${SCALARS[w]}`);',
+          '      }',
+        ]
+      : []),
+    '    });',
+    '',
+    root.softDelete
+      ? "    it('excludes soft-deleted rows and narrows by id', async () => {"
+      : "    it('narrows by id', async () => {",
+    '      const qb = makeQueryBuilder([entity()]);',
+    '      repo.createQueryBuilder.mockReturnValue(qb);',
+    '      await service.findAll({ id: ID } as never);',
+    ...(root.softDelete
+      ? [
+          `      expect(qb.where).toHaveBeenCalledWith(${q(`e.${SOFT_DELETE_TIMESTAMP_COLUMN} IS NULL`)});`,
+        ]
+      : []),
+    "      expect(qb.andWhere).toHaveBeenCalledWith('e.id = :id', { id: ID });",
+    '    });',
+    '',
+    "    it('pages with the supplied window', async () => {",
+    '      const qb = makeQueryBuilder([entity()]);',
+    '      repo.createQueryBuilder.mockReturnValue(qb);',
+    '      // deliberately not the defaults asserted below',
+    `      await service.findAll({ offset: ${DEFAULT_OFFSET + 40}, limit: ${DEFAULT_LIMIT + 5} } as never);`,
+    `      expect(qb.skip).toHaveBeenCalledWith(${DEFAULT_OFFSET + 40});`,
+    `      expect(qb.take).toHaveBeenCalledWith(${DEFAULT_LIMIT + 5});`,
+    '    });',
+    '',
+    `    it('defaults to ${DEFAULT_LIMIT} rows from offset ${DEFAULT_OFFSET}', async () => {`,
+    '      const qb = makeQueryBuilder([entity()]);',
+    '      repo.createQueryBuilder.mockReturnValue(qb);',
+    '      await service.findAll({} as never);',
+    `      expect(qb.skip).toHaveBeenCalledWith(${DEFAULT_OFFSET});`,
+    `      expect(qb.take).toHaveBeenCalledWith(${DEFAULT_LIMIT});`,
+    '    });',
+    '',
+  ];
+
+  if (firstScalarCol) {
+    const keeps = ['id', 'href'];
+    if (hasAtType && includeAtTypeInFieldSelection(meta.versionMajor)) keeps.push('@type');
+    findAll.push(
+      "    it('orders by the requested sort key', async () => {",
+      '      const qb = makeQueryBuilder([entity()]);',
+      '      repo.createQueryBuilder.mockReturnValue(qb);',
+      '      await service.findAll({ sort: `-${SORT_KEY}` } as never);',
+      ...callLines('      ', 'expect(qb.addOrderBy).toHaveBeenCalledWith', [
+        '`e.${SORT_KEY}`',
+        q('DESC'),
+      ]),
+      '    });',
+      '',
+      `    it('projects only the requested fields, keeping ${prose(keeps)}', async () => {`,
+      ...callLines('      ', 'repo.createQueryBuilder.mockReturnValue', [
+        'makeQueryBuilder([entity()])',
+      ]),
+      ...callLines('      ', 'const { data } = await service.findAll', [
+        '{ fields: SELECTED } as never',
+      ]),
+      '      expect(data[0][SELECTED]).toBe(`res-${SCALARS[SELECTED]}`);',
+      ...(pk === 'id' ? ['      expect(data[0].id).toBe(ID);'] : []),
+      '      expect(data[0].href).toBe(HREF);',
+      ...(hasAtType
+        ? [
+            // v4 CTKs assert the projection carries ONLY id, href and the
+            // selected attribute; v5 profiles schema-validate it and demand
+            // @type. The generated projectFields is written for one or the
+            // other from the spec's major version, so the spec asserts the
+            // same side of it rather than a second copy of that rule.
+            includeAtTypeInFieldSelection(meta.versionMajor)
+              ? "      expect(data[0]['@type']).toBe(AT_TYPE);"
+              : "      expect(Object.keys(data[0])).not.toContain('@type');",
+          ]
+        : []),
+      ...(scalars.length > 1
+        ? ['      expect(Object.keys(data[0])).not.toContain(NOT_SELECTED);']
+        : []),
+      '    });',
+      '',
+    );
+  }
+  while (findAll.length && findAll[findAll.length - 1] === '') findAll.pop();
+
   const ctorArgs = [
     'repo as never',
     ...Array.from({ length: Math.max(0, repoCount - 1) }, () => 'makeRepo() as never'),
@@ -713,6 +850,10 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       '',
       "  describe('create', () => {",
       ...body,
+      '  });',
+      '',
+      "  describe('findAll', () => {",
+      ...findAll,
       '  });',
       '});',
       '',
