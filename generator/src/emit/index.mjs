@@ -338,10 +338,17 @@ export function emitResources(ir, options) {
   //
   // It runs AFTER the manifest merge, against the same union writeWiring just
   // built src/seed.ts, src/entities.ts and src/app.module.ts from. Run against
-  // this single IR instead, it described only the component being emitted: in
-  // the three-component geographic service, src/seed.ts seeded 8 resources
-  // while test/seed.spec.ts mocked 5, the unmocked services loaded for real,
-  // and seed.spec.ts failed outright.
+  // this single IR instead, the WHOLE-SERVICE specs described only the
+  // component being emitted: in the three-component geographic service,
+  // src/seed.ts seeds every hosted resource while test/seed.spec.ts mocked only
+  // the ones from the IR at hand, the unmocked services loaded for real, and
+  // seed.spec.ts failed outright.
+  //
+  // The PER-RESOURCE specs are the exception and take the single IR: one file
+  // describes one resource, so emitting this component rewrites its own files
+  // and leaves every other component's - written when that component was
+  // emitted - untouched and still correct. They need columns, relations and
+  // refs, none of which a manifest resource entry carries.
   const components = orderedComponents(manifest);
   emitSpecs({
     components,
@@ -349,6 +356,10 @@ export function emitResources(ir, options) {
     // same expression writeWiring feeds renderSeedRunner, so the spec's
     // resource order is the seed runner's resource order
     seeds: components.flatMap(c => c.seeds ?? []),
+    plans,
+    resolve,
+    entityDirOf: className => dirByClass.get(className) ?? null,
+    meta: ir.meta,
   }, writeFile);
 
   return {
