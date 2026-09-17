@@ -11,6 +11,7 @@
  * Every literal below is derived from this resource, never hand-written: see
  * the mapping table in emit/spec/resource.mjs for where each one comes from.
  */
+import { NotFoundException } from '@nestjs/common';
 import { PATH_METADATA } from '@nestjs/common/constants';
 import { Test } from '@nestjs/testing';
 import { GeographicLocationService } from '../../src/geographic-location/geographic-location.service';
@@ -60,6 +61,14 @@ const COLLECTIONS = ['geometry'] as const;
 /** The path segment each collection's row mapper writes into its href. */
 const HREF_SEGMENT: Record<string, string> = { geometry: 'geometry' };
 
+/**
+ * What an owned row's href is built on. NOT `HREF`: renderService hands a
+ * child mapper the FLAT `resource.pathSegment`, while the root mapper gets
+ * `nested.hrefSegment` under --nested-routes - so the two bases diverge for
+ * a nested resource, and only here is that visible.
+ */
+const ROW_HREF_BASE = '/tmf-api/geographicLocation/v1/geographicLocation/res-1';
+
 /** The `@type` each collection's rows carry: their own entity class name. */
 const ROW_AT_TYPE: Record<string, string> = { geometry: 'GeographicPoint' };
 
@@ -92,6 +101,12 @@ function scalarPayload(): AnyRec {
   for (const w of Object.keys(SCALARS)) out[w] = `res-${SCALARS[w]}`;
   return out;
 }
+
+/** What each collection's rows report as their id on the way out. */
+const ROW_ID: Record<string, string> = { geometry: 'geometry-ref-0' };
+
+/** Owned collections, whose rows fall back to their own key with no refId. */
+const REF_ID_FALLBACK = ['geometry'] as const;
 
 /**
  * A sort key and a selected attribute. They are named differently on
@@ -297,6 +312,121 @@ describe('GeographicLocationService', () => {
       expect(data[0].href).toBe(HREF);
       expect(Object.keys(data[0])).not.toContain('@type');
       expect(Object.keys(data[0])).not.toContain(NOT_SELECTED);
+    });
+  });
+
+  describe('findEntity / findOne', () => {
+    beforeEach(() => {
+      // afterFindOne is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'afterFindOne').mockResolvedValue(undefined);
+    });
+
+    it('throws NotFoundException when the row is missing or soft-deleted', async () => {
+      repo.findOne.mockResolvedValue(null);
+      await expect(service.findEntity('nope')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      await expect(service.findOne('nope')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+    });
+
+    it('maps every scalar and the resource href', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      const res = await service.findOne(ID);
+      for (const w of Object.keys(SCALARS)) {
+        expect(res[w]).toBe(`res-${SCALARS[w]}`);
+      }
+      expect(res.href).toBe(HREF);
+    });
+
+    it('maps every collection row, with the href its own mapper writes', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      const res = await service.findOne(ID);
+      for (const c of Object.keys(ROW_ID)) {
+        expect(res[c]).toHaveLength(1);
+        expect(res[c][0].id).toBe(ROW_ID[c]);
+        if (HREF_SEGMENT[c]) {
+          expect(res[c][0].href).toBe(
+            `${ROW_HREF_BASE}/${HREF_SEGMENT[c]}/${ROW_ID[c]}`,
+          );
+        }
+      }
+    });
+
+    it('falls back to the row key when an owned row carries no refId', async () => {
+      const over: AnyRec = {};
+      for (const c of REF_ID_FALLBACK) over[c] = [{ id: `${c}-only` }];
+      repo.findOne.mockResolvedValue(entity(over));
+      const res = await service.findOne(ID);
+      for (const c of REF_ID_FALLBACK) expect(res[c][0].id).toBe(`${c}-only`);
+    });
+
+    it('returns empty collections when the row carries none', async () => {
+      repo.findOne.mockResolvedValue({ id: ID, atType: AT_TYPE });
+      const res = await service.findOne(ID);
+      for (const c of Object.keys(ROW_ID)) expect(res[c]).toEqual([]);
+    });
+
+    it('orders each collection by sortOrder rather than by insertion', async () => {
+      const over: AnyRec = {};
+      for (const c of Object.keys(ROW_ID)) {
+        over[c] = [
+          { id: `${c}-b`, refId: `${c}-b`, sortOrder: 2 },
+          { id: `${c}-a`, refId: `${c}-a`, sortOrder: 1 },
+        ];
+      }
+      repo.findOne.mockResolvedValue(entity(over));
+      const res = await service.findOne(ID);
+      for (const c of Object.keys(ROW_ID)) {
+        expect(res[c].map((r: AnyRec) => r.id)).toEqual([`${c}-a`, `${c}-b`]);
+      }
+    });
+
+    it('treats a row with no sortOrder as 0, so it sorts first', async () => {
+      const over: AnyRec = {};
+      for (const c of Object.keys(ROW_ID)) {
+        over[c] = [
+          { id: `${c}-b`, refId: `${c}-b`, sortOrder: 1 },
+          { id: `${c}-a`, refId: `${c}-a` },
+        ];
+      }
+      repo.findOne.mockResolvedValue(entity(over));
+      const res = await service.findOne(ID);
+      for (const c of Object.keys(ROW_ID)) {
+        expect(res[c].map((r: AnyRec) => r.id)).toEqual([`${c}-a`, `${c}-b`]);
+      }
+    });
+
+    it('defaults @schemaLocation and @baseType to ""', async () => {
+      repo.findOne.mockResolvedValue({ id: ID, atType: AT_TYPE });
+      const res = await service.findOne(ID);
+      expect(res['@schemaLocation']).toBe('');
+      expect(res['@baseType']).toBe('');
+    });
+
+    it('projects the requested fields on a single read', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      const res = await service.findOne(ID, SELECTED);
+      expect(res[SELECTED]).toBe(`res-${SCALARS[SELECTED]}`);
+      expect(Object.keys(res)).not.toContain(NOT_SELECTED);
+    });
+
+    it('answers with whatever the afterFindOne hook gives back', async () => {
+      // afterFindOne lives in a file tmfgen does not manage. What it returns is
+      // its owner's business, so it is SPIED here rather than asserted on: what
+      // is under test is that findOne hands it the mapped response and answers
+      // with the value it got back.
+      const DECORATED: AnyRec = { id: 'from-hook' };
+      jest.spyOn(hooks, 'afterFindOne').mockResolvedValue(DECORATED);
+      const stored = entity();
+      repo.findOne.mockResolvedValue(stored);
+      const res = await service.findOne(ID);
+      expect(hooks.afterFindOne).toHaveBeenCalledWith(
+        expect.objectContaining({ href: HREF }),
+        stored,
+      );
+      expect(res).toBe(DECORATED);
     });
   });
 });

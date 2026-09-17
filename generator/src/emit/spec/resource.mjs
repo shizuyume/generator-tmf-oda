@@ -2,6 +2,8 @@ import { kebab } from '../../ir/naming.mjs';
 import {
   defaultAtType,
   includeAtTypeInFieldSelection,
+  ALWAYS_PRESENT_TRAILER,
+  EMPTY_TRAILER_VALUE,
   DEFAULT_OFFSET,
   DEFAULT_LIMIT,
   SOFT_DELETE_TIMESTAMP_COLUMN,
@@ -386,10 +388,48 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       r => r.kind === 'many-to-one-ref' && resolve(r.targetKey),
     );
     if (inner) {
-      nestedCase = { collection: rel.property, refProp: inner.property };
+      nestedCase = {
+        collection: rel.property,
+        refProp: inner.property,
+        // the column the nested ref's OWN mapper reports as its `id`
+        refIdCol: refIdColOf(entityByKey.get(inner.targetKey)),
+      };
       break;
     }
   }
+
+  /**
+   * Read-path shape of each collection, which the write path did not need.
+   *
+   *   mappedColls  a collection whose target does not resolve gets no mapper
+   *                line at all (renderMapper's `if (!target) continue`), so the
+   *                response carries no key for it - not even `[]`.
+   *   ROW_ID       what a row REPORTS as its id: the referred id when the target
+   *                carries one (`refId`, the name entityPlan always gives the
+   *                column whose sourceProp is `id`), its own key otherwise.
+   *   fallbackColls an OWNED child writes `e.refId ?? e.id`, so it - and only it
+   *                - has a fallback to exercise. A refLike row genuinely has no
+   *                id of its own when the reference carries none.
+   */
+  const mappedColls = collections.filter(
+    r => resolve(r.targetKey) && entityByKey.get(r.targetKey),
+  );
+  const rowIds = mappedColls.map(r => {
+    const target = entityByKey.get(r.targetKey);
+    const suffix = refIdColOf(target) ? 'ref' : 'row';
+    return [r.property, q(`${r.property}-${suffix}-0`)];
+  });
+  const fallbackColls = mappedColls.filter(r => {
+    const target = entityByKey.get(r.targetKey);
+    return target.kind === 'child' && !target.refLike && !!refIdColOf(target);
+  });
+
+  // `@schemaLocation` / `@baseType` are emitted on a ROOT even when the row has
+  // no value, as EMPTY_TRAILER_VALUE - the one mapper line a bare row proves.
+  const trailerCols = root.columns.filter(
+    c => !isHousekeeping(c) && ALWAYS_PRESENT_TRAILER.has(c.name),
+  );
+  const trailerKeys = trailerCols.map(c => c.sourceProp || c.expose || c.name);
 
   const createEvent = (resource.notificationEvents ?? []).find(e => e.eventKind === 'Create');
   const emitMethod = host?.method ?? 'emitEvent';
@@ -437,6 +477,20 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       '/** A collection whose rows carry a normalised ref row of their own. */',
       ...stringConst('NESTED_COLLECTION', nestedCase.collection),
       ...stringConst('NESTED_REF', nestedCase.refProp),
+    );
+  }
+  if (rowIds.length) {
+    consts.push(
+      '',
+      "/** What each collection's rows report as their id on the way out. */",
+      ...objectConst('ROW_ID', 'Record<string, string>', rowIds),
+    );
+  }
+  if (fallbackColls.length) {
+    consts.push(
+      '',
+      '/** Owned collections, whose rows fall back to their own key with no refId. */',
+      ...tupleConst('REF_ID_FALLBACK', fallbackColls.map(r => r.property)),
     );
   }
   if (firstScalarCol) {
@@ -808,6 +862,244 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
   }
   while (findAll.length && findAll[findAll.length - 1] === '') findAll.pop();
 
+  /* ── describe('findEntity / findOne') ─────────────────────────────────
+   *
+   * findEntity is emitted for every resource (update, delete and create's
+   * read-back all go through it), so its NotFoundException it() is ungated and
+   * keeps this describe non-empty. `findOne` is the public read and IS gated on
+   * ops.retrieve - TMF673's GeographicAddressValidation has no retrieve route
+   * and no findOne method to call.
+   *
+   * THE HOOK, AGAIN. findOne's second statement is
+   * `(await hooks.afterFindOne(mapped, entity)) ?? mapped`, and `*.hooks.ts` is
+   * user-owned. Left to the real module, every it() below would silently assume
+   * the shipped stub still returns undefined, and someone implementing the
+   * decoration the file invites would turn a DO NOT EDIT spec red - the same
+   * family as the create Critical. So afterFindOne is neutralised for the whole
+   * describe, and the one it() that is about it re-spies inside its own body and
+   * asserts the CALL and the pass-through, never what an implementation returns.
+   */
+  const retrieveOp = !!(resource.operations ?? {}).retrieve;
+  const findOne = [];
+  if (retrieveOp) {
+    findOne.push(
+      '    beforeEach(() => {',
+      '      // afterFindOne is user-owned; only the it() below is about it',
+      "      jest.spyOn(hooks, 'afterFindOne').mockResolvedValue(undefined);",
+      '    });',
+      '',
+    );
+  }
+
+  findOne.push(
+    "    it('throws NotFoundException when the row is missing or soft-deleted', async () => {",
+    '      repo.findOne.mockResolvedValue(null);',
+    ...callLines('      ', "await expect(service.findEntity('nope')).rejects.toBeInstanceOf", [
+      'NotFoundException',
+    ]),
+    ...(retrieveOp
+      ? callLines('      ', "await expect(service.findOne('nope')).rejects.toBeInstanceOf", [
+          'NotFoundException',
+        ])
+      : []),
+    '    });',
+    '',
+  );
+
+  if (retrieveOp) {
+    if (scalars.length) {
+      findOne.push(
+        "    it('maps every scalar and the resource href', async () => {",
+        '      repo.findOne.mockResolvedValue(entity());',
+        '      const res = await service.findOne(ID);',
+        '      for (const w of Object.keys(SCALARS)) {',
+        '        expect(res[w]).toBe(`res-${SCALARS[w]}`);',
+        '      }',
+        '      expect(res.href).toBe(HREF);',
+        '    });',
+        '',
+      );
+    }
+
+    if (refRels.length && refIdCol) {
+      findOne.push(
+        "    it('maps the single refs, exposing their referred id not the row id', async () => {",
+        '      const over: AnyRec = {};',
+        '      for (const p of REF_PROPS) {',
+        `        over[p] = { id: \`\${p}-row\`, ${key(refIdCol)}: \`\${p}-9\` };`,
+        '      }',
+        '      repo.findOne.mockResolvedValue(entity(over));',
+        '      const res = await service.findOne(ID);',
+        '      for (const p of REF_PROPS) expect(res[p].id).toBe(`${p}-9`);',
+        '    });',
+        '',
+      );
+    }
+
+    if (rowIds.length) {
+      findOne.push(
+        "    it('maps every collection row, with the href its own mapper writes', async () => {",
+        '      repo.findOne.mockResolvedValue(entity());',
+        '      const res = await service.findOne(ID);',
+        '      for (const c of Object.keys(ROW_ID)) {',
+        '        expect(res[c]).toHaveLength(1);',
+        '        expect(res[c][0].id).toBe(ROW_ID[c]);',
+        // a refLike row has no route of its own, so only the owned ones - the
+        // keys HREF_SEGMENT actually carries - have an href to check
+        '        if (HREF_SEGMENT[c]) {',
+        '          expect(res[c][0].href).toBe(',
+        '            `${ROW_HREF_BASE}/${HREF_SEGMENT[c]}/${ROW_ID[c]}`,',
+        '          );',
+        '        }',
+        '      }',
+        '    });',
+        '',
+      );
+    }
+
+    if (nestedCase?.refIdCol) {
+      findOne.push(
+        "    it('maps a ref nested inside a collection row', async () => {",
+        '      const nested: AnyRec = row(NESTED_COLLECTION, 0);',
+        `      nested[NESTED_REF] = { ${key(nestedCase.refIdCol)}: \`\${NESTED_REF}-9\` };`,
+        '      const over: AnyRec = {};',
+        '      over[NESTED_COLLECTION] = [nested];',
+        '      repo.findOne.mockResolvedValue(entity(over));',
+        '      const res = await service.findOne(ID);',
+        ...callLines('      ', 'expect(res[NESTED_COLLECTION][0][NESTED_REF].id).toBe', [
+          '`${NESTED_REF}-9`',
+        ]),
+        '    });',
+        '',
+      );
+    }
+
+    if (fallbackColls.length) {
+      findOne.push(
+        "    it('falls back to the row key when an owned row carries no refId', async () => {",
+        '      const over: AnyRec = {};',
+        '      for (const c of REF_ID_FALLBACK) over[c] = [{ id: `${c}-only` }];',
+        '      repo.findOne.mockResolvedValue(entity(over));',
+        '      const res = await service.findOne(ID);',
+        '      for (const c of REF_ID_FALLBACK) expect(res[c][0].id).toBe(`${c}-only`);',
+        '    });',
+        '',
+      );
+    }
+
+    if (refRels.length || rowIds.length) {
+      const what = [
+        refRels.length ? 'omits the single refs' : null,
+        rowIds.length ? 'returns empty collections' : null,
+      ].filter(Boolean).join(' and ');
+      findOne.push(
+        `    it('${what} when the row carries none', async () => {`,
+        `      repo.findOne.mockResolvedValue({ ${key(pk)}: ID${hasAtType ? ', atType: AT_TYPE' : ''} });`,
+        '      const res = await service.findOne(ID);',
+        ...(refRels.length
+          ? ['      for (const p of REF_PROPS) expect(Object.keys(res)).not.toContain(p);']
+          : []),
+        ...(rowIds.length
+          ? [
+              '      for (const c of Object.keys(ROW_ID)) expect(res[c]).toEqual([]);',
+            ]
+          : []),
+        '    });',
+        '',
+      );
+    }
+
+    if (rowIds.length) {
+      findOne.push(
+        "    it('orders each collection by sortOrder rather than by insertion', async () => {",
+        '      const over: AnyRec = {};',
+        '      for (const c of Object.keys(ROW_ID)) {',
+        '        over[c] = [',
+        `          { id: \`\${c}-b\`, refId: \`\${c}-b\`, sortOrder: ${SORT_ORDER_FALLBACK + 2} },`,
+        `          { id: \`\${c}-a\`, refId: \`\${c}-a\`, sortOrder: ${SORT_ORDER_FALLBACK + 1} },`,
+        '        ];',
+        '      }',
+        '      repo.findOne.mockResolvedValue(entity(over));',
+        '      const res = await service.findOne(ID);',
+        '      for (const c of Object.keys(ROW_ID)) {',
+        ...expectEqualArray('        ', 'res[c].map((r: AnyRec) => r.id)', [
+          '`${c}-a`',
+          '`${c}-b`',
+        ]),
+        '      }',
+        '    });',
+        '',
+        `    it('treats a row with no sortOrder as ${SORT_ORDER_FALLBACK}, so it sorts first', async () => {`,
+        '      const over: AnyRec = {};',
+        '      for (const c of Object.keys(ROW_ID)) {',
+        '        over[c] = [',
+        `          { id: \`\${c}-b\`, refId: \`\${c}-b\`, sortOrder: ${SORT_ORDER_FALLBACK + 1} },`,
+        `          { id: \`\${c}-a\`, refId: \`\${c}-a\` },`,
+        '        ];',
+        '      }',
+        '      repo.findOne.mockResolvedValue(entity(over));',
+        '      const res = await service.findOne(ID);',
+        '      for (const c of Object.keys(ROW_ID)) {',
+        ...expectEqualArray('        ', 'res[c].map((r: AnyRec) => r.id)', [
+          '`${c}-a`',
+          '`${c}-b`',
+        ]),
+        '      }',
+        '    });',
+        '',
+      );
+    }
+
+    if (trailerKeys.length) {
+      findOne.push(
+        `    it('defaults ${prose(trailerKeys)} to ${JSON.stringify(EMPTY_TRAILER_VALUE)}', async () => {`,
+        `      repo.findOne.mockResolvedValue({ ${key(pk)}: ID${hasAtType ? ', atType: AT_TYPE' : ''} });`,
+        '      const res = await service.findOne(ID);',
+        ...trailerKeys.map(
+          k => `      expect(res[${q(k)}]).toBe(${q(EMPTY_TRAILER_VALUE)});`,
+        ),
+        '    });',
+        '',
+      );
+    }
+
+    if (firstScalarCol) {
+      findOne.push(
+        "    it('projects the requested fields on a single read', async () => {",
+        '      repo.findOne.mockResolvedValue(entity());',
+        '      const res = await service.findOne(ID, SELECTED);',
+        '      expect(res[SELECTED]).toBe(`res-${SCALARS[SELECTED]}`);',
+        ...(scalars.length > 1
+          ? ['      expect(Object.keys(res)).not.toContain(NOT_SELECTED);']
+          : []),
+        '    });',
+        '',
+      );
+    }
+
+    findOne.push(
+      "    it('answers with whatever the afterFindOne hook gives back', async () => {",
+      '      // afterFindOne lives in a file tmfgen does not manage. What it returns is',
+      "      // its owner's business, so it is SPIED here rather than asserted on: what",
+      '      // is under test is that findOne hands it the mapped response and answers',
+      '      // with the value it got back.',
+      ...indented('      ', objectConst('DECORATED', 'AnyRec', [[pk, q('from-hook')]], 6)),
+      ...callLines('      ', "jest.spyOn(hooks, 'afterFindOne').mockResolvedValue", [
+        'DECORATED',
+      ]),
+      '      const stored = entity();',
+      '      repo.findOne.mockResolvedValue(stored);',
+      '      const res = await service.findOne(ID);',
+      '      expect(hooks.afterFindOne).toHaveBeenCalledWith(',
+      '        expect.objectContaining({ href: HREF }),',
+      '        stored,',
+      '      );',
+      '      expect(res).toBe(DECORATED);',
+      '    });',
+    );
+  }
+  while (findOne.length && findOne[findOne.length - 1] === '') findOne.pop();
+
   const ctorArgs = [
     'repo as never',
     ...Array.from({ length: Math.max(0, repoCount - 1) }, () => 'makeRepo() as never'),
@@ -854,6 +1146,10 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       '',
       "  describe('findAll', () => {",
       ...findAll,
+      '  });',
+      '',
+      `  describe(${q(retrieveOp ? 'findEntity / findOne' : 'findEntity')}, () => {`,
+      ...findOne,
       '  });',
       '});',
       '',
@@ -1203,6 +1499,8 @@ function specFor({ resource, plan, dir, nested }, deps) {
     ' * Every literal below is derived from this resource, never hand-written: see',
     ' * the mapping table in emit/spec/resource.mjs for where each one comes from.',
     ' */',
+    // every file asserts findEntity's 404, so the exception class is always used
+    "import { NotFoundException } from '@nestjs/common';",
     ctrl.dtoImports.length
       ? "import { PATH_METADATA, ROUTE_ARGS_METADATA } from '@nestjs/common/constants';"
       : "import { PATH_METADATA } from '@nestjs/common/constants';",
@@ -1239,6 +1537,18 @@ function specFor({ resource, plan, dir, nested }, deps) {
       '',
       "/** The path segment each collection's row mapper writes into its href. */",
       ...objectConst('HREF_SEGMENT', 'Record<string, string>', hrefSegments),
+      ...(hrefSegments.length
+        ? [
+            '',
+            '/**',
+            " * What an owned row's href is built on. NOT `HREF`: renderService hands a",
+            ' * child mapper the FLAT `resource.pathSegment`, while the root mapper gets',
+            ' * `nested.hrefSegment` under --nested-routes - so the two bases diverge for',
+            ' * a nested resource, and only here is that visible.',
+            ' */',
+            ...stringConst('ROW_HREF_BASE', `/${meta.basePath}/${resource.pathSegment}/res-1`),
+          ]
+        : []),
       '',
       "/** The `@type` each collection's rows carry: their own entity class name. */",
       ...objectConst('ROW_AT_TYPE', 'Record<string, string>', rowAtTypes),

@@ -11,6 +11,7 @@
  * Every literal below is derived from this resource, never hand-written: see
  * the mapping table in emit/spec/resource.mjs for where each one comes from.
  */
+import { NotFoundException } from '@nestjs/common';
 import { PATH_METADATA } from '@nestjs/common/constants';
 import { Test } from '@nestjs/testing';
 import { GeographicSubAddressService } from '../../src/geographic-sub-address/geographic-sub-address.service';
@@ -265,6 +266,63 @@ describe('GeographicSubAddressService', () => {
       expect(data[0].href).toBe(HREF);
       expect(Object.keys(data[0])).not.toContain('@type');
       expect(Object.keys(data[0])).not.toContain(NOT_SELECTED);
+    });
+  });
+
+  describe('findEntity / findOne', () => {
+    beforeEach(() => {
+      // afterFindOne is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'afterFindOne').mockResolvedValue(undefined);
+    });
+
+    it('throws NotFoundException when the row is missing or soft-deleted', async () => {
+      repo.findOne.mockResolvedValue(null);
+      await expect(service.findEntity('nope')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      await expect(service.findOne('nope')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+    });
+
+    it('maps every scalar and the resource href', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      const res = await service.findOne(ID);
+      for (const w of Object.keys(SCALARS)) {
+        expect(res[w]).toBe(`res-${SCALARS[w]}`);
+      }
+      expect(res.href).toBe(HREF);
+    });
+
+    it('defaults @schemaLocation and @baseType to ""', async () => {
+      repo.findOne.mockResolvedValue({ id: ID, atType: AT_TYPE });
+      const res = await service.findOne(ID);
+      expect(res['@schemaLocation']).toBe('');
+      expect(res['@baseType']).toBe('');
+    });
+
+    it('projects the requested fields on a single read', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      const res = await service.findOne(ID, SELECTED);
+      expect(res[SELECTED]).toBe(`res-${SCALARS[SELECTED]}`);
+      expect(Object.keys(res)).not.toContain(NOT_SELECTED);
+    });
+
+    it('answers with whatever the afterFindOne hook gives back', async () => {
+      // afterFindOne lives in a file tmfgen does not manage. What it returns is
+      // its owner's business, so it is SPIED here rather than asserted on: what
+      // is under test is that findOne hands it the mapped response and answers
+      // with the value it got back.
+      const DECORATED: AnyRec = { id: 'from-hook' };
+      jest.spyOn(hooks, 'afterFindOne').mockResolvedValue(DECORATED);
+      const stored = entity();
+      repo.findOne.mockResolvedValue(stored);
+      const res = await service.findOne(ID);
+      expect(hooks.afterFindOne).toHaveBeenCalledWith(
+        expect.objectContaining({ href: HREF }),
+        stored,
+      );
+      expect(res).toBe(DECORATED);
     });
   });
 });
