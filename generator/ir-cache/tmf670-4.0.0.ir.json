@@ -1,0 +1,660 @@
+{
+  "meta": {
+    "tmfNumber": "670",
+    "specTitle": "Payment Method",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/paymentMethod/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF670_BASE_PATH",
+    "eventExchange": "paymentMethod.events",
+    "eventExchangeConstant": "TMF670_EVENT_EXCHANGE",
+    "eventTypeEnum": "PaymentMethodEventType",
+    "serviceNameSuggestion": "payment-method-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf670/4.0.0/openapi/TMF670_Payment_Method_Management_API_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "PaymentMethod",
+      "camelName": "paymentMethod",
+      "kebabName": "payment-method",
+      "tableName": "payment_method",
+      "pathSegment": "paymentMethod",
+      "pathKey": "paymentMethod",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A Payment Method is a pure-virtual super-class that defines a specific method of payment such as Direct Debit, Cash, Digital Wallet,Tokenized Card, Bank Account Transfer, Bank Account Debit, Bank Card, Voucher, Check, Bucket PaymentMethod, Account PaymentMethod, and Loyalty PaymentMethod with all details associated. Use the @type attribute to specify the concrete type in the API calls.Defines a specific method of payment (e.g. direct debit with all details associated)",
+      "composedFrom": [
+        "Entity"
+      ],
+      "required": [
+        "@type",
+        "name"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Friendly name assigned to the payment method"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Text description of the contents of the payment method"
+        },
+        {
+          "kind": "scalar",
+          "name": "isPreferred",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "If the method is the preferred one by the owner. Typically used when querying for the payment methods of a specific customer or account"
+        },
+        {
+          "kind": "scalar",
+          "name": "authorizationCode",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Review: Authorization code provided by a financial institution. Typically this would be populated for recurring payments using the method, as payments have an authorization code of their own."
+        },
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Status of the payment method"
+        },
+        {
+          "kind": "scalar",
+          "name": "statusDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The last time the payment method status changed."
+        },
+        {
+          "kind": "scalar",
+          "name": "statusReason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The reason for the last status change."
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "Date interval in which the payment method is valid",
+          "columns": [
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "relatedParty",
+          "targetRef": "RelatedParty",
+          "description": "Reference to the customer or party that owns that payment method or can use it.",
+          "columns": [
+            {
+              "name": "relatedPartyId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartyHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartyName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartyRole",
+              "sourceProp": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartyBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartySchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartyType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPartyReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "relatedPlace",
+          "targetRef": "RelatedPlace",
+          "description": "Reference to a place for billing or delivery address, if different to that of the related party.",
+          "columns": [
+            {
+              "name": "relatedPlaceId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceRole",
+              "sourceProp": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedPlaceReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AccountRef",
+          "tableName": "account_ref",
+          "nameCandidates": [
+            "AccountRef",
+            "PaymentMethodAccountRef"
+          ],
+          "refLike": false,
+          "propertyName": "account",
+          "itemRef": "AccountRef",
+          "description": "Reference to the accounts that are linked to the payment method. May be a party account or a financial account.",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Detailed description of the account"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the account"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "PaymentMethod_Create",
+        "required": [
+          "@type",
+          "name"
+        ],
+        "properties": [
+          "authorizationCode",
+          "description",
+          "isPreferred",
+          "name",
+          "status",
+          "statusDate",
+          "statusReason",
+          "account",
+          "relatedParty",
+          "relatedPlace",
+          "validFor",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "PaymentMethod_Update",
+        "required": [
+          "name"
+        ],
+        "properties": [
+          "authorizationCode",
+          "description",
+          "isPreferred",
+          "name",
+          "status",
+          "statusDate",
+          "statusReason",
+          "account",
+          "relatedParty",
+          "relatedPlace",
+          "validFor"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listPaymentMethod",
+          "summary": "List or find PaymentMethod objects",
+          "description": "This operation list or find PaymentMethod entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createPaymentMethod",
+          "summary": "Creates a PaymentMethod",
+          "description": "This operation creates a PaymentMethod entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePaymentMethod",
+          "summary": "Retrieves a PaymentMethod by ID",
+          "description": "This operation retrieves a PaymentMethod entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the PaymentMethod",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchPaymentMethod",
+          "summary": "Updates partially a PaymentMethod",
+          "description": "This operation updates partially a PaymentMethod entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the PaymentMethod",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePaymentMethod",
+          "summary": "Deletes a PaymentMethod",
+          "description": "This operation deletes a PaymentMethod entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the PaymentMethod",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/paymentMethod",
+        "item": "/paymentMethod/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "paymentMethodAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PAYMENT_METHOD_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "paymentMethodCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PAYMENT_METHOD_CREATE"
+        },
+        {
+          "eventName": "paymentMethodDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PAYMENT_METHOD_DELETE"
+        },
+        {
+          "eventName": "paymentMethodStatusChangeEvent",
+          "eventKind": "StatusChange",
+          "enumMember": "PAYMENT_METHOD_STATUS_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/paymentMethodAttributeValueChangeEvent",
+      "eventName": "paymentMethodAttributeValueChangeEvent",
+      "resource": "PaymentMethod",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToPaymentMethodAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/paymentMethodCreateEvent",
+      "eventName": "paymentMethodCreateEvent",
+      "resource": "PaymentMethod",
+      "eventKind": "Create",
+      "operationId": "listenToPaymentMethodCreateEvent"
+    },
+    {
+      "path": "/listener/paymentMethodDeleteEvent",
+      "eventName": "paymentMethodDeleteEvent",
+      "resource": "PaymentMethod",
+      "eventKind": "Delete",
+      "operationId": "listenToPaymentMethodDeleteEvent"
+    },
+    {
+      "path": "/listener/paymentMethodStatusChangeEvent",
+      "eventName": "paymentMethodStatusChangeEvent",
+      "resource": "PaymentMethod",
+      "eventKind": "StatusChange",
+      "operationId": "listenToPaymentMethodStatusChangeEvent"
+    }
+  ],
+  "warnings": [
+    "PaymentMethod has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

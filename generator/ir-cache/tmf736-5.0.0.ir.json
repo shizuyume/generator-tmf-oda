@@ -1,0 +1,885 @@
+{
+  "meta": {
+    "tmfNumber": "736",
+    "specTitle": "Revenue Sharing Algorithm Management",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/revenueSharingAlgorithmManagement/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF736_BASE_PATH",
+    "eventExchange": "revenueSharingAlgorithm.events",
+    "eventExchangeConstant": "TMF736_EVENT_EXCHANGE",
+    "eventTypeEnum": "RevenueSharingAlgorithmEventType",
+    "serviceNameSuggestion": "revenue-sharing-algorithm-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf736/5.0.0/openapi/TMF736-Revenue_Sharing_Algorithm_Management-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "PartyRevSharingAlgorithm",
+      "camelName": "partyRevSharingAlgorithm",
+      "kebabName": "party-rev-sharing-algorithm",
+      "tableName": "party_rev_sharing_algorithm",
+      "pathSegment": "partyRevSharingAlgorithm",
+      "pathKey": "partyRevSharingAlgorithm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The name of party revenue sharing algorithm"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description of party revenue sharing algorithm"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "PolicyRef",
+          "tableName": "policy_ref",
+          "nameCandidates": [
+            "PolicyRef",
+            "PartyRevSharingAlgorithmPolicyRef"
+          ],
+          "refLike": true,
+          "propertyName": "policy",
+          "itemRef": "PolicyRef",
+          "description": "The policy type algorithm to calculate revenue share",
+          "minItems": 1,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "Hyperlink reference"
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "unique identifier"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "version",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "PartyRevSharingPolicyConditionVariable",
+          "tableName": "party_rev_sharing_policy_condition_variable",
+          "nameCandidates": [
+            "PartyRevSharingPolicyConditionVariable",
+            "PartyRevSharingAlgorithmConditionVariable"
+          ],
+          "refLike": false,
+          "propertyName": "conditionVariable",
+          "itemRef": "PartyRevSharingPolicyConditionVariable",
+          "description": "The policy condition variables of the policy to calculate revenue share",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "value",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The value of variable"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "policyCondition",
+              "targetRef": "PolicyConditionRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "policyConditionType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "policyConditionVariable",
+              "targetRef": "PolicyVariableRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "policyConditionVariableType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionVariableBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionVariableSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionVariableHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionVariableId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionVariableName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyConditionVariableReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "PartyRevSharingPolicyActionVariable",
+          "tableName": "party_rev_sharing_policy_action_variable",
+          "nameCandidates": [
+            "PartyRevSharingPolicyActionVariable",
+            "PartyRevSharingAlgorithmActionVariable"
+          ],
+          "refLike": false,
+          "propertyName": "actionVariable",
+          "itemRef": "PartyRevSharingPolicyActionVariable",
+          "description": "The policy action variables of the policy to calculate revenue share",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "value",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The value of variable"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "policyAction",
+              "targetRef": "PolicyActionRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "policyActionType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "policyActionVariable",
+              "targetRef": "PolicyVariableRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "policyActionVariableType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionVariableBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionVariableSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionVariableHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionVariableId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionVariableName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "policyActionVariableReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "PartyRevSharingAlgorithm_FVO",
+        "required": [
+          "@type",
+          "name"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "name",
+          "description",
+          "policy",
+          "conditionVariable",
+          "actionVariable"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "PartyRevSharingAlgorithm_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "name",
+          "description",
+          "policy",
+          "conditionVariable",
+          "actionVariable"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CreatePartyRevSharingAlgorithm",
+          "value": {
+            "@type": "PartyRevSharingAlgorithm",
+            "name": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price",
+            "description": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price",
+            "policy": [
+              {
+                "@type": "PolicyRef",
+                "href": "https://mycsp.com:8080/tmf-api/PolicyManagement/v5/Policy/5840",
+                "id": "5840",
+                "name": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price",
+                "@referredType": "PolicySet",
+                "version": "1.0"
+              }
+            ],
+            "conditionVariable": [
+              {
+                "@type": "PartyRevSharingPolicyConditionVariable",
+                "value": "300",
+                "policyCondition": {
+                  "@type": "PolicyConditionRef",
+                  "href": "https://mycsp.com:8080/tmf-api/PolicyManagement/v5/PolicyCondition/5020",
+                  "id": "5020",
+                  "name": "The sold price of single handset more than 300$",
+                  "@referredType": "PolicyCondition"
+                },
+                "policyConditionVariable": {
+                  "@type": "PolicyVariableRef",
+                  "href": "https://mycsp.com:8080/tmf-api/PolicyManagement/v5/PolicyVariable/5040",
+                  "id": "5040",
+                  "name": "sold price",
+                  "@referredType": "PolicyVariable"
+                }
+              }
+            ],
+            "actionVariable": [
+              {
+                "@type": "PartyRevSharingPolicyActionVariable",
+                "value": "5%",
+                "policyAction": {
+                  "@type": "PolicyActionRef",
+                  "href": "https://mycsp.com:8080/tmf-api/PolicyManagement/v5/PolicyAction/5021",
+                  "id": "5021",
+                  "name": "The revenue share percentage of sold price is 5%",
+                  "@referredType": "PolicyAction"
+                },
+                "policyActionVariable": {
+                  "@type": "PolicyVariableRef",
+                  "href": "https://mycsp.com:8080/tmf-api/PolicyManagement/v5/PolicyVariable/5041",
+                  "id": "5041",
+                  "name": "The revenue share percentage of sold price",
+                  "@referredType": "PolicyVariable"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listPartyRevSharingAlgorithm",
+          "summary": "List or find PartyRevSharingAlgorithm objects",
+          "description": "List or find PartyRevSharingAlgorithm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createPartyRevSharingAlgorithm",
+          "summary": "Creates a PartyRevSharingAlgorithm",
+          "description": "This operation creates a PartyRevSharingAlgorithm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePartyRevSharingAlgorithm",
+          "summary": "Retrieves a PartyRevSharingAlgorithm by ID",
+          "description": "This operation retrieves a PartyRevSharingAlgorithm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchPartyRevSharingAlgorithm",
+          "summary": "Updates partially a PartyRevSharingAlgorithm",
+          "description": "This operation updates partially a PartyRevSharingAlgorithm entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePartyRevSharingAlgorithm",
+          "summary": "Deletes a PartyRevSharingAlgorithm",
+          "description": "This operation deletes a PartyRevSharingAlgorithm entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/partyRevSharingAlgorithm",
+        "item": "/partyRevSharingAlgorithm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "partyRevSharingAlgorithmAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_CREATE"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_DELETE"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/partyRevSharingAlgorithmAttributeValueChangeEvent",
+      "eventName": "partyRevSharingAlgorithmAttributeValueChangeEvent",
+      "resource": "PartyRevSharingAlgorithm",
+      "eventKind": "AttributeValueChange",
+      "operationId": "partyRevSharingAlgorithmAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingAlgorithmCreateEvent",
+      "eventName": "partyRevSharingAlgorithmCreateEvent",
+      "resource": "PartyRevSharingAlgorithm",
+      "eventKind": "Create",
+      "operationId": "partyRevSharingAlgorithmCreateEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingAlgorithmDeleteEvent",
+      "eventName": "partyRevSharingAlgorithmDeleteEvent",
+      "resource": "PartyRevSharingAlgorithm",
+      "eventKind": "Delete",
+      "operationId": "partyRevSharingAlgorithmDeleteEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingAlgorithmStateChangeEvent",
+      "eventName": "partyRevSharingAlgorithmStateChangeEvent",
+      "resource": "PartyRevSharingAlgorithm",
+      "eventKind": "StateChange",
+      "operationId": "partyRevSharingAlgorithmStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No usable base path in the spec (servers[0].url = https://serverRoot); derived from info.title instead - verify it, or pass --base-path.",
+    "PartyRevSharingAlgorithm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

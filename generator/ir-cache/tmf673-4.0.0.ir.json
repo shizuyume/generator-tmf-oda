@@ -1,0 +1,1630 @@
+{
+  "meta": {
+    "tmfNumber": "673",
+    "specTitle": "API Place - GeographicAddress",
+    "specVersion": "4.0.1",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/geographicAddressManagement/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF673_BASE_PATH",
+    "eventExchange": "geographicAddress.events",
+    "eventExchangeConstant": "TMF673_EVENT_EXCHANGE",
+    "eventTypeEnum": "GeographicAddressEventType",
+    "serviceNameSuggestion": "geographic-address-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf673/4.0.0/openapi/TMF673_Geographic_Address_Management_API_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "GeographicAddressValidation",
+      "camelName": "geographicAddressValidation",
+      "kebabName": "geographic-address-validation",
+      "tableName": "geographic_address_validation",
+      "pathSegment": "geographicAddressValidation",
+      "pathKey": "geographicAddressValidation",
+      "parentSegments": [],
+      "nested": false,
+      "description": "This resource is used to manage address validation request and response",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "provideAlternative",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicator provided by the requester to specify if alternate addresses must be provided in case of partial or fail result."
+        },
+        {
+          "kind": "scalar",
+          "name": "validationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the address validation is performed"
+        },
+        {
+          "kind": "scalar",
+          "name": "validationResult",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Result of the address validation (success, partial, fails)"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "accepted",
+            "terminatedWithError",
+            "inProgress",
+            "done"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a task"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [
+        {
+          "name": "submittedGeographicAddress",
+          "targetResource": "GeographicAddress",
+          "targetTable": "geographic_address",
+          "relation": "many-to-one",
+          "joinColumn": "submitted_geographic_address_id",
+          "required": false,
+          "description": "the address as submitted to validation",
+          "projectedProps": [
+            "id",
+            "href",
+            "city",
+            "country",
+            "locality",
+            "name",
+            "postcode",
+            "stateOrProvince",
+            "streetName",
+            "streetNr",
+            "streetNrLast",
+            "streetNrLastSuffix",
+            "streetNrSuffix",
+            "streetSuffix",
+            "streetType",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        },
+        {
+          "name": "validGeographicAddress",
+          "targetResource": "GeographicAddress",
+          "targetTable": "geographic_address",
+          "relation": "many-to-one",
+          "joinColumn": "valid_geographic_address_id",
+          "required": false,
+          "description": "the correct form of the validated address in case of validation success",
+          "projectedProps": [
+            "id",
+            "href",
+            "city",
+            "country",
+            "locality",
+            "name",
+            "postcode",
+            "stateOrProvince",
+            "streetName",
+            "streetNr",
+            "streetNrLast",
+            "streetNrLastSuffix",
+            "streetNrSuffix",
+            "streetSuffix",
+            "streetType",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GeographicAddressValidationAlternateGeographicAddress",
+          "tableName": "geographic_address_validation_alternate_geographic_address",
+          "propertyName": "alternateGeographicAddress",
+          "itemRef": "GeographicAddress",
+          "description": "Structured textual way of describing how to find a Property in an urban area (country properties are often defined differently).\nNote : Address corresponds to SID UrbanPropertyAddress",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "city",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "City that the address is in"
+            },
+            {
+              "kind": "scalar",
+              "name": "country",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Country that the address is in"
+            },
+            {
+              "kind": "scalar",
+              "name": "locality",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "An area of defined or undefined boundaries within a local authority or other legislatively defined area, usually rural or semi rural in nature. [ANZLIC-STREET], or a suburb, a bounded locality within a city, town or shire principally of urban character [ANZLICSTREET]"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A user-friendly name for the place, such as [Paris Store], [London Store], [Main Home]"
+            },
+            {
+              "kind": "scalar",
+              "name": "postcode",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "descriptor for a postal delivery area, used to speed and simplify the delivery of mail (also know as zipcode)"
+            },
+            {
+              "kind": "scalar",
+              "name": "stateOrProvince",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the State or Province that the address is in"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the street or other street type"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetNr",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Number identifying a specific property on a public street. It may be combined with streetNrLast for ranged addresses"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetNrLast",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Last number in a range of street numbers allocated to a property"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetNrLastSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Last street number suffix for a ranged address"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetNrSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the first street number suffix"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A modifier denoting a relative direction"
+            },
+            {
+              "kind": "scalar",
+              "name": "streetType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "alley, avenue, boulevard, brae, crescent, drive, highway, lane, terrace, parade, place, tarn, way, wharf "
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "geographicLocation",
+              "targetRef": "GeographicLocationRefOrValue",
+              "description": "",
+              "columns": [
+                {
+                  "name": "geographicLocationId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "geographicLocationHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "geographicLocationName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "geographicLocationBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "geographicLocationSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "geographicLocationType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "geographicLocationReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "GeographicAddressValidationAlternateGeographicAddressGeographicSubAddress",
+              "tableName": "geographic_address_validation_alternate_geographic_address_geographic_sub_address",
+              "propertyName": "geographicSubAddress",
+              "itemRef": "GeographicSubAddress",
+              "description": "Representation of a GeographicSubAddress \nIt is used for addressing within a property in an urban area (country properties are often defined differently). It may refer to a building, a building cluster, or a floor of a multistory building.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "buildingName",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "allows for buildings that have well-known names"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "levelNumber",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "used where a level type may be repeated e.g. BASEMENT 1, BASEMENT 2"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "levelType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "describes level types within a building"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the subAddress to identify it with a meaningful identification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "privateStreetName",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "private streets internal to a property (e.g. a university) may have internal names that are not recorded by the land title office."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "privateStreetNumber",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "private streets numbers internal to a private street"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "subAddressType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of subAddress : it can be a subunit or a private street"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "subUnitNumber",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "the discriminator used for the subunit\noften just a simple number e.g. FLAT 5, may also be a range"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "subUnitType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "the type of subunit\ne.g.BERTH, FLAT, PIER, SUITE, SHOP, TOWER, UNIT, WHARF"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "GeographicAddressValidation_Create",
+        "required": [
+          "submittedGeographicAddress",
+          "provideAlternative"
+        ],
+        "properties": [
+          "provideAlternative",
+          "submittedGeographicAddress",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "GeographicAddressValidation_Update",
+        "required": [],
+        "properties": [
+          "provideAlternative",
+          "validationDate",
+          "validationResult",
+          "alternateGeographicAddress",
+          "state",
+          "submittedGeographicAddress",
+          "validGeographicAddress",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "listGeographicAddressValidation",
+          "summary": "List or find GeographicAddressValidation objects",
+          "description": "This operation list or find GeographicAddressValidation entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createGeographicAddressValidation",
+          "summary": "Creates a GeographicAddressValidation",
+          "description": "This operation creates a GeographicAddressValidation entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveGeographicAddressValidation",
+          "summary": "Retrieves a GeographicAddressValidation by ID",
+          "description": "This operation retrieves a GeographicAddressValidation entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the GeographicAddressValidation",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchGeographicAddressValidation",
+          "summary": "Updates partially a GeographicAddressValidation",
+          "description": "This operation updates partially a GeographicAddressValidation entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the GeographicAddressValidation",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": null
+      },
+      "paths": {
+        "collection": "/geographicAddressValidation",
+        "item": "/geographicAddressValidation/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "geographicAddressValidationStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "GEOGRAPHIC_ADDRESS_VALIDATION_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "GeographicAddress",
+      "camelName": "geographicAddress",
+      "kebabName": "geographic-address",
+      "tableName": "geographic_address",
+      "pathSegment": "geographicAddress",
+      "pathKey": "geographicAddress",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Structured textual way of describing how to find a Property in an urban area (country properties are often defined differently).\nNote : Address corresponds to SID UrbanPropertyAddress",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "city",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "City that the address is in"
+        },
+        {
+          "kind": "scalar",
+          "name": "country",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Country that the address is in"
+        },
+        {
+          "kind": "scalar",
+          "name": "locality",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "An area of defined or undefined boundaries within a local authority or other legislatively defined area, usually rural or semi rural in nature. [ANZLIC-STREET], or a suburb, a bounded locality within a city, town or shire principally of urban character [ANZLICSTREET]"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A user-friendly name for the place, such as [Paris Store], [London Store], [Main Home]"
+        },
+        {
+          "kind": "scalar",
+          "name": "postcode",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "descriptor for a postal delivery area, used to speed and simplify the delivery of mail (also know as zipcode)"
+        },
+        {
+          "kind": "scalar",
+          "name": "stateOrProvince",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "the State or Province that the address is in"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetName",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the street or other street type"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetNr",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Number identifying a specific property on a public street. It may be combined with streetNrLast for ranged addresses"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetNrLast",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Last number in a range of street numbers allocated to a property"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetNrLastSuffix",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Last street number suffix for a ranged address"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetNrSuffix",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "the first street number suffix"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetSuffix",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A modifier denoting a relative direction"
+        },
+        {
+          "kind": "scalar",
+          "name": "streetType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "alley, avenue, boulevard, brae, crescent, drive, highway, lane, terrace, parade, place, tarn, way, wharf "
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "geographicLocation",
+          "targetRef": "GeographicLocationRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "geographicLocationId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "GeographicAddressGeographicSubAddress",
+          "tableName": "geographic_address_geographic_sub_address",
+          "propertyName": "geographicSubAddress",
+          "itemRef": "GeographicSubAddress",
+          "description": "Representation of a GeographicSubAddress \nIt is used for addressing within a property in an urban area (country properties are often defined differently). It may refer to a building, a building cluster, or a floor of a multistory building.",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "buildingName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "allows for buildings that have well-known names"
+            },
+            {
+              "kind": "scalar",
+              "name": "levelNumber",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "used where a level type may be repeated e.g. BASEMENT 1, BASEMENT 2"
+            },
+            {
+              "kind": "scalar",
+              "name": "levelType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "describes level types within a building"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the subAddress to identify it with a meaningful identification"
+            },
+            {
+              "kind": "scalar",
+              "name": "privateStreetName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "private streets internal to a property (e.g. a university) may have internal names that are not recorded by the land title office."
+            },
+            {
+              "kind": "scalar",
+              "name": "privateStreetNumber",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "private streets numbers internal to a private street"
+            },
+            {
+              "kind": "scalar",
+              "name": "subAddressType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of subAddress : it can be a subunit or a private street"
+            },
+            {
+              "kind": "scalar",
+              "name": "subUnitNumber",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the discriminator used for the subunit\noften just a simple number e.g. FLAT 5, may also be a range"
+            },
+            {
+              "kind": "scalar",
+              "name": "subUnitType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the type of subunit\ne.g.BERTH, FLAT, PIER, SUITE, SHOP, TOWER, UNIT, WHARF"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "listGeographicAddress",
+          "summary": "List or find GeographicAddress objects",
+          "description": "This operation list or find GeographicAddress entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveGeographicAddress",
+          "summary": "Retrieves a GeographicAddress by ID",
+          "description": "This operation retrieves a GeographicAddress entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the GeographicAddress",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/geographicAddress",
+        "item": "/geographicAddress/{id}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "GeographicSubAddress",
+      "camelName": "geographicSubAddress",
+      "kebabName": "geographic-sub-address",
+      "tableName": "geographic_sub_address",
+      "pathSegment": "geographicSubAddress",
+      "pathKey": "geographicAddress/geographicSubAddress",
+      "parentSegments": [
+        "geographicAddress"
+      ],
+      "nested": true,
+      "description": "Representation of a GeographicSubAddress \nIt is used for addressing within a property in an urban area (country properties are often defined differently). It may refer to a building, a building cluster, or a floor of a multistory building.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "buildingName",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "allows for buildings that have well-known names"
+        },
+        {
+          "kind": "scalar",
+          "name": "levelNumber",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "used where a level type may be repeated e.g. BASEMENT 1, BASEMENT 2"
+        },
+        {
+          "kind": "scalar",
+          "name": "levelType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "describes level types within a building"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the subAddress to identify it with a meaningful identification"
+        },
+        {
+          "kind": "scalar",
+          "name": "privateStreetName",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "private streets internal to a property (e.g. a university) may have internal names that are not recorded by the land title office."
+        },
+        {
+          "kind": "scalar",
+          "name": "privateStreetNumber",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "private streets numbers internal to a private street"
+        },
+        {
+          "kind": "scalar",
+          "name": "subAddressType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Type of subAddress : it can be a subunit or a private street"
+        },
+        {
+          "kind": "scalar",
+          "name": "subUnitNumber",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "the discriminator used for the subunit\noften just a simple number e.g. FLAT 5, may also be a range"
+        },
+        {
+          "kind": "scalar",
+          "name": "subUnitType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "the type of subunit\ne.g.BERTH, FLAT, PIER, SUITE, SHOP, TOWER, UNIT, WHARF"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "listGeographicSubAddress",
+          "summary": "List or find GeographicSubAddress objects",
+          "description": "This operation list or find GeographicSubAddress entities",
+          "params": [
+            {
+              "name": "geographicAddressId",
+              "in": "path",
+              "description": "Identifier of the parent GeographicAddress entity",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveGeographicSubAddress",
+          "summary": "Retrieves a GeographicSubAddress by ID",
+          "description": "This operation retrieves a GeographicSubAddress entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "geographicAddressId",
+              "in": "path",
+              "description": "Identifier of the parent GeographicAddress entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the GeographicSubAddress",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/geographicAddress/{geographicAddressId}/geographicSubAddress",
+        "item": "/geographicAddress/{geographicAddressId}/geographicSubAddress/{id}"
+      },
+      "notificationEvents": []
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/geographicAddressValidationStateChangeEvent",
+      "eventName": "geographicAddressValidationStateChangeEvent",
+      "resource": "GeographicAddressValidation",
+      "eventKind": "StateChange",
+      "operationId": "listenToGeographicAddressValidationStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "GeographicAddressValidation has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "GeographicAddressValidation spec declares no delete operation; those routes are NOT emitted.",
+    "No GeographicAddress_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No GeographicAddress_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "GeographicAddress has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "GeographicAddress spec declares no create/update/delete operation; those routes are NOT emitted.",
+    "No GeographicSubAddress_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No GeographicSubAddress_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "GeographicSubAddress has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "GeographicSubAddress spec declares no create/update/delete operation; those routes are NOT emitted."
+  ]
+}

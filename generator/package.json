@@ -1,0 +1,23 @@
+{
+  "name": "tmfgen",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic code generator for TM Forum ODA components (NestJS + TypeORM backend)",
+  "bin": {
+    "tmfgen": "./src/cli.mjs"
+  },
+  "scripts": {
+    "ir": "node src/cli.mjs ir"
+  },
+  "dependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "commander": "^12.1.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}

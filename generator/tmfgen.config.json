@@ -1,0 +1,6 @@
+{
+  "targetRoot": "D:/Neuronworks/project/tm-forum",
+  "feTargetRoot": "D:/oh-my-tmf-agent-workspace/result",
+  "fePortRange": [5012, 5099],
+  "overrides": {}
+}

@@ -1,0 +1,1639 @@
+{
+  "meta": {
+    "tmfNumber": "735",
+    "specTitle": "CDR Transaction Management",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/cdrTransactionManagement/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF735_BASE_PATH",
+    "eventExchange": "cdrTransaction.events",
+    "eventExchangeConstant": "TMF735_EVENT_EXCHANGE",
+    "eventTypeEnum": "CdrTransactionEventType",
+    "serviceNameSuggestion": "cdr-transaction-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf735/5.0.0/openapi/TMF735-CDR_Transaction_Management-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0",
+    "markdownSupplement": "documents/tmf735/5.0.0/tmf735-enrichment.md",
+    "markdownEnrichments": [
+      "CdrTransaction: 5 business rule note(s)"
+    ]
+  },
+  "resources": [
+    {
+      "name": "CdrTransaction",
+      "camelName": "cdrTransaction",
+      "kebabName": "cdr-transaction",
+      "tableName": "cdr_transaction",
+      "pathSegment": "cdrTransaction",
+      "pathKey": "cdrTransaction",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "charged",
+            "billed",
+            "paid",
+            "completed"
+          ],
+          "enumRef": "CdrTransactionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the Cdr transaction"
+        },
+        {
+          "kind": "scalar",
+          "name": "requestedInitialState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "charged"
+          ],
+          "enumRef": "CdrTransactionInitialStateType",
+          "nullable": true,
+          "description": "Possible values for the requested initial state of the transaction from client- by default created is considered"
+        },
+        {
+          "kind": "scalar",
+          "name": "cancellationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the transaction is cancelled. This is used when transaction is cancelled. "
+        },
+        {
+          "kind": "scalar",
+          "name": "cancellationReason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Reason why the transaction is cancelled. This is used when transaction is cancelled. "
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the transaction"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time when the ProductOrder was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the ProductOrder was completed"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "CdrTransactionRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "The associated party or partyRole",
+          "minItems": 1,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedChannel",
+          "tableName": "related_channel",
+          "nameCandidates": [
+            "RelatedChannel",
+            "CdrTransactionChannel"
+          ],
+          "refLike": false,
+          "propertyName": "channel",
+          "itemRef": "RelatedChannel",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "channel",
+              "targetRef": "ChannelRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "channelType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "Note",
+          "tableName": "note",
+          "nameCandidates": [
+            "Note",
+            "CdrTransactionNote"
+          ],
+          "refLike": false,
+          "propertyName": "note",
+          "itemRef": "Note",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "author",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Author of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "date",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "text",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Text of the note"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "CdrTransactionItem",
+          "tableName": "cdr_transaction_item",
+          "nameCandidates": [
+            "CdrTransactionItem",
+            "CdrTransactionTransactionItem"
+          ],
+          "refLike": false,
+          "propertyName": "transactionItem",
+          "itemRef": "CdrTransactionItem",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": 1,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "action",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "add",
+                "modify",
+                "delete",
+                "noChange"
+              ],
+              "enumRef": "ItemActionType",
+              "nullable": true,
+              "description": "action to be performed on the entity managed by the item"
+            },
+            {
+              "kind": "scalar",
+              "name": "state",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "charged",
+                "billed",
+                "paid",
+                "completed"
+              ],
+              "enumRef": "CdrTransactionItemStateType",
+              "nullable": true,
+              "description": "Possible values for the state of the party revenue sharing transaction"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "relatedParty",
+              "targetRef": "RelatedPartyRefOrPartyRoleRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "relatedPartyType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartyBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartySchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartyRole",
+                  "sourceProp": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "Cdr",
+              "tableName": "cdr",
+              "nameCandidates": [
+                "Cdr",
+                "CdrTransactionItemCdr"
+              ],
+              "refLike": false,
+              "propertyName": "cdr",
+              "itemRef": "Cdr",
+              "description": "An occurrence of employing a product for its intended purpose with all rating details",
+              "minItems": 1,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "cdrDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date of cdr"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Description of cdr"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "status",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "settlement",
+                    "charging",
+                    "charged"
+                  ],
+                  "enumRef": "CdrStatusType",
+                  "nullable": true,
+                  "description": "Possible values for the status of the Cdr"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "cdrType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of cdr"
+                },
+                {
+                  "kind": "json",
+                  "name": "cdrCharacteristic",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "cdrDirectionType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "charge",
+                    "refund"
+                  ],
+                  "enumRef": "CdrDirectionType",
+                  "nullable": true,
+                  "description": "Possible values for the Direction of the Cdr"
+                },
+                {
+                  "kind": "json",
+                  "name": "ratedCdr",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "isBilled",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Boolean indicating if usage have been billed or not"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "offerTariffType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of tariff applied"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "ratingAmountType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of amount"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "ratingDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date of usage rating"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "isTaxExempt",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Indicates if the rated amount is exempt of tax"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "taxRate",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Tax rate"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "relatedParty",
+                  "targetRef": "RelatedPartyRefOrPartyRoleRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "relatedPartyType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "relatedPartyBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "relatedPartySchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "relatedPartyRole",
+                      "sourceProp": "role",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "amount",
+                  "targetRef": "Money",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "amountUnit",
+                      "sourceProp": "unit",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "amountValue",
+                      "sourceProp": "value",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "productRef",
+                  "targetRef": "ProductRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productRefType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productRefBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productRefSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productRefHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productRefId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productRefName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productRefReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "taxExcludedRatingAmount",
+                  "targetRef": "Money",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "taxExcludedRatingAmountUnit",
+                      "sourceProp": "unit",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "taxExcludedRatingAmountValue",
+                      "sourceProp": "value",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "taxIncludedRatingAmount",
+                  "targetRef": "Money",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "taxIncludedRatingAmountUnit",
+                      "sourceProp": "unit",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "taxIncludedRatingAmountValue",
+                      "sourceProp": "value",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "CustomerBillRef",
+              "tableName": "customer_bill_ref",
+              "nameCandidates": [
+                "CustomerBillRef",
+                "CdrTransactionItemBillRef"
+              ],
+              "refLike": true,
+              "propertyName": "bill",
+              "itemRef": "CustomerBillRef",
+              "description": "The bills related to this report item",
+              "minItems": null,
+              "requiredFields": [
+                "@type",
+                "id"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PaymentRef",
+              "tableName": "payment_ref",
+              "nameCandidates": [
+                "PaymentRef",
+                "CdrTransactionItemPaymentRef"
+              ],
+              "refLike": true,
+              "propertyName": "payment",
+              "itemRef": "PaymentRef",
+              "description": "The payments related to this report item",
+              "minItems": null,
+              "requiredFields": [
+                "@type",
+                "id"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "CdrTransaction_FVO",
+        "required": [
+          "@type",
+          "relatedParty",
+          "channel"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "relatedParty",
+          "requestedInitialState",
+          "cancellationDate",
+          "cancellationReason",
+          "channel",
+          "description",
+          "note",
+          "transactionItem",
+          "creationDate",
+          "completionDate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "CdrTransaction_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "relatedParty",
+          "state",
+          "requestedInitialState",
+          "cancellationDate",
+          "cancellationReason",
+          "channel",
+          "description",
+          "note",
+          "transactionItem",
+          "creationDate",
+          "completionDate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CreateCdrTransaction",
+          "value": {
+            "@type": "CdrTransaction",
+            "relatedParty": [
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "role": "distributor",
+                "partyOrPartyRole": {
+                  "@type": "PartyRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                  "id": "2777",
+                  "name": "MyFirstPartner",
+                  "@referredType": "Organization"
+                }
+              },
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "role": "revenueSharingModelOwner",
+                "partyOrPartyRole": {
+                  "@type": "PartyRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2779",
+                  "id": "2779",
+                  "name": "Mobi Service Providor",
+                  "@referredType": "Organization"
+                }
+              }
+            ],
+            "state": "charged",
+            "requestedInitialState": "charged",
+            "channel": [
+              {
+                "@type": "RelatedChannel",
+                "role": "revenueSharingDepartment",
+                "channel": {
+                  "@type": "ChannelRef",
+                  "href": "https://mycsp.com:8080/tmf-api/channelManagement/v5/channel/1777",
+                  "id": "1777",
+                  "name": "revenue sharing department",
+                  "@referredType": "Channel"
+                }
+              }
+            ],
+            "description": "the transaction of MyFirstPartner revenue share",
+            "transactionItem": [
+              {
+                "@type": "CdrTransactionItem",
+                "state": "billed",
+                "action": "add",
+                "cdr": [
+                  {
+                    "cdrDate": "2020-09-21T09:13:16-07:00",
+                    "description": "Mobile handset 2023 distribution price",
+                    "status": "charged",
+                    "cdrType": "revenue share",
+                    "relatedParty": {
+                      "@type": "RelatedPartyRefOrPartyRoleRef",
+                      "role": "distributor",
+                      "partyOrPartyRole": {
+                        "@type": "PartyRef",
+                        "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                        "id": "2777",
+                        "name": "MyFirstPartner",
+                        "@referredType": "Organization"
+                      }
+                    },
+                    "isBilled": true,
+                    "isTaxExempt": false,
+                    "productRef": {
+                      "@type": "ProductRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/Product/7810",
+                      "id": "7810",
+                      "name": "Mobile handset 2023 product of MyFirstPartner",
+                      "@referredType": "Product"
+                    },
+                    "taxExcludedRatingAmount": {
+                      "unit": "USD",
+                      "value": 0
+                    },
+                    "taxIncludedRatingAmount": {
+                      "unit": "USD",
+                      "value": 0
+                    },
+                    "taxRate": 0,
+                    "amount": {
+                      "unit": "USD",
+                      "value": 50000
+                    }
+                  }
+                ],
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "distributor",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                    "id": "2777",
+                    "name": "MyFirstPartner",
+                    "@referredType": "Organization"
+                  }
+                },
+                "bill": [
+                  {
+                    "@type": "CustomerBillRef",
+                    "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/CustomerBill/2001",
+                    "id": "2001",
+                    "name": "Customer 202302 bill of MyFirstPartner",
+                    "@referredType": "CustomerBill"
+                  }
+                ],
+                "payment": [
+                  {
+                    "@type": "PaymentRef",
+                    "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/Payment/5001",
+                    "id": "5001",
+                    "name": "Customer 202302 bill payment of MyFirstPartner",
+                    "@referredType": "Payment"
+                  }
+                ]
+              },
+              {
+                "@type": "CdrTransactionItem",
+                "state": "billed",
+                "action": "add",
+                "cdr": [
+                  {
+                    "cdrDate": "2020-09-21T09:13:16-07:00",
+                    "description": "smart speakers 2023 distribution price",
+                    "status": "charged",
+                    "cdrType": "revenue share",
+                    "relatedParty": {
+                      "@type": "RelatedPartyRefOrPartyRoleRef",
+                      "role": "distributor",
+                      "partyOrPartyRole": {
+                        "@type": "PartyRef",
+                        "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                        "id": "2777",
+                        "name": "MyFirstPartner",
+                        "@referredType": "Organization"
+                      }
+                    },
+                    "isBilled": true,
+                    "isTaxExempt": false,
+                    "productRef": {
+                      "@type": "ProductRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/Product/7811",
+                      "id": "7811",
+                      "name": "Smart speakers 2023 product of MyFirstPartner",
+                      "@referredType": "Product"
+                    },
+                    "taxExcludedRatingAmount": {
+                      "unit": "USD",
+                      "value": 0
+                    },
+                    "taxIncludedRatingAmount": {
+                      "unit": "USD",
+                      "value": 0
+                    },
+                    "taxRate": 0,
+                    "amount": {
+                      "unit": "USD",
+                      "value": 30000
+                    }
+                  }
+                ],
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "distributor",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                    "id": "2777",
+                    "name": "MyFirstPartner",
+                    "@referredType": "Organization"
+                  }
+                },
+                "bill": [
+                  {
+                    "@type": "CustomerBillRef",
+                    "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/CustomerBill/2001",
+                    "id": "2001",
+                    "name": "Customer 202302 bill of MyFirstPartner",
+                    "@referredType": "CustomerBill"
+                  }
+                ],
+                "payment": [
+                  {
+                    "@type": "PaymentRef",
+                    "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/Payment/5001",
+                    "id": "5001",
+                    "name": "Customer 202302 bill payment of MyFirstPartner",
+                    "@referredType": "Payment"
+                  }
+                ]
+              },
+              {
+                "@type": "CdrTransactionItem",
+                "state": "billed",
+                "action": "add",
+                "cdr": [
+                  {
+                    "cdrDate": "2020-09-21T09:13:16-07:00",
+                    "description": "Mobile handset 2023 distribution price",
+                    "status": "charged",
+                    "cdrType": "revenue share",
+                    "relatedParty": {
+                      "@type": "RelatedPartyRefOrPartyRoleRef",
+                      "role": "revenueSharingModelOwner",
+                      "partyOrPartyRole": {
+                        "@type": "PartyRef",
+                        "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2779",
+                        "id": "2779",
+                        "name": "Mobi Service Providor",
+                        "@referredType": "Organization"
+                      }
+                    },
+                    "isBilled": true,
+                    "isTaxExempt": false,
+                    "productRef": {
+                      "@type": "ProductRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/Product/7810",
+                      "id": "7810",
+                      "name": "Mobile handset 2023 product of MyFirstPartner",
+                      "@referredType": "Product"
+                    },
+                    "taxExcludedRatingAmount": {
+                      "unit": "USD",
+                      "value": 0
+                    },
+                    "taxIncludedRatingAmount": {
+                      "unit": "USD",
+                      "value": 0
+                    },
+                    "taxRate": 0,
+                    "amount": {
+                      "unit": "USD",
+                      "value": 60000
+                    }
+                  }
+                ],
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "distributor",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                    "id": "2777",
+                    "name": "MyFirstPartner",
+                    "@referredType": "Organization"
+                  }
+                },
+                "bill": [
+                  {
+                    "@type": "CustomerBillRef",
+                    "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/CustomerBill/2002",
+                    "id": "2002",
+                    "name": "Customer 202302 bill of MyFirstPartner",
+                    "@referredType": "CustomerBill"
+                  }
+                ]
+              }
+            ],
+            "creationDate": "2023-03-10T07:37:23.112Z",
+            "completionDate": "2023-03-10T07:37:23.112Z"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listCdrTransaction",
+          "summary": "List or find CdrTransaction objects",
+          "description": "List or find CdrTransaction objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createCdrTransaction",
+          "summary": "Creates a CdrTransaction",
+          "description": "This operation creates a CdrTransaction entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveCdrTransaction",
+          "summary": "Retrieves a CdrTransaction by ID",
+          "description": "This operation retrieves a CdrTransaction entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchCdrTransaction",
+          "summary": "Updates partially a CdrTransaction",
+          "description": "This operation updates partially a CdrTransaction entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteCdrTransaction",
+          "summary": "Deletes a CdrTransaction",
+          "description": "This operation deletes a CdrTransaction entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/cdrTransaction",
+        "item": "/cdrTransaction/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "cdrTransactionAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "CDR_TRANSACTION_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "cdrTransactionCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "CDR_TRANSACTION_CREATE"
+        },
+        {
+          "eventName": "cdrTransactionDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "CDR_TRANSACTION_DELETE"
+        },
+        {
+          "eventName": "cdrTransactionStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "CDR_TRANSACTION_STATE_CHANGE"
+        }
+      ],
+      "businessRules": [
+        {
+          "text": "On create (POST), the spec's `CdrTransaction_FVO` requires `@type`, `channel`, `relatedParty` and `transactionItem` to be present, each with their own nested mandatory sub-fields (`channel.channel.id`, `relatedParty.partyOrPartyRole.id`, `transactionItem.cdr.productRef.id`, etc.) — see the userguide's \"Mandatory Attributes\" table for the full list.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`href`, `id`, `@baseType`, `@schemaLocation` and `@type` are immutable and must be rejected on PATCH.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`cancellationDate` / `cancellationReason` are only meaningful once the transaction has been cancelled; they are not implied by any other field.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`requestedInitialState` only records the client's requested initial state; the authoritative current state is always `state`.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "Four notification events are declared by the spec (`Create`, `AttributeValueChange`, `Delete`, `StateChange`), but `StateChange` should only actually fire when `state` is present in the resource — `CdrTransaction` has no `lifecycleStatus`, so the generator's conditional-mandatory-column rule already keeps `lifecycleStatus` out of the schema.",
+          "provenance": "markdown"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/cdrTransactionAttributeValueChangeEvent",
+      "eventName": "cdrTransactionAttributeValueChangeEvent",
+      "resource": "CdrTransaction",
+      "eventKind": "AttributeValueChange",
+      "operationId": "cdrTransactionAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/cdrTransactionCreateEvent",
+      "eventName": "cdrTransactionCreateEvent",
+      "resource": "CdrTransaction",
+      "eventKind": "Create",
+      "operationId": "cdrTransactionCreateEvent"
+    },
+    {
+      "path": "/listener/cdrTransactionDeleteEvent",
+      "eventName": "cdrTransactionDeleteEvent",
+      "resource": "CdrTransaction",
+      "eventKind": "Delete",
+      "operationId": "cdrTransactionDeleteEvent"
+    },
+    {
+      "path": "/listener/cdrTransactionStateChangeEvent",
+      "eventName": "cdrTransactionStateChangeEvent",
+      "resource": "CdrTransaction",
+      "eventKind": "StateChange",
+      "operationId": "cdrTransactionStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No usable base path in the spec (servers[0].url = https://serverRoot); derived from info.title instead - verify it, or pass --base-path.",
+    "CdrTransaction has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

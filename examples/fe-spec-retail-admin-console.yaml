@@ -1,0 +1,724 @@
+# ============================================================
+# Contoh non-TMF, lebih "proper": aplikasi admin bisnis retail generik.
+# Domain: manajemen pelanggan/produk/karyawan/pesanan sebuah toko/gudang —
+# tidak ada satu pun istilah TMF ODA di sini. Dipakai untuk membuktikan:
+#   - dashboard (stat card + chart placeholder + tabel) sebagai home
+#   - navbar (topbar: search + theme toggle) + sidebar 10 menu (itemsSource: from-pages)
+#   - 3 modul CRUD penuh: Pelanggan, Produk, Karyawan (list + filter + search +
+#     form add/edit dengan ragam tipe field F3 + payload transform F3 + detail bertab)
+#   - 6 modul list sederhana (tanpa form/detail): Pesanan, Faktur, Pemasok,
+#     Gudang, Kategori, Log Aktivitas — variasi kolom/filter/render
+#
+# Menjalankan:
+#   tmfgen fe-ir --spec examples/fe-spec-retail-admin-console.yaml
+#   tmfgen fe-gen scaffold --spec examples/fe-spec-retail-admin-console.yaml --port 5020
+#   tmfgen fe-gen emit --spec examples/fe-spec-retail-admin-console.yaml
+#
+# CATATAN: tidak ada backend sungguhan di balik endpoint-endpoint ini — tabel/dashboard
+# akan menampilkan empty-state (pola yang sama juga sudah teruji) sampai backend nyata
+# tersedia. Tujuan spec ini adalah membuktikan BENTUK aplikasi (navbar/sidebar/dashboard/
+# CRUD/filter/detail), bukan mengisi data sungguhan.
+# ============================================================
+
+meta:
+  name: retail-admin-console
+  label: "Retail Admin Console"
+  version: 1.0.0
+  lang: id
+  description: "Contoh non-TMF: konsol admin retail (pelanggan, produk, karyawan, pesanan)"
+
+api:
+  basePath: /api/retail
+  endpoints:
+    list: GET /resource
+    create: POST /resource
+    retrieve: GET /resource/{id}
+    update: PATCH /resource/{id}
+    delete: DELETE /resource/{id}
+
+output:
+  type: full-repo
+  fullRepo:
+    router: react-router
+    state: context
+    packageManager: npm
+    port: 5020
+
+ui:
+  library: fe-default
+  version: "1.0.0"
+  theme:
+    name: teal
+    darkMode: true
+    tokens:
+      primary: "#0f766e"
+      surface: "#ffffff"
+      background: "#f8fafc"
+      text: "#0f172a"
+      textMuted: "#64748b"
+      radius: 8
+      font: Inter
+
+formEngine:
+  library: react-hook-form
+  validator: zod
+  defaultMode: onChange
+  defaultReValidateMode: onChange
+  behaviour:
+    shouldUnregister: false
+    resetOnSubmit: true
+
+layout:
+  shell: sidebar-topbar
+  sidebar:
+    collapsible: true
+    itemsSource: from-pages   # 10 pages[] di bawah -> 10 menu sidebar otomatis
+  topbar:
+    search: true
+    themeToggle: true
+  footer: false
+
+auth:
+  enabled: false
+
+pages:
+
+  # ========================================================
+  # 1. DASHBOARD (home) — stat card + chart placeholder + tabel
+  # ========================================================
+  - id: dashboard
+    path: /
+    title: Dashboard
+    icon: LayoutDashboard
+    nav: {}
+    view: dashboard
+    dashboard:
+      stats:
+        - title: Total Pelanggan
+          icon: Users
+          format: number
+          value: { source: businessSummary.totalCustomers }
+        - title: Total Pesanan
+          icon: ShoppingCart
+          format: number
+          value: { source: businessSummary.totalOrders }
+        - title: Total Pendapatan
+          icon: Percent
+          format: currency
+          value: { source: businessSummary.totalRevenue }
+        - title: Produk Menipis
+          icon: Package
+          format: number
+          value: { source: businessSummary.lowStockProducts }
+      charts:
+        - type: line
+          title: Tren Pendapatan 30 Hari
+          source: businessSummary.revenueTrend
+      tables:
+        - title: Pesanan Terbaru
+          source: recentOrders.rows
+          limit: 5
+          columns:
+            - { field: orderNumber, label: "No. Pesanan" }
+            - { field: customerName, label: Pelanggan }
+            - { field: status, label: Status, render: tag }
+
+  # ========================================================
+  # 2. PELANGGAN — modul CRUD penuh (list+filter+search, form, detail)
+  # ========================================================
+  - id: customers
+    path: /customers
+    title: Pelanggan
+    icon: Users
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/customers
+      method: GET
+      apiRef: listCustomers
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari nama atau email..."
+        fields: [name, email]
+      filters:
+        - field: segment
+          label: Segmen
+          type: select
+          options: { retail: Retail, corporate: Korporat, wholesale: Grosir }
+      columns:
+        - { field: name, label: Nama, sortable: true }
+        - { field: email, label: Email }
+        - { field: segment, label: Segmen, render: tag }
+        - { field: phone, label: Telepon }
+        - { field: joinDate, label: Bergabung, render: date }
+        - field: actions
+          label: ""
+          type: row-actions
+          items:
+            - { label: Detail, icon: Eye, action: open-detail }
+            - { label: Edit, icon: Pencil, action: open-form, form: edit }
+            - { label: Hapus, icon: Trash2, action: delete, confirm: true }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada pelanggan
+        action: { label: Tambah Pelanggan, open: add }
+    actions:
+      - label: Tambah Pelanggan
+        variant: primary
+        position: top-right
+        action: open-form
+        form: add
+        icon: Plus
+    forms:
+      add:
+        mode: modal
+        title: Tambah Pelanggan
+        api:
+          method: POST
+          path: /api/retail/customers
+          ref: createCustomer
+          payload:
+            name: { source: form.name, transform: trim }
+            email: fields.email
+            phone: { source: form.phone, transform: trim }
+            segment: fields.segment
+            joinDate: fields.joinDate
+            isVip: fields.isVip
+        fields:
+          - { name: name, label: Nama Lengkap, type: text, required: true, minLength: 3 }
+          - { name: email, label: Email, type: email, required: true }
+          - { name: phone, label: Telepon, type: text }
+          - name: segment
+            label: Segmen
+            type: select
+            required: true
+            options: { retail: Retail, corporate: Korporat, wholesale: Grosir }
+          - { name: joinDate, label: Tanggal Bergabung, type: date }
+          - { name: isVip, label: Pelanggan VIP, type: checkbox }
+      edit:
+        mode: modal
+        title: Edit Pelanggan
+        api:
+          method: PATCH
+          path: "/api/retail/customers/{id}"
+          payload:
+            name: fields.name
+            phone: fields.phone
+            segment: fields.segment
+            isVip: fields.isVip
+        fields:
+          - { reuse: add }
+    detail:
+      mode: page
+      path: /customers/:id
+      api: /api/retail/customers/{id}
+      header:
+        title: "{{cust.name}}"
+        subtitle: "{{cust.email}}"
+        backButton: true
+        actions:
+          - { label: Edit, action: open-form, form: edit, icon: Pencil }
+          - { label: Hapus, action: delete, confirm: true, variant: danger, icon: Trash2 }
+      sections:
+        - type: tabs
+          tabs:
+            - label: Ringkasan
+              blocks:
+                - type: card
+                  layout: description-list
+                  fields:
+                    - { field: name, label: "Nama Lengkap" }
+                    - { field: email, label: "Email" }
+                    - { field: phone, label: "Telepon" }
+                    - { field: segment, label: "Segmen" }
+                    - { field: joinDate, label: "Tanggal Bergabung", render: date }
+
+  # ========================================================
+  # 3. PRODUK — modul CRUD penuh
+  # ========================================================
+  - id: products
+    path: /products
+    title: Produk
+    icon: Package
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/products
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari nama atau SKU..."
+        fields: [name, sku]
+      filters:
+        - field: category
+          label: Kategori
+          type: select
+          options: { electronics: Elektronik, groceries: Sembako, apparel: Pakaian, furniture: Furnitur }
+      columns:
+        - { field: name, label: Nama Produk, sortable: true }
+        - { field: sku, label: SKU }
+        - { field: category, label: Kategori, render: tag }
+        - { field: price, label: Harga }
+        - field: actions
+          label: ""
+          type: row-actions
+          items:
+            - { label: Detail, icon: Eye, action: open-detail }
+            - { label: Edit, icon: Pencil, action: open-form, form: edit }
+            - { label: Hapus, icon: Trash2, action: delete, confirm: true }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada produk
+        action: { label: Tambah Produk, open: add }
+    actions:
+      - label: Tambah Produk
+        variant: primary
+        position: top-right
+        action: open-form
+        form: add
+        icon: Plus
+    forms:
+      add:
+        mode: modal
+        title: Tambah Produk
+        width: lg
+        api:
+          method: POST
+          path: /api/retail/products
+          payload:
+            name: { source: form.name, transform: trim }
+            sku: { source: form.sku, transform: trim }
+            category: fields.category
+            price: { source: form.price, transform: number }
+            description: fields.description
+            restockDate: fields.restockDate
+            inStock: fields.inStock
+        fields:
+          - { name: name, label: Nama Produk, type: text, required: true, minLength: 3 }
+          - { name: sku, label: SKU, type: text, required: true }
+          - name: category
+            label: Kategori
+            type: select
+            required: true
+            options: { electronics: Elektronik, groceries: Sembako, apparel: Pakaian, furniture: Furnitur }
+          - { name: price, label: Harga, type: number, required: true, min: 0 }
+          - { name: description, label: Deskripsi, type: textarea, rows: 3 }
+          - { name: restockDate, label: Tanggal Restock, type: date }
+          - { name: inStock, label: Tersedia di Stok, type: checkbox }
+      edit:
+        mode: modal
+        title: Edit Produk
+        width: lg
+        api:
+          method: PATCH
+          path: "/api/retail/products/{id}"
+          payload:
+            name: fields.name
+            category: fields.category
+            price: { source: form.price, transform: number }
+            description: fields.description
+            inStock: fields.inStock
+        fields:
+          - { reuse: add }
+    detail:
+      mode: page
+      path: /products/:id
+      api: /api/retail/products/{id}
+      header:
+        title: "{{prod.name}}"
+        subtitle: "{{prod.sku}}"
+        backButton: true
+        actions:
+          - { label: Edit, action: open-form, form: edit, icon: Pencil }
+          - { label: Hapus, action: delete, confirm: true, variant: danger, icon: Trash2 }
+      sections:
+        - type: tabs
+          tabs:
+            - label: Ringkasan
+              blocks:
+                - type: card
+                  layout: description-list
+                  fields:
+                    - { field: name, label: "Nama Produk" }
+                    - { field: sku, label: "SKU" }
+                    - { field: category, label: "Kategori" }
+                    - { field: price, label: "Harga" }
+                    - { field: description, label: "Deskripsi" }
+                    - { field: restockDate, label: "Tanggal Restock", render: date }
+
+  # ========================================================
+  # 4. KARYAWAN — modul CRUD penuh (memakai radio, beda dari 2 modul di atas)
+  # ========================================================
+  - id: employees
+    path: /employees
+    title: Karyawan
+    icon: UserCog
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/employees
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari nama atau email..."
+        fields: [name, email]
+      filters:
+        - field: department
+          label: Departemen
+          type: select
+          options: { sales: Penjualan, engineering: Teknik, finance: Keuangan, operations: Operasional, hr: SDM }
+      columns:
+        - { field: name, label: Nama, sortable: true }
+        - { field: email, label: Email }
+        - { field: department, label: Departemen, render: tag }
+        - { field: role, label: Jabatan }
+        - { field: hireDate, label: Tanggal Masuk, render: date }
+        - field: actions
+          label: ""
+          type: row-actions
+          items:
+            - { label: Detail, icon: Eye, action: open-detail }
+            - { label: Edit, icon: Pencil, action: open-form, form: edit }
+            - { label: Hapus, icon: Trash2, action: delete, confirm: true }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada karyawan
+        action: { label: Tambah Karyawan, open: add }
+    actions:
+      - label: Tambah Karyawan
+        variant: primary
+        position: top-right
+        action: open-form
+        form: add
+        icon: Plus
+    forms:
+      add:
+        mode: modal
+        title: Tambah Karyawan
+        api:
+          method: POST
+          path: /api/retail/employees
+          payload:
+            name: { source: form.name, transform: trim }
+            email: fields.email
+            department: fields.department
+            role: fields.role
+            hireDate: fields.hireDate
+            isActive: fields.isActive
+        fields:
+          - { name: name, label: Nama Lengkap, type: text, required: true, minLength: 3 }
+          - { name: email, label: Email, type: email, required: true }
+          - name: department
+            label: Departemen
+            type: select
+            required: true
+            options: { sales: Penjualan, engineering: Teknik, finance: Keuangan, operations: Operasional, hr: SDM }
+          - name: role
+            label: Jabatan
+            type: radio
+            required: true
+            layout: inline
+            options: { manager: Manajer, staff: Staf, intern: Magang }
+          - { name: hireDate, label: Tanggal Masuk, type: date }
+          - { name: isActive, label: Status Aktif, type: checkbox }
+      edit:
+        mode: modal
+        title: Edit Karyawan
+        api:
+          method: PATCH
+          path: "/api/retail/employees/{id}"
+          payload:
+            name: fields.name
+            department: fields.department
+            role: fields.role
+            isActive: fields.isActive
+        fields:
+          - { reuse: add }
+    detail:
+      mode: page
+      path: /employees/:id
+      api: /api/retail/employees/{id}
+      header:
+        title: "{{emp.name}}"
+        subtitle: "{{emp.email}}"
+        backButton: true
+        actions:
+          - { label: Edit, action: open-form, form: edit, icon: Pencil }
+          - { label: Hapus, action: delete, confirm: true, variant: danger, icon: Trash2 }
+      sections:
+        - type: tabs
+          tabs:
+            - label: Ringkasan
+              blocks:
+                - type: card
+                  layout: description-list
+                  fields:
+                    - { field: name, label: "Nama Lengkap" }
+                    - { field: email, label: "Email" }
+                    - { field: department, label: "Departemen" }
+                    - { field: role, label: "Jabatan" }
+                    - { field: hireDate, label: "Tanggal Masuk", render: date }
+
+  # ========================================================
+  # 5-10. Modul list sederhana (tanpa form/detail) — variasi kolom/filter/render
+  # ========================================================
+
+  - id: orders
+    path: /orders
+    title: Pesanan
+    icon: ShoppingCart
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/orders
+      method: GET
+      apiRef: recentOrders
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari no. pesanan..."
+        fields: [orderNumber]
+      filters:
+        - field: status
+          label: Status
+          type: select
+          options: { pending: Menunggu, shipped: Dikirim, delivered: Selesai, cancelled: Dibatalkan }
+      columns:
+        - { field: orderNumber, label: "No. Pesanan", sortable: true }
+        - { field: customerName, label: Pelanggan }
+        - { field: status, label: Status, render: tag }
+        - { field: total, label: Total }
+        - { field: orderDate, label: Tanggal, render: date }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada pesanan
+
+  - id: invoices
+    path: /invoices
+    title: Faktur
+    icon: Receipt
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/invoices
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+      filters:
+        - field: status
+          label: Status
+          type: select
+          options: { paid: Lunas, unpaid: Belum Lunas, overdue: Jatuh Tempo }
+      columns:
+        - { field: invoiceNumber, label: "No. Faktur", sortable: true }
+        - { field: customerName, label: Pelanggan }
+        - { field: amount, label: Jumlah }
+        - { field: dueDate, label: Jatuh Tempo, render: date }
+        - { field: status, label: Status, render: tag }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada faktur
+
+  - id: suppliers
+    path: /suppliers
+    title: Pemasok
+    icon: Truck
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/suppliers
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari nama pemasok..."
+        fields: [name]
+      columns:
+        - { field: name, label: Nama Pemasok, sortable: true }
+        - { field: contactPerson, label: Kontak }
+        - { field: phone, label: Telepon }
+        - { field: category, label: Kategori, render: tag }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada pemasok
+
+  - id: warehouses
+    path: /warehouses
+    title: Gudang
+    icon: Warehouse
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/warehouses
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+      columns:
+        - { field: name, label: Nama Gudang, sortable: true }
+        - { field: location, label: Lokasi }
+        - { field: capacity, label: Kapasitas }
+        - { field: manager, label: Penanggung Jawab }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25]
+      emptyState:
+        title: Belum ada gudang
+
+  - id: categories
+    path: /categories
+    title: Kategori
+    icon: Tag
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/categories
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+      columns:
+        - { field: name, label: Nama Kategori, sortable: true }
+        - { field: description, label: Deskripsi, render: truncated }
+        - { field: productCount, label: Jumlah Produk }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25]
+      emptyState:
+        title: Belum ada kategori
+
+  - id: activity-log
+    path: /activity-log
+    title: Log Aktivitas
+    icon: Activity
+    nav: {}
+    view: list
+    list:
+      api: /api/retail/activity-log
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+      columns:
+        - { field: action, label: Aksi, sortable: true }
+        - { field: user, label: Pengguna }
+        - { field: target, label: Target }
+        - { field: timestamp, label: Waktu, render: date }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada aktivitas
+
+apis:
+  - name: businessSummary
+    method: GET
+    path: /api/retail/summary
+    response:
+      shape:
+        kind: object
+        properties:
+          totalCustomers: { kind: scalar, scalar: integer }
+          totalOrders: { kind: scalar, scalar: integer }
+          totalRevenue: { kind: scalar, scalar: number }
+          lowStockProducts: { kind: scalar, scalar: integer }
+          revenueTrend: { kind: array, items: { kind: scalar, scalar: number } }
+  - name: recentOrders
+    method: GET
+    path: /api/retail/orders
+    response:
+      shape:
+        kind: object
+        properties:
+          rows: { kind: array, items: { kind: ref, ref: Order } }
+          total: { kind: scalar, scalar: integer }
+  - name: listCustomers
+    method: GET
+    path: /api/retail/customers
+    response:
+      shape:
+        kind: object
+        properties:
+          rows: { kind: array, items: { kind: ref, ref: Customer } }
+          total: { kind: scalar, scalar: integer }
+  - name: createCustomer
+    method: POST
+    path: /api/retail/customers
+    request:
+      body:
+        name: { kind: scalar, scalar: string }
+        email: { kind: scalar, scalar: string }
+        phone: { kind: scalar, scalar: string }
+        segment: { kind: scalar, scalar: string }
+    response: { shape: { kind: ref, ref: Customer } }
+
+models:
+  Customer:
+    kind: object
+    properties:
+      id: { kind: scalar, scalar: string, optional: true }
+      name: { kind: scalar, scalar: string }
+      email: { kind: scalar, scalar: string }
+      phone: { kind: scalar, scalar: string, optional: true }
+      segment: { kind: scalar, scalar: string, optional: true }
+      joinDate: { kind: scalar, scalar: date, optional: true }
+      isVip: { kind: scalar, scalar: boolean, optional: true }
+  Order:
+    kind: object
+    properties:
+      id: { kind: scalar, scalar: string, optional: true }
+      orderNumber: { kind: scalar, scalar: string }
+      customerName: { kind: scalar, scalar: string }
+      status: { kind: scalar, scalar: string }
+      total: { kind: scalar, scalar: number }
+      orderDate: { kind: scalar, scalar: date, optional: true }

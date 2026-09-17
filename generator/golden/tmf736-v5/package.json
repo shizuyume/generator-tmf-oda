@@ -1,0 +1,15 @@
+{
+  "name": "revenue-sharing-algorithm-management",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @revenue-sharing-algorithm-management/backend start:dev",
+    "build": "yarn workspace @revenue-sharing-algorithm-management/backend build",
+    "start": "yarn workspace @revenue-sharing-algorithm-management/backend start",
+    "start:prod": "yarn workspace @revenue-sharing-algorithm-management/backend start:prod",
+    "lint": "yarn workspace @revenue-sharing-algorithm-management/backend lint"
+  }
+}

@@ -1,0 +1,282 @@
+# ============================================================
+# Contoh non-TMF (F8 / requirement doc §23, §27): pembuktian bahwa generator ini
+# general-purpose, bukan hardcoded untuk TMF ODA. Domain: manajemen inventaris
+# gudang sederhana — tidak ada satu pun istilah/entity TMF di sini.
+#
+# Menjalankan:
+#   tmfgen fe-ir --spec examples/fe-spec-inventory.yaml
+#   tmfgen fe-gen scaffold --spec examples/fe-spec-inventory.yaml --port 5018
+#   tmfgen fe-gen emit --spec examples/fe-spec-inventory.yaml
+# menghasilkan app fe-default lengkap: list+filter, form tambah (dengan payload
+# transform), detail, dan dashboard — seluruh fitur F1-F7 dalam satu spec.
+# ============================================================
+
+meta:
+  name: inventory-management
+  label: "Manajemen Inventaris"
+  version: 1.0.0
+  lang: id
+  description: "Contoh non-TMF: manajemen stok barang gudang"
+
+api:
+  basePath: /api/inventory
+  endpoints:
+    list: GET /items
+    create: POST /items
+    retrieve: GET /items/{id}
+    update: PATCH /items/{id}
+    delete: DELETE /items/{id}
+
+output:
+  type: full-repo
+  fullRepo:
+    router: react-router
+    state: context
+    packageManager: npm
+    port: 5018
+
+ui:
+  library: fe-default
+  version: "1.0.0"
+  theme:
+    name: teal
+    darkMode: true
+    tokens:
+      primary: "#0f766e"
+      surface: "#ffffff"
+      background: "#f8fafc"
+      text: "#0f172a"
+      textMuted: "#64748b"
+      radius: 8
+      font: Inter
+
+formEngine:
+  library: react-hook-form
+  validator: zod
+  defaultMode: onChange
+  defaultReValidateMode: onChange
+  behaviour:
+    shouldUnregister: false
+    resetOnSubmit: true
+
+layout:
+  shell: sidebar
+  sidebar:
+    collapsible: true
+    itemsSource: from-pages
+  topbar:
+    search: false
+    themeToggle: true
+  footer: false
+
+auth:
+  enabled: false
+
+pages:
+  # --------------------------------------------------------
+  # LIST — barang, dengan filter status dan pencarian
+  # --------------------------------------------------------
+  - id: items
+    path: /items
+    title: Barang
+    icon: Percent
+    nav: {}
+    view: list
+    list:
+      api: /api/inventory/items
+      method: GET
+      apiRef: listItems
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari nama barang..."
+        fields: [name]
+      filters:
+        - field: status
+          label: Status
+          type: select
+          options: { in-stock: Tersedia, low-stock: Menipis, out-of-stock: Habis }
+      columns:
+        - field: name
+          label: Nama Barang
+          sortable: true
+        - field: category
+          label: Kategori
+        - field: status
+          label: Status
+          render: tag
+        - field: quantity
+          label: Jumlah
+        - field: actions
+          label: ""
+          type: row-actions
+          items:
+            - { label: Detail, icon: Eye, action: open-detail }
+            - { label: Edit, icon: Pencil, action: open-form, form: edit }
+            - { label: Hapus, icon: Trash2, action: delete, confirm: true }
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada barang
+        action: { label: Tambah Barang, open: add }
+    actions:
+      - label: Tambah Barang
+        variant: primary
+        position: top-right
+        action: open-form
+        form: add
+        icon: Plus
+    forms:
+      add:
+        mode: modal
+        title: Tambah Barang
+        api:
+          method: POST
+          path: /api/inventory/items
+          ref: createItem
+          payload:
+            name: { source: form.name, transform: trim }
+            category: fields.category
+            quantity: { source: form.quantity, transform: number }
+            restockDate: fields.restockDate
+            trackExpiry: fields.trackExpiry
+        fields:
+          - name: name
+            label: Nama Barang
+            type: text
+            required: true
+            minLength: 3
+          - name: category
+            label: Kategori
+            type: select
+            required: true
+            options: { raw-material: "Bahan Baku", finished-good: "Barang Jadi", spare-part: "Suku Cadang" }
+          - name: quantity
+            label: Jumlah
+            type: number
+            required: true
+            min: 0
+          - name: restockDate
+            label: Tanggal Restock
+            type: date
+          - name: trackExpiry
+            label: Lacak Kedaluwarsa
+            type: checkbox
+      edit:
+        mode: modal
+        title: Edit Barang
+        api:
+          method: PATCH
+          path: "/api/inventory/items/{id}"
+          payload:
+            name: fields.name
+            category: fields.category
+            quantity: { source: form.quantity, transform: number }
+        fields:
+          - { reuse: add }
+    detail:
+      mode: page
+      path: /items/:id
+      api: /api/inventory/items/{id}
+      header:
+        title: "{{entry.name}}"
+        subtitle: "{{entry.category}}"
+        backButton: true
+        actions:
+          - { label: Edit, action: open-form, form: edit, icon: Pencil }
+          - { label: Hapus, action: delete, confirm: true, variant: danger, icon: Trash2 }
+      sections:
+        - type: tabs
+          tabs:
+            - label: Ringkasan
+              blocks:
+                - type: card
+                  layout: description-list
+                  fields:
+                    - { field: name, label: "Nama Barang" }
+                    - { field: category, label: "Kategori" }
+                    - { field: status, label: "Status" }
+                    - { field: quantity, label: "Jumlah" }
+                    - { field: restockDate, label: "Tanggal Restock" }
+
+  # --------------------------------------------------------
+  # DASHBOARD — ringkasan stok
+  # --------------------------------------------------------
+  - id: overview
+    path: /overview
+    title: Ringkasan
+    icon: Percent
+    nav: {}
+    view: dashboard
+    dashboard:
+      stats:
+        - title: Total Barang
+          icon: Percent
+          format: number
+          value: { source: inventorySummary.totalItems }
+        - title: Nilai Stok
+          format: currency
+          value: { source: inventorySummary.totalValue }
+        - title: Barang Menipis
+          format: number
+          value: { source: inventorySummary.lowStockCount }
+      charts:
+        - type: bar
+          title: Stok per Kategori
+          source: inventorySummary.byCategory
+      tables:
+        - title: Barang Terbaru Ditambahkan
+          source: listItems.rows
+          limit: 5
+          columns:
+            - { field: name, label: Nama Barang }
+            - { field: status, label: Status, render: tag }
+
+apis:
+  - name: listItems
+    method: GET
+    path: /api/inventory/items
+    response:
+      shape:
+        kind: object
+        properties:
+          rows: { kind: array, items: { kind: ref, ref: Item } }
+          total: { kind: scalar, scalar: integer }
+  - name: createItem
+    method: POST
+    path: /api/inventory/items
+    request:
+      body:
+        name: { kind: scalar, scalar: string }
+        category: { kind: scalar, scalar: string }
+        quantity: { kind: scalar, scalar: integer }
+    response: { shape: { kind: ref, ref: Item } }
+  - name: inventorySummary
+    method: GET
+    path: /api/inventory/stats/summary
+    response:
+      shape:
+        kind: object
+        properties:
+          totalItems: { kind: scalar, scalar: integer }
+          totalValue: { kind: scalar, scalar: number }
+          lowStockCount: { kind: scalar, scalar: integer }
+          byCategory: { kind: array, items: { kind: scalar, scalar: number } }
+
+models:
+  Item:
+    kind: object
+    properties:
+      id: { kind: scalar, scalar: string, optional: true }
+      name: { kind: scalar, scalar: string }
+      category: { kind: scalar, scalar: string }
+      status: { kind: scalar, scalar: string, optional: true }
+      quantity: { kind: scalar, scalar: integer }
+      restockDate: { kind: scalar, scalar: date, optional: true }

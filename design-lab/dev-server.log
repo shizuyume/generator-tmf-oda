@@ -1,0 +1,122 @@
+
+> retail-admin-console@0.1.0 start
+> cross-env PORT=5020 craco start
+
+(node:2028) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:2028) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+
+Compiled successfully!
+
+You can now view retail-admin-console in the browser.
+
+  Local:            http://localhost:5020
+  On Your Network:  http://10.10.100.76:5020
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled [1m[32msuccessfully[39m[22m
+No issues found.
+(node:2028) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Compiling...
+Compiled successfully!
+webpack compiled [1m[32msuccessfully[39m[22m
+No issues found.
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/orders from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/summary from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/customers?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/customers?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/products?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/products?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/employees?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/employees?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /favicon.ico from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/employees?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+
+Proxy error: Could not proxy request /api/retail/employees?offset=0&limit=10 from localhost:5020 to http://localhost:3736/.
+See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNREFUSED).
+

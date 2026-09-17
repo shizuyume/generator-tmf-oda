@@ -1,0 +1,5 @@
+Invalid FE Spec:
+
+pages[0].forms.add.fields[1]
+
+validation rule "minLen" tak dikenal (canonical: required|minLength|maxLength|email|min|max|pattern)

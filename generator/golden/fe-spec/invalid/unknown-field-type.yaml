@@ -1,0 +1,452 @@
+# ============================================================
+# Neudela Frontend Generator — Spec YAML untuk TMF736 concrete
+# ------------------------------------------------------------
+# Sumber fakta API: BE generator output untuk tmf736/5.0.0
+#   - IR  : generator/ir-cache/tmf736-5.0.0.ir.json
+#   - BE  : revenue-sharing-algorithm-service/backend (controller verified)
+# Base path: tmf-api/revenueSharingAlgorithmManagement/v5
+# Ini CONTOH nyata (bukan template), dan sudah lolos validasi schema M0
+# (generator/src/schema/fe-spec.schema.json + validateFESpec.mjs).
+# ============================================================
+
+meta:
+  name: revenue-sharing-portal-fe-default # nama MFE / package / dir hasil (fe-default proof)
+  label: "Revenue Sharing Algorithm"      # label di UI (sidebar/title)
+  version: 0.1.0
+  lang: id
+  description: "Portal manajemen PartyRevSharingAlgorithm (TMF736) — fe-default (Tailwind) proof"
+
+# ------------------------------------------------------------
+# API — endpoint root yang dipakai semua halaman
+# nilai basePath + resource path AMBIL DARI IR BE GENERATOR.
+# Jangan diedit manual: kalau BE digenerate ulang, ini sinkron ulang.
+# ------------------------------------------------------------
+api:
+  basePath: /tmf-api/revenueSharingAlgorithmManagement/v5
+  headers:                              # BE generated pakai ApiKeyGuard
+    # KONTRAK RUNTIME: nilai secret HANYA lewat {{config.*}} (runtime gen.config),
+    # TIDAK pernah lewat build-env / {{env.*}}. MFE tak melakukan login — key
+    # di-injeksi host via window.__HOST_AUTH__ → gen.config.apiKey.
+    x-api-key: "{{config.TMF_API_KEY}}"
+  endpoints:
+    list:    GET    /partyRevSharingAlgorithm            # query: fields, offset, limit, q, name, sort
+    create:  POST   /partyRevSharingAlgorithm            # 201 + Location
+    retrieve: GET   /partyRevSharingAlgorithm/{id}       # ?fields=...
+    update:  PATCH  /partyRevSharingAlgorithm/{id}       # partial (MVO)
+    delete:  DELETE /partyRevSharingAlgorithm/{id}       # 204 (soft delete)
+    # hub (subscription event) — opsional, hanya kalau perlu notif realtime
+    # POST /hub, DELETE /hub/{id}; event: ...Create/AttributeValueChange/Delete/StateChange
+
+# ------------------------------------------------------------
+# OUTPUT — MFE + Craco (pilihan Anda; lihat catatan di bawah)
+# ------------------------------------------------------------
+output:
+  type: full-repo                   # mfe | full-repo — fe-default proof: full-repo app biasa
+  mfe:
+    hostApp: business-host
+    craco: true                     # CRA + Craco + Webpack Module Federation
+    moduleName: revenueSharingAlgorithms
+    exposes:
+      - key: ./PartyRevSharingAlgorithmPage
+        target: src/exposes/PartyRevSharingAlgorithmPage.tsx
+      - key: ./routes
+        target: src/exposes/routes.tsx
+    # catatan: craco dipilih per request. Alternatif: vite-plugin-federation
+    # (satu stack dgn MUI/Vite, tanpa CRA). Keputusan akhir di F2.
+  fullRepo:                         # dipakai kalau type: full-repo
+    router: react-router
+    state: context                  # v1: context | none (manajer state lain ditolak)
+    packageManager: npm
+    port: 5015                      # port FE dev eksplisit (fe-default proof app)
+
+# ------------------------------------------------------------
+# UI — library + THEME (semantic tokens, adapter yang render)
+# ui.library mui → adapter createTheme(); nanti neudela → tokens.css.
+# Blok theme TIDAK boleh berisi vocab lib tertentu (lihat F1).
+# ------------------------------------------------------------
+ui:
+  library: fe-default               # mui | neudela | fe-default (Tailwind, port example-component-in-dashboard.html)
+  version: "1.0.0"                  # fe-default: bukan paket npm — versi bebas non-kosong
+  theme:
+    name: indigo                    # nama tema — opsional multi-theme registry nanti
+    tokens:
+      primary: "#2563eb"
+      surface: "#ffffff"
+      background: "#f8fafc"
+      text: "#0f172a"
+      textMuted: "#64748b"
+      radius: 8                     # px, pakai untuk button/input/card
+      font: Inter
+    darkMode: true                  # generate toggle; light/dark dari token yang sama
+
+# ------------------------------------------------------------
+# FORM ENGINE — react-hook-form + zod (lib-agnostic, tidak berubah
+# antara mui/neudela). Validasi zod di-generate dari fields.*.validation.
+# ------------------------------------------------------------
+formEngine:
+  library: react-hook-form
+  version: "^7.0.0"
+  validator: zod
+  validatorVersion: "^3.0.0"
+  defaultMode: onChange
+  defaultReValidateMode: onChange
+  behaviour:
+    shouldUnregister: true
+    resetOnSubmit: false
+
+# ------------------------------------------------------------
+# LAYOUT
+# ------------------------------------------------------------
+layout:
+  shell: sidebar-topbar
+  sidebar:
+    collapsible: true
+    itemsSource: from-pages         # menu otomatis dari pages.*.nav
+  topbar:
+    search: false                   # resource ini tidak butuh global search
+    themeToggle: true
+    # language toggle: v1 off (schema menerima `false` saja, key di-omit)
+  footer: false
+
+# ------------------------------------------------------------
+# AUTH — JUJUR: BE generated TMF736 pakai ApiKeyGuard (header
+# x-api-key), BUKAN login session/JWT. Jadi tidak ada flow login
+# di MFE ini; kunci dikirim lewat api.headers ({{env}}).
+# ------------------------------------------------------------
+auth:
+  enabled: false                    # true hanya jika ada auth server
+  # provider: jwt                   # v1: tanpa provider — schema auth = {enabled} saja
+  # rbac: (kosong untuk contoh ini — resource tunggal, tidak ada
+  #       per-page permission; aktifkan saat auth server ada)
+
+# ============================================================
+# PAGES
+# ============================================================
+pages:
+
+  # ========================================================
+  # PARTY REV SHARING ALGORITHM — list + modal form + detail
+  # ========================================================
+  - id: party-rev-sharing-algorithms
+    path: /party-rev-sharing-algorithms
+    title: Party Rev Sharing Algorithms
+    icon: Percent
+    nav:
+      parent: top
+
+    view: list
+    list:
+      api: "{{api.basePath}}/partyRevSharingAlgorithm"
+      method: GET
+      queryParams:                  # spec TMF736 pakai offset/limit (BUKAN page/perPage)
+        fields: ""
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+        q: "{{search.q}}"           # house filter dari BE (applyBaseFilters)
+      search:
+        enabled: true
+        mode: server-side
+        debounceMs: 300
+        placeholder: "Cari nama / deskripsi..."
+        fields: [name, description]
+      columns:
+        - field: name
+          label: Nama
+          sortable: true
+        - field: description
+          label: Deskripsi
+          render: truncated            # Neuron…/MUI: tooltip ellipsis
+        - field: policy
+          label: Policy
+          render: tag-count            # render: jumlah item array → badge "2"
+        - field: actions
+          label: ""
+          type: row-actions
+          items:
+            - { label: Detail, icon: Eye, action: open-detail }
+            - { label: Edit, icon: Pencil, action: open-form, form: edit }
+            - { label: Hapus, icon: Trash2, action: delete, confirm: true }
+      pagination:
+        mode: server-side
+        scheme: offset-limit        # UI pagination → offset/limit
+        perPageOptions: [10, 25, 50]
+      emptyState:
+        title: Belum ada algoritma
+        action: { label: Tambah Algoritma, open: add }
+
+    actions:
+      - label: Tambah Algoritma
+        variant: primary            # hanya SATU primary per konteks
+        position: top-right
+        action: open-form
+        form: add
+        icon: Plus
+
+    # ------------------------------------------------------
+    # FORM add — modal. Field MENGIKUTI createShape (_FVO) dari IR:
+    # required: [@type, name]; policy minItems 1
+    # ------------------------------------------------------
+    forms:
+      add:
+        mode: modal
+        title: Tambah Algoritma
+        width: lg                   # lebar karena ada repeatable nested
+        api:
+          method: POST
+          path: "{{api.basePath}}/partyRevSharingAlgorithm"
+          payload:
+            "@type": fields.atType
+            name: fields.name
+            description: fields.description
+            policy: fields.policy
+            conditionVariable: fields.conditionVariable
+            actionVariable: fields.actionVariable
+        fields:
+          - name: atType
+            label: "@type"
+            type: text
+            readOnly: true          # dimunculkan readOnly; nilai tetap
+            defaultValue: PartyRevSharingAlgorithm
+            required: true
+          - name: name
+            label: Nama Algoritma
+            type: dropdownn
+            required: true          # dari _FVO required
+            placeholder: "cth: distribute charge revenue share policy 2023"
+            validation:
+              - { rule: minLength, value: 3, message: "Minimal 3 karakter" }
+          - name: description
+            label: Deskripsi
+            type: textarea
+            rows: 3
+          # ---- policy[] : array of ref — WAJIB min 1 (dari IR minItems) ----
+          - name: policy
+            label: Policy
+            type: repeatable
+            required: true
+            minItems: 1             # dari IR: policy.minItems = 1
+            itemLabel: "Policy #{{index}}"
+            addButton: "+ Tambah Policy"
+            itemPayload:            # mapping per item → objek PolicyRef
+              "@type": item.atType
+              id: item.id
+              href: item.href
+              name: item.name
+              "@referredType": item.referredType
+              version: item.version
+            itemFields:
+              - name: atType
+                type: text
+                readOnly: true
+                defaultValue: PolicyRef
+              - name: id
+                label: Policy ID
+                type: text
+                required: true
+                # ideal: optionsSource from-api ke PolicyManagement — 
+                # di luar service ini; v1: input manual + catatan.
+              - name: href
+                label: Policy Href
+                type: text
+                readOnly: true      # isi otomatis dari id (computedFrom)
+                computedFrom: id
+              - name: name
+                label: Nama Policy
+                type: text
+              - name: referredType
+                label: "@referredType"
+                type: select
+                options: { PolicySet: PolicySet }   # dari seed example
+                defaultValue: PolicySet
+              - name: version
+                label: Version
+                type: text
+          # ---- conditionVariable[] : repeatable dengan ref NESTED ----
+          # nested ref diekspresikan sebagai sub-field object (rekonstruksi di
+          # itemPayload). Field form tetap FLAT (useFieldArray 1 level).
+          # V1 SUPPORT? => open-questions. BE menerima & membalas bentuk
+          # nested object (seed example). Alternatif sulit: flattened field.
+          - name: conditionVariable
+            label: Condition Variable
+            type: repeatable
+            itemLabel: "Condition #{{index}}"
+            itemPayload:
+              "@type": item.atType
+              value: item.value
+              policyCondition: {
+                "@type": "PolicyConditionRef",
+                id: item.policyConditionId,
+                href: item.policyConditionHref,
+                name: item.policyConditionName,
+                "@referredType": item.policyConditionReferredType
+              }
+              policyConditionVariable: {
+                "@type": "PolicyVariableRef",
+                id: item.policyConditionVariableId,
+                name: item.policyConditionVariableName,
+                "@referredType": item.policyConditionVariableReferredType
+              }
+            itemFields:
+              - name: atType
+                type: text
+                readOnly: true
+                defaultValue: PartyRevSharingPolicyConditionVariable
+              - name: value
+                label: Nilai Variable
+                type: text
+                required: true
+                placeholder: "cth: 300"
+              - name: policyConditionId
+                label: Policy Condition ID
+                type: text
+              - name: policyConditionName
+                label: Policy Condition
+                type: text
+              - name: policyConditionReferredType
+                type: select
+                options: { PolicyCondition: PolicyCondition }
+                defaultValue: PolicyCondition
+              - name: policyConditionVariableId
+                label: Policy Variable ID
+                type: text
+              - name: policyConditionVariableName
+                label: Policy Variable
+                type: text
+              - name: policyConditionVariableReferredType
+                type: select
+                options: { PolicyVariable: PolicyVariable }
+                defaultValue: PolicyVariable
+          # ---- actionVariable[] : sama dengan conditionVariable ----
+          - name: actionVariable
+            label: Action Variable
+            type: repeatable
+            itemLabel: "Action #{{index}}"
+            itemPayload:
+              "@type": item.atType
+              value: item.value
+              policyAction: {
+                "@type": "PolicyActionRef",
+                id: item.policyActionId,
+                href: item.policyActionHref,
+                name: item.policyActionName,
+                "@referredType": item.policyActionReferredType
+              }
+              policyActionVariable: {
+                "@type": "PolicyVariableRef",
+                id: item.policyActionVariableId,
+                name: item.policyActionVariableName,
+                "@referredType": item.policyActionVariableReferredType
+              }
+            itemFields:
+              - name: atType
+                type: text
+                readOnly: true
+                defaultValue: PartyRevSharingPolicyActionVariable
+              - name: value
+                label: Nilai Variable
+                type: text
+                required: true
+                placeholder: "cth: 5%"
+              - name: policyActionId
+                label: Policy Action ID
+                type: text
+              - name: policyActionName
+                label: Policy Action
+                type: text
+              - name: policyActionReferredType
+                type: select
+                options: { PolicyAction: PolicyAction }
+                defaultValue: PolicyAction
+              - name: policyActionVariableId
+                label: Policy Variable ID
+                type: text
+              - name: policyActionVariableName
+                label: Policy Variable
+                type: text
+              - name: policyActionVariableReferredType
+                type: select
+                options: { PolicyVariable: PolicyVariable }
+                defaultValue: PolicyVariable
+        buttons:
+          submit: { label: Simpan, position: footer-right, variant: primary }
+          cancel: { label: Batal, variant: ghost }
+
+      edit:
+        mode: modal
+        title: Edit Algoritma
+        prefillFrom: detail          # isi dari data detail/row
+        api:
+          method: PATCH              # partial update — updateShape (_MVO)
+          path: "{{api.basePath}}/partyRevSharingAlgorithm/{id}"   # {id} dari konteks baris
+          payload:
+            name: fields.name
+            description: fields.description
+            policy: fields.policy
+            conditionVariable: fields.conditionVariable
+            actionVariable: fields.actionVariable
+        fields: [ reuse: add ]       # sama persis field def add; @type tidak dikirim
+
+    # ------------------------------------------------------
+    # DETAIL — page dengan tabs: Ringkasan / Policy / Condition / Action
+    # ------------------------------------------------------
+    detail:
+      mode: page
+      path: /party-rev-sharing-algorithms/:id
+      api: "{{api.basePath}}/partyRevSharingAlgorithm/{id}"
+      header:
+        title: "{{algo.name}}"
+        subtitle: "{{algo.id}}"
+        backButton: true
+        actions:
+          - { label: Edit, action: open-form, form: edit }
+          - { label: Hapus, variant: danger, action: delete, confirm: true }
+      sections:
+        - type: tabs
+          tabs:
+            - label: Ringkasan
+              blocks:
+                - type: card
+                  layout: description-list
+                  fields:
+                    - { field: name, label: "Nama" }
+                    - { field: description, label: "Deskripsi" }
+                    - { field: "@type", label: "@type" }
+                    - { field: id, label: "ID", mono: true }
+                    - { field: href, label: "Href", render: link }
+            - label: Policy
+              blocks:
+                - type: table
+                  field: policy            # ambil dari response entity
+                  columns: [id, name, "@referredType", version, href]
+                  emptyState: { title: Belum ada policy }
+            - label: Condition Variables
+              blocks:
+                - type: table
+                  field: conditionVariable
+                  columns: [value]
+                  # nested ref render: value + policyCondition.name
+                  renderColumns:
+                    - { field: policyCondition, sub: name, label: "Policy Condition" }
+                    - { field: policyConditionVariable, sub: name, label: "Policy Variable" }
+                  emptyState: { title: Belum ada condition variable }
+            - label: Action Variables
+              blocks:
+                - type: table
+                  field: actionVariable
+                  columns: [value]
+                  renderColumns:
+                    - { field: policyAction, sub: name, label: "Policy Action" }
+                    - { field: policyActionVariable, sub: name, label: "Policy Variable" }
+                  emptyState: { title: Belum ada action variable }
+
+# ------------------------------------------------------------
+# NOTES & KEPUTUSAN TERBUKA — dijawab sebelum F1 selesai
+# ------------------------------------------------------------
+open-questions:
+  - "Repeatable dengan ref NESTED (conditionVariable.policyCondition): pakai sub-field object seperti contoh ini, atau flat? V1 sebaiknya flat (useFieldArray 1 level), nested ref direkonstruksi di itemPayload."
+  - "Field ref (policy.id) dapat dari mana? from-api ke service PolicyManagement (di luar TMF736) atau input manual? V1: manual + computedFrom, catatan di UI."
+  - "Pagination scheme: spec TMF736 = offset/limit, template lama = page/perPage. IR harus support kedua scheme (per-resource), bukan hardcode satu."
+  - "Auth: BE generated pakai ApiKeyGuard (x-api-key), tidak ada login. Blok auth perlu diisi kapan? Saat ada auth server / host menyediakan SSO?"
+  - "Sweet spot MFE ini: expose ./PartyRevSharingAlgorithmPage + ./routes — host taruh di mana? (business-host belum ada di repo ini)."
+  - "Chart (X-Charts/recharts) tidak dipakai resource ini — dashboard dengan stat-card butuh endpoint stats yang TMF736 tidak punya. Jangan invent endpoint (prinsip sama dgn BE: jangan invent route)."
+  - "Nama kolom detail pakai nama wire (policy, conditionVariable), bukan nama tabel BE (policy_ref, ...) — FE lihat bentuk API, bukan DB."

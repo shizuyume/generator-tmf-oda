@@ -1,0 +1,1386 @@
+{
+  "meta": {
+    "tmfNumber": "668",
+    "specTitle": "Partnership Management",
+    "specVersion": "4.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/partnershipManagement/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF668_BASE_PATH",
+    "eventExchange": "partnership.events",
+    "eventExchangeConstant": "TMF668_EVENT_EXCHANGE",
+    "eventTypeEnum": "PartnershipEventType",
+    "serviceNameSuggestion": "partnership-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf668/4.0.0/openapi/TMF668_Partnership_Type_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "PartnershipSpecification",
+      "camelName": "partnershipSpecification",
+      "kebabName": "partnership-specification",
+      "tableName": "partnership_specification",
+      "pathSegment": "partnershipSpecification",
+      "pathKey": "partnershipSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A partnership specification contains all the information for the setup of a partnership of a given kind. This includes the list of identified role types for the partnership with the corresponding agreement specifications.",
+      "composedFrom": [],
+      "required": [
+        "name"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "An explanatory text regarding this partnership specification"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "An identifying name for the partnership specification."
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "PartnershipSpecificationRoleSpecification",
+          "tableName": "partnership_specification_role_specification",
+          "propertyName": "roleSpecification",
+          "itemRef": "PartnershipRoleSpecification",
+          "description": "The list of roles specifications a engaged party will be able to play for this kind of partnership",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "An explanatory text documenting the role specification"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "The name of the role specification. This name uniquely identifies the role specification within the partnership"
+            },
+            {
+              "kind": "scalar",
+              "name": "requiresBilling",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates whether billing operations will be associated to parties playing the role"
+            },
+            {
+              "kind": "scalar",
+              "name": "requiresSettlement",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates whether settlement operations will be associated to parties playing the role"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "PartnershipSpecificationRoleSpecificationAgreementSpecificationRef",
+              "tableName": "partnership_specification_role_specification_agreement_specification_ref",
+              "propertyName": "agreementSpecification",
+              "itemRef": "AgreementSpecificationRef",
+              "description": "AgreementSpecification reference. An AgreementSpecification represents a template of an agreement that can be used when establishing partnerships.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail what the agreement specification is about."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the agreement specification"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "PartnershipSpecification_Create",
+        "required": [
+          "name"
+        ],
+        "properties": [
+          "description",
+          "name",
+          "roleSpecification",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "PartnershipSpecification_Update",
+        "required": [
+          "name"
+        ],
+        "properties": [
+          "description",
+          "name",
+          "roleSpecification",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "listPartnershipSpecification",
+          "summary": "List or find PartnershipSpecification objects",
+          "description": "This operation list or find PartnershipSpecification entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createPartnershipSpecification",
+          "summary": "Creates a PartnershipSpecification",
+          "description": "This operation creates a PartnershipSpecification entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePartnershipSpecification",
+          "summary": "Retrieves a PartnershipSpecification by ID",
+          "description": "This operation retrieves a PartnershipSpecification entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the PartnershipSpecification",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchPartnershipSpecification",
+          "summary": "Updates partially a PartnershipSpecification",
+          "description": "This operation updates partially a PartnershipSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the PartnershipSpecification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePartnershipSpecification",
+          "summary": "Deletes a PartnershipSpecification",
+          "description": "This operation deletes a PartnershipSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the PartnershipSpecification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/partnershipSpecification",
+        "item": "/partnershipSpecification/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "partnershipSpecificationChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "PARTNERSHIP_SPECIFICATION_CHANGE"
+        },
+        {
+          "eventName": "partnershipSpecificationCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PARTNERSHIP_SPECIFICATION_CREATE"
+        },
+        {
+          "eventName": "partnershipSpecificationDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PARTNERSHIP_SPECIFICATION_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "Partnership",
+      "camelName": "partnership",
+      "kebabName": "partnership",
+      "tableName": "partnership",
+      "pathSegment": "partnership",
+      "pathKey": "partnership",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A partnership represents a formalized collaboration between various parties, each party playing a role in the partnership. The parties playing a role in the partnership represented by the Partner entity. The structure of a partnership is specified by a PartnershipSpecification which contain all the information for the setup of the partnership, including the list of identified roles and the agreement that should apply.",
+      "composedFrom": [],
+      "required": [
+        "name",
+        "specification"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "An explanatory text regarding this partnership"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "An identifying name for the partnership."
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [
+        {
+          "name": "specification",
+          "targetResource": "PartnershipSpecification",
+          "targetTable": "partnership_specification",
+          "relation": "many-to-one",
+          "joinColumn": "specification_id",
+          "required": true,
+          "description": "The specification of this partnership.",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "PartnershipPartner",
+          "tableName": "partnership_partner",
+          "propertyName": "partner",
+          "itemRef": "Partner",
+          "description": "The list of partners of the partnership, where a partner represents a party playing a given role. Hence a partner structure includes primarily a reference to the engaged party and a role name matching necessarily the name of one of the role specifications defined in the specification of the partnership.",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "A word, term, or phrase by which the Partner is known and distinguished from other Partners."
+            },
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Used to track the lifecycle status of the partner."
+            },
+            {
+              "kind": "scalar",
+              "name": "statusReason",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A string providing an explanation on the value of the status lifecycle. For instance if the status is Rejected, statusReason will provide the reason for rejection."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "engagedParty",
+              "targetRef": "RelatedParty",
+              "description": "The reference to the party engaged in this partnership.",
+              "columns": [
+                {
+                  "name": "engagedPartyId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartyHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartyName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartyRole",
+                  "sourceProp": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartyBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartySchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartyType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "engagedPartyReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "The time period that the Partner is valid for.",
+              "columns": [
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "PartnershipPartnerAccountRef",
+              "tableName": "partnership_partner_account_ref",
+              "propertyName": "account",
+              "itemRef": "AccountRef",
+              "description": "Account reference. A account may be a party account or a financial account.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Detailed description of the account"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the account"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PartnershipPartnerAgreementRef",
+              "tableName": "partnership_partner_agreement_ref",
+              "propertyName": "agreement",
+              "itemRef": "AgreementRef",
+              "description": "Agreement reference. An agreement represents a contract or arrangement, either written or verbal and sometimes enforceable by law, such as a service level agreement or a customer price agreement. An agreement involves a number of other business entities, such as products, services, and resources and/or their specifications.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the agreement"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PartnershipPartnerCharacteristic",
+              "tableName": "partnership_partner_characteristic",
+              "propertyName": "characteristic",
+              "itemRef": "Characteristic",
+              "description": "Describes the characteristic of a partner.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": false,
+                  "description": "Name of the characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Data type of the value of the characteristic"
+                },
+                {
+                  "kind": "json",
+                  "name": "value",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PartnershipPartnerContactMedium",
+              "tableName": "partnership_partner_contact_medium",
+              "propertyName": "contactMedium",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "PartnershipPartnerCreditProfile",
+              "tableName": "partnership_partner_credit_profile",
+              "propertyName": "creditProfile",
+              "itemRef": "CreditProfile",
+              "description": "Credit profile for the party (containing credit scoring, ...). By default only the current credit profile  is retrieved. It can be used as a list to give the party credit profiles history, the first one in the list will be the current one.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "creditProfileDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The date the profile was established"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "creditRiskRating",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "This is an integer whose value is used to rate the risk"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "creditScore",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A measure of a person or organizations creditworthiness calculated on the basis of a combination of factors such as their income and credit history"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The period for which the profile is valid",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "PartnershipPartnerPaymentMethodRef",
+              "tableName": "partnership_partner_payment_method_ref",
+              "propertyName": "paymentMethod",
+              "itemRef": "PaymentMethodRef",
+              "description": "PaymentMethod reference. A payment method defines a specific mean of payment (e.g direct debit).",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the payment mean"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PartnershipPartnerRelatedParty",
+              "tableName": "partnership_partner_related_party",
+              "propertyName": "relatedParty",
+              "itemRef": "RelatedParty",
+              "description": "Related Entity reference. A related party defines party or party role linked to a specific entity.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the related entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Role played by the related party"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "Partnership_Create",
+        "required": [
+          "name",
+          "specification"
+        ],
+        "properties": [
+          "description",
+          "name",
+          "partner",
+          "specification",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "Partnership_Update",
+        "required": [
+          "name",
+          "specification"
+        ],
+        "properties": [
+          "description",
+          "name",
+          "partner",
+          "specification",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "listPartnership",
+          "summary": "List or find Partnership objects",
+          "description": "This operation list or find Partnership entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createPartnership",
+          "summary": "Creates a Partnership",
+          "description": "This operation creates a Partnership entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePartnership",
+          "summary": "Retrieves a Partnership by ID",
+          "description": "This operation retrieves a Partnership entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Partnership",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchPartnership",
+          "summary": "Updates partially a Partnership",
+          "description": "This operation updates partially a Partnership entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Partnership",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePartnership",
+          "summary": "Deletes a Partnership",
+          "description": "This operation deletes a Partnership entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Partnership",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/partnership",
+        "item": "/partnership/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "partnershipChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "PARTNERSHIP_CHANGE"
+        },
+        {
+          "eventName": "partnershipCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PARTNERSHIP_CREATE"
+        },
+        {
+          "eventName": "partnershipDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PARTNERSHIP_DELETE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/partnershipChangeEvent",
+      "eventName": "partnershipChangeEvent",
+      "resource": "Partnership",
+      "eventKind": "Change",
+      "operationId": "listenToPartnershipChangeEvent"
+    },
+    {
+      "path": "/listener/partnershipCreateEvent",
+      "eventName": "partnershipCreateEvent",
+      "resource": "Partnership",
+      "eventKind": "Create",
+      "operationId": "listenToPartnershipCreateEvent"
+    },
+    {
+      "path": "/listener/partnershipDeleteEvent",
+      "eventName": "partnershipDeleteEvent",
+      "resource": "Partnership",
+      "eventKind": "Delete",
+      "operationId": "listenToPartnershipDeleteEvent"
+    },
+    {
+      "path": "/listener/partnershipSpecificationChangeEvent",
+      "eventName": "partnershipSpecificationChangeEvent",
+      "resource": "PartnershipSpecification",
+      "eventKind": "Change",
+      "operationId": "listenToPartnershipSpecificationChangeEvent"
+    },
+    {
+      "path": "/listener/partnershipSpecificationCreateEvent",
+      "eventName": "partnershipSpecificationCreateEvent",
+      "resource": "PartnershipSpecification",
+      "eventKind": "Create",
+      "operationId": "listenToPartnershipSpecificationCreateEvent"
+    },
+    {
+      "path": "/listener/partnershipSpecificationDeleteEvent",
+      "eventName": "partnershipSpecificationDeleteEvent",
+      "resource": "PartnershipSpecification",
+      "eventKind": "Delete",
+      "operationId": "listenToPartnershipSpecificationDeleteEvent"
+    }
+  ],
+  "warnings": [
+    "PartnershipSpecification has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "Partnership has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "intent-portal-mcs-common",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CRA5 + Craco MFE (federates common_remote) scaffolded by fe-gen. GENERATED - edit generated pages via the generator.",
+  "scripts": {
+    "start": "cross-env PORT=5019 craco start",
+    "build": "craco build",
+    "start:prod": "cross-env PORT=5019 npx serve -s build --cors"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-hook-form": "7.53.2",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

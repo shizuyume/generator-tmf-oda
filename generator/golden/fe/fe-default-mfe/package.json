@@ -1,0 +1,50 @@
+{
+  "name": "f8-mfe-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CRA5 + Craco + Tailwind (fe-default) app (full-repo) scaffolded by fe-gen. GENERATED - edit generated pages via the generator.",
+  "scripts": {
+    "start": "cross-env PORT=5017 craco start",
+    "build": "craco build",
+    "start:prod": "cross-env PORT=5017 npx serve -s build --cors"
+  },
+  "proxy": "http://localhost:3736",
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "lucide-react": "^1.38.0",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "react-hook-form": "^7.87.0",
+    "react-router-dom": "6.30.1",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
+    "postcss": "^8.4.47",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^4.9.5"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

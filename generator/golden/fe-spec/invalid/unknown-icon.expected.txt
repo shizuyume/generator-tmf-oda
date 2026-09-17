@@ -1,0 +1,5 @@
+Invalid FE Spec: unknown-icon.yaml:
+
+pages[0].icon   (line 133)
+
+icon "NotARealIcon" bukan nama lucide-react yang sah (snapshot lucide-icons.json)

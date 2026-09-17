@@ -1,0 +1,132 @@
+{
+  "from": "D:/Neuronworks/project/tm-forum/partnership_management/backend",
+  "verbatim": [
+    {
+      "file": "src/common/dto/query-base.dto.ts",
+      "bytes": 806
+    },
+    {
+      "file": "src/common/filters/http-exception.filter.ts",
+      "bytes": 1334
+    },
+    {
+      "file": "src/common/guards/api-key.guard.ts",
+      "bytes": 659
+    },
+    {
+      "file": "src/common/interceptors/pagination.interceptor.ts",
+      "bytes": 856
+    },
+    {
+      "file": "src/common/utils/query-helper.util.ts",
+      "bytes": 938
+    },
+    {
+      "file": "src/common/utils/response-mapper.util.ts",
+      "bytes": 285
+    },
+    {
+      "file": "src/common/utils/tmf-resource.util.ts",
+      "bytes": 1659
+    },
+    {
+      "file": "src/event/entities/event-log.entity.ts",
+      "bytes": 551
+    },
+    {
+      "file": "src/event/event-delivery.service.ts",
+      "bytes": 1593
+    },
+    {
+      "file": "src/event/event-store.service.ts",
+      "bytes": 790
+    },
+    {
+      "file": "src/event/event.module.ts",
+      "bytes": 827
+    },
+    {
+      "file": "src/subscription/dto/create-subscription.dto.ts",
+      "bytes": 315
+    },
+    {
+      "file": "src/subscription/entities/event-subscription.entity.ts",
+      "bytes": 378
+    },
+    {
+      "file": "src/subscription/subscription.service.ts",
+      "bytes": 1140
+    },
+    {
+      "file": "nest-cli.json",
+      "bytes": 179
+    },
+    {
+      "file": "tsconfig.json",
+      "bytes": 594
+    },
+    {
+      "file": "tsconfig.build.json",
+      "bytes": 101
+    },
+    {
+      "file": ".eslintrc.js",
+      "bytes": 688
+    },
+    {
+      "file": ".prettierrc",
+      "bytes": 56
+    },
+    {
+      "file": ".gitignore",
+      "bytes": 32
+    }
+  ],
+  "tokenised": [
+    {
+      "file": "src/event/event-emitter.service.ts",
+      "bytes": 1664,
+      "placeholders": [
+        "{{EVENT_EXCHANGE_CONST}}"
+      ]
+    },
+    {
+      "file": "src/event/rabbitmq.service.ts",
+      "bytes": 2759,
+      "placeholders": [
+        "{{EVENT_EXCHANGE_CONST}}"
+      ]
+    },
+    {
+      "file": "src/main.ts",
+      "bytes": 1167,
+      "placeholders": [
+        "{{API_DESCRIPTION}}",
+        "'{{API_TITLE}}'",
+        "'{{SERVICE_SLUG}}'",
+        ".setVersion('{{API_VERSION}}')",
+        "process.env.PORT || {{PORT}}"
+      ]
+    },
+    {
+      "file": "package.json",
+      "bytes": 1296,
+      "placeholders": [
+        "\"@{{SERVICE_SLUG}}/backend\""
+      ]
+    }
+  ],
+  "dropped": {
+    "src/subscription/subscription.controller.ts": "generated per component (each has its own base path)",
+    "src/subscription/subscription.module.ts": "generated - registers one hub controller per component",
+    "src/listener/listener.module.ts": "generated - registers one listener controller per component",
+    "src/common/dto/base-tmf-update.dto.ts": "dead code - never imported by any DTO",
+    "src/common/interceptors/tmf-response.interceptor.ts": "dead code - never applied by any controller",
+    "src/common/utils/relation-mapper.util.ts": "dead code - mapBaseRefInput never imported",
+    ".env": "contains live RabbitMQ credentials; a placeholder .env.example is generated instead",
+    "dev.db": "local sqlite artifact",
+    "yarn.lock": "lockfile is resolved per generated service, not inherited"
+  },
+  "missing": [],
+  "warnings": []
+}

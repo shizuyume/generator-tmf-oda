@@ -1,0 +1,3042 @@
+{
+  "meta": {
+    "tmfNumber": "921",
+    "specTitle": "Intent Management",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/intentManagement/v5",
+    "databaseType": "sqlite",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF921_BASE_PATH",
+    "eventExchange": "intent.events",
+    "eventExchangeConstant": "TMF921_EVENT_EXCHANGE",
+    "eventTypeEnum": "IntentEventType",
+    "serviceNameSuggestion": "intent-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf921/5.0.0/openapi/TMF921_Intent_Management_v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0",
+    "markdownSupplement": "documents/tmf921/5.0.0/tmf921-enrichment.md",
+    "markdownEnrichments": [
+      "Intent.name: mandatory",
+      "Intent: 5 business rule note(s)",
+      "IntentReport: 3 business rule note(s)",
+      "IntentSpecification.name: mandatory",
+      "IntentSpecification: 3 business rule note(s)"
+    ]
+  },
+  "resources": [
+    {
+      "name": "Intent",
+      "camelName": "intent",
+      "kebabName": "intent",
+      "tableName": "intent",
+      "pathSegment": "intent",
+      "pathKey": "intent",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description of the intent."
+        },
+        {
+          "kind": "scalar",
+          "name": "isBundle",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "isBundle determines whether an intent represents a single intent (false), or a bundle of intents(true)."
+        },
+        {
+          "kind": "scalar",
+          "name": "priority",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Can be used by intent owner to prioritize intents in an intent management system"
+        },
+        {
+          "kind": "scalar",
+          "name": "statusChangeDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A date time( DateTime). The date that the entity status changed to the current one"
+        },
+        {
+          "kind": "scalar",
+          "name": "context",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A string used to give a context to the intent"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A field that identifies the specific version of an instance of an intent."
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "The name of the intent.",
+          "provenance": "markdown"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the creation of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "lifecycleStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Used to indicate the current lifecycle status of this intent"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "intentSpecification",
+          "targetRef": "EntityRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "intentSpecificationType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSpecificationBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSpecificationSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSpecificationHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSpecificationId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSpecificationName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSpecificationReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "expression",
+          "targetRef": "IntentExpression",
+          "description": "",
+          "columns": [
+            {
+              "name": "expressionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionIri",
+              "sourceProp": "iri",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "EntityRelationship",
+          "tableName": "entity_relationship",
+          "nameCandidates": [
+            "EntityRelationship",
+            "IntentRelationship"
+          ],
+          "refLike": false,
+          "propertyName": "intentRelationship",
+          "itemRef": "EntityRelationship",
+          "description": "A list of intents related to this intent",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The association role for this entity"
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of relationship such as migration, substitution, dependency, exclusivity"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "associationSpec",
+              "targetRef": "EntityRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "associationSpecType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "Characteristic",
+          "tableName": "characteristic",
+          "nameCandidates": [
+            "Characteristic",
+            "IntentCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "characteristic",
+          "itemRef": "Characteristic",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the characteristic"
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Data type of the value of the characteristic"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "CharacteristicRelationship",
+              "tableName": "characteristic_relationship",
+              "nameCandidates": [
+                "CharacteristicRelationship",
+                "CharacteristicRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicRelationship",
+              "itemRef": "CharacteristicRelationship",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "IntentRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AttachmentRefOrValue",
+          "tableName": "attachment_ref_or_value",
+          "nameCandidates": [
+            "AttachmentRefOrValue",
+            "IntentAttachment"
+          ],
+          "refLike": false,
+          "propertyName": "attachment",
+          "itemRef": "AttachmentRefOrValue",
+          "description": "Attachments that may be of relevance to this intent, such as picture, document, media",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "Intent_FVO",
+        "required": [
+          "@type",
+          "name",
+          "expression"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "description",
+          "validFor",
+          "isBundle",
+          "priority",
+          "statusChangeDate",
+          "context",
+          "version",
+          "intentSpecification",
+          "intentRelationship",
+          "characteristic",
+          "relatedParty",
+          "attachment",
+          "name",
+          "expression",
+          "creationDate",
+          "lastUpdate",
+          "lifecycleStatus"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "Intent_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "description",
+          "validFor",
+          "isBundle",
+          "priority",
+          "context",
+          "intentSpecification",
+          "intentRelationship",
+          "characteristic",
+          "relatedParty",
+          "attachment",
+          "name",
+          "expression",
+          "lifecycleStatus"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": true
+      },
+      "seedExamples": [
+        {
+          "label": "Intent_create_example_01",
+          "value": {
+            "name": "EventLiveBroadcast",
+            "description": "Intent for ordering live broadcast service for an event",
+            "validFor": {
+              "startDateTime": "2023-10-23T00:30:00.00Z",
+              "endDateTime": "2024-10-19T23:30:00.00Z"
+            },
+            "version": "1.0",
+            "priority": "1",
+            "isBundled": false,
+            "context": "Autonomous services",
+            "intentSpecification": {
+              "@type": "IntentSpecificationRef",
+              "id": "EventLiveBroadcast_IntentSpec",
+              "name": "EventLiveBroadcastIntentSpec",
+              "@referredType": "IntentSpecification",
+              "@href": "/intent/v5/IntentSpecification/EventLiveBroadcast_IntentSpec"
+            },
+            "characteristic": [
+              {
+                "id": "19997-pn",
+                "name": "isTimeConstrained",
+                "value": true,
+                "valueType": "boolean",
+                "@type": "BooleanCharacteristic"
+              }
+            ],
+            "relatedParty": [
+              {
+                "role": "user",
+                "partyOrPartyRole": {
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/individual/456",
+                  "id": "19993",
+                  "name": "Marcus Aurelius",
+                  "@type": "PartyRef",
+                  "@referredType": "Individual"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              }
+            ],
+            "expression": {
+              "@type": "JsonLdExpression",
+              "iri": "https://mycsp.com:8080/tmf-api/rdfs/expression-example-1",
+              "expressionValue": {
+                "@context": {
+                  "icm": "http://www.models.tmforum.org/tio/v1.0.0/IntentCommonModel#",
+                  "cat": "http://www.operator.com/Catalog#",
+                  "idan": "http://www.idan-tmforum-catalyst.org/IntentDrivenAutonomousNetworks#",
+                  "xsd": "http://www.w3.org/2001/XMLSchema#",
+                  "t": "http://www.w3.org/2006/time#",
+                  "elb": "http://www.operator.com/Catalog/EventWirelessAccess#",
+                  "app": "http://www.operator.com/Catalog/StreamingApplication#",
+                  "geo": "https://tmforum.org/2020/07/geographicPoint#"
+                },
+                "idan:EventLiveBroadcast000001": {
+                  "@type": "icm:Intent",
+                  "icm:intentOwner": "idan:Salesforce",
+                  "icm:hasExpectation": {
+                    "idan:Delivery_service": {
+                      "@type": "icm:DeliveryExpectation",
+                      "icm:target": "_:service",
+                      "icm:params": {
+                        "icm:targetDescription": "cat:EventWirelessAccess"
+                      }
+                    },
+                    "idan:Delivery_app": {
+                      "@type": "icm:DeliveryExpectation",
+                      "icm:target": "_:application",
+                      "icm:params": {
+                        "icm:targetDescription": "cat:StreamingApplication"
+                      }
+                    },
+                    "idan:Property_service": {
+                      "@type": "icm:PropertyExpectation",
+                      "icm:target": "_:service",
+                      "icm:params": {
+                        "elb:serviceQuality": [
+                          {
+                            "icm:value": "4KUHD"
+                          }
+                        ],
+                        "elb:numberOfParticipants": [
+                          {
+                            "icm:atMost": "200"
+                          }
+                        ],
+                        "elb:areaOfService": [
+                          {
+                            "geo:geographicPoints": [
+                              {
+                                "geo:longitude": 90,
+                                "geo:latitude": 44,
+                                "geo:altitude": 84
+                              },
+                              {
+                                "geo:longitude": 84,
+                                "geo:latitude": -12,
+                                "geo:altitude": 24
+                              },
+                              {
+                                "geo:longitude": 131,
+                                "geo:latitude": -36,
+                                "geo:altitude": 29
+                              },
+                              {
+                                "geo:longitude": 7,
+                                "geo:latitude": 81,
+                                "geo:altitude": -42
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "idan:Property_app": {
+                      "@type": "icm:PropertyExpectation",
+                      "icm:target": "_:application",
+                      "icm:params": {
+                        "app:appType": [
+                          {
+                            "icm:value": "AWS MediaLive"
+                          },
+                          {
+                            "icm:value": "Facebook Live"
+                          },
+                          {
+                            "icm:value": "YouTube"
+                          }
+                        ]
+                      }
+                    },
+                    "idan:Reporting": {
+                      "@type": "icm:ReportingExpectation",
+                      "icm:target": "idan:EventLiveBroadcast",
+                      "icm:params": {
+                        "icm:reportingInterval": [
+                          {
+                            "t:Duration": [
+                              {
+                                "t:numbericDuration": 10,
+                                "t:temporalUnit": "unitMinute"
+                              }
+                            ]
+                          }
+                        ],
+                        "icm:reportingEvent": [
+                          "icm:StateComplies",
+                          "icm:StateDegrades"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/Intent.schema.json",
+            "@type": "Intent"
+          }
+        },
+        {
+          "label": "Intent_create_example_11",
+          "value": {
+            "description": "A probe intent resource",
+            "name": "probeIntentExample",
+            "version": "1.0",
+            "expression": {
+              "iri": "https://mycsp.com:8080/tmf-api/rdfs/turtleExpression-example-1",
+              "expressionValue": "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix icm: <http://tio.models.tmforum.org/tio/v1.0.0/IntentCommonModel#> .\n@prefix imo: <http://tio.models.tmforum.org/tio/v1.0.0/IntentManagementOntology#> .\n@prefix pbi: <http://tio.models.tmforum.org/tio/v1.0.0/ProposalBestIntent#> .\n@prefix cat: <http://www.operator.com/Catalog#> .\n@prefix spot: <http://www.sdo1.org/Models/DynamicpriceOntology#> .\n@prefix met: <http://www.sdo2.org/TelecomMetrics/Version_1.0#> .\n@prefix   t: <http://www.w3.org/2006/time#> .\n@prefix idan: <http://www.idan-tmforum-catalyst.org/IntentDrivenAutonomousNetworks#> .\n@prefix iv: <https://tmforum.org/2021/07/intentValidity#> .\n@prefix itv: <https://tmforum.org/2021/07/intentTemporalValidity#> .\n@prefix cem:  <http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExtensionModel#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n@prefix sli: <http://io.irc.huawei.com/Io/v1.0.0/SliceExtensionModel#> .\n\n# --- Intent ----------\nidan:R1_PSE_Res_Slice_Intent1\n a icm:Intent ;\n   rdfs:comment \"'Intent for ordering connectivity via slice'\";\n   imo:intentOwner idan:IntentManagerXYZ_S;\n   cem:layer \"'resource'\";\n   icm:hasExpectation idan:PSE_Exp_R1Slice_delivery,\n                         idan:PSE_Exp_R1Slice_property,\n                         idan:PSE_Exp_R1Slice_reporting; \n.\n##Delivery Expectation\nidan:PSE_Exp_R1Slice_delivery\n a icm:DeliveryExpectation ;\n   icm:target _:resource_slice ;\n   icm:params idan:PSE_Exp_R1Slice_delivery_Param_type;\n.\nidan:PSE_Exp_R1Slice_delivery_Param_type\n a icm:DeliveryParam ;\n   icm:targetDescription cat:Slice_NEST_eMBB;\n.\n\n##Property Expectation\nidan:PSE_Exp_R1Slice_property\n a icm:PropertyExpectation ;\n   icm:target _:resource_slice ;\n   icm:params idan:PSE_Exp_R1Slice_property_Param_nssiId , \n               idan:PSE_Exp_R1Slice_property_Param_nssiName , \n               idan:PSE_Exp_R1Slice_property_Param_nsiId , \n               idan:PSE_Exp_R1Slice_property_Param_latency\n\n.\nidan:PSE_Exp_R1Slice_property_Param_nssiId\n a icm:PropertyParam ;\n   sli:nssiId [ icm:value \"'NEST-EMBB_VIDEOSTREAMING_INSIDE_VENUE_5G'\"^^xsd:string ] ;\n.\nidan:PSE_Exp_R1Slice_property_Param_nssiName\n a icm:PropertyParam ;\n   sli:nssiName [ icm:value \"'NEST-EMBB_VIDEOSTREAMING_INSIDE_VENUE_5G'\"^^xsd:string ] ;\n.\nidan:PSE_Exp_R1Slice_property_Param_nsiId\n a icm:PropertyParam ;\n   sli:nsiId [ icm:value \"'NEST-EMBB_VIDEOSTREAMING_INSIDE_VENUE_5G'\"^^xsd:string ] ;\n.\nidan:PSE_Exp_R1Slice_property_Param_latency\n a icm:PropertyParam ;\n   met:latency [ icm:atMost \"'12 ms'\" ] ;\n.\n\n##Reporting Expectation\nidan:PSE_Exp_R1Slice_reporting\n a icm:ReportingExpectation ;\n   icm:target idan:R1_PSE_Res_Slice_Intent1 ;\n   icm:params idan:PSE_Exp_R1Slice_reporting_Param_interval,\n               idan:PSE_Exp_R1Slice_reporting_Param_event ;\n.\nidan:PSE_Exp_R1Slice_reporting_Param_interval\n a icm:ReportingParam ;\n   icm:reportingInterval [ a t:Duration ;\n                                t:numericDuration \"'10'\" ;\n                                t:temporalUnit t:unitMinute ] .\nidan:PSE_Exp_R1Slice_reporting_Param_event              \n a icm:ReportingParam ; \n   icm:reportingEvent icm:ReportingIntervalExpired ,\n                        icm:IntentRejected ,\n                        icm:StateComplies ,\n                        icm:StateDegrades ,\n                        icm:HandlingEnded ,\n                        icm:UpdateRejected ,\n                        icm:UpdateFinished  ;\n.\n\n",
+              "@baseType": "Expression",
+              "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json",
+              "@type": "TurtleExpression"
+            },
+            "validFor": {
+              "endDateTime": "2023-04-12T23:20:50.52Z",
+              "startDateTime": "2022-08-04T15:40:47.797Z"
+            },
+            "isBundle": false,
+            "priority": "1",
+            "context": "Broadband services",
+            "intentSpecification": {
+              "@type": "IntentSpecificationRef",
+              "id": "EventLiveBroadcast_IntentSpec",
+              "name": "EventLiveBroadcastIntentSpec",
+              "@referredType": "IntentSpecification",
+              "@href": "https://mycsp.com:8080/tmf-api/intent/v5/IntentSpecification/EventLiveBroadcast_IntentSpec"
+            },
+            "@baseType": "Intent",
+            "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/ProbeIntent.schema.json",
+            "@type": "ProbeIntent"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listIntent",
+          "summary": "List or find Intent objects",
+          "description": "List or find Intent objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createIntent",
+          "summary": "Creates a Intent",
+          "description": "This operation creates a Intent entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveIntent",
+          "summary": "Retrieves a Intent by ID",
+          "description": "This operation retrieves a Intent entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchIntent",
+          "summary": "Updates partially a Intent",
+          "description": "This operation updates partially a Intent entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteIntent",
+          "summary": "Deletes a Intent",
+          "description": "This operation deletes a Intent entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/intent",
+        "item": "/intent/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "intentAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "INTENT_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "intentCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "INTENT_CREATE"
+        },
+        {
+          "eventName": "intentDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "INTENT_DELETE"
+        },
+        {
+          "eventName": "intentStatusChangeEvent",
+          "eventKind": "StatusChange",
+          "enumMember": "INTENT_STATUS_CHANGE"
+        }
+      ],
+      "businessRules": [
+        {
+          "text": "On create (`POST /intent`), the spec-mandatory attributes are `name`, `expression`,",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`version` is **immutable after create** (listed under Non Patchable Attributes on",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`creationDate`, `lastUpdate`, and `statusChangeDate` are all server-managed/non-patchable,",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`lifecycleStatus` **is patchable** (not listed as immutable) — consistent with this",
+          "provenance": "markdown"
+        },
+        {
+          "text": "4 notification events are declared for Intent in the userguide's Notification Resource",
+          "provenance": "markdown"
+        }
+      ]
+    },
+    {
+      "name": "IntentReport",
+      "camelName": "intentReport",
+      "kebabName": "intent-report",
+      "tableName": "intent_report",
+      "pathSegment": "intentReport",
+      "pathKey": "intent/intentReport",
+      "parentSegments": [
+        "intent"
+      ],
+      "nested": true,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description of the intent report."
+        },
+        {
+          "kind": "json",
+          "name": "intent",
+          "tsType": "Record<string, any>",
+          "column": {
+            "type": "simple-json"
+          },
+          "nullable": true,
+          "reason": "object with no scalar props"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The name of the intent report."
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the creation of this intent report"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "expression",
+          "targetRef": "IntentExpression",
+          "description": "",
+          "columns": [
+            {
+              "name": "expressionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionIri",
+              "sourceProp": "iri",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listIntentIntentReport",
+          "summary": "List or find IntentReport objects",
+          "description": "List or find IntentReport objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "intentId",
+              "in": "path",
+              "description": "Identifier of the Intent Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveIntentIntentReport",
+          "summary": "Retrieves a IntentReport by ID",
+          "description": "This operation retrieves a IntentReport entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "intentId",
+              "in": "path",
+              "description": "Identifier of the Intent Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": {
+          "operationId": "deleteIntentIntentReport",
+          "summary": "Deletes a IntentReport",
+          "description": "This operation deletes a IntentReport entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "intentId",
+              "in": "path",
+              "description": "Identifier of the Intent Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/intent/{intentId}/intentReport",
+        "item": "/intent/{intentId}/intentReport/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "intentReportAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "INTENT_REPORT_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "intentReportCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "INTENT_REPORT_CREATE"
+        },
+        {
+          "eventName": "intentReportDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "INTENT_REPORT_DELETE"
+        }
+      ],
+      "businessRules": [
+        {
+          "text": "The spec declares **no create or update operation** for this resource (list/retrieve/",
+          "provenance": "markdown"
+        },
+        {
+          "text": "**Discrepancy worth checking against the OAS spec directly**: the userguide's own",
+          "provenance": "markdown"
+        },
+        {
+          "text": "The `intent` field is an `IntentRefOrValue` (a reference to an existing Intent, or a full",
+          "provenance": "markdown"
+        }
+      ]
+    },
+    {
+      "name": "IntentSpecification",
+      "camelName": "intentSpecification",
+      "kebabName": "intent-specification",
+      "tableName": "intent_specification",
+      "pathSegment": "intentSpecification",
+      "pathKey": "intentSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "EntitySpecification",
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Name given to the specification",
+          "provenance": "markdown"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the specification"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update of the specification"
+        },
+        {
+          "kind": "scalar",
+          "name": "lifecycleStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Used to indicate the current lifecycle status of this catalog item"
+        },
+        {
+          "kind": "scalar",
+          "name": "isBundle",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "isBundle determines whether an intent specification represents a single intent specification (false), or a bundle of intent specifications(true)."
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A field that identifies the specific version of this specification. If not specified version is defaulted to 1.0"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "targetEntitySchema",
+          "targetRef": "TargetEntitySchema",
+          "description": "",
+          "columns": [
+            {
+              "name": "targetEntitySchemaType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "targetEntitySchemaSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "expressionSpecification",
+          "targetRef": "ExpressionSpecification",
+          "description": "",
+          "columns": [
+            {
+              "name": "expressionSpecificationType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionSpecificationBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionSpecificationSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionSpecificationExpressionLanguage",
+              "sourceProp": "expressionLanguage",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "expressionSpecificationIri",
+              "sourceProp": "iri",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AttachmentRefOrValue",
+          "tableName": "attachment_ref_or_value",
+          "nameCandidates": [
+            "AttachmentRefOrValue",
+            "IntentSpecificationAttachment"
+          ],
+          "refLike": false,
+          "propertyName": "attachment",
+          "itemRef": "AttachmentRefOrValue",
+          "description": "Attachments that may be of relevance to this specification, such as picture, document, media",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "CharacteristicSpecification",
+          "tableName": "characteristic_specification",
+          "nameCandidates": [
+            "CharacteristicSpecification",
+            "IntentSpecificationSpecCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "specCharacteristic",
+          "itemRef": "CharacteristicSpecification",
+          "description": "List of characteristics that the entity can take",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A word, term, or phrase by which this characteristic specification is known and distinguished from other characteristic specifications."
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A kind of value that the characteristic can take on, such as numeric, text and so forth"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative that explains the CharacteristicSpecification."
+            },
+            {
+              "kind": "scalar",
+              "name": "configurable",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "If true, the Boolean indicates that the target Characteristic is configurable"
+            },
+            {
+              "kind": "scalar",
+              "name": "minCardinality",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The minimum number of instances a CharacteristicValue can take on. For example, zero to five phone numbers in a group calling plan, where zero is the value for the minCardinality."
+            },
+            {
+              "kind": "scalar",
+              "name": "maxCardinality",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The maximum number of instances a CharacteristicValue can take on. For example, zero to five phone numbers in a group calling plan, where five is the value for the maxCardinality."
+            },
+            {
+              "kind": "scalar",
+              "name": "isUnique",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Specifies if the value of this characteristic is unique across all entities instantiated from the specification that uses this characteristc. For example, consider a ProductSpecification for a set-top box, with a CharacteristicSpecification cardID. Each set-top box must have a different value for cardID, so this isUnique attribute would be set to true for the characteristic."
+            },
+            {
+              "kind": "scalar",
+              "name": "regex",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A rule or principle represented in regular expression used to derive the value of a characteristic value."
+            },
+            {
+              "kind": "scalar",
+              "name": "extensible",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "An indicator that specifies that the values for the characteristic can be extended by adding new values when instantiating a characteristic for a resource."
+            },
+            {
+              "kind": "scalar",
+              "name": "atValueSchemaLocation",
+              "expose": "@valueSchemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "This (optional) field provides a link to the schema describing the value type."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "CharacteristicSpecificationRelationship",
+              "tableName": "characteristic_specification_relationship",
+              "nameCandidates": [
+                "CharacteristicSpecificationRelationship",
+                "CharacteristicSpecificationCharSpecRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "charSpecRelationship",
+              "itemRef": "CharacteristicSpecificationRelationship",
+              "description": "An aggregation, migration, substitution, dependency or exclusivity relationship between/among Specification Characteristics.",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of relationship such as aggregation, migration, substitution, dependency, exclusivity"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the target characteristic within the specification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "characteristicSpecificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of the characteristic within the specification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "parentSpecificationHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Hyperlink reference to the parent specification containing the target characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "parentSpecificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of the parent specification containing the target characteristic"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "CharacteristicValueSpecification",
+              "tableName": "characteristic_value_specification",
+              "nameCandidates": [
+                "CharacteristicValueSpecification",
+                "CharacteristicSpecificationCharacteristicValueSpecification"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicValueSpecification",
+              "itemRef": "CharacteristicValueSpecification",
+              "description": "A CharacteristicValueSpecification object is used to define a set of attributes, each of which can be assigned to a corresponding set of attributes in a CharacteristicSpecification object. The values of the attributes in the CharacteristicValueSpecification object describe the values of the attributes that a corresponding Characteristic object can take on.",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A kind of value that the characteristic value can take on, such as numeric, text and so forth"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "isDefault",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, the Boolean Indicates if the value is the default value for a characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A length, surface, volume, dry measure, liquid measure, money, weight, time, and the like. In general, a determinate quantity or magnitude of the kind designated, taken as a standard of comparison for others of the same kind, in assigning to them numerical values, as 1 foot, 1 yard, 1 mile, 1 square foot."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueFrom",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The low range value that a characteristic can take on"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueTo",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The upper range value that a characteristic can take on"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "rangeInterval",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "An indicator that specifies the inclusion or exclusion of the valueFrom and valueTo attributes. If applicable, possible values are \"open\", \"closed\", \"closedBottom\" and \"closedTop\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "regex",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A regular expression constraint for given value"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "IntentSpecificationRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "Parties who manage or otherwise have an interest in this specification",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ConstraintRef",
+          "tableName": "constraint_ref",
+          "nameCandidates": [
+            "ConstraintRef",
+            "IntentSpecificationConstraintRef"
+          ],
+          "refLike": true,
+          "propertyName": "constraint",
+          "itemRef": "ConstraintRef",
+          "description": "This is a list of constraint references applied to this specification",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "version",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "constraint version"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "EntitySpecificationRelationship",
+          "tableName": "entity_specification_relationship",
+          "nameCandidates": [
+            "EntitySpecificationRelationship",
+            "IntentSpecificationEntitySpecRelationship"
+          ],
+          "refLike": false,
+          "propertyName": "entitySpecRelationship",
+          "itemRef": "EntitySpecificationRelationship",
+          "description": "Relationship to another specification",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The association role for this entity specification"
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of relationship such as migration, substitution, dependency, exclusivity"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "associationSpec",
+              "targetRef": "AssociationSpecificationRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "associationSpecType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "associationSpecReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "IntentSpecificationRelationship",
+          "tableName": "intent_specification_relationship",
+          "nameCandidates": [
+            "IntentSpecificationRelationship",
+            "IntentSpecificationIntentSpecRelationship"
+          ],
+          "refLike": true,
+          "propertyName": "intentSpecRelationship",
+          "itemRef": "IntentSpecificationRelationship",
+          "description": "A list of intent specifications related to this specification, e.g. substitution, dependency or exclusivity relationship",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The association role for this intent specification"
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of relationship such as substitution, dependency, exclusivity"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "IntentSpecification_FVO",
+        "required": [
+          "@type",
+          "name"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "name",
+          "description",
+          "lastUpdate",
+          "lifecycleStatus",
+          "isBundle",
+          "validFor",
+          "version",
+          "attachment",
+          "targetEntitySchema",
+          "specCharacteristic",
+          "relatedParty",
+          "constraint",
+          "entitySpecRelationship",
+          "expressionSpecification",
+          "intentSpecRelationship"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "IntentSpecification_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "name",
+          "description",
+          "lifecycleStatus",
+          "isBundle",
+          "validFor",
+          "version",
+          "attachment",
+          "targetEntitySchema",
+          "specCharacteristic",
+          "relatedParty",
+          "constraint",
+          "entitySpecRelationship",
+          "expressionSpecification",
+          "intentSpecRelationship"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": true
+      },
+      "seedExamples": [
+        {
+          "label": "IntentSpecification_create_example",
+          "value": {
+            "@type": "IntentSpecification",
+            "@baseType": "EntitySpecification",
+            "@schemaLocation": "https://mycsp.com:8080/tmfapi/schema/Common/IntentSpecification.schema.json",
+            "id": "EventLiveBroadcast_Spec",
+            "description": "Intent spec for ordering live broadcast service for an event",
+            "lifecycleStatus": "ACTIVE",
+            "validFor": {
+              "startDateTime": "2023-04-12T23:20:50.52Z",
+              "endDateTime": "2099-04-12T23:20:50.52Z"
+            },
+            "version": "1.0",
+            "relatedParty": [
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "role": "Provider",
+                "partyOrPartyRole": {
+                  "@type": "PartyRoleRef",
+                  "id": "28657",
+                  "name": "TechSolutionsPro Ltd",
+                  "href": "https://mycsp.com:8080//tmf-api/partyRoleManagement/v5/partner/28657",
+                  "@referredType": "Partner"
+                }
+              }
+            ],
+            "name": "EventLiveBroadcastSpec",
+            "expressionSpecification": {
+              "@type": "ExpressionSpecification",
+              "expressionLanguage": "JSON-LD",
+              "iri": "http://tio.models.tmforum.org/tio/v3.4.0/IntentManagmentOntology/"
+            }
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listIntentSpecification",
+          "summary": "List or find IntentSpecification objects",
+          "description": "List or find IntentSpecification objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createIntentSpecification",
+          "summary": "Creates a IntentSpecification",
+          "description": "This operation creates a IntentSpecification entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveIntentSpecification",
+          "summary": "Retrieves a IntentSpecification by ID",
+          "description": "This operation retrieves a IntentSpecification entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchIntentSpecification",
+          "summary": "Updates partially a IntentSpecification",
+          "description": "This operation updates partially a IntentSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteIntentSpecification",
+          "summary": "Deletes a IntentSpecification",
+          "description": "This operation deletes a IntentSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/intentSpecification",
+        "item": "/intentSpecification/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "intentSpecificationAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "INTENT_SPECIFICATION_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "intentSpecificationCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "INTENT_SPECIFICATION_CREATE"
+        },
+        {
+          "eventName": "intentSpecificationDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "INTENT_SPECIFICATION_DELETE"
+        },
+        {
+          "eventName": "intentSpecificationStatusChangeEvent",
+          "eventKind": "StatusChange",
+          "enumMember": "INTENT_SPECIFICATION_STATUS_CHANGE"
+        }
+      ],
+      "businessRules": [
+        {
+          "text": "On create (`POST /intentSpecification`), only `name` and `@type` are spec-mandatory —",
+          "provenance": "markdown"
+        },
+        {
+          "text": "Non-patchable (immutable after create): `href`, `id`, `lastUpdate`, `@baseType`,",
+          "provenance": "markdown"
+        },
+        {
+          "text": "4 notification events are declared: Create, Delete, AttributeValueChange, StatusChange —",
+          "provenance": "markdown"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/intentAttributeValueChangeEvent",
+      "eventName": "intentAttributeValueChangeEvent",
+      "resource": "Intent",
+      "eventKind": "AttributeValueChange",
+      "operationId": "intentAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/intentCreateEvent",
+      "eventName": "intentCreateEvent",
+      "resource": "Intent",
+      "eventKind": "Create",
+      "operationId": "intentCreateEvent"
+    },
+    {
+      "path": "/listener/intentDeleteEvent",
+      "eventName": "intentDeleteEvent",
+      "resource": "Intent",
+      "eventKind": "Delete",
+      "operationId": "intentDeleteEvent"
+    },
+    {
+      "path": "/listener/intentReportAttributeValueChangeEvent",
+      "eventName": "intentReportAttributeValueChangeEvent",
+      "resource": "IntentReport",
+      "eventKind": "AttributeValueChange",
+      "operationId": "intentReportAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/intentReportCreateEvent",
+      "eventName": "intentReportCreateEvent",
+      "resource": "IntentReport",
+      "eventKind": "Create",
+      "operationId": "intentReportCreateEvent"
+    },
+    {
+      "path": "/listener/intentReportDeleteEvent",
+      "eventName": "intentReportDeleteEvent",
+      "resource": "IntentReport",
+      "eventKind": "Delete",
+      "operationId": "intentReportDeleteEvent"
+    },
+    {
+      "path": "/listener/intentSpecificationAttributeValueChangeEvent",
+      "eventName": "intentSpecificationAttributeValueChangeEvent",
+      "resource": "IntentSpecification",
+      "eventKind": "AttributeValueChange",
+      "operationId": "intentSpecificationAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/intentSpecificationCreateEvent",
+      "eventName": "intentSpecificationCreateEvent",
+      "resource": "IntentSpecification",
+      "eventKind": "Create",
+      "operationId": "intentSpecificationCreateEvent"
+    },
+    {
+      "path": "/listener/intentSpecificationDeleteEvent",
+      "eventName": "intentSpecificationDeleteEvent",
+      "resource": "IntentSpecification",
+      "eventKind": "Delete",
+      "operationId": "intentSpecificationDeleteEvent"
+    },
+    {
+      "path": "/listener/intentSpecificationStatusChangeEvent",
+      "eventName": "intentSpecificationStatusChangeEvent",
+      "resource": "IntentSpecification",
+      "eventKind": "StatusChange",
+      "operationId": "intentSpecificationStatusChangeEvent"
+    },
+    {
+      "path": "/listener/intentStatusChangeEvent",
+      "eventName": "intentStatusChangeEvent",
+      "resource": "Intent",
+      "eventKind": "StatusChange",
+      "operationId": "intentStatusChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No IntentReport_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No IntentReport_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "IntentReport has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "IntentReport spec declares no create/update operation; those routes are NOT emitted."
+  ]
+}

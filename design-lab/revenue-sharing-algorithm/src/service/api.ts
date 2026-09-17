@@ -1,0 +1,115 @@
+/**
+ * Generic API service layer following the product-qualification pattern.
+ * Uses TMF630 pagination (offset/limit, X-Total-Count header).
+ *
+ * TODO: CUSTOMIZE — API_BASE_URL default + TMF_BASE per TMF component/backend.
+ */
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3736';
+const API_KEY = process.env.REACT_APP_API_KEY || '';
+const TMF_BASE = '/tmf-api/revenueSharingAlgorithmManagement/v5';
+
+export class ApiError extends Error {
+  status: number;
+  body: any;
+
+  constructor(status: number, message: string, body?: any) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
+  }
+}
+
+function buildHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (API_KEY) {
+    headers['X-API-Key'] = API_KEY;
+  }
+  return headers;
+}
+
+function buildQueryString(params?: Record<string, string | number | undefined>): string {
+  if (!params) return '';
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') {
+      searchParams.append(key, String(value));
+    }
+  });
+  const qs = searchParams.toString();
+  return qs ? `?${qs}` : '';
+}
+
+async function request<T>(
+  endpoint: string,
+  options: { method?: string; body?: any; params?: Record<string, string | number | undefined> } = {},
+): Promise<{ data: T; headers: Headers }> {
+  const { method = 'GET', body, params } = options;
+  const url = `${API_BASE_URL}${TMF_BASE}${endpoint}${buildQueryString(params)}`;
+
+  const response = await fetch(url, {
+    method,
+    headers: buildHeaders(),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new ApiError(
+      response.status,
+      errorBody.message || errorBody.error || `HTTP ${response.status}`,
+      errorBody,
+    );
+  }
+
+  if (method === 'DELETE') {
+    // 202 = Accepted (async task-based delete), 204 = Deleted (sync immediate)
+    return { data: { accepted: response.status === 202 } as unknown as T, headers: response.headers };
+  }
+
+  const data = await response.json();
+  return { data, headers: response.headers };
+}
+
+export async function apiGet<T>(endpoint: string, params?: Record<string, string | undefined>): Promise<T> {
+  const { data } = await request<T>(endpoint, { params });
+  return data;
+}
+
+export async function apiGetList<T>(
+  endpoint: string,
+  params?: Record<string, string | number | undefined>,
+): Promise<{ data: T[]; total: number; resultCount: number }> {
+  const { data, headers } = await request<T[]>(endpoint, { params });
+  const total = Number(headers.get('X-Total-Count') ?? headers.get('x-total-count') ?? data.length);
+  const resultCount = Number(headers.get('X-Result-Count') ?? headers.get('x-result-count') ?? data.length);
+  return { data, total, resultCount };
+}
+
+export async function apiPost<T>(endpoint: string, body: any): Promise<T> {
+  const { data } = await request<T>(endpoint, { method: 'POST', body });
+  return data;
+}
+
+export async function apiPatch<T>(endpoint: string, body: any): Promise<T> {
+  const { data } = await request<T>(endpoint, { method: 'PATCH', body });
+  return data;
+}
+
+export async function apiDelete(endpoint: string): Promise<{ accepted: boolean }> {
+  const { data } = await request<{ accepted: boolean }>(endpoint, { method: 'DELETE' });
+  return data;
+}
+
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    return error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'An unexpected error occurred';
+}

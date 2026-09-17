@@ -1,0 +1,108 @@
+{
+  "generatorVersion": "0.1.0",
+  "components": {
+    "688": {
+      "tmfNumber": "688",
+      "specTitle": "Event Streaming API",
+      "specVersion": "4.0.0",
+      "slug": "event",
+      "basePath": "tmf-api/event/v4",
+      "basePathConstant": "TMF688_BASE_PATH",
+      "eventExchange": "event.events",
+      "eventExchangeConstant": "TMF688_EVENT_EXCHANGE",
+      "eventTypeEnum": "EventEventType",
+      "resources": [
+        {
+          "resource": "Event",
+          "dir": "tmf-event",
+          "pathSegment": "event",
+          "moduleClass": "TmfEventModule",
+          "moduleImportPath": "tmf-event/tmf-event.module",
+          "className": "TmfEventModule",
+          "importPath": "tmf-event/tmf-event.module"
+        },
+        {
+          "resource": "Topic",
+          "dir": "topic",
+          "pathSegment": "topic",
+          "moduleClass": "TopicModule",
+          "moduleImportPath": "topic/topic.module",
+          "className": "TopicModule",
+          "importPath": "topic/topic.module"
+        },
+        {
+          "resource": "Hub",
+          "dir": "hub",
+          "pathSegment": "hub",
+          "moduleClass": "HubModule",
+          "moduleImportPath": "hub/hub.module",
+          "className": "HubModule",
+          "importPath": "hub/hub.module"
+        }
+      ],
+      "seeds": [],
+      "entities": [
+        {
+          "className": "Event",
+          "importPath": "tmf-event/entities/event.entity"
+        },
+        {
+          "className": "EventReportingSystemRef",
+          "importPath": "tmf-event/entities/event-reporting-system-ref.entity"
+        },
+        {
+          "className": "EventSourceRef",
+          "importPath": "tmf-event/entities/event-source-ref.entity"
+        },
+        {
+          "className": "CharacteristicRelationship",
+          "importPath": "tmf-event/entities/characteristic-relationship.entity"
+        },
+        {
+          "className": "Characteristic",
+          "importPath": "tmf-event/entities/characteristic.entity"
+        },
+        {
+          "className": "RelatedParty",
+          "importPath": "tmf-event/entities/related-party.entity"
+        },
+        {
+          "className": "Topic",
+          "importPath": "topic/entities/topic.entity"
+        },
+        {
+          "className": "Hub",
+          "importPath": "hub/entities/hub.entity"
+        }
+      ],
+      "events": [
+        {
+          "eventName": "topicChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "TOPIC_CHANGE"
+        },
+        {
+          "eventName": "topicCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TOPIC_CREATE"
+        },
+        {
+          "eventName": "topicDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TOPIC_DELETE"
+        }
+      ],
+      "listeners": [
+        {
+          "eventName": "topicChangeEvent"
+        },
+        {
+          "eventName": "topicCreateEvent"
+        },
+        {
+          "eventName": "topicDeleteEvent"
+        }
+      ]
+    }
+  }
+}

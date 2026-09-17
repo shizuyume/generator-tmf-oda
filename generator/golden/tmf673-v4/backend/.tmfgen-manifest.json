@@ -1,0 +1,88 @@
+{
+  "generatorVersion": "0.1.0",
+  "components": {
+    "673": {
+      "tmfNumber": "673",
+      "specTitle": "API Place - GeographicAddress",
+      "specVersion": "4.0.1",
+      "slug": "geographic-address",
+      "basePath": "tmf-api/geographicAddressManagement/v4",
+      "basePathConstant": "TMF673_BASE_PATH",
+      "eventExchange": "geographicAddress.events",
+      "eventExchangeConstant": "TMF673_EVENT_EXCHANGE",
+      "eventTypeEnum": "GeographicAddressEventType",
+      "resources": [
+        {
+          "resource": "GeographicAddressValidation",
+          "dir": "geographic-address-validation",
+          "pathSegment": "geographicAddressValidation",
+          "moduleClass": "GeographicAddressValidationModule",
+          "moduleImportPath": "geographic-address-validation/geographic-address-validation.module",
+          "className": "GeographicAddressValidationModule",
+          "importPath": "geographic-address-validation/geographic-address-validation.module"
+        },
+        {
+          "resource": "GeographicAddress",
+          "dir": "geographic-address",
+          "pathSegment": "geographicAddress",
+          "moduleClass": "GeographicAddressModule",
+          "moduleImportPath": "geographic-address/geographic-address.module",
+          "className": "GeographicAddressModule",
+          "importPath": "geographic-address/geographic-address.module"
+        },
+        {
+          "resource": "GeographicSubAddress",
+          "dir": "geographic-sub-address",
+          "pathSegment": "geographicSubAddress",
+          "moduleClass": "GeographicSubAddressModule",
+          "moduleImportPath": "geographic-sub-address/geographic-sub-address.module",
+          "className": "GeographicSubAddressModule",
+          "importPath": "geographic-sub-address/geographic-sub-address.module"
+        }
+      ],
+      "seeds": [],
+      "entities": [
+        {
+          "className": "GeographicAddressValidation",
+          "importPath": "geographic-address-validation/entities/geographic-address-validation.entity"
+        },
+        {
+          "className": "GeographicLocationRefOrValue",
+          "importPath": "geographic-address-validation/entities/geographic-location-ref-or-value.entity"
+        },
+        {
+          "className": "GeographicAddressGeographicSubAddress",
+          "importPath": "geographic-address-validation/entities/geographic-address-geographic-sub-address.entity"
+        },
+        {
+          "className": "GeographicAddressValidationAlternateGeographicAddress",
+          "importPath": "geographic-address-validation/entities/geographic-address-validation-alternate-geographic-address.entity"
+        },
+        {
+          "className": "GeographicAddress",
+          "importPath": "geographic-address/entities/geographic-address.entity"
+        },
+        {
+          "className": "GeographicSubAddress2",
+          "importPath": "geographic-address/entities/geographic-sub-address2.entity"
+        },
+        {
+          "className": "GeographicSubAddress",
+          "importPath": "geographic-sub-address/entities/geographic-sub-address.entity"
+        }
+      ],
+      "events": [
+        {
+          "eventName": "geographicAddressValidationStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "GEOGRAPHIC_ADDRESS_VALIDATION_STATE_CHANGE"
+        }
+      ],
+      "listeners": [
+        {
+          "eventName": "geographicAddressValidationStateChangeEvent"
+        }
+      ]
+    }
+  }
+}

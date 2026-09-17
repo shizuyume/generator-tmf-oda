@@ -1,0 +1,258 @@
+{
+  "generatorVersion": "0.1.0",
+  "components": {
+    "673": {
+      "tmfNumber": "673",
+      "specTitle": "API Place - GeographicAddress",
+      "specVersion": "4.0.1",
+      "slug": "geographic-address",
+      "basePath": "tmf-api/geographicAddressManagement/v4",
+      "basePathConstant": "TMF673_BASE_PATH",
+      "eventExchange": "geographicAddress.events",
+      "eventExchangeConstant": "TMF673_EVENT_EXCHANGE",
+      "eventTypeEnum": "GeographicAddressEventType",
+      "resources": [
+        {
+          "resource": "GeographicAddressValidation",
+          "dir": "geographic-address-validation",
+          "pathSegment": "geographicAddressValidation",
+          "moduleClass": "GeographicAddressValidationModule",
+          "moduleImportPath": "geographic-address-validation/geographic-address-validation.module",
+          "className": "GeographicAddressValidationModule",
+          "importPath": "geographic-address-validation/geographic-address-validation.module"
+        },
+        {
+          "resource": "GeographicAddress",
+          "dir": "geographic-address",
+          "pathSegment": "geographicAddress",
+          "moduleClass": "GeographicAddressModule",
+          "moduleImportPath": "geographic-address/geographic-address.module",
+          "className": "GeographicAddressModule",
+          "importPath": "geographic-address/geographic-address.module"
+        },
+        {
+          "resource": "GeographicSubAddress",
+          "dir": "geographic-sub-address",
+          "pathSegment": "geographicSubAddress",
+          "moduleClass": "GeographicSubAddressModule",
+          "moduleImportPath": "geographic-sub-address/geographic-sub-address.module",
+          "className": "GeographicSubAddressModule",
+          "importPath": "geographic-sub-address/geographic-sub-address.module"
+        }
+      ],
+      "seeds": [],
+      "entities": [
+        {
+          "className": "GeographicAddressValidation",
+          "importPath": "geographic-address-validation/entities/geographic-address-validation.entity"
+        },
+        {
+          "className": "GeographicLocationRefOrValue",
+          "importPath": "geographic-address-validation/entities/geographic-location-ref-or-value.entity"
+        },
+        {
+          "className": "GeographicAddressGeographicSubAddress",
+          "importPath": "geographic-address-validation/entities/geographic-address-geographic-sub-address.entity"
+        },
+        {
+          "className": "GeographicAddressValidationAlternateGeographicAddress",
+          "importPath": "geographic-address-validation/entities/geographic-address-validation-alternate-geographic-address.entity"
+        },
+        {
+          "className": "GeographicAddress",
+          "importPath": "geographic-address/entities/geographic-address.entity"
+        },
+        {
+          "className": "GeographicSubAddress2",
+          "importPath": "geographic-address/entities/geographic-sub-address2.entity"
+        },
+        {
+          "className": "GeographicSubAddress",
+          "importPath": "geographic-sub-address/entities/geographic-sub-address.entity"
+        }
+      ],
+      "events": [
+        {
+          "eventName": "geographicAddressValidationStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "GEOGRAPHIC_ADDRESS_VALIDATION_STATE_CHANGE"
+        }
+      ],
+      "listeners": [
+        {
+          "eventName": "geographicAddressValidationStateChangeEvent"
+        }
+      ]
+    },
+    "674": {
+      "tmfNumber": "674",
+      "specTitle": "Geographic Site",
+      "specVersion": "4.0.0",
+      "slug": "geographic-site",
+      "basePath": "tmf-api/geographicSiteManagement/v4",
+      "basePathConstant": "TMF674_BASE_PATH",
+      "eventExchange": "geographicSite.events",
+      "eventExchangeConstant": "TMF674_EVENT_EXCHANGE",
+      "eventTypeEnum": "GeographicSiteEventType",
+      "resources": [
+        {
+          "resource": "GeographicSite",
+          "dir": "geographic-site",
+          "pathSegment": "geographicSite",
+          "moduleClass": "GeographicSiteModule",
+          "moduleImportPath": "geographic-site/geographic-site.module",
+          "className": "GeographicSiteModule",
+          "importPath": "geographic-site/geographic-site.module"
+        }
+      ],
+      "seeds": [],
+      "entities": [
+        {
+          "className": "GeographicSite",
+          "importPath": "geographic-site/entities/geographic-site.entity"
+        },
+        {
+          "className": "HourPeriod",
+          "importPath": "geographic-site/entities/hour-period.entity"
+        },
+        {
+          "className": "CalendarPeriod",
+          "importPath": "geographic-site/entities/calendar-period.entity"
+        },
+        {
+          "className": "PlaceRefOrValue",
+          "importPath": "geographic-site/entities/place-ref-or-value.entity"
+        },
+        {
+          "className": "RelatedParty",
+          "importPath": "geographic-site/entities/related-party.entity"
+        },
+        {
+          "className": "TimePeriod",
+          "importPath": "geographic-site/entities/time-period.entity"
+        },
+        {
+          "className": "GeographicSiteRelationship",
+          "importPath": "geographic-site/entities/geographic-site-relationship.entity"
+        }
+      ],
+      "events": [
+        {
+          "eventName": "geographicSiteAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "GEOGRAPHIC_SITE_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "geographicSiteCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "GEOGRAPHIC_SITE_CREATE"
+        },
+        {
+          "eventName": "geographicSiteDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "GEOGRAPHIC_SITE_DELETE"
+        },
+        {
+          "eventName": "geographicSiteStatusChangeEvent",
+          "eventKind": "StatusChange",
+          "enumMember": "GEOGRAPHIC_SITE_STATUS_CHANGE"
+        }
+      ],
+      "listeners": [
+        {
+          "eventName": "geographicSiteAttributeValueChangeEvent"
+        },
+        {
+          "eventName": "geographicSiteCreateEvent"
+        },
+        {
+          "eventName": "geographicSiteDeleteEvent"
+        },
+        {
+          "eventName": "geographicSiteStatusChangeEvent"
+        }
+      ]
+    },
+    "675": {
+      "tmfNumber": "675",
+      "specTitle": "API GeographicLocation",
+      "specVersion": "1.0.0",
+      "slug": "geographic-location",
+      "basePath": "tmf-api/geographicLocation/v1",
+      "basePathConstant": "TMF675_BASE_PATH",
+      "eventExchange": "geographicLocation.events",
+      "eventExchangeConstant": "TMF675_EVENT_EXCHANGE",
+      "eventTypeEnum": "GeographicLocationEventType",
+      "resources": [
+        {
+          "resource": "GeographicLocation",
+          "dir": "geographic-location",
+          "pathSegment": "geographicLocation",
+          "moduleClass": "GeographicLocationModule",
+          "moduleImportPath": "geographic-location/geographic-location.module",
+          "className": "GeographicLocationModule",
+          "importPath": "geographic-location/geographic-location.module"
+        },
+        {
+          "resource": "RetrieveGeographicLocation",
+          "dir": "retrieve-geographic-location",
+          "pathSegment": "retrieveGeographicLocation",
+          "moduleClass": "RetrieveGeographicLocationModule",
+          "moduleImportPath": "retrieve-geographic-location/retrieve-geographic-location.module",
+          "className": "RetrieveGeographicLocationModule",
+          "importPath": "retrieve-geographic-location/retrieve-geographic-location.module"
+        },
+        {
+          "resource": "RetrieveLocationRelation",
+          "dir": "retrieve-location-relation",
+          "pathSegment": "retrieveLocationRelation",
+          "moduleClass": "RetrieveLocationRelationModule",
+          "moduleImportPath": "retrieve-location-relation/retrieve-location-relation.module",
+          "className": "RetrieveLocationRelationModule",
+          "importPath": "retrieve-location-relation/retrieve-location-relation.module"
+        }
+      ],
+      "seeds": [],
+      "entities": [
+        {
+          "className": "GeographicLocation",
+          "importPath": "geographic-location/entities/geographic-location.entity"
+        },
+        {
+          "className": "GeographicPoint",
+          "importPath": "geographic-location/entities/geographic-point.entity"
+        },
+        {
+          "className": "RetrieveGeographicLocation",
+          "importPath": "retrieve-geographic-location/entities/retrieve-geographic-location.entity"
+        },
+        {
+          "className": "RetrieveGeographicLocationThing",
+          "importPath": "retrieve-geographic-location/entities/retrieve-geographic-location-thing.entity"
+        },
+        {
+          "className": "GeographicLocationReferred",
+          "importPath": "retrieve-geographic-location/entities/geographic-location-referred.entity"
+        },
+        {
+          "className": "RetrieveLocationRelation",
+          "importPath": "retrieve-location-relation/entities/retrieve-location-relation.entity"
+        },
+        {
+          "className": "GeographicLocationRef",
+          "importPath": "retrieve-location-relation/entities/geographic-location-ref.entity"
+        },
+        {
+          "className": "GeographicPointReferred",
+          "importPath": "retrieve-location-relation/entities/geographic-point-referred.entity"
+        },
+        {
+          "className": "RetrieveLocationRelationIntersection",
+          "importPath": "retrieve-location-relation/entities/retrieve-location-relation-intersection.entity"
+        }
+      ],
+      "events": [],
+      "listeners": []
+    }
+  }
+}
