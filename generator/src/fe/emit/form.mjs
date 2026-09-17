@@ -426,6 +426,12 @@ function collectTransformWarnings(pageId, payload) {
 }
 
 export function emitForms(feir, appDir) {
+  if (feir.output?.mfe?.federationTemplate === 'common-remote') {
+    // mcs-common owns form emission entirely (emit/mcs-common/pages.mjs's Create*Dialog) -
+    // it renders relation/repeatable fields its own way (RefAutocompleteField, local
+    // useFieldArray), not StandardFormModal's FieldSpec dispatch. See emit/mfe.mjs's guard.
+    return { written: [], summary: 'form: federationTemplate=common-remote - delegasi ke emit/mcs-common (form.mjs dilewati)' };
+  }
   // F3: form.mjs sebelumnya TIDAK PERNAH konsultasi adapter - field type apa pun lolos
   // ke StandardFormModal.tsx (dispatch statis), termasuk semantic yang UNSUPPORTED untuk
   // library aktif (mis. typeahead di fe-default/neudela). Beda dengan emit/page.mjs yang

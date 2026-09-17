@@ -693,6 +693,13 @@ function bootstrapFile() {
  * @returns {{ written: string[], summary: string }}
  */
 export function emitPages(feir, appDir) {
+  if (feir.output?.mfe?.federationTemplate === 'common-remote') {
+    // mcs-common owns page/list emission entirely (emit/mcs-common/pages.mjs) - this
+    // generic-runtime emitter (StandardList/routes/ui.tsx) would produce an unused,
+    // architecturally-conflicting src/gen/* tree for this template. See emit/mfe.mjs's
+    // matching guard for the same reasoning.
+    return { written: [], summary: 'page: federationTemplate=common-remote - delegasi ke emit/mcs-common (page.mjs dilewati)' };
+  }
   const listPages = (feir.pages ?? []).filter((p) => p.view === 'list');
   // T4 (F7): routablePages = list ∪ dashboard - keduanya butuh route+menu. Dashboard.tsx
   // SENDIRI ditulis emit/dashboard.mjs (kind terpisah); emitPages hanya perlu TAHU pages

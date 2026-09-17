@@ -18,7 +18,13 @@ export default function Dashboard(): ReactElement {
     ]).then((entries) => {
       if (!alive) return;
       setData(Object.fromEntries(entries));
-      setLoading(false);
+    }).catch(() => {
+      // Backend belum tersedia / salah satu request gagal - dashboard tetap
+      // tampil dengan data kosong (stat 0, tabel kosong), BUKAN crash. Sama pola
+      // dengan empty-state list/detail lain - tanpa ini Promise.all yang reject
+      // tak pernah tertangkap sama sekali (unhandled rejection -> React crash).
+    }).finally(() => {
+      if (alive) setLoading(false);
     });
     return () => { alive = false; };
   }, []);

@@ -1,6 +1,6 @@
 import { flattenSchema, scalarProps, refName, resolveRef } from '../ingest/schemaUtils.mjs';
 import { pascal, camel, snake } from './naming.mjs';
-import { mapScalar, SIMPLE_JSON } from './typeMap.mjs';
+import { mapScalar, jsonColumn } from './typeMap.mjs';
 
 /**
  * THE SINGLE NESTING RULE.
@@ -63,6 +63,7 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
   if (INFRA_FIELDS.has(fieldName)) {
     return { kind: 'infra', name: fieldName };
   }
+  const dbTarget = ctx?.dbTarget ?? 'sqlite';
 
   // A property name starting with '@' beyond the standard trailer (@type/@baseType/
   // @schemaLocation/@referredType, handled above as 'infra') is real TMF wire syntax
@@ -95,7 +96,7 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
 
   // ── $ref to a scalar (enum / plain type) ──
   if (isScalar(effective)) {
-    const mapped = mapScalar(fieldName, effective);
+    const mapped = mapScalar(fieldName, effective, dbTarget);
     return {
       kind: 'scalar',
       name: safeName,
@@ -116,15 +117,15 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
     if (isScalar(items)) {
       return {
         kind: 'json', name: safeName, ...(exposeName ? { expose: exposeName } : {}),
-        tsType: `${mapScalar(fieldName, items).tsType}[]`,
-        column: { ...SIMPLE_JSON }, nullable: true, reason: 'array of scalar',
+        tsType: `${mapScalar(fieldName, items, dbTarget).tsType}[]`,
+        column: jsonColumn(dbTarget), nullable: true, reason: 'array of scalar',
       };
     }
     if (isFreeForm(items)) {
       return {
         kind: 'json', name: safeName, ...(exposeName ? { expose: exposeName } : {}),
         tsType: 'Record<string, any>[]',
-        column: { ...SIMPLE_JSON }, nullable: true, reason: 'array of unmodelled object',
+        column: jsonColumn(dbTarget), nullable: true, reason: 'array of unmodelled object',
       };
     }
     return {
@@ -145,7 +146,7 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
       return {
         kind: 'json', name: safeName, ...(exposeName ? { expose: exposeName } : {}),
         tsType: 'Record<string, any>',
-        column: { ...SIMPLE_JSON }, nullable: true, reason: 'object with no scalar props',
+        column: jsonColumn(dbTarget), nullable: true, reason: 'object with no scalar props',
       };
     }
     return {
@@ -155,7 +156,7 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
       description: schema.description || '',
       // prefixed columns; `sourceProp` is what makes the inverse (toResponse) mechanical
       columns: keys.map(prop => {
-        const mapped = mapScalar(prop, props[prop]);
+        const mapped = mapScalar(prop, props[prop], dbTarget);
         return {
           name: `${camel(fieldName)}${pascal(prop)}`,
           sourceProp: prop,
@@ -171,12 +172,12 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
     return {
       kind: 'json', name: safeName, ...(exposeName ? { expose: exposeName } : {}),
       tsType: 'Record<string, any>',
-      column: { ...SIMPLE_JSON }, nullable: true, reason: 'free-form',
+      column: jsonColumn(dbTarget), nullable: true, reason: 'free-form',
     };
   }
 
   // ── scalar ──
-  const mapped = mapScalar(fieldName, schema);
+  const mapped = mapScalar(fieldName, schema, dbTarget);
   return {
     kind: 'scalar',
     name: safeName,
@@ -213,6 +214,8 @@ const UNUSABLE_NAMES = new Set([
   'Object', 'Array', 'String', 'Number', 'Boolean', 'Function', 'Date', 'Error',
   'Map', 'Set', 'Promise', 'Symbol', 'JSON', 'Math', 'RegExp', 'Infinity', 'NaN',
   'Class', 'Interface', 'Enum', 'Type', 'Void', 'Null', 'Undefined', 'Any',
+  // hardcoded infra entity classes (see scaffold/newService.mjs entitiesBarrel)
+  'EventSubscription', 'EventLog',
 ]);
 
 
@@ -253,7 +256,7 @@ export function subResourceNameCandidates(parentPrefix, sub) {
  */
 const REF_WRAPPER_BASE = 'EntityRef';
 
-export function expandSubResource(doc, parentPrefix, sub, depth, overrides = {}) {
+export function expandSubResource(doc, parentPrefix, sub, depth, overrides = {}, dbTarget = 'sqlite') {
   const flat = flattenSchema(doc, sub.itemSchema);
   const refLike = flat.sources.includes(REF_WRAPPER_BASE);
   const explicit = overrides[`${parentPrefix}.${sub.name}`];
@@ -266,17 +269,17 @@ export function expandSubResource(doc, parentPrefix, sub, depth, overrides = {})
   const children = [];
 
   for (const [propName, propSchema] of Object.entries(flat.properties)) {
-    const c = classifyProperty(doc, propName, propSchema, { required: flat.required });
+    const c = classifyProperty(doc, propName, propSchema, { required: flat.required, dbTarget });
     if (c.kind === 'infra') continue;
     if (c.kind === 'subResource') {
       if (depth >= 2) {
         // depth cap: deeper nesting degrades to simple-json rather than exploding tables
         fields.push({
           kind: 'json', name: propName, tsType: 'Record<string, any>[]',
-          column: { ...SIMPLE_JSON }, nullable: true, reason: 'nesting depth cap',
+          column: jsonColumn(dbTarget), nullable: true, reason: 'nesting depth cap',
         });
       } else {
-        children.push(expandSubResource(doc, className, c, depth + 1, overrides));
+        children.push(expandSubResource(doc, className, c, depth + 1, overrides, dbTarget));
       }
       continue;
     }

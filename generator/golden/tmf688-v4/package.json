@@ -1,0 +1,15 @@
+{
+  "name": "event",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @event/backend start:dev",
+    "build": "yarn workspace @event/backend build",
+    "start": "yarn workspace @event/backend start",
+    "start:prod": "yarn workspace @event/backend start:prod",
+    "lint": "yarn workspace @event/backend lint"
+  }
+}

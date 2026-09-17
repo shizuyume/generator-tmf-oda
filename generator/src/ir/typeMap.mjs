@@ -5,21 +5,18 @@ import { words } from './naming.mjs';
  *
  * Column shapes are taken from the golden reference
  * (partnership_management/backend/src/partnership/entities/*.entity.ts).
- * Two invariants were originally declared non-negotiable here, because SKILL.md gates
- * on them. Both have since been overtaken by evidence and are documented as changed:
+ * id-like scalars were varchar(36), sized for a bare UUID, and SKILL.md gates on
+ * that. TM Forum's OWN examples break it: TMF936 ships a productOffering whose
+ * productOfferingTermOrConditionSpecification.id is
+ * "ab7792f8-6628-4c4b-a557-699adc26d4ce_terms_1" - 44 characters, a UUID with a
+ * composite suffix. Seeding that example failed with "value too long for type
+ * character varying(36)", and a spec-conformant client sending the same id would
+ * get a 500. Widened to ID_COLUMN_LENGTH below, regardless of target database.
  *
- *   - dates were `datetime`, never `timestamp` (SQLite portability). Still true in the
- *     IR; the translation to `timestamp` now happens at emit time per target database
- *     (emit/entity.mjs), because the scaffold advertises postgres and a `datetime`
- *     column makes it impossible to boot there.
- *
- *   - id-like scalars were varchar(36), sized for a bare UUID. TM Forum's OWN examples
- *     break that: TMF936 ships a productOffering whose
- *     productOfferingTermOrConditionSpecification.id is
- *     "ab7792f8-6628-4c4b-a557-699adc26d4ce_terms_1" - 44 characters, a UUID with a
- *     composite suffix. Seeding that example failed with "value too long for type
- *     character varying(36)", and a spec-conformant client sending the same id would
- *     get a 500. Widened to ID_COLUMN_LENGTH below.
+ * Dates are database-target-dependent: `datetime` under sqlite (the
+ * generator's default), `timestamptz` under postgres - driven by the
+ * `dbTarget` parameter threaded down from `--database` (see cli.mjs /
+ * ir/buildIR.mjs).
  */
 
 /**
@@ -48,9 +45,13 @@ const TYPE_RULES = {
   boolean: { column: { type: 'boolean' }, tsType: 'boolean', validators: ['IsBoolean'] },
 };
 
+// dates are the one format whose column type depends on the target database
+const DATE_COLUMN = {
+  sqlite: { type: 'datetime' },
+  postgres: { type: 'timestamptz' },
+};
+
 const FORMAT_RULES = {
-  'date-time': { column: { type: 'datetime' }, tsType: 'Date', validators: [] },
-  date: { column: { type: 'datetime' }, tsType: 'Date', validators: [] },
   uri: { column: { type: 'varchar', length: 1000 }, tsType: 'string', validators: ['IsString'] },
   int32: { column: { type: 'int' }, tsType: 'number', validators: [] },
   int64: { column: { type: 'bigint' }, tsType: 'string', validators: [] },
@@ -61,13 +62,18 @@ const FORMAT_RULES = {
 /**
  * @param {string} fieldName
  * @param {object} schema  a resolved (non-$ref) scalar schema
+ * @param {'sqlite'|'postgres'} dbTarget
  * @returns {{tsType:string, column:object, validators:string[], enumValues:string[]|null}}
  */
-export function mapScalar(fieldName, schema = {}) {
+export function mapScalar(fieldName, schema = {}, dbTarget = 'sqlite') {
   const format = schema.format;
   const type = schema.type || 'string';
 
   // format wins over type (date-time is a string in OpenAPI)
+  if (format === 'date-time' || format === 'date') {
+    const column = DATE_COLUMN[dbTarget] ?? DATE_COLUMN.sqlite;
+    return { tsType: 'Date', column: { ...column }, validators: [], enumValues: null };
+  }
   if (format && FORMAT_RULES[format]) {
     const r = FORMAT_RULES[format];
     return { tsType: r.tsType, column: { ...r.column }, validators: [...r.validators], enumValues: null };
@@ -95,7 +101,13 @@ export function mapScalar(fieldName, schema = {}) {
   if (r) return { tsType: r.tsType, column: { ...r.column }, validators: [...r.validators], enumValues: null };
 
   // unknown scalar -> passthrough json
-  return { tsType: 'any', column: { type: 'simple-json' }, validators: [], enumValues: null };
+  return { tsType: 'any', column: jsonColumn(dbTarget), validators: [], enumValues: null };
 }
 
-export const SIMPLE_JSON = { type: 'simple-json' };
+/**
+ * Fallback column for unmodelled/free-form JSON blobs. `simple-json` is a
+ * SQLite/MySQL TypeORM column type; postgres has a native `jsonb` instead.
+ */
+export function jsonColumn(dbTarget = 'sqlite') {
+  return dbTarget === 'postgres' ? { type: 'jsonb' } : { type: 'simple-json' };
+}

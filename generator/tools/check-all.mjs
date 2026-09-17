@@ -38,12 +38,17 @@ const FE_FORBID = [
 ];
 const SKIP_DIRS = new Set(['node_modules', '.yarn', 'dist', '.git', 'build']);
 
-function feWalk(dir, base = dir, out = []) {
+// mcs-common golden case(s) DELIBERATELY contain common_remote (they federate it on
+// purpose, see emit/mcs-common/*) — excluded from the negative FE_FORBID walk below and
+// checked by the separate POSITIVE assertion gate instead (must contain it, not must not).
+const MCS_COMMON_GOLDEN_DIRS = new Set(['mcs-common-tmf736']);
+
+function feWalk(dir, base = dir, out = [], skipDirNames = SKIP_DIRS) {
   if (!fs.existsSync(dir)) return out;
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     if (e.isDirectory()) {
-      if (SKIP_DIRS.has(e.name)) continue;
-      feWalk(path.join(dir, e.name), base, out);
+      if (skipDirNames.has(e.name)) continue;
+      feWalk(path.join(dir, e.name), base, out, skipDirNames);
     } else {
       out.push(path.join(dir, e.name));
     }
@@ -52,17 +57,17 @@ function feWalk(dir, base = dir, out = []) {
 }
 
 /** Walk a set of roots (golden app trees + current spec yamls) and report guardrail hits. */
-function guardrailReport(roots) {
+function guardrailReport(roots, { skipDirNames = SKIP_DIRS, forbid = FE_FORBID } = {}) {
   const files = [];
   for (const r of roots) {
-    if (fs.existsSync(r) && fs.statSync(r).isDirectory()) files.push(...feWalk(r));
+    if (fs.existsSync(r) && fs.statSync(r).isDirectory()) files.push(...feWalk(r, r, [], skipDirNames));
     else if (fs.existsSync(r)) files.push(r);
   }
   const hits = [];
   for (const f of files) {
     let text;
     try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
-    for (const { label, re } of FE_FORBID) {
+    for (const { label, re } of forbid) {
       const m = text.match(re);
       if (m) hits.push(`${label} : ${path.relative(root, f)} : ${JSON.stringify(m[0].split(/\s/)[0])}`);
     }
@@ -89,7 +94,7 @@ const gates = [
   },
   /* ---- FE section (todo 12, static — no install) ---- */
   {
-    name: 'FE fe-gen golden matrix + determinism (6 cases: mui full/mfe + neudela full + fe-default full/dashboard/mfe)',
+    name: 'FE fe-gen golden matrix + determinism (7 cases: mui full/mfe + neudela full + fe-default full/dashboard/mfe + mcs-common)',
     cmd: ['tools/fe-golden.mjs'],
     ok: out => /all fe golden checks passed/.test(out) && !/failure\(s\)$/.test(out),
     summary: out => (out.match(/^(PASS|FAIL).*$/gm) ?? []).length + ' checks',
@@ -146,11 +151,37 @@ const gates = [
     name: 'FE guardrails grep (golden app trees: common_remote, pro, x-charts, zustand, .tsx import, secret in REACT_APP_)',
     run: () => {
       const roots = [path.join(root, 'golden', 'fe')];
-      const hits = guardrailReport(roots);
+      // mcs-common case(s) deliberately federate common_remote - excluded here, checked
+      // by the positive-assertion gate below instead.
+      const hits = guardrailReport(roots, { skipDirNames: new Set([...SKIP_DIRS, ...MCS_COMMON_GOLDEN_DIRS]) });
       return hits.length ? hits.join('\n') : 'no guardrail hits';
     },
     ok: out => /no guardrail hits/.test(out),
     summary: out => /no guardrail hits/.test(out) ? '0 hits' : out.split('\n').length + ' hit(s)',
+  },
+  {
+    name: 'FE mcs-common golden: common_remote federation REQUIRED (inverse guardrail)',
+    run: () => {
+      const missing = [];
+      for (const name of MCS_COMMON_GOLDEN_DIRS) {
+        const dir = path.join(root, 'golden', 'fe', name);
+        if (!fs.existsSync(dir)) { missing.push(`${name}: golden case not present yet`); continue; }
+        const cracoPath = path.join(dir, 'craco.config.js');
+        if (!fs.existsSync(cracoPath)) { missing.push(`${name}: craco.config.js not found`); continue; }
+        // Strip `//` comment lines first - the file's own explanatory comment mentions
+        // the OLD self-contained `remotes:{}` shape by name, which would otherwise
+        // false-positive both checks below.
+        const code = fs.readFileSync(cracoPath, 'utf8')
+          .split('\n')
+          .filter((line) => !line.trim().startsWith('//'))
+          .join('\n');
+        if (!/common_remote/.test(code)) missing.push(`${name}: craco.config.js has no common_remote reference (outside comments)`);
+        if (/remotes:\s*\{\s*\}/.test(code)) missing.push(`${name}: remotes is empty {} - not actually federated`);
+      }
+      return missing.length ? missing.join('\n') : 'common_remote present in all mcs-common golden cases';
+    },
+    ok: out => /^common_remote present/.test(out),
+    summary: out => /^common_remote present/.test(out) ? `${MCS_COMMON_GOLDEN_DIRS.size} case(s) OK` : out.split('\n').length + ' problem(s)',
   },
 ];
 

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOOR HRIS — Workforce Dashboard</title>
+<style>
+/* =========================================================
+   DOOR HRIS — Design System implementation
+   Based on the supplied Design System:
+   Primary / Gray primitives + semantic aliases
+   ========================================================= */
+:root{
+  --color-primary-25:#FFFCF7;
+  --color-primary-50:#FDF7ED;
+  --color-primary-100:#F8E8CD;
+  --color-primary-200:#F1CE96;
+  --color-primary-300:#EAB05F;
+  --color-primary-400:#E5963A;
+  --color-primary-500:#DF7E30;
+  --color-primary-600:#C3571C;
+  --color-primary-700:#A23C1B;
+  --color-primary-800:#84301C;
+  --color-primary-900:#6D291A;
+  --color-primary-950:#3E130A;
+
+  --color-gray-25:#FCFCFD;
+  --color-gray-50:#F9FAFB;
+  --color-gray-100:#F2F4F7;
+  --color-gray-200:#E4E7EC;
+  --color-gray-300:#D0D5DD;
+  --color-gray-400:#98A2B3;
+  --color-gray-500:#4F596E;
+  --color-gray-600:#475467;
+  --color-gray-700:#344054;
+  --color-gray-800:#182230;
+  --color-gray-900:#101828;
+  --color-gray-950:#0C111D;
+
+  --success-50:#ECFDF3;--success-500:#12B76A;--success-700:#027A48;
+  --warning-50:#FFFAEB;--warning-500:#F79009;--warning-700:#B54708;
+  --danger-50:#FEF3F2;--danger-500:#D92D20;--danger-700:#B42318;
+  --info-50:#EFF8FF;--info-500:#2E90FA;--info-700:#175CD3;
+
+  --bg-app:var(--color-gray-25);
+  --bg-surface:#FFFFFF;
+  --bg-surface-secondary:var(--color-gray-50);
+  --bg-brand:var(--color-primary-600);
+  --bg-brand-subtle:var(--color-primary-50);
+  --bg-brand-strong:var(--color-primary-900);
+  --text-primary:var(--color-gray-900);
+  --text-secondary:var(--color-gray-500);
+  --text-disabled:var(--color-gray-400);
+  --text-brand:var(--color-primary-600);
+  --text-on-brand:#FFFFFF;
+  --border-default:var(--color-gray-200);
+  --border-strong:var(--color-gray-300);
+  --focus-ring:color-mix(in srgb,var(--color-primary-600) 40%,transparent);
+
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+  --shadow-xs:0 1px 2px rgba(16,24,40,.05);
+  --shadow-sm:0 1px 3px rgba(16,24,40,.10),0 1px 2px rgba(16,24,40,.06);
+  --shadow-md:0 4px 8px rgba(16,24,40,.10);
+  --shadow-lg:0 12px 24px rgba(16,24,40,.12);
+}
+
+[data-theme="dark"]{
+  --bg-app:var(--color-gray-950);--bg-surface:var(--color-gray-900);--bg-surface-secondary:var(--color-gray-800);
+  --bg-brand:var(--color-primary-500);
+  --bg-brand-subtle:color-mix(in srgb,var(--color-primary-900) 40%,transparent);
+  --bg-brand-strong:var(--color-primary-900);
+  --text-primary:var(--color-gray-25);--text-secondary:var(--color-gray-400);--text-disabled:var(--color-gray-600);
+  --text-brand:var(--color-primary-400);--text-on-brand:#fff;
+  --border-default:var(--color-gray-700);--border-strong:var(--color-gray-600);
+  --focus-ring:color-mix(in srgb,var(--color-primary-400) 50%,transparent);
+}
+
+[data-accent="blue"]{
+  --color-primary-25:#F5FAFF;--color-primary-50:#F5FAFF;--color-primary-100:#D1E9FF;
+  --color-primary-200:#B2DDFF;--color-primary-300:#84CAFF;--color-primary-400:#53B1FD;
+  --color-primary-500:#2E90FA;--color-primary-600:#1570EF;--color-primary-700:#175CD3;
+  --color-primary-800:#1849A9;--color-primary-900:#194185;--color-primary-950:#102A56;
+}
+
+[data-accent="green"]{
+  --color-primary-25:#F6FEF9;--color-primary-50:#F6FEF9;--color-primary-100:#D3F8DF;
+  --color-primary-200:#AAF0C4;--color-primary-300:#73E2A3;--color-primary-400:#32D583;
+  --color-primary-500:#12B76A;--color-primary-600:#039855;--color-primary-700:#027A48;
+  --color-primary-800:#05603A;--color-primary-900:#054F31;--color-primary-950:#053321;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg-app);color:var(--text-primary)}
+body{font-size:14px;line-height:20px}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+
+.app{min-height:100vh}
+.sidebar{
+  position:fixed;z-index:30;inset:0 auto 0 0;width:240px;
+  background:var(--bg-surface);border-right:1px solid var(--border-default);
+  display:flex;flex-direction:column;padding:20px 14px;transition:width .2s ease-in-out
+}
+.logo-slot{height:40px;display:flex;align-items:center;padding:0 10px;margin-bottom:24px}
+.door-logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.5px;color:var(--text-primary)}
+.door-mark{width:30px;height:30px;border-radius:8px;background:var(--bg-brand-strong);color:#fff;display:grid;place-items:center;font-weight:700}
+.door-word{font-size:17px}
+.sidebar-section{margin:10px 8px 7px;font-size:11px;color:var(--text-disabled);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.nav{display:grid;gap:3px}
+.nav-item{
+  width:100%;height:40px;border:0;background:transparent;color:var(--text-secondary);
+  border-radius:var(--radius-md);display:flex;align-items:center;gap:11px;padding:0 11px;text-align:left;
+  transition:background .12s ease-out,color .12s ease-out
+}
+.nav-item:hover{background:var(--bg-surface-secondary);color:var(--text-primary)}
+.nav-item.active{background:var(--bg-brand);color:var(--text-on-brand)}
+.nav-icon{width:20px;text-align:center;font-size:15px;opacity:.9}
+.nav-label{font-size:13px}
+.sidebar-bottom{margin-top:auto;border-top:1px solid var(--border-default);padding-top:12px}
+
+.main{margin-left:240px;min-height:100vh}
+.topbar{
+  height:56px;background:var(--bg-surface);border-bottom:1px solid var(--border-default);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20
+}
+.top-left,.top-right{display:flex;align-items:center;gap:10px}
+.global-search{width:260px;height:36px;border:1px solid var(--border-default);background:var(--bg-surface-secondary);border-radius:var(--radius-md);display:flex;align-items:center;gap:8px;padding:0 11px;color:var(--text-disabled)}
+.global-search input{border:0;background:transparent;outline:0;width:100%;color:var(--text-primary);font-size:13px}
+.icon-button{
+  width:34px;height:34px;border:1px solid transparent;background:transparent;border-radius:var(--radius-md);
+  color:var(--text-secondary);display:grid;place-items:center
+}
+.icon-button:hover{background:var(--bg-surface-secondary);color:var(--text-primary)}
+.avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border-default);background:var(--color-gray-100)}
+.avatar.sm{width:28px;height:28px}.avatar.lg{width:40px;height:40px}
+.user-menu{display:flex;align-items:center;gap:8px;padding-left:4px}
+.user-name{font-size:12px;font-weight:600}.user-role{font-size:10px;color:var(--text-secondary)}
+
+.content{max-width:1280px;margin:0 auto;padding:24px}
+.breadcrumb{font-size:12px;color:var(--text-secondary);margin-bottom:7px}
+.page-header{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:22px}
+.page-title h1{margin:0;font-size:24px;line-height:32px;font-weight:600;letter-spacing:-.02em}
+.page-title p{margin:4px 0 0;color:var(--text-secondary);font-size:13px}
+.page-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.button{height:36px;border-radius:var(--radius-md);padding:0 13px;border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary);font-size:13px;font-weight:500}
+.button:hover{background:var(--bg-surface-secondary)}
+.button.primary{background:var(--bg-brand);border-color:var(--bg-brand);color:var(--text-on-brand)}
+.button.primary:hover{background:var(--color-primary-700);border-color:var(--color-primary-700)}
+.button.tertiary{border-color:transparent;background:transparent;color:var(--text-secondary)}
+.button.danger{background:var(--danger-500);border-color:var(--danger-500);color:#fff}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.card{
+  background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-xs)
+}
+.stat-card{padding:18px}
+.stat-head{display:flex;align-items:center;justify-content:space-between}
+.stat-label{font-size:13px;color:var(--text-secondary)}
+.stat-icon{width:34px;height:34px;border-radius:var(--radius-md);display:grid;place-items:center;background:var(--bg-brand-subtle);color:var(--text-brand)}
+.stat-value{font-size:28px;line-height:36px;font-weight:600;letter-spacing:-.03em;margin-top:10px}
+.stat-meta{display:flex;gap:6px;align-items:center;margin-top:4px;font-size:12px;color:var(--text-secondary)}
+.trend.up{color:var(--success-700)}.trend.warn{color:var(--warning-700)}.trend.down{color:var(--danger-700)}
+
+.dashboard-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.panel{padding:20px}
+.panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.panel-title{font-size:16px;line-height:24px;font-weight:600}.panel-subtitle{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.chart-card{min-height:350px}
+.chart-toolbar{display:flex;gap:4px}
+.chart-tab{border:0;background:transparent;color:var(--text-secondary);font-size:11px;padding:5px 8px;border-radius:6px}
+.chart-tab.active{background:var(--bg-brand-subtle);color:var(--text-brand);font-weight:600}
+.chart{height:245px;width:100%;position:relative}
+.chart svg{width:100%;height:100%}
+.axis{font-size:10px;fill:var(--color-gray-400)}
+.gridline{stroke:var(--border-default);stroke-width:1}
+.chart-line{fill:none;stroke:var(--color-primary-600);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-area{fill:var(--color-primary-100);opacity:.55}
+.chart-dot{fill:var(--bg-surface);stroke:var(--color-primary-600);stroke-width:3}
+.chart-tooltip{position:absolute;right:8%;top:23%;background:var(--text-primary);color:#fff;border-radius:var(--radius-md);padding:7px 9px;font-size:10px;box-shadow:var(--shadow-sm)}
+.chart-tooltip strong{display:block;font-size:12px}
+
+.attendance-card{min-height:350px}
+.attendance-body{display:flex;align-items:center;gap:22px;margin-top:28px}
+.ring{width:154px;height:154px;border-radius:50%;background:conic-gradient(var(--color-primary-600) 0 94.2%,var(--color-gray-100) 94.2%);display:grid;place-items:center;flex:none}
+.ring-inner{width:118px;height:118px;border-radius:50%;background:var(--bg-surface);display:grid;place-items:center;text-align:center}
+.ring-inner strong{font-size:28px;line-height:32px}.ring-inner span{font-size:11px;color:var(--text-secondary)}
+.legend{display:grid;gap:12px}.legend-row{display:flex;align-items:center;gap:8px;font-size:12px}.legend-dot{width:8px;height:8px;border-radius:50%}
+.dot-brand{background:var(--color-primary-600)}.dot-info{background:var(--info-500)}.dot-warning{background:var(--warning-500)}.dot-gray{background:var(--color-gray-300)}
+.legend-value{margin-left:auto;color:var(--text-secondary);font-family:"Roboto Mono","SF Mono",monospace;font-size:11px}
+
+.activity-card{margin-top:16px}
+.activity-list{display:grid}
+.activity-item{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-default)}
+.activity-item:last-child{border-bottom:0}.activity-copy{flex:1}.activity-copy strong{font-size:12px;font-weight:600}.activity-copy p{margin:1px 0 0;font-size:11px;color:var(--text-secondary)}.activity-time{font-size:10px;color:var(--text-disabled)}
+
+.insight{
+  margin-top:16px;background:var(--bg-brand-strong);color:#fff;border:0;box-shadow:var(--shadow-sm);padding:20px;
+}
+.insight .panel-subtitle{color:var(--color-primary-200)}
+.insight-text{font-size:20px;line-height:28px;font-weight:500;max-width:650px;margin:15px 0}
+.insight-text strong{color:var(--color-primary-300)}
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.insight-item{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-lg);padding:12px;font-size:11px;color:#f7f8f9}
+.insight-item b{color:var(--color-primary-200)}
+
+.table-card{margin-top:16px;overflow:hidden}
+.table-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px 20px;border-bottom:1px solid var(--border-default)}
+.filter-group{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-input{height:36px;width:220px;border:1px solid var(--border-strong);border-radius:var(--radius-md);display:flex;align-items:center;padding:0 10px;gap:7px;background:var(--bg-surface)}
+.search-input input{border:0;outline:0;width:100%;color:var(--text-primary);font-size:12px;background:transparent}
+.select{height:36px;border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:0 9px;color:var(--text-secondary);background:var(--bg-surface);font-size:12px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:800px}
+th{height:42px;padding:0 18px;text-align:left;background:var(--bg-surface-secondary);border-bottom:1px solid var(--border-default);color:var(--text-secondary);font-size:11px;font-weight:600}
+td{height:58px;padding:0 18px;border-bottom:1px solid var(--border-default);font-size:12px}
+tr:hover td{background:var(--bg-brand-subtle)}
+.employee{display:flex;align-items:center;gap:10px}.employee img{width:32px;height:32px;border-radius:50%;object-fit:cover}.employee-name{font-weight:600}.employee-code{font-family:"Roboto Mono","SF Mono",monospace;color:var(--text-secondary);font-size:10px;margin-top:1px}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-full);padding:4px 8px;font-size:10px;font-weight:600}
+.badge.success{background:var(--success-50);color:var(--success-700)}.badge.warning{background:var(--warning-50);color:var(--warning-700)}.badge.danger{background:var(--danger-50);color:var(--danger-700)}.badge.neutral{background:var(--color-gray-100);color:var(--text-secondary)}
+.row-actions{display:flex;gap:2px}.row-actions button{width:28px;height:28px;border:0;background:transparent;border-radius:6px;color:var(--text-secondary)}.row-actions button:hover{background:var(--color-gray-100);color:var(--text-primary)}
+.pagination{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:var(--text-secondary);font-size:11px}
+.pages{display:flex;gap:4px}.page{width:30px;height:30px;border:1px solid transparent;background:transparent;border-radius:6px;color:var(--text-secondary)}.page:hover{background:var(--color-gray-100)}.page.current{background:var(--bg-brand);color:#fff}
+
+.modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(16,24,40,.42);backdrop-filter:blur(3px);z-index:100;padding:20px}
+.modal-backdrop.show{display:flex}
+.modal{width:min(600px,100%);background:var(--bg-surface);border:1px solid var(--border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);animation:modalIn .2s ease-in-out}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--border-default)}
+.modal-title{font-size:20px;font-weight:600}.modal-close{width:32px;height:32px;border:0;background:transparent;border-radius:6px;color:var(--text-secondary);font-size:20px}.modal-close:hover{background:var(--color-gray-100)}
+.modal-body{padding:20px}.modal-footer{padding:14px 20px;border-top:1px solid var(--border-default);display:flex;justify-content:flex-end;gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:600}.required{color:var(--danger-500)}.field input,.field select{height:40px;border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:0 10px;background:var(--bg-surface);color:var(--text-primary);font-size:13px}.helper{font-size:11px;color:var(--text-secondary)}
+.toast{position:fixed;right:24px;bottom:24px;z-index:200;background:var(--bg-surface);border:1px solid var(--border-default);box-shadow:var(--shadow-lg);border-radius:var(--radius-lg);padding:12px 14px;display:flex;align-items:center;gap:9px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:none}.toast-icon{width:24px;height:24px;border-radius:50%;background:var(--success-50);color:var(--success-700);display:grid;place-items:center;font-size:11px}
+
+@media(max-width:1100px){.stat-grid{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}.global-search{width:200px}}
+@media(max-width:768px){
+  .sidebar{width:64px;padding:16px 8px}.door-word,.sidebar-section,.nav-label{display:none}.logo-slot{padding:0;justify-content:center}.nav-item{justify-content:center;padding:0}.main{margin-left:64px}.topbar{padding:0 14px}.user-name,.user-role{display:none}.global-search{width:150px}.content{padding:16px}.page-header{align-items:flex-start;flex-direction:column}.stat-grid{grid-template-columns:1fr}.insight-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo-slot">
+      <div class="door-logo">
+        <div class="door-mark">D</div>
+        <span class="door-word">DOOR HRIS</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Workspace</div>
+    <nav class="nav">
+      <button class="nav-item active"><span class="nav-icon">⌂</span><span class="nav-label">Overview</span></button>
+      <button class="nav-item"><span class="nav-icon">♙</span><span class="nav-label">Employees</span></button>
+      <button class="nav-item"><span class="nav-icon">⌗</span><span class="nav-label">Organization</span></button>
+      <button class="nav-item"><span class="nav-icon">◷</span><span class="nav-label">Attendance</span></button>
+      <button class="nav-item"><span class="nav-icon">▣</span><span class="nav-label">Leave</span></button>
+      <button class="nav-item"><span class="nav-icon">✓</span><span class="nav-label">Approval</span></button>
+      <button class="nav-item"><span class="nav-icon">◫</span><span class="nav-label">Shift</span></button>
+      <button class="nav-item"><span class="nav-icon">▤</span><span class="nav-label">Reports</span></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="nav-item"><span class="nav-icon">⚙</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item"><span class="nav-icon">?</span><span class="nav-label">Help & support</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <div class="global-search">⌕ <input placeholder="Search employees, requests..."></div>
+      </div>
+      <div class="top-right">
+        <button class="icon-button" title="Theme" onclick="toggleTheme()">◐</button>
+        <button class="icon-button" title="Accent" onclick="cycleAccent()">◈</button>
+        <button class="icon-button" title="Notifications">♧</button>
+        <div class="user-menu">
+          <img class="avatar" src="https://i.pravatar.cc/80?img=11">
+          <div><div class="user-name">Rafi Abdulloh</div><div class="user-role">HR Administrator</div></div>
+          <span style="color:var(--text-disabled)">⌄</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="breadcrumb">Overview / Workforce</div>
+      <section class="page-header">
+        <div class="page-title">
+          <h1>Workforce overview</h1>
+          <p>Monitor your people, attendance, and workforce health at a glance.</p>
+        </div>
+        <div class="page-actions">
+          <button class="button">Export</button>
+          <button class="button">▣ 01 Aug — 18 Aug 2026</button>
+          <button class="button primary" onclick="openModal()">＋ Add employee</button>
+        </div>
+      </section>
+
+      <section class="stat-grid">
+        <article class="card stat-card">
+          <div class="stat-head"><span class="stat-label">Total employees</span><span class="stat-icon">♙</span></div>
+          <div class="stat-value">1,248</div>
+          <div class="stat-meta"><span class="trend up">↑ 8.4%</span><span>vs. last month</span></div>
+        </article>
+        <article class="card stat-card">
+          <div class="stat-head"><span class="stat-label">Attendance</span><span class="stat-icon">◷</span></div>
+          <div class="stat-value">94.2%</div>
+          <div class="stat-meta"><span class="trend up">↑ 2.1%</span><span>vs. last month</span></div>
+        </article>
+        <article class="card stat-card">
+          <div class="stat-head"><span class="stat-label">New hires</span><span class="stat-icon">＋</span></div>
+          <div class="stat-value">24</div>
+          <div class="stat-meta"><span class="trend up">↑ 14.3%</span><span>this month</span></div>
+        </article>
+        <article class="card stat-card">
+          <div class="stat-head"><span class="stat-label">Open positions</span><span class="stat-icon">◫</span></div>
+          <div class="stat-value">18</div>
+          <div class="stat-meta"><span class="trend warn">6 urgent</span><span>recruitment</span></div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="card panel chart-card">
+          <div class="panel-header">
+            <div><div class="panel-title">Workforce growth</div><div class="panel-subtitle">Total employee headcount over time</div></div>
+            <div class="chart-toolbar">
+              <button class="chart-tab active">6M</button><button class="chart-tab">1Y</button><button class="chart-tab">All</button>
+            </div>
+          </div>
+          <div class="chart">
+            <svg viewBox="0 0 760 245" preserveAspectRatio="none">
+              <line class="gridline" x1="35" y1="35" x2="740" y2="35"/><line class="gridline" x1="35" y1="90" x2="740" y2="90"/><line class="gridline" x1="35" y1="145" x2="740" y2="145"/><line class="gridline" x1="35" y1="200" x2="740" y2="200"/>
+              <path class="chart-area" d="M35,190 C110,182 125,164 190,171 C255,177 274,140 335,151 C398,162 430,117 485,128 C550,140 580,92 630,105 C680,117 700,70 740,48 L740,205 L35,205 Z"/>
+              <path class="chart-line" d="M35,190 C110,182 125,164 190,171 C255,177 274,140 335,151 C398,162 430,117 485,128 C550,140 580,92 630,105 C680,117 700,70 740,48"/>
+              <circle class="chart-dot" cx="190" cy="171" r="5"/><circle class="chart-dot" cx="335" cy="151" r="5"/><circle class="chart-dot" cx="485" cy="128" r="5"/><circle class="chart-dot" cx="630" cy="105" r="5"/><circle class="chart-dot" cx="740" cy="48" r="5"/>
+              <text class="axis" x="4" y="39">1,300</text><text class="axis" x="8" y="94">1,250</text><text class="axis" x="8" y="149">1,200</text><text class="axis" x="8" y="204">1,150</text>
+              <text class="axis" x="38" y="228">Mar</text><text class="axis" x="180" y="228">Apr</text><text class="axis" x="325" y="228">May</text><text class="axis" x="470" y="228">Jun</text><text class="axis" x="615" y="228">Jul</text><text class="axis" x="725" y="228">Aug</text>
+            </svg>
+            <div class="chart-tooltip"><strong>1,248</strong>employees · Aug 2026</div>
+          </div>
+        </article>
+
+        <article class="card panel attendance-card">
+          <div class="panel-header">
+            <div><div class="panel-title">Attendance summary</div><div class="panel-subtitle">Current month</div></div>
+            <button class="icon-button">↗</button>
+          </div>
+          <div class="attendance-body">
+            <div class="ring"><div class="ring-inner"><div><strong>94.2%</strong><br><span>on time</span></div></div></div>
+            <div class="legend">
+              <div class="legend-row"><i class="legend-dot dot-brand"></i>Present <span class="legend-value">94.2%</span></div>
+              <div class="legend-row"><i class="legend-dot dot-info"></i>Remote <span class="legend-value">3.4%</span></div>
+              <div class="legend-row"><i class="legend-dot dot-warning"></i>Late <span class="legend-value">1.2%</span></div>
+              <div class="legend-row"><i class="legend-dot dot-gray"></i>Leave <span class="legend-value">1.2%</span></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <article class="card activity-card panel">
+        <div class="panel-header">
+          <div><div class="panel-title">Recent activity</div><div class="panel-subtitle">Latest workforce events</div></div>
+          <button class="button">View all</button>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item"><img class="avatar" src="https://i.pravatar.cc/80?img=49"><div class="activity-copy"><strong>Sarah Williams</strong><p>joined Engineering as Senior Software Engineer</p></div><span class="activity-time">2 min ago</span></div>
+          <div class="activity-item"><img class="avatar" src="https://i.pravatar.cc/80?img=15"><div class="activity-copy"><strong>Michael Chen</strong><p>submitted a leave request for 20–22 Aug</p></div><span class="activity-time">12 min ago</span></div>
+          <div class="activity-item"><img class="avatar" src="https://i.pravatar.cc/80?img=44"><div class="activity-copy"><strong>Onboarding</strong><p>3 employees completed their onboarding journey</p></div><span class="activity-time">28 min ago</span></div>
+        </div>
+      </article>
+
+      <article class="card insight">
+        <div class="panel-header">
+          <div><div class="panel-title">Workforce intelligence</div><div class="panel-subtitle">People insights based on your latest HR data</div></div>
+          <span class="badge" style="background:rgba(255,255,255,.1);color:#fff">✦ Insight</span>
+        </div>
+        <div class="insight-text">Your workforce is showing <strong>strong momentum</strong> this month.</div>
+        <div class="insight-grid">
+          <div class="insight-item">Engineering attendance improved <b>4.8%</b> in the last 30 days.</div>
+          <div class="insight-item">8 employees may be approaching <b>overtime thresholds</b>.</div>
+          <div class="insight-item"><b>14 employees</b> are eligible for promotion review.</div>
+        </div>
+      </article>
+
+      <article class="card table-card">
+        <div class="table-toolbar">
+          <div>
+            <div class="panel-title">Employee directory</div>
+            <div class="panel-subtitle">Recently active employees</div>
+          </div>
+          <div class="filter-group">
+            <div class="search-input">⌕ <input id="tableSearch" oninput="renderTable()" placeholder="Search employee..."></div>
+            <select class="select" id="deptFilter" onchange="renderTable()"><option value="">All departments</option><option>Engineering</option><option>Product</option><option>People & Culture</option><option>Finance</option><option>Design</option></select>
+            <button class="button" onclick="showToast('Export prepared successfully')">Export</button>
+            <button class="button primary" onclick="openModal()">＋ Add employee</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Department</th><th>Position</th><th>Location</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+            <tbody id="employeeRows"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span id="pageInfo"></span>
+          <div class="pages">
+            <button class="page" onclick="changePage(-1)">‹</button>
+            <button class="page current" id="p1" onclick="goPage(1)">1</button>
+            <button class="page" id="p2" onclick="goPage(2)">2</button>
+            <button class="page" id="p3" onclick="goPage(3)">3</button>
+            <button class="page" onclick="changePage(1)">›</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add employee</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <form onsubmit="saveEmployee(event)">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field"><label>Full name <span class="required">*</span></label><input id="employeeName" required placeholder="e.g. Amanda Wilson"></div>
+          <div class="field"><label>Employee code</label><input placeholder="EMP-001249"></div>
+          <div class="field"><label>Department <span class="required">*</span></label><select><option>Engineering</option><option>Product</option><option>People & Culture</option><option>Finance</option><option>Design</option></select></div>
+          <div class="field"><label>Position <span class="required">*</span></label><input required placeholder="e.g. Product Designer"></div>
+          <div class="field"><label>Location</label><select><option>Jakarta</option><option>Bandung</option><option>Surabaya</option><option>Remote</option></select></div>
+          <div class="field"><label>Join date</label><input type="date" value="2026-08-18"></div>
+          <div class="field full"><label>Work email</label><input type="email" placeholder="employee@company.com"><span class="helper">The employee will be available in the directory after creation.</span></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="button" onclick="closeModal()">Cancel</button><button class="button primary">Create employee</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastText"></span></div>
+
+<script>
+const employees=[
+  ["Amanda Wilson","EMP-001201","Product & Design","Senior Product Designer","Jakarta","Active","12 Aug 2026",49],
+  ["Daniel Carter","EMP-001202","Engineering","Frontend Engineer","Bandung","Active","08 Aug 2026",12],
+  ["Nadia Putri","EMP-001203","People & Culture","People Partner","Jakarta","Active","02 Aug 2026",32],
+  ["Marcus Lee","EMP-001204","Finance","Finance Analyst","Remote","Active","27 Jul 2026",18],
+  ["Olivia Chen","EMP-001205","Product","Product Manager","Jakarta","Active","24 Jul 2026",47],
+  ["Raka Pratama","EMP-001206","Engineering","Backend Engineer","Surabaya","Active","21 Jul 2026",15],
+  ["Maya Santos","EMP-001207","Design","UX Researcher","Remote","Active","18 Jul 2026",44],
+  ["Kevin Tan","EMP-001208","Engineering","Data Engineer","Jakarta","Active","15 Jul 2026",53],
+  ["Alya Rahman","EMP-001209","People & Culture","Recruiter","Bandung","Active","12 Jul 2026",25],
+  ["Jon Bell","EMP-001210","Engineering","DevOps Engineer","Remote","Active","09 Jul 2026",11],
+  ["Sinta Dewi","EMP-001211","Finance","Payroll Specialist","Jakarta","Active","06 Jul 2026",45],
+  ["Ethan Cole","EMP-001212","Product","Growth Lead","Jakarta","Active","01 Jul 2026",56]
+];
+let page=1,perPage=5;
+
+function getFiltered(){
+  const q=(document.getElementById('tableSearch').value||'').toLowerCase();
+  const d=document.getElementById('deptFilter').value;
+  return employees.filter(e=>
+    (!q || e[0].toLowerCase().includes(q)||e[1].toLowerCase().includes(q)||e[3].toLowerCase().includes(q)) &&
+    (!d || e[2]===d)
+  );
+}
+function renderTable(){
+  const data=getFiltered(), pages=Math.max(1,Math.ceil(data.length/perPage));
+  if(page>pages) page=pages;
+  const start=(page-1)*perPage;
+  const rows=data.slice(start,start+perPage);
+  document.getElementById('employeeRows').innerHTML=rows.length?rows.map(e=>`
+    <tr>
+      <td><div class="employee"><img src="https://i.pravatar.cc/80?img=${e[7]}"><div><div class="employee-name">${e[0]}</div><div class="employee-code">${e[1]}</div></div></div></td>
+      <td>${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td>
+      <td><span class="badge success"><span>●</span>${e[5]}</span></td><td>${e[6]}</td>
+      <td><div class="row-actions"><button onclick="showToast('Opening ${e[0]}')">↗</button><button onclick="showToast('More actions')">⋯</button></div></td>
+    </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;height:120px;color:var(--text-secondary)">No employees found.</td></tr>`;
+  document.getElementById('pageInfo').textContent=data.length?`Showing ${start+1}–${Math.min(start+perPage,data.length)} of ${data.length}`:'Showing 0 of 0';
+  [1,2,3].forEach(n=>document.getElementById('p'+n).style.display=n<=pages?'grid':'none');
+  [1,2,3].forEach(n=>document.getElementById('p'+n).classList.toggle('current',n===page));
+}
+function goPage(n){page=Math.max(1,Math.min(3,n));renderTable()}
+function changePage(n){goPage(page+n)}
+function openModal(){document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()})
+function saveEmployee(e){
+  e.preventDefault();
+  const name=document.getElementById('employeeName').value.trim()||'New Employee';
+  employees.unshift([name,'EMP-'+String(1213+employees.length).padStart(6,'0'),'Engineering','New Employee','Jakarta','Active','18 Aug 2026',20]);
+  page=1;renderTable();closeModal();e.target.reset();showToast(name+' created successfully');
+}
+let toastTimer;
+function showToast(message){
+  const t=document.getElementById('toast');document.getElementById('toastText').textContent=message;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+function toggleTheme(){
+  document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';
+}
+let accents=['','blue','green'],accentIndex=0;
+function cycleAccent(){
+  accentIndex=(accentIndex+1)%accents.length;
+  if(accents[accentIndex]) document.documentElement.dataset.accent=accents[accentIndex];
+  else delete document.documentElement.dataset.accent;
+  showToast('Accent theme: '+(accents[accentIndex]||'DOOR Orange'));
+}
+document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+}));
+renderTable();
+</script>
+</body>
+</html>

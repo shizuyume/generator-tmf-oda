@@ -18,3 +18,4 @@ Supported:
 - checkbox
 - radio
 - autocomplete
+- relation

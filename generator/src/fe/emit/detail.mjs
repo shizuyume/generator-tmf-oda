@@ -338,6 +338,11 @@ function detailFile(ir, page, res, adapter) {
  * @returns {{ written: string[], summary: string }}
  */
 export function emitDetails(feir, appDir) {
+  if (feir.output?.mfe?.federationTemplate === 'common-remote') {
+    // mcs-common owns detail emission entirely (emit/mcs-common/pages.mjs's *DetailPage,
+    // incl. the Card/Table viewToggle) - see emit/mfe.mjs's matching guard.
+    return { written: [], summary: 'detail: federationTemplate=common-remote - delegasi ke emit/mcs-common (detail.mjs dilewati)' };
+  }
   const written = [];
   const adapter = loadAdapter(feir.ui?.library ?? 'mui');
   const write = (rel, content) => {

@@ -127,6 +127,7 @@ async function buildIrFrom(opts, config) {
     tmfNumber: opts.tmf,
     basePath: opts.basePath,
     overrides: config.overrides || {},
+    databaseType: opts.db || opts.database || config.dbType || config.database || 'sqlite',
   });
   const merge = mergeMarkdown(ir, mdPath);
   if (merge.applied.length) ir.meta.markdownEnrichments = merge.applied;
@@ -143,7 +144,8 @@ function specOptions(cmd) {
     .option('-c, --component <dir>', 'path to a TMF component version folder (auto-locates openapi/ and userguide/)')
     .option('-m, --md <path>', 'optional user-authored markdown supplement')
     .option('--tmf <number>', 'override the derived TMF number')
-    .option('-b, --base-path <path>', 'override the derived TMF base path');
+    .option('-b, --base-path <path>', 'override the derived TMF base path')
+    .option('--database <type>', "alias of --db: target database, 'sqlite' (default) or 'postgres'");
 }
 
 /** Let the positional [target] stand in for --component/--spec, auto-detecting which one it is. */

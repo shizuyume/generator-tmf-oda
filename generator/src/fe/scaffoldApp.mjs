@@ -3,6 +3,7 @@ import path from 'node:path';
 import url from 'node:url';
 import { buildFEIR } from './buildFEIR.mjs';
 import { loadAdapter } from '../../libs/adapter.mjs';
+import * as mcsCommonAdapter from '../../libs/mcs-common.adapter.js';
 import { allocateFePort, scanFePorts } from './allocateFePort.mjs';
 
 const here = path.dirname(url.fileURLToPath(import.meta.url));
@@ -95,7 +96,12 @@ export function scaffoldApp(ir, { feTargetRoot, port = null, bePort = 3736, fePo
   const appName = (ir.meta?.name || 'fe-app').trim().replace(/\s+/g, '-');
   const appDir = path.join(feTargetRoot, appName);
   const library = ir.ui?.library ?? 'mui';
-  const adapter = loadAdapter(library);
+  // federationTemplate is a SEPARATE axis from ui.library (which stays 'mui' - visual
+  // library unchanged, only import source/output shape differs). Selects the fe-mcs-common
+  // template dir + adapter INSTEAD of feTemplateDirFor(library)/loadAdapter(library) below.
+  const federationTemplate = ir.output?.mfe?.federationTemplate ?? 'none';
+  const isMcsCommon = federationTemplate === 'common-remote';
+  const adapter = isMcsCommon ? mcsCommonAdapter : loadAdapter(library);
 
   if (fs.existsSync(appDir) && fs.readdirSync(appDir).length) {
     const err = new Error(`refusing to scaffold: ${appDir} already exists and is non-empty`);
@@ -131,7 +137,7 @@ export function scaffoldApp(ir, { feTargetRoot, port = null, bePort = 3736, fePo
   };
 
   // 1. salin template per library, isi token (render THROW pada placeholder hilang)
-  const tplDir = feTemplateDirFor(library);
+  const tplDir = isMcsCommon ? feTemplateDirFor('mcs-common') : feTemplateDirFor(library);
   for (const rel of walk(tplDir)) {
     const text = fs.readFileSync(path.join(tplDir, rel), 'utf8');
     const rendered = renderFeTemplate(text, tokens);
@@ -139,6 +145,10 @@ export function scaffoldApp(ir, { feTargetRoot, port = null, bePort = 3736, fePo
   }
 
   // 2. file data di-generate (deterministik dari YAML): theme + i18n labels
+  // SKIP total utk mcs-common: tidak ada ThemeProvider/i18n layer sendiri - common_remote
+  // membawa styling-nya sendiri dan product-qualification tidak punya lapisan i18n
+  // (verified) - src/gen/ tidak dipakai template ini sama sekali.
+  if (!isMcsCommon) {
   const tokensData = ir.theme?.tokens ?? {};
   const lightTheme = adapter.theme(tokensData, false);
   const darkThemeObj = adapter.theme(tokensData, true);
@@ -177,8 +187,9 @@ export const genThemeDark: ThemeOptions = ${JSON.stringify(darkTheme, null, 2)};
 `,
     );
   }
+  } // !isMcsCommon
 
-  return { appName, appDir, port: alloc.port, used: alloc.used ?? [], written: written.sort(), bePort, library };
+  return { appName, appDir, port: alloc.port, used: alloc.used ?? [], written: written.sort(), bePort, library, federationTemplate };
 }
 
 export async function scaffoldFromSpec(specPath, opts = {}) {

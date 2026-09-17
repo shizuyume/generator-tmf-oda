@@ -285,6 +285,7 @@ function resolveBasePath(doc, dialect, title, version, warnings) {
 export function buildIR({ doc, dialect, specPath }, options = {}) {
   const warnings = [];
   const overrides = options.overrides || {};
+  const dbTarget = options.databaseType || 'sqlite';
   const schemas = schemasOf(doc);
 
   const title = doc.info?.title || '';
@@ -321,10 +322,10 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
     const infra = [];
 
     for (const [propName, propSchema] of Object.entries(flat.properties)) {
-      const c = classifyProperty(doc, propName, propSchema, { required: flat.required });
+      const c = classifyProperty(doc, propName, propSchema, { required: flat.required, dbTarget });
       if (c.kind === 'infra') { infra.push(propName); continue; }
       if (c.kind === 'subResource') {
-        subResources.push(expandSubResource(doc, name, c, 1, overrides));
+        subResources.push(expandSubResource(doc, name, c, 1, overrides, dbTarget));
         continue;
       }
       if (c.kind === 'flattenedRef') flattenedRefs.push(c);
@@ -475,6 +476,7 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
       versionMajor: resolved.major,
       dialect,
       basePath,
+      databaseType: dbTarget,
       basePathSource: options.basePath ? 'cli override' : resolved.source,
       basePathConstant: `TMF${tmf}_BASE_PATH`,
       eventExchange: `${exchange}.events`,

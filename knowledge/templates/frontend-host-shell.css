@@ -1,0 +1,280 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   APP SHELL — GOLDEN TEMPLATE CSS
+   =====================================================================
+   Cara pakai:
+   1. Copy file ini ke sales-service/frontend/src/App.css (atau service baru)
+   2. Cari --brand: ganti dengan brandColor domain
+   3. Jangan ubah struktur CSS variable atau class names
+   ===================================================================== */
+
+:root {
+  --sidebar-w: 260px;
+  --sidebar-collapsed: 72px;
+  --topbar-h: 64px;
+  --brand: #2563eb;                   /* TODO: ganti dengan brandColor domain */
+  --brand-light: rgba(37,99,235,0.10); /* TODO: ganti dengan brandColor RGB */
+  --border: #e8ecf1;
+  --surface: #ffffff;
+  --bg: #f8fafc;
+  --content-radius: 16px;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-topbar: 0 1px 0 rgba(15,23,42,0.06);
+  --shadow-sidebar: 1px 0 0 var(--border);
+  --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Shell grid ── */
+.app-shell {
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, sans-serif;
+}
+
+.app-shell--collapsed .app-content {
+  margin-left: var(--sidebar-collapsed);
+}
+
+/* ── Content ── */
+.app-content {
+  margin-left: var(--sidebar-w);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left var(--transition);
+}
+
+.app-content__inner {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+.app-content__canvas {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Topbar skeleton ── */
+.app-topbar--skeleton {
+  height: var(--topbar-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+}
+
+/* ── Sidebar placeholder (loading state) ── */
+.app-sidebar-placeholder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  transition: width var(--transition);
+  z-index: 250;
+}
+
+/* ── Sidebar skeleton animation ── */
+@keyframes skPulse {
+  0% { opacity: 0.12; }
+  50% { opacity: 0.30; }
+  100% { opacity: 0.12; }
+}
+
+.sk-pulse {
+  background: rgba(255,255,255,0.18);
+  border-radius: 5px;
+  animation: skPulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.sk-pulse--light { background: rgba(0,0,0,0.06); }
+.sidebar-skeleton--light { background: var(--surface); border-right: 1px solid var(--border); }
+
+.sk-brand {
+  display: flex; gap: 10px; padding: 18px 16px 14px; align-items: center;
+}
+.sk-brand__logo { width: 36px; height: 36px; border-radius: 10px; }
+.sk-brand__logo--light { background: var(--brand-light); }
+.sk-brand__text { display: flex; flex-direction: column; gap: 5px; }
+
+.sk-w120 { width: 120px; } .sk-w96 { width: 96px; } .sk-w88 { width: 88px; }
+.sk-w80 { width: 80px; } .sk-w72 { width: 72px; } .sk-w56 { width: 56px; }
+.sk-w130 { width: 130px; }
+.sk-h12 { height: 12px; } .sk-h11 { height: 11px; }
+.sk-h10 { height: 10px; } .sk-h9 { height: 9px; }
+.sk-delay1 { animation-delay: 0.15s; }
+.sk-delay2 { animation-delay: 0.35s; }
+.sk-delay3 { animation-delay: 0.55s; }
+.sk-section { padding: 6px 16px 10px; }
+.sk-group-label { margin-bottom: 6px; margin-left: 2px; }
+.sk-menu-item { display: flex; align-items: center; gap: 10px; padding: 6px 2px; }
+.sk-icon { width: 18px; height: 18px; border-radius: 5px; }
+.sk-profile {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px; border-top: 1px solid var(--border);
+}
+.sk-profile--light { background: var(--surface); }
+.sk-profile__avatar { width: 32px; height: 32px; border-radius: 50%; }
+.sk-profile__text { display: flex; flex-direction: column; gap: 4px; }
+
+/* ── Dashboard ── */
+.dashboard {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ═══ Dashboard header — gradient lembut sesuai brand ═══ */
+/* Warna gradient: #efe9ff → #fef6ff untuk purple. Sesuaikan untuk brand lain */
+.dashboard__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid #dbe6f5;
+  background: linear-gradient(135deg, #efe9ff 0%, #fef6ff 100%);
+  box-shadow: 0 4px 16px rgba(189, 37, 235, 0.06);
+}
+
+.dashboard__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.dashboard__subtitle {
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+/* ── Remote health status ── */
+.remote-shell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.remote-shell__status { display: flex; align-items: center; gap: 8px; }
+.remote-shell__dot { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; display: inline-block; flex-shrink: 0; }
+.remote-shell__dot--error { background: #dc2626; }
+.remote-button {
+  padding: 5px 14px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface); cursor: pointer; font-size: 0.82rem;
+  color: var(--text-primary); transition: background 0.15s;
+}
+.remote-button:hover { background: #f1f5f9; }
+
+/* ── Dashboard route cards ── */
+.dashboard__section { display: flex; flex-direction: column; gap: 12px; }
+.dashboard__section-title {
+  margin: 0; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary);
+}
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.dashboard-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 18px;
+  border-radius: 12px; border: 1px solid var(--border); background: var(--surface);
+  text-decoration: none; color: inherit;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.dashboard-card:hover {
+  transform: translateY(-2px); border-color: #cbd5e1;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.05);
+}
+.dashboard-card__icon { display: flex; align-items: center; width: 28px; height: 28px; }
+.dashboard-card__title { margin: 0; font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.dashboard-card__summary { margin: 0; font-size: 0.83rem; color: var(--text-secondary); line-height: 1.5; }
+
+/* ── Error Boundary ── */
+.remote-error {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 24px; text-align: center;
+}
+.remote-error__eyebrow {
+  margin: 0; font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: #dc2626; font-weight: 700;
+}
+.remote-error h3 { margin: 8px 0; color: var(--text-primary); font-size: 1.05rem; }
+.remote-error p { margin: 4px 0; color: var(--text-secondary); font-size: 0.88rem; max-width: 500px; line-height: 1.5; }
+
+/* ── Loader / RemotePageLoader ── */
+.app-loader {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 24px; gap: 8px;
+}
+.app-loader__orbital { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.app-loader__spinner {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 3px solid #e2e8f0; border-top-color: var(--brand);
+  animation: spin 0.75s linear infinite;
+}
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.4; }
+  50% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
+}
+.app-loader__pulse {
+  position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--brand);
+}
+.app-loader__pulse--one { animation: pulseRing 2s ease-out infinite; }
+.app-loader__pulse--two { animation: pulseRing 2s ease-out 0.6s infinite; }
+.app-loader__title { margin: 10px 0 0; font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.app-loader__message { margin: 0; font-size: 0.83rem; color: var(--text-secondary); }
+@keyframes shimmer { 0% { background-position: -300px 0; } 100% { background-position: 300px 0; } }
+.app-loader__skeleton { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 320px; margin-top: 12px; }
+.app-loader__line {
+  height: 10px; border-radius: 5px;
+  background: linear-gradient(90deg, #f1f5f9 30%, #e2e8f0 50%, #f1f5f9 70%);
+  background-size: 600px; animation: shimmer 1.8s ease-in-out infinite;
+}
+.app-loader__line--lg { width: 100%; }
+.app-loader__line--md { width: 70%; }
+.app-loader__line--sm { width: 45%; }
+
+/* ── Not found ── */
+.not-found {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 24px; text-align: center;
+}
+.not-found h2 { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+.not-found p { margin: 6px 0 0; color: var(--text-secondary); font-size: 0.88rem; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .app-content { margin-left: var(--sidebar-collapsed); }
+}
+@media (max-width: 767px) {
+  .app-content { margin-left: 0; }
+  .dashboard { padding: 16px; gap: 14px; }
+  .dashboard__header { padding: 20px; }
+  .dashboard__grid { grid-template-columns: 1fr; }
+}

@@ -31,6 +31,11 @@ const CASES = [
   { name: 'tmf736-v5', port: 3901, service: 'revenue-sharing-algorithm-service', components: ['tmf736/5.0.0'] },
   { name: 'tmf673-v4', port: 3902, service: 'geographic-address-service', components: ['tmf673/4.0.0'] },
   { name: 'geo-multi', port: 3903, service: 'geographic-service', components: ['tmf673/4.0.0', 'tmf674/4.0.0', 'tmf675/4.0.0'] },
+  // TMF688's own resource is literally named `Event`, which collides with the
+  // scaffold's reserved `event/` infra dir unless the module-name remap works.
+  { name: 'tmf688-v4', port: 3904, service: 'event-management-service', components: ['tmf688/4.0.0'] },
+  // same component, targeting postgres - pins the database-dependent column types.
+  { name: 'tmf688-v4-pg', port: 3905, service: 'event-management-pg-service', components: ['tmf688/4.0.0'], database: 'postgres' },
 ];
 
 // artefacts that are not source and would make snapshots noisy
@@ -56,10 +61,11 @@ function generateCase(c, into) {
   fs.mkdirSync(into, { recursive: true });
   const run = args => execFileSync(process.execPath, [cli, ...args], { cwd: root, encoding: 'utf8', stdio: 'pipe' });
 
+  const dbArgs = c.database ? ['--database', c.database] : [];
   const first = path.join(docs, c.components[0]);
-  run(['scaffold', '--component', first, '--target-root', into, '--name', c.service, '--port', String(c.port)]);
+  run(['scaffold', '--component', first, '--target-root', into, '--name', c.service, '--port', String(c.port), ...dbArgs]);
   for (const comp of c.components) {
-    run(['emit', '--component', path.join(docs, comp), '--target-root', into, '--name', c.service]);
+    run(['emit', '--component', path.join(docs, comp), '--target-root', into, '--name', c.service, ...dbArgs]);
   }
   return path.join(into, c.service);
 }

@@ -47,7 +47,10 @@ const UNUSABLE_NAMES = new Set([
   'Object', 'Array', 'String', 'Number', 'Boolean', 'Function', 'Date', 'Error',
   'Map', 'Set', 'Promise', 'Symbol', 'JSON', 'Math', 'RegExp', 'Infinity', 'NaN',
   'Class', 'Interface', 'Enum', 'Type', 'Void', 'Null', 'Undefined', 'Any',
+  // hardcoded infra entity classes (see scaffold/newService.mjs entitiesBarrel)
+  'EventSubscription', 'EventLog',
 ]);
+
 
 const PG_IDENTIFIER_LIMIT = 63;
 

@@ -58,6 +58,12 @@ function modelInterface(name, node) {
 }
 
 export function emitApitypes(feir, appDir) {
+  if (feir.output?.mfe?.federationTemplate === 'common-remote') {
+    // mcs-common owns type emission entirely (emit/mcs-common/types.mjs, derived from
+    // each resource's add/edit payload spec directly) - src/gen/api/types.generated.ts
+    // would be an unused parallel type source for this template.
+    return { written: [], summary: 'apitype: federationTemplate=common-remote - delegasi ke emit/mcs-common (apitype.mjs dilewati)' };
+  }
   if (!feir.apis?.length && !feir.models) {
     return { written: [], summary: '0 api registry (apis[]/models{} tidak dideklarasikan)' };
   }

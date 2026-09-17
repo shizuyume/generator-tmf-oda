@@ -59,6 +59,7 @@ const APP_CASES = [
   { name: 'fe-default-full',   spec: 'frontend-spec-tmf736-fe-default.yaml', port: 5015, library: 'fe-default' },
   { name: 'fe-default-dashboard', spec: 'frontend-spec-fe-default-dashboard-demo.yaml', port: 5016, library: 'fe-default' },
   { name: 'fe-default-mfe', spec: 'frontend-spec-fe-default-mfe-demo.yaml', port: 5017, library: 'fe-default' },
+  { name: 'mcs-common-tmf736', spec: 'frontend-spec-tmf736-mcs-common.yaml', port: 5018, library: 'mui' },
 ];
 
 // artefacts that are not source and would make snapshots noisy (pattern golden.mjs)

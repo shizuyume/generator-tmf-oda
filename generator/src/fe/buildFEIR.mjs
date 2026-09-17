@@ -50,6 +50,7 @@ const FIELD_TYPE_SEMANTIC = {
   checkbox: 'checkbox',
   radio: 'radio-group',
   autocomplete: 'typeahead', // vocabulary LAMA (M0) - bukan entri baru
+  relation: 'typeahead', // mcs-common: search-by-name dinamis, tetap vocabulary typeahead - bukan entri baru
 };
 const BLOCK_SEMANTIC = { card: 'card', 'description-list': 'description-list', table: 'table', timeline: 'timeline', tabs: 'tabs' };
 const VALIDATION_RULES = new Set(['required', 'minLength', 'maxLength', 'email', 'min', 'max', 'pattern']);
@@ -293,7 +294,7 @@ function normalizeField(f, pointer) {
   const out = { name: f.name };
   if (f.label !== undefined) out.label = f.label;
   out.type = FIELD_TYPE_SEMANTIC[f.type] ?? f.type; // schema sudah menjamin f.type ∈ enum
-  for (const k of ['required', 'defaultValue', 'placeholder', 'readOnly', 'computedFrom', 'rows', 'options', 'optionsSource', 'minItems', 'itemLabel', 'addButton', 'itemPayload', 'min', 'max', 'step', 'multiple', 'layout', 'minLength', 'maxLength', 'pattern']) {
+  for (const k of ['required', 'defaultValue', 'placeholder', 'readOnly', 'computedFrom', 'rows', 'options', 'optionsSource', 'minItems', 'itemLabel', 'addButton', 'itemPayload', 'min', 'max', 'step', 'multiple', 'layout', 'minLength', 'maxLength', 'pattern', 'relation']) {
     if (f[k] !== undefined) out[k] = f[k];
   }
   out.zodRules = zodRules(f, pointer);

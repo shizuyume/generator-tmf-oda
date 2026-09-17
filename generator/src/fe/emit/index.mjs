@@ -14,7 +14,7 @@ import url from 'node:url';
 
 const here = path.dirname(url.fileURLToPath(import.meta.url));
 
-const EMITTER_KINDS = ['apitype', 'page', 'form', 'detail', 'dashboard', 'mfe']; // apitype PERTAMA - page/form mengimpor types.generated.ts (F5); dashboard SETELAH page (F7, butuh routablePages dari page.mjs sudah menulis routes)
+const EMITTER_KINDS = ['apitype', 'page', 'form', 'detail', 'dashboard', 'mfe', 'mcs-common']; // apitype PERTAMA - page/form mengimpor types.generated.ts (F5); dashboard SETELAH page (F7, butuh routablePages dari page.mjs sudah menulis routes). mcs-common TERAKHIR - guard federationTemplate sendiri (no-op utk 3 adapter lama), independen dari page/form/detail/mfe (emit/mcs-common/*.mjs adalah emitter penuh terpisah, lihat file itu sendiri)
 
 /**
  * Emit semua jenis halaman dari FEIR ke app CRA5 di appDir.
@@ -29,7 +29,9 @@ export async function emitAll(feir, appDir) {
   for (const kind of EMITTER_KINDS) {
     const file = path.join(here, `${kind}.mjs`);
     if (!fs.existsSync(file)) continue; // file belum ditulis untuk kind ini (mis. dashboard.mjs sebelum F7)
-    const fnName = `emit${kind.charAt(0).toUpperCase()}${kind.slice(1)}s`;
+    // PascalCase(kind) + 's', kebab-aware (e.g. 'mcs-common' -> 'McsCommon' -> 'emitMcsCommons').
+    const pascal = kind.replace(/(^|-)([a-z0-9])/g, (_, __, c) => c.toUpperCase());
+    const fnName = `emit${pascal}s`;
     const mod = await import(url.pathToFileURL(file).href);
     if (typeof mod[fnName] !== 'function') {
       throw new Error(`emit/index: ${file} tidak mengekspor ${fnName}()`);

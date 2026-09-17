@@ -110,7 +110,13 @@ function dashboardFile(ir, page, adapter) {
   L.push('    ]).then((entries) => {');
   L.push('      if (!alive) return;');
   L.push('      setData(Object.fromEntries(entries));');
-  L.push('      setLoading(false);');
+  L.push('    }).catch(() => {');
+  L.push('      // Backend belum tersedia / salah satu request gagal - dashboard tetap');
+  L.push('      // tampil dengan data kosong (stat 0, tabel kosong), BUKAN crash. Sama pola');
+  L.push('      // dengan empty-state list/detail lain - tanpa ini Promise.all yang reject');
+  L.push('      // tak pernah tertangkap sama sekali (unhandled rejection -> React crash).');
+  L.push('    }).finally(() => {');
+  L.push('      if (alive) setLoading(false);');
   L.push('    });');
   L.push('    return () => { alive = false; };');
   L.push('  }, []);');
@@ -185,6 +191,12 @@ function dashboardFile(ir, page, adapter) {
 }
 
 export function emitDashboards(feir, appDir) {
+  if (feir.output?.mfe?.federationTemplate === 'common-remote') {
+    // Dashboards are out of scope for mcs-common in this round (no dashboard concept in
+    // the hand-built reference, product-qualification has none either) - explicit no-op
+    // rather than silently emitting a self-contained-style Dashboard.tsx nothing wires up.
+    return { written: [], summary: 'dashboard: federationTemplate=common-remote - belum didukung mcs-common, dilewati' };
+  }
   const dashboardPages = (feir.pages ?? []).filter((p) => p.view === 'dashboard');
   if (!dashboardPages.length) {
     return { written: [], summary: '0 dashboard page(s)' };

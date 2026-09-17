@@ -91,6 +91,29 @@
                   "target": { "type": "string" }
                 }
               }
+            },
+            "federationTemplate": {
+              "description": "Sumbu TERPISAH dari ui.library (yang selalu soal pustaka visual). 'none' (default, tersirat bila absen) = perilaku lama, self-contained, remotes:{} (guardrail emit/mfe.mjs tetap berlaku penuh). 'common-remote' = MFE ini MENGONSUMSI shared remote (mis. mcs/general/common) saat runtime -- ditangani emitter terpisah emit/mcs-common/*, BUKAN emit/mfe.mjs.",
+              "enum": ["none", "common-remote"]
+            },
+            "remotes": {
+              "description": "HANYA bermakna bila federationTemplate=common-remote. Remote federasi yang dikonsumsi (BUKAN diexpose) MFE ini saat runtime -- generik, tidak di-hardcode ke satu nama remote.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "urlEnvVar", "defaultUrl", "entryFile"],
+                "properties": {
+                  "name": { "type": "string", "description": "Nama remote webpack, mis. common_remote." },
+                  "urlEnvVar": { "type": "string", "description": "Nama env var runtime override, mis. REACT_APP_COMMON_REMOTE_URL." },
+                  "defaultUrl": { "type": "string", "description": "Base URL default bila urlEnvVar tidak diset, mis. http://localhost:4000." },
+                  "entryFile": { "type": "string", "description": "Nama file remote entry, mis. commonRemoteEntry.js." }
+                }
+              }
+            },
+            "hub": {
+              "description": "Trigger eksplisit (bukan auto-detect dari api.endpoints -- deliberately fragile bila ditebak dari path string) untuk generate halaman event-hub subscription (pages/hub, service/hubService.ts). HANYA berlaku pada federationTemplate=common-remote.",
+              "type": "boolean"
             }
           }
         },
@@ -284,8 +307,21 @@
       }
     },
     "fieldType": {
-      "description": "type field = subset semantic vocabulary dieja pendek di YAML (F3 menambah date/datetime/checkbox/radio/autocomplete). autocomplete memetakan ke vocabulary typeahead yang SUDAH ADA -- bukan entri baru.",
-      "enum": ["text", "textarea", "number", "email", "password", "select", "toggle", "repeatable", "date", "datetime", "checkbox", "radio", "autocomplete"]
+      "description": "type field = subset semantic vocabulary dieja pendek di YAML (F3 menambah date/datetime/checkbox/radio/autocomplete). autocomplete memetakan ke vocabulary typeahead yang SUDAH ADA -- bukan entri baru. 'relation' (mcs-common template) JUGA memetakan ke typeahead -- bukan entri vocabulary baru -- tapi options-nya dinamis (searchEndpoint), lihat $defs.fieldRelation dan field.relation. BUKAN optionsSource:from-api (yang tetap dilarang v1 untuk field lain) -- relation adalah field type tersendiri.",
+      "enum": ["text", "textarea", "number", "email", "password", "select", "toggle", "repeatable", "date", "datetime", "checkbox", "radio", "autocomplete", "relation"]
+    },
+    "fieldRelation": {
+      "description": "Config utk field.type=relation -- autocomplete search-by-name-dan-pilih terhadap resource lain (TIDAK PERNAH input id manual). Selalu satu pick (RefAutocompleteField) -- relasi BANYAK dicapai dgn membungkus field ini di dalam field.type=repeatable/itemFields yang SUDAH ADA, bukan lewat properti di sini. Dua field dgn resource sama berbagi 1 lookup service ter-generate (dedup di buildFEIR.mjs).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource", "searchEndpoint", "labelField", "valueField"],
+      "properties": {
+        "resource": { "type": "string", "description": "Nama logis resource yang dicari, mis. Policy -- dipakai sbg kunci dedup lintas field/halaman dan nama file service/<resource>LookupService.ts." },
+        "searchEndpoint": { "type": "string", "description": "Bentuk 'METHOD /path?q={query}'. Endpoint boleh belum ada (service lookup ter-generate tetap fallback [] + console.warn bila base URL env var belum diset -- generation tetap deterministic)." },
+        "labelField": { "type": "string", "description": "Field pada hasil pencarian yang ditampilkan sbg label opsi, mis. name." },
+        "valueField": { "type": "string", "description": "Field pada hasil pencarian yang jadi id tersimpan, mis. id." },
+        "pairedNameField": { "type": "string", "description": "Nama field SAUDARA (dalam fields[]/itemFields[] yang sama) yang dipasangkan -- saat opsi dipilih, labelField hasil pencarian JUGA ditulis ke field ini. Memungkinkan itemPayload/payload lama (mis. item.policyConditionId + item.policyConditionName terpisah) tetap TANPA PERUBAHAN -- hanya field *Id yang berubah type ke relation, field *Name pasangannya tidak dirender sbg input sendiri lagi." }
+      }
     },
     "renderKind": {
       "description": "render = subset semantic vocabulary (tag, status-chip, typeahead, ...) + bentuk komposit v1.",
@@ -395,7 +431,8 @@
         "max": { "type": ["number", "string"], "description": "F3: batas atas (number) atau tanggal ISO maksimal (date/datetime); juga dipakai F4 sebagai rule validasi deklaratif." },
         "step": { "type": "number", "description": "F3: atribut HTML step untuk number/date/datetime." },
         "multiple": { "type": "boolean", "description": "F3: pilihan ganda untuk select/autocomplete." },
-        "layout": { "enum": ["inline", "stacked"], "description": "F3: arah render untuk checkbox/radio-group." }
+        "layout": { "enum": ["inline", "stacked"], "description": "F3: arah render untuk checkbox/radio-group." },
+        "relation": { "$ref": "#/$defs/fieldRelation", "description": "WAJIB bila type=relation, diabaikan selainnya." }
       }
     },
     "button": {
@@ -611,7 +648,8 @@
           }
         },
         "api": { "type": "string" },
-        "emptyState": { "$ref": "#/$defs/emptyState" }
+        "emptyState": { "$ref": "#/$defs/emptyState" },
+        "viewToggle": { "type": "boolean", "description": "mcs-common template: bila true DAN block berisi data repeatable, tampilkan toggle Card/Table (ikon kanan-atas section) -- default false (fixed render seperti sebelumnya)." }
       }
     },
     "detailView": {

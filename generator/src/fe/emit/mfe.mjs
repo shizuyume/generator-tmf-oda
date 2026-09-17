@@ -17,7 +17,11 @@
 //   .tmfgen-fe-manifest.json - manifest idempoten: daftar file managed/generated + hash
 //                              (deteksi file managed yg diedit -> warning), port, exposes.
 //
-// Guardrail: 0 referensi common_remote / REACT_APP_COMMON_REMOTE_URL (throw bila ada).
+// Guardrail: 0 referensi common_remote / REACT_APP_COMMON_REMOTE_URL (throw bila ada) —
+// berlaku PENUH untuk output.mfe.federationTemplate default ('none', 3 adapter self-
+// contained). Bila federationTemplate === 'common-remote', emitter ini SKIP total (lihat
+// emitMfes()) - craco/exposes/dst untuk template itu ditulis emit/mcs-common/* sebagai
+// gantinya, jadi guard di sini tidak pernah dilonggarkan/dilewati untuk kasus lama.
 // Deterministik: murni FEIR + isi file saat ini; tanpa clock/random/path absolut.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -223,6 +227,13 @@ function manifestFile(feir, appDir, written, managed) {
 export function emitMfes(feir, appDir) {
   if (feir.output?.type !== 'mfe') {
     return { written: [], summary: 'MFE mode nonaktif (output.type != mfe) - dilewati' };
+  }
+  if (feir.output?.mfe?.federationTemplate === 'common-remote') {
+    // Delegasi penuh ke emit/mcs-common/* (lihat emit/index.mjs) - emitter ini TIDAK
+    // menulis apa pun untuk template federated. Guard di bawah TIDAK dipanggil di sini
+    // karena tidak relevan (mcs-common MEMANG mengonsumsi common_remote secara sengaja);
+    // guard tetap berlaku 100% untuk federationTemplate default ('none').
+    return { written: [], summary: 'MFE mode: federationTemplate=common-remote - delegasi ke emit/mcs-common (mfe.mjs dilewati)' };
   }
   guardCommonRemote(feir);
 
