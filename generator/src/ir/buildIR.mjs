@@ -1,6 +1,6 @@
 import { flattenSchema, refName, resolveRef } from '../ingest/schemaUtils.mjs';
 import { classifyProperty, expandSubResource } from './nesting.mjs';
-import { pascal, camel, kebab, snake, apiName, exchangeBase, tmfNumber, majorVersion } from './naming.mjs';
+import { pascal, camel, identifier, kebab, snake, apiName, exchangeBase, tmfNumber, majorVersion } from './naming.mjs';
 
 const INFRA_PATH_SEGMENTS = new Set(['hub', 'listener']);
 
@@ -71,21 +71,64 @@ function requestSchemaName(doc, operation) {
  * what the seeder emits; v4/Swagger2 specs carry none (0 of 78 in the corpus), so
  * seeding is simply not generated there.
  */
-function seedExamplesFor(doc, operation) {
-  const rb = deref(doc, operation?.requestBody);
-  const media = rb?.content?.['application/json'];
-  const examples = media?.examples;
+/** Pull { label, value } pairs out of an OAS `examples` map or a lone `example`. */
+function examplesFromMedia(doc, media, prefix) {
   const out = [];
-  if (examples) {
-    for (const [label, node] of Object.entries(examples)) {
+  if (!media) return out;
+  if (media.examples) {
+    for (const [label, node] of Object.entries(media.examples)) {
       const resolved = node?.$ref ? resolveRef(doc, node.$ref)?.schema : node;
       const value = resolved?.value;
-      if (value && typeof value === 'object') out.push({ label, value });
+      if (value && typeof value === 'object') out.push({ label: `${prefix}${label}`, value });
     }
-  } else if (media?.example && typeof media.example === 'object') {
-    out.push({ label: 'example', value: media.example });
+  } else if (media.example && typeof media.example === 'object') {
+    out.push({ label: `${prefix}example`, value: media.example });
   }
   return out;
+}
+
+/**
+ * A list example is an ARRAY of instances; each element is its own seed row.
+ * Passing the array through as one payload would seed a single nonsense row.
+ */
+function flattenExamples(examples) {
+  const out = [];
+  for (const { label, value } of examples) {
+    if (Array.isArray(value)) {
+      value.forEach((v, i) => {
+        if (v && typeof v === 'object') out.push({ label: `${label}[${i}]`, value: v });
+      });
+    } else {
+      out.push({ label, value });
+    }
+  }
+  return out;
+}
+
+/**
+ * Seed rows for a resource.
+ *
+ * POST request examples are the first choice - they are authored as create payloads.
+ * But a READ-ONLY resource has no POST at all, and those are exactly the ones a
+ * conformance kit cannot populate through the API: TMF936's /productOffering and
+ * TMF931's /apiProduct declare only `get`, so their kits test /{id} against an empty
+ * database and every attribute assertion fails.
+ *
+ * Those specs do carry GET RESPONSE examples, which are the same instances in their
+ * persisted shape, so they are used as the fallback. The item response is preferred
+ * over the collection because it is a single object rather than an array, and
+ * response-only keys (`href`) are ignored by the builder rather than rejected.
+ *
+ * Not every spec has either: TMF654 carries no example anywhere, so it stays unseeded.
+ */
+function seedExamplesFor(doc, collection, item) {
+  const post = examplesFromMedia(doc, deref(doc, collection?.post?.requestBody)?.content?.['application/json'], '');
+  if (post.length) return flattenExamples(post);
+
+  const ok = op => deref(doc, op?.responses?.['200'])?.content?.['application/json'];
+  const fromItem = examplesFromMedia(doc, ok(item?.get), 'GET item: ');
+  const fromList = examplesFromMedia(doc, ok(collection?.get), 'GET list: ');
+  return flattenExamples([...fromItem, ...fromList]);
 }
 
 /** Path-level parameters apply to every operation on that path, in both dialects. */
@@ -342,11 +385,17 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
       warnings.push(`${name} spec declares no ${missing.join('/')} operation; those routes are NOT emitted.`);
     }
 
+    // The spec's own name is what the schema lookups above needed (`<name>_FVO`);
+    // from here on the name is a TypeScript identifier, so it has to be a legal one.
+    // `specName` is retained because sibling-reference matching below compares
+    // against schema names, not class names.
+    const className = identifier(name);
     resources.push({
-      name,
-      camelName: camel(name),
-      kebabName: kebab(name),
-      tableName: overrides[name]?.tableName ?? snake(name),
+      name: className,
+      specName: name,
+      camelName: camel(className),
+      kebabName: kebab(className),
+      tableName: overrides[name]?.tableName ?? snake(className),
       pathSegment: segment,
       pathKey: key,
       parentSegments: paths.parentSegments,
@@ -362,7 +411,7 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
       createShape: shapeOf(createVariant),
       updateShape: shapeOf(updateVariant),
       houseFilters,
-      seedExamples: seedExamplesFor(doc, collection?.post),
+      seedExamples: seedExamplesFor(doc, collection, item),
       operations: ops,
       paths: { collection: paths.collectionPath, item: paths.itemPath },
     });
@@ -375,12 +424,14 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
    * prefixed columns). Cross-component refs stay flattened, because no FK can span
    * services. The check is purely structural, so it needs no human judgement.
    */
-  const resourceNames = new Map(resources.map(r => [r.name, r]));
+  // keyed by the SPEC name: `fr.targetRef` is a schema name, which is what the spec
+  // wrote, not the sanitised class name
+  const resourceNames = new Map(resources.map(r => [r.specName ?? r.name, r]));
   for (const r of resources) {
     const keep = [];
     for (const fr of r.flattenedRefs) {
       const target = fr.targetRef ? canonicalSchemaName(fr.targetRef.replace(/Ref$/, '')) : null;
-      const sibling = target && target !== r.name ? resourceNames.get(target) : null;
+      const sibling = target && target !== (r.specName ?? r.name) ? resourceNames.get(target) : null;
       if (!sibling) { keep.push(fr); continue; }
       r.resourceRefs.push({
         name: fr.name,
@@ -392,6 +443,11 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
         description: fr.description,
         // retained so the response mapper knows which ref properties to project back
         projectedProps: fr.columns.map(c => c.sourceProp),
+        // The schema this property points at, e.g. 'OpenGatewayProductSpecificationRef'.
+        // TMF v5 marks '@type' REQUIRED on every Ref schema (it is the discriminator),
+        // and the value the specs use in their own examples is this schema's name - not
+        // the referred entity's name, which is what '@referredType' carries.
+        refSchema: fr.targetRef || null,
       });
     }
     r.flattenedRefs = keep;

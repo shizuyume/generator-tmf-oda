@@ -9,6 +9,7 @@ import { mergeMarkdown } from './ir/mergeMarkdown.mjs';
 import { allocatePort } from './scaffold/allocatePort.mjs';
 import { scaffoldService } from './scaffold/newService.mjs';
 import { emitResources } from './emit/index.mjs';
+import { buildCtk } from './ctk/buildCtk.mjs';
 import { probeHost, describeProfile } from './inject/probeHost.mjs';
 import { injectIntoHost, describePlan } from './inject/apply.mjs';
 import { tmfNumber } from './ir/naming.mjs';
@@ -126,7 +127,7 @@ async function buildIrFrom(opts, config) {
     tmfNumber: opts.tmf,
     basePath: opts.basePath,
     overrides: config.overrides || {},
-    databaseType: opts.database || config.database || 'sqlite',
+    databaseType: opts.db || opts.database || config.dbType || config.database || 'sqlite',
   });
   const merge = mergeMarkdown(ir, mdPath);
   if (merge.applied.length) ir.meta.markdownEnrichments = merge.applied;
@@ -144,7 +145,7 @@ function specOptions(cmd) {
     .option('-m, --md <path>', 'optional user-authored markdown supplement')
     .option('--tmf <number>', 'override the derived TMF number')
     .option('-b, --base-path <path>', 'override the derived TMF base path')
-    .option('--database <type>', "target database: 'sqlite' (default) or 'postgres'");
+    .option('--database <type>', "alias of --db: target database, 'sqlite' (default) or 'postgres'");
 }
 
 /** Let the positional [target] stand in for --component/--spec, auto-detecting which one it is. */
@@ -192,10 +193,16 @@ specOptions(program
   .option('-p, --port <number>', 'explicit port (default: first free in the configured range)', v => Number(v))
   .option('-r, --target-root <dir>', 'override targetRoot from tmfgen.config.json')
   .option('--dry-run', 'report what would be written without writing anything')
+  .option('--db <engine>', "database the .env.example ships configured for: 'sqlite' (default) or 'postgres'. Must match the --db used for emit.")
   .action(async (target, opts) => {
     applyTarget(target, opts);
     const config = loadConfig();
     const targetRoot = path.resolve(opts.targetRoot || config.targetRoot || '.');
+    const dbType = opts.db || config.dbType || 'sqlite';
+    if (!['sqlite', 'postgres'].includes(dbType)) {
+      console.error("error: --db must be 'sqlite' or 'postgres', got '" + dbType + "'");
+      process.exit(2);
+    }
     const { ir } = await buildIrFrom(opts, config);
 
     let alloc;
@@ -215,6 +222,7 @@ specOptions(program
     console.log(`  port          ${alloc.port}   (${alloc.source})`);
     console.log(`  ports in use  ${alloc.used.join(', ') || 'none found'}`);
     console.log('  resources     0 (scaffold only - resource emitters land in M3+)');
+    console.log(`  database      ${dbType}`);
 
     if (opts.dryRun) {
       console.log('\n  dry run: nothing written');
@@ -226,7 +234,7 @@ specOptions(program
       process.exit(5);
     }
 
-    const result = scaffoldService(ir, { targetRoot, serviceName, port: alloc.port });
+    const result = scaffoldService(ir, { targetRoot, serviceName, port: alloc.port, dbType });
     console.log(`\n  wrote ${result.written.length} backend files (${result.templateCount} from templates, 6 generated) + service package.json`);
     console.log(`  next: cd ${toPosix(result.backendDir)} && yarn install && yarn build`);
   });
@@ -238,6 +246,8 @@ specOptions(program
   .option('-r, --target-root <dir>', 'override targetRoot from tmfgen.config.json')
   .option('--ref-strategy <mode>', "single-ref handling: 'table' (normalised, default) or 'flatten'")
   .option('--soft-delete <mode>', "soft-delete scope: 'roots' (default) or 'all'")
+  .option('--db <engine>', "target database for non-portable column types: 'sqlite' (default) or 'postgres'")
+  .option('--nested-routes', 'emit nested resources under their parent path as the spec declares (e.g. /topic/{topicId}/event) instead of flat at the root. CHANGES THE API CONTRACT of already-generated services.')
   .action(async (target, opts) => {
     applyTarget(target, opts);
     const config = loadConfig();
@@ -257,8 +267,13 @@ specOptions(program
       overrides: config.overrides || {},
       refStrategy: opts.refStrategy || config.refStrategy || 'table',
       softDelete: opts.softDelete || config.softDelete || 'roots',
-      databaseType: opts.database || config.database || 'sqlite',
+      dbType: opts.db || config.dbType || 'sqlite',
+      nestedRoutes: opts.nestedRoutes ?? config.nestedRoutes ?? false,
     };
+    if (!['sqlite', 'postgres'].includes(emitOpts.dbType)) {
+      console.error("error: --db must be 'sqlite' or 'postgres', got '" + emitOpts.dbType + "'");
+      process.exit(2);
+    }
     const result = emitResources(ir, emitOpts);
 
     console.log('TMF' + ir.meta.tmfNumber + '  ' + ir.meta.specTitle + '  (' + ir.meta.dialect + ')');
@@ -359,7 +374,6 @@ specOptions(program
         refStrategy: opts.refStrategy || config.refStrategy || 'table',
         softDelete: opts.softDelete || config.softDelete || 'roots',
         overrides: config.overrides || {},
-        databaseType: opts.database || config.database || 'sqlite',
         host, mode: 'inject', dryRun: true,
       });
       console.log('DRY RUN - no files written.');
@@ -390,7 +404,6 @@ specOptions(program
       refStrategy: opts.refStrategy || config.refStrategy || 'table',
       softDelete: opts.softDelete || config.softDelete || 'roots',
       overrides: config.overrides || {},
-      databaseType: opts.database || config.database || 'sqlite',
       host,
       mode: 'inject',
     });
@@ -615,6 +628,55 @@ specOptions(feGen
     console.log(`  wrote ${result.written.length} files:`);
     for (const f of result.written) console.log(`    + ${f}`);
     console.log(`  next: cd ${toPosix(appDir)} && yarn build`);
+  });
+
+
+specOptions(program
+  .command('ctk')
+  .description('Generate a Conformance Test Kit for a component TM Forum ships none for (writes into <service>/backend/ctk/).'))
+  .option('-n, --name <serviceDir>', 'service directory name (default: derived from the spec)')
+  .option('-r, --target-root <dir>', 'override targetRoot from tmfgen.config.json')
+  .option('-p, --port <number>', 'port the service listens on (default: identity port)', v => Number(v))
+  .option('-u, --url <url>', 'full base URL to test against (default: http://127.0.0.1:<port>/<basePath>/)')
+  .option('-f, --force', 'overwrite an existing ctk/ directory')
+  .action(async (target, opts) => {
+    applyTarget(target, opts);
+    const config = loadConfig();
+    const targetRoot = path.resolve(opts.targetRoot || config.targetRoot || '.');
+    const { ir } = await buildIrFrom(opts, config);
+
+    const serviceName = opts.name || ir.meta.serviceNameSuggestion;
+    const backendDir = path.join(targetRoot, serviceName, 'backend');
+    if (!fs.existsSync(backendDir)) {
+      console.error('error: ' + toPosix(backendDir) + ' not found');
+      console.error('  run `tmfgen scaffold` first');
+      process.exit(6);
+    }
+
+    const ctkDir = path.join(backendDir, 'ctk');
+    // Never clobber a kit TM Forum shipped - those are the authoritative ones.
+    if (fs.existsSync(ctkDir) && !opts.force) {
+      console.error('error: ' + toPosix(ctkDir) + ' already exists');
+      console.error('  a shipped TM Forum kit must not be overwritten by a generated one');
+      console.error('  pass --force only if you are sure this kit was generated');
+      process.exit(7);
+    }
+
+    const result = buildCtk(ir, { port: opts.port ?? undefined, url: opts.url ?? undefined });
+
+    console.log(`TMF${ir.meta.tmfNumber}  ${ir.meta.specTitle} v${ir.meta.specVersion}`);
+    console.log(`  target        ${toPosix(ctkDir)}`);
+    console.log(`  resources     ${result.resourceCount} tested`);
+    console.log(`  requests      ${result.requestCount}`);
+    console.log(`  payloads      ${result.payloadCount} synthesised`);
+
+    for (const f of result.files) {
+      const abs = path.join(ctkDir, f.path);
+      fs.mkdirSync(path.dirname(abs), { recursive: true });
+      fs.writeFileSync(abs, f.text, 'utf8');
+    }
+    console.log(`\n  wrote ${result.files.length} files`);
+    console.log(`  next: cd ${toPosix(path.join(ctkDir, 'ctk'))} && npm install && npm start`);
   });
 
 program.parseAsync(process.argv);

@@ -9,7 +9,7 @@ import { RetrieveLocationRelationIntersection } from './retrieve-location-relati
  */
 @Entity('retrieve_location_relation')
 export class RetrieveLocationRelation {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** Status of the task (inProgress, terminatedWithErrror, done) */

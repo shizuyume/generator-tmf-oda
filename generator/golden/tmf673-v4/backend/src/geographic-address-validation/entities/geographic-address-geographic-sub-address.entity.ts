@@ -8,8 +8,15 @@ import { GeographicAddressValidationAlternateGeographicAddress } from './geograp
  */
 @Entity('geographic_address_geographic_sub_address')
 export class GeographicAddressGeographicSubAddress {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
+
+  /** The id the client gave this item. Unique within its parent only, so it is not the primary key; served back as `id`. */
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  refId?: string;
+
+  @Column({ type: 'int', nullable: true })
+  sortOrder?: number;
 
   /** allows for buildings that have well-known names */
   @Column({ type: 'varchar', length: 255, nullable: true })

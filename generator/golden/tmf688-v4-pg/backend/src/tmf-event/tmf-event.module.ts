@@ -2,8 +2,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventModule } from '../event/event.module';
-import { TmfEventController } from './tmf-event.controller';
-import { TmfEventService } from './tmf-event.service';
+import { EventController } from './event.controller';
+import { EventService } from './event.service';
 import { Event } from './entities/event.entity';
 import { EventReportingSystemRef } from './entities/event-reporting-system-ref.entity';
 import { EventSourceRef } from './entities/event-source-ref.entity';
@@ -23,8 +23,8 @@ import { RelatedParty } from './entities/related-party.entity';
     ]),
     EventModule,
   ],
-  controllers: [TmfEventController],
-  providers: [TmfEventService],
-  exports: [TmfEventService],
+  controllers: [EventController],
+  providers: [EventService],
+  exports: [EventService],
 })
 export class TmfEventModule {}

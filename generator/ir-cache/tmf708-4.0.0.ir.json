@@ -1,0 +1,2165 @@
+{
+  "meta": {
+    "tmfNumber": "708",
+    "specTitle": "Test Execution",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/testExecution/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF708_BASE_PATH",
+    "eventExchange": "testExecution.events",
+    "eventExchangeConstant": "TMF708_EVENT_EXCHANGE",
+    "eventTypeEnum": "TestExecutionEventType",
+    "serviceNameSuggestion": "test-execution-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf708/4.0.0/openapi/TMF708_Test_Execution_Management_API_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "TestEnvironmentAllocationExecution",
+      "camelName": "testEnvironmentAllocationExecution",
+      "kebabName": "test-environment-allocation-execution",
+      "tableName": "test_environment_allocation_execution",
+      "pathSegment": "testEnvironmentAllocationExecution",
+      "pathKey": "testEnvironmentAllocationExecution",
+      "parentSegments": [],
+      "nested": false,
+      "description": "REST resource for test environment allocation lifecycle",
+      "composedFrom": [],
+      "required": [
+        "resourceManagerUrl"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "dataCorrelationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Data correlation ID passed in by the API consumer"
+        },
+        {
+          "kind": "scalar",
+          "name": "resourceManagerUrl",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 1000
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": ""
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed"
+          ],
+          "enumRef": "ExecutionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the execution"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "abstractEnvironment",
+          "targetRef": "AbstractEnvironmentRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "abstractEnvironmentId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testScenario",
+          "targetRef": "TestScenarioRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "testScenarioId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testScenarioHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testScenarioName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testScenarioBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testScenarioSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testScenarioType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testScenarioReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "ConcreteResourceMapping",
+          "tableName": "concrete_resource_mapping",
+          "nameCandidates": [
+            "ConcreteResourceMapping",
+            "TestEnvironmentAllocationExecutionConcreteResourceMapping"
+          ],
+          "refLike": false,
+          "propertyName": "concreteResourceMapping",
+          "itemRef": "ConcreteResourceMapping",
+          "description": "Individual mapping from an abstract resource to a list of concrete resources",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "abstractResource",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ConcreteResource",
+              "tableName": "concrete_resource",
+              "nameCandidates": [
+                "ConcreteResource",
+                "ConcreteResourceMappingConcreteResource"
+              ],
+              "refLike": false,
+              "propertyName": "concreteResource",
+              "itemRef": "ConcreteResource",
+              "description": "",
+              "minItems": null,
+              "requiredFields": [
+                "name"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": false,
+                  "description": "Concrete resource name"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "GeneralTestArtifactRef",
+          "tableName": "general_test_artifact_ref",
+          "nameCandidates": [
+            "GeneralTestArtifactRef",
+            "TestEnvironmentAllocationExecutionGeneralTestArtifactRef"
+          ],
+          "refLike": false,
+          "propertyName": "generalTestArtifact",
+          "itemRef": "GeneralTestArtifactRef",
+          "description": "A reference to a managed general test artifact resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestEnvironmentAllocationExecution_Create",
+        "required": [
+          "resourceManagerUrl"
+        ],
+        "properties": [
+          "dataCorrelationId",
+          "resourceManagerUrl",
+          "abstractEnvironment",
+          "concreteResourceMapping",
+          "generalTestArtifact",
+          "state",
+          "testScenario",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestEnvironmentAllocationExecution",
+          "summary": "List or find TestEnvironmentAllocationExecution objects",
+          "description": "This operation list or find TestEnvironmentAllocationExecution entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestEnvironmentAllocationExecution",
+          "summary": "Creates a TestEnvironmentAllocationExecution",
+          "description": "This operation creates a TestEnvironmentAllocationExecution entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestEnvironmentAllocationExecution",
+          "summary": "Retrieves a TestEnvironmentAllocationExecution by ID",
+          "description": "This operation retrieves a TestEnvironmentAllocationExecution entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestEnvironmentAllocationExecution",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": {
+          "operationId": "deleteTestEnvironmentAllocationExecution",
+          "summary": "Deletes a TestEnvironmentAllocationExecution",
+          "description": "This operation deletes a TestEnvironmentAllocationExecution entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestEnvironmentAllocationExecution",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testEnvironmentAllocationExecution",
+        "item": "/testEnvironmentAllocationExecution/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testEnvironmentAllocationExecutionCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_ENVIRONMENT_ALLOCATION_EXECUTION_CREATE"
+        },
+        {
+          "eventName": "testEnvironmentAllocationExecutionDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_ENVIRONMENT_ALLOCATION_EXECUTION_DELETE"
+        },
+        {
+          "eventName": "testEnvironmentAllocationExecutionStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TEST_ENVIRONMENT_ALLOCATION_EXECUTION_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "TestEnvironmentProvisioningExecution",
+      "camelName": "testEnvironmentProvisioningExecution",
+      "kebabName": "test-environment-provisioning-execution",
+      "tableName": "test_environment_provisioning_execution",
+      "pathSegment": "testEnvironmentProvisioningExecution",
+      "pathKey": "testEnvironmentProvisioningExecution",
+      "parentSegments": [],
+      "nested": false,
+      "description": "REST resource for test environment provisioning lifecycle",
+      "composedFrom": [],
+      "required": [
+        "testEnvironmentAllocationExecution"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "dataCorrelationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Data correlation ID passed in by the API consumer"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed"
+          ],
+          "enumRef": "ExecutionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the execution"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [
+        {
+          "name": "testEnvironmentAllocationExecution",
+          "targetResource": "TestEnvironmentAllocationExecution",
+          "targetTable": "test_environment_allocation_execution",
+          "relation": "many-to-one",
+          "joinColumn": "test_environment_allocation_execution_id",
+          "required": true,
+          "description": "",
+          "projectedProps": [
+            "id",
+            "href",
+            "dataCorrelationId",
+            "resourceManagerUrl",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GeneralTestArtifactRef",
+          "tableName": "general_test_artifact_ref",
+          "nameCandidates": [
+            "GeneralTestArtifactRef",
+            "TestEnvironmentProvisioningExecutionGeneralTestArtifactRef"
+          ],
+          "refLike": false,
+          "propertyName": "generalTestArtifact",
+          "itemRef": "GeneralTestArtifactRef",
+          "description": "A reference to a managed general test artifact resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ProvisioningArtifactRef",
+          "tableName": "provisioning_artifact_ref",
+          "nameCandidates": [
+            "ProvisioningArtifactRef",
+            "TestEnvironmentProvisioningExecutionProvisioningArtifactRef"
+          ],
+          "refLike": false,
+          "propertyName": "provisioningArtifact",
+          "itemRef": "ProvisioningArtifactRef",
+          "description": "A reference to a managed provisioning artifact resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestEnvironmentProvisioningExecution_Create",
+        "required": [
+          "testEnvironmentAllocationExecution"
+        ],
+        "properties": [
+          "dataCorrelationId",
+          "generalTestArtifact",
+          "provisioningArtifact",
+          "state",
+          "testEnvironmentAllocationExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestEnvironmentProvisioningExecution",
+          "summary": "List or find TestEnvironmentProvisioningExecution objects",
+          "description": "This operation list or find TestEnvironmentProvisioningExecution entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestEnvironmentProvisioningExecution",
+          "summary": "Creates a TestEnvironmentProvisioningExecution",
+          "description": "This operation creates a TestEnvironmentProvisioningExecution entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestEnvironmentProvisioningExecution",
+          "summary": "Retrieves a TestEnvironmentProvisioningExecution by ID",
+          "description": "This operation retrieves a TestEnvironmentProvisioningExecution entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestEnvironmentProvisioningExecution",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": {
+          "operationId": "deleteTestEnvironmentProvisioningExecution",
+          "summary": "Deletes a TestEnvironmentProvisioningExecution",
+          "description": "This operation deletes a TestEnvironmentProvisioningExecution entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestEnvironmentProvisioningExecution",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testEnvironmentProvisioningExecution",
+        "item": "/testEnvironmentProvisioningExecution/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testEnvironmentProvisioningExecutionCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_ENVIRONMENT_PROVISIONING_EXECUTION_CREATE"
+        },
+        {
+          "eventName": "testEnvironmentProvisioningExecutionDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_ENVIRONMENT_PROVISIONING_EXECUTION_DELETE"
+        },
+        {
+          "eventName": "testEnvironmentProvisioningExecutionStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TEST_ENVIRONMENT_PROVISIONING_EXECUTION_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "TestCaseExecution",
+      "camelName": "testCaseExecution",
+      "kebabName": "test-case-execution",
+      "tableName": "test_case_execution",
+      "pathSegment": "testCaseExecution",
+      "pathKey": "testCaseExecution",
+      "parentSegments": [],
+      "nested": false,
+      "description": "REST resource for the test case execution lifecycle",
+      "composedFrom": [],
+      "required": [
+        "testEnvironmentProvisioningExecution"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "dataCorrelationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Data correlation ID passed in by the API consumer"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed"
+          ],
+          "enumRef": "ExecutionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the execution"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "testCase",
+          "targetRef": "TestCaseRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "testCaseId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "testEnvironmentProvisioningExecution",
+          "targetResource": "TestEnvironmentProvisioningExecution",
+          "targetTable": "test_environment_provisioning_execution",
+          "relation": "many-to-one",
+          "joinColumn": "test_environment_provisioning_execution_id",
+          "required": true,
+          "description": "",
+          "projectedProps": [
+            "id",
+            "href",
+            "dataCorrelationId",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GeneralTestArtifactRef",
+          "tableName": "general_test_artifact_ref",
+          "nameCandidates": [
+            "GeneralTestArtifactRef",
+            "TestCaseExecutionGeneralTestArtifactRef"
+          ],
+          "refLike": false,
+          "propertyName": "generalTestArtifact",
+          "itemRef": "GeneralTestArtifactRef",
+          "description": "A reference to a managed general test artifact resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "TestDataInstanceRef",
+          "tableName": "test_data_instance_ref",
+          "nameCandidates": [
+            "TestDataInstanceRef",
+            "TestCaseExecutionTestDataInstanceRef"
+          ],
+          "refLike": false,
+          "propertyName": "testDataInstance",
+          "itemRef": "TestDataInstanceRef",
+          "description": "A reference to a managed test data instance resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestCaseExecution_Create",
+        "required": [
+          "testEnvironmentProvisioningExecution"
+        ],
+        "properties": [
+          "dataCorrelationId",
+          "generalTestArtifact",
+          "state",
+          "testCase",
+          "testDataInstance",
+          "testEnvironmentProvisioningExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestCaseExecution",
+          "summary": "List or find TestCaseExecution objects",
+          "description": "This operation list or find TestCaseExecution entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestCaseExecution",
+          "summary": "Creates a TestCaseExecution",
+          "description": "This operation creates a TestCaseExecution entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestCaseExecution",
+          "summary": "Retrieves a TestCaseExecution by ID",
+          "description": "This operation retrieves a TestCaseExecution entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestCaseExecution",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": {
+          "operationId": "deleteTestCaseExecution",
+          "summary": "Deletes a TestCaseExecution",
+          "description": "This operation deletes a TestCaseExecution entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestCaseExecution",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testCaseExecution",
+        "item": "/testCaseExecution/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testCaseExecutionCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_CASE_EXECUTION_CREATE"
+        },
+        {
+          "eventName": "testCaseExecutionDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_CASE_EXECUTION_DELETE"
+        },
+        {
+          "eventName": "testCaseExecutionStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TEST_CASE_EXECUTION_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "TestSuiteExecution",
+      "camelName": "testSuiteExecution",
+      "kebabName": "test-suite-execution",
+      "tableName": "test_suite_execution",
+      "pathSegment": "testSuiteExecution",
+      "pathKey": "testSuiteExecution",
+      "parentSegments": [],
+      "nested": false,
+      "description": "REST resource for the test suite execution lifecycle",
+      "composedFrom": [],
+      "required": [
+        "testEnvironmentProvisioningExecution"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type",
+        "@referredType"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "dataCorrelationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Data correlation ID passed in by the API consumer"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the related entity."
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed"
+          ],
+          "enumRef": "ExecutionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the execution"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "testSuite",
+          "targetRef": "TestSuiteRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "testSuiteId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "testEnvironmentProvisioningExecution",
+          "targetResource": "TestEnvironmentProvisioningExecution",
+          "targetTable": "test_environment_provisioning_execution",
+          "relation": "many-to-one",
+          "joinColumn": "test_environment_provisioning_execution_id",
+          "required": true,
+          "description": "",
+          "projectedProps": [
+            "id",
+            "href",
+            "dataCorrelationId",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GeneralTestArtifactRef",
+          "tableName": "general_test_artifact_ref",
+          "nameCandidates": [
+            "GeneralTestArtifactRef",
+            "TestSuiteExecutionGeneralTestArtifactRef"
+          ],
+          "refLike": false,
+          "propertyName": "generalTestArtifact",
+          "itemRef": "GeneralTestArtifactRef",
+          "description": "A reference to a managed general test artifact resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "TestDataInstanceRef",
+          "tableName": "test_data_instance_ref",
+          "nameCandidates": [
+            "TestDataInstanceRef",
+            "TestSuiteExecutionTestDataInstanceRef"
+          ],
+          "refLike": false,
+          "propertyName": "testDataInstance",
+          "itemRef": "TestDataInstanceRef",
+          "description": "A reference to a managed test data instance resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestSuiteExecution_Create",
+        "required": [
+          "testEnvironmentProvisioningExecution"
+        ],
+        "properties": [
+          "dataCorrelationId",
+          "name",
+          "generalTestArtifact",
+          "state",
+          "testDataInstance",
+          "testEnvironmentProvisioningExecution",
+          "testSuite",
+          "@baseType",
+          "@schemaLocation",
+          "@type",
+          "@referredType"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestSuiteExecution",
+          "summary": "List or find TestSuiteExecution objects",
+          "description": "This operation list or find TestSuiteExecution entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestSuiteExecution",
+          "summary": "Creates a TestSuiteExecution",
+          "description": "This operation creates a TestSuiteExecution entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestSuiteExecution",
+          "summary": "Retrieves a TestSuiteExecution by ID",
+          "description": "This operation retrieves a TestSuiteExecution entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestSuiteExecution",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": {
+          "operationId": "deleteTestSuiteExecution",
+          "summary": "Deletes a TestSuiteExecution",
+          "description": "This operation deletes a TestSuiteExecution entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestSuiteExecution",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testSuiteExecution",
+        "item": "/testSuiteExecution/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testSuiteExecutionCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_SUITE_EXECUTION_CREATE"
+        },
+        {
+          "eventName": "testSuiteExecutionDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_SUITE_EXECUTION_DELETE"
+        },
+        {
+          "eventName": "testSuiteExecutionStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TEST_SUITE_EXECUTION_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "NonFunctionalTestExecution",
+      "camelName": "nonFunctionalTestExecution",
+      "kebabName": "non-functional-test-execution",
+      "tableName": "non_functional_test_execution",
+      "pathSegment": "nonFunctionalTestExecution",
+      "pathKey": "nonFunctionalTestExecution",
+      "parentSegments": [],
+      "nested": false,
+      "description": "REST resource for the non-functional test execution lifecycle",
+      "composedFrom": [],
+      "required": [
+        "testEnvironmentProvisioningExecution"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "dataCorrelationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Data correlation ID passed in by the API consumer"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed"
+          ],
+          "enumRef": "ExecutionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the execution"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "nonFunctionalTestModel",
+          "targetRef": "NonFunctionalTestModelRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "nonFunctionalTestModelId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestModelHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestModelName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestModelBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestModelSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestModelType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestModelReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "testEnvironmentProvisioningExecution",
+          "targetResource": "TestEnvironmentProvisioningExecution",
+          "targetTable": "test_environment_provisioning_execution",
+          "relation": "many-to-one",
+          "joinColumn": "test_environment_provisioning_execution_id",
+          "required": true,
+          "description": "",
+          "projectedProps": [
+            "id",
+            "href",
+            "dataCorrelationId",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GeneralTestArtifactRef",
+          "tableName": "general_test_artifact_ref",
+          "nameCandidates": [
+            "GeneralTestArtifactRef",
+            "NonFunctionalTestExecutionGeneralTestArtifactRef"
+          ],
+          "refLike": false,
+          "propertyName": "generalTestArtifact",
+          "itemRef": "GeneralTestArtifactRef",
+          "description": "A reference to a managed general test artifact resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "TestDataInstanceRef",
+          "tableName": "test_data_instance_ref",
+          "nameCandidates": [
+            "TestDataInstanceRef",
+            "NonFunctionalTestExecutionTestDataInstanceRef"
+          ],
+          "refLike": false,
+          "propertyName": "testDataInstance",
+          "itemRef": "TestDataInstanceRef",
+          "description": "A reference to a managed test data instance resource",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "NonFunctionalTestExecution_Create",
+        "required": [
+          "testEnvironmentProvisioningExecution"
+        ],
+        "properties": [
+          "dataCorrelationId",
+          "generalTestArtifact",
+          "nonFunctionalTestModel",
+          "state",
+          "testDataInstance",
+          "testEnvironmentProvisioningExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listNonFunctionalTestExecution",
+          "summary": "List or find NonFunctionalTestExecution objects",
+          "description": "This operation list or find NonFunctionalTestExecution entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createNonFunctionalTestExecution",
+          "summary": "Creates a NonFunctionalTestExecution",
+          "description": "This operation creates a NonFunctionalTestExecution entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveNonFunctionalTestExecution",
+          "summary": "Retrieves a NonFunctionalTestExecution by ID",
+          "description": "This operation retrieves a NonFunctionalTestExecution entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the NonFunctionalTestExecution",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": {
+          "operationId": "deleteNonFunctionalTestExecution",
+          "summary": "Deletes a NonFunctionalTestExecution",
+          "description": "This operation deletes a NonFunctionalTestExecution entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the NonFunctionalTestExecution",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/nonFunctionalTestExecution",
+        "item": "/nonFunctionalTestExecution/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "nonFunctionalTestExecutionCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "NON_FUNCTIONAL_TEST_EXECUTION_CREATE"
+        },
+        {
+          "eventName": "nonFunctionalTestExecutionDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "NON_FUNCTIONAL_TEST_EXECUTION_DELETE"
+        },
+        {
+          "eventName": "nonFunctionalTestExecutionStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "NON_FUNCTIONAL_TEST_EXECUTION_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/nonFunctionalTestExecutionCreateEvent",
+      "eventName": "nonFunctionalTestExecutionCreateEvent",
+      "resource": "NonFunctionalTestExecution",
+      "eventKind": "Create",
+      "operationId": "listenToNonFunctionalTestExecutionCreateEvent"
+    },
+    {
+      "path": "/listener/nonFunctionalTestExecutionDeleteEvent",
+      "eventName": "nonFunctionalTestExecutionDeleteEvent",
+      "resource": "NonFunctionalTestExecution",
+      "eventKind": "Delete",
+      "operationId": "listenToNonFunctionalTestExecutionDeleteEvent"
+    },
+    {
+      "path": "/listener/nonFunctionalTestExecutionStateChangeEvent",
+      "eventName": "nonFunctionalTestExecutionStateChangeEvent",
+      "resource": "NonFunctionalTestExecution",
+      "eventKind": "StateChange",
+      "operationId": "listenToNonFunctionalTestExecutionStateChangeEvent"
+    },
+    {
+      "path": "/listener/testCaseExecutionCreateEvent",
+      "eventName": "testCaseExecutionCreateEvent",
+      "resource": "TestCaseExecution",
+      "eventKind": "Create",
+      "operationId": "listenToTestCaseExecutionCreateEvent"
+    },
+    {
+      "path": "/listener/testCaseExecutionDeleteEvent",
+      "eventName": "testCaseExecutionDeleteEvent",
+      "resource": "TestCaseExecution",
+      "eventKind": "Delete",
+      "operationId": "listenToTestCaseExecutionDeleteEvent"
+    },
+    {
+      "path": "/listener/testCaseExecutionStateChangeEvent",
+      "eventName": "testCaseExecutionStateChangeEvent",
+      "resource": "TestCaseExecution",
+      "eventKind": "StateChange",
+      "operationId": "listenToTestCaseExecutionStateChangeEvent"
+    },
+    {
+      "path": "/listener/testEnvironmentAllocationExecutionCreateEvent",
+      "eventName": "testEnvironmentAllocationExecutionCreateEvent",
+      "resource": "TestEnvironmentAllocationExecution",
+      "eventKind": "Create",
+      "operationId": "listenToTestEnvironmentAllocationExecutionCreateEvent"
+    },
+    {
+      "path": "/listener/testEnvironmentAllocationExecutionDeleteEvent",
+      "eventName": "testEnvironmentAllocationExecutionDeleteEvent",
+      "resource": "TestEnvironmentAllocationExecution",
+      "eventKind": "Delete",
+      "operationId": "listenToTestEnvironmentAllocationExecutionDeleteEvent"
+    },
+    {
+      "path": "/listener/testEnvironmentAllocationExecutionStateChangeEvent",
+      "eventName": "testEnvironmentAllocationExecutionStateChangeEvent",
+      "resource": "TestEnvironmentAllocationExecution",
+      "eventKind": "StateChange",
+      "operationId": "listenToTestEnvironmentAllocationExecutionStateChangeEvent"
+    },
+    {
+      "path": "/listener/testEnvironmentProvisioningExecutionCreateEvent",
+      "eventName": "testEnvironmentProvisioningExecutionCreateEvent",
+      "resource": "TestEnvironmentProvisioningExecution",
+      "eventKind": "Create",
+      "operationId": "listenToTestEnvironmentProvisioningExecutionCreateEvent"
+    },
+    {
+      "path": "/listener/testEnvironmentProvisioningExecutionDeleteEvent",
+      "eventName": "testEnvironmentProvisioningExecutionDeleteEvent",
+      "resource": "TestEnvironmentProvisioningExecution",
+      "eventKind": "Delete",
+      "operationId": "listenToTestEnvironmentProvisioningExecutionDeleteEvent"
+    },
+    {
+      "path": "/listener/testEnvironmentProvisioningExecutionStateChangeEvent",
+      "eventName": "testEnvironmentProvisioningExecutionStateChangeEvent",
+      "resource": "TestEnvironmentProvisioningExecution",
+      "eventKind": "StateChange",
+      "operationId": "listenToTestEnvironmentProvisioningExecutionStateChangeEvent"
+    },
+    {
+      "path": "/listener/testSuiteExecutionCreateEvent",
+      "eventName": "testSuiteExecutionCreateEvent",
+      "resource": "TestSuiteExecution",
+      "eventKind": "Create",
+      "operationId": "listenToTestSuiteExecutionCreateEvent"
+    },
+    {
+      "path": "/listener/testSuiteExecutionDeleteEvent",
+      "eventName": "testSuiteExecutionDeleteEvent",
+      "resource": "TestSuiteExecution",
+      "eventKind": "Delete",
+      "operationId": "listenToTestSuiteExecutionDeleteEvent"
+    },
+    {
+      "path": "/listener/testSuiteExecutionStateChangeEvent",
+      "eventName": "testSuiteExecutionStateChangeEvent",
+      "resource": "TestSuiteExecution",
+      "eventKind": "StateChange",
+      "operationId": "listenToTestSuiteExecutionStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No TestEnvironmentAllocationExecution_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "TestEnvironmentAllocationExecution has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestEnvironmentAllocationExecution spec declares no update operation; those routes are NOT emitted.",
+    "No TestEnvironmentProvisioningExecution_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "TestEnvironmentProvisioningExecution has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestEnvironmentProvisioningExecution spec declares no update operation; those routes are NOT emitted.",
+    "No TestCaseExecution_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "TestCaseExecution has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestCaseExecution spec declares no update operation; those routes are NOT emitted.",
+    "No TestSuiteExecution_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "TestSuiteExecution has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestSuiteExecution spec declares no update operation; those routes are NOT emitted.",
+    "No NonFunctionalTestExecution_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "NonFunctionalTestExecution has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "NonFunctionalTestExecution spec declares no update operation; those routes are NOT emitted."
+  ]
+}

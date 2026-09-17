@@ -56,6 +56,18 @@ export class RetrieveLocationRelationService {
     if (!entity.atType) {
       entity.atType = 'RetrieveLocationRelation';
     }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -114,15 +126,16 @@ export class RetrieveLocationRelationService {
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
-    e.geographicLocation = (input?.geographicLocation ?? []).map((i: Record<string, any>) => this.buildGeographicLocationRef(i, pending, e));
-    e.intersection = (input?.intersection ?? []).map((i: Record<string, any>) => this.buildRetrieveLocationRelationIntersection(i, pending, e));
+    e.geographicLocation = (input?.geographicLocation ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildGeographicLocationRef(i, pending, e), { sortOrder: __i }));
+    e.intersection = (input?.intersection ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildRetrieveLocationRelationIntersection(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
   private buildGeographicLocationRef(input: Record<string, any>, pending: PendingRef[], owner: RetrieveLocationRelation): GeographicLocationRef {
     const e = this.geographicLocationRefRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
@@ -131,8 +144,9 @@ export class RetrieveLocationRelationService {
 
   private buildGeographicPointReferred(input: Record<string, any>, pending: PendingRef[], owner: RetrieveLocationRelationIntersection): GeographicPointReferred {
     const e = this.geographicPointReferredRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.x = input?.['x'];
     e.y = input?.['y'];
     e.z = input?.['z'];
@@ -144,8 +158,9 @@ export class RetrieveLocationRelationService {
 
   private buildRetrieveLocationRelationIntersection(input: Record<string, any>, pending: PendingRef[], owner: RetrieveLocationRelation): RetrieveLocationRelationIntersection {
     const e = this.retrieveLocationRelationIntersectionRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.name = input?.['name'];
     e.geometryType = input?.['geometryType'];
     e.spatialRef = input?.['spatialRef'];
@@ -153,7 +168,7 @@ export class RetrieveLocationRelationService {
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
-    e.geometry = (input?.geometry ?? []).map((i: Record<string, any>) => this.buildGeographicPointReferred(i, pending, e));
+    e.geometry = (input?.geometry ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildGeographicPointReferred(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
@@ -165,29 +180,29 @@ export class RetrieveLocationRelationService {
     out.distance = e.distance;
     out.time = e.time;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${e.id}`;
-    out.geographicLocation = (e.geographicLocation ?? []).map((c) => this.mapGeographicLocationRef(c, e.id));
-    out.intersection = (e.intersection ?? []).map((c) => this.mapRetrieveLocationRelationIntersection(c, e.id));
+    out.geographicLocation = [...(e.geographicLocation ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapGeographicLocationRef(c, e.id));
+    out.intersection = [...(e.intersection ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapRetrieveLocationRelationIntersection(c, e.id));
     return stripEmpty(out);
   }
 
   private mapGeographicLocationRef(e: GeographicLocationRef, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${rootId}/geographicLocation/${e.id}`;
+      out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${rootId}/geographicLocation/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
 
   private mapGeographicPointReferred(e: GeographicPointReferred, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.x = e.x;
     out.y = e.y;
     out.z = e.z;
@@ -195,14 +210,14 @@ export class RetrieveLocationRelationService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${rootId}/geometry/${e.id}`;
+      out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${rootId}/geometry/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
 
   private mapRetrieveLocationRelationIntersection(e: RetrieveLocationRelationIntersection, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.name = e.name;
     out.geometryType = e.geometryType;
     out.spatialRef = e.spatialRef;
@@ -211,9 +226,9 @@ export class RetrieveLocationRelationService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${rootId}/intersection/${e.id}`;
+      out.href = `/${TMF675_BASE_PATH}/retrieveLocationRelation/${rootId}/intersection/${e.refId ?? e.id}`;
     }
-    out.geometry = (e.geometry ?? []).map((c) => this.mapGeographicPointReferred(c, rootId));
+    out.geometry = [...(e.geometry ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapGeographicPointReferred(c, rootId));
     return stripEmpty(out);
   }
 }

@@ -12,6 +12,7 @@ import { GeographicAddressValidation } from './entities/geographic-address-valid
 import { GeographicLocationRefOrValue } from './entities/geographic-location-ref-or-value.entity';
 import { GeographicAddressGeographicSubAddress } from './entities/geographic-address-geographic-sub-address.entity';
 import { GeographicAddressValidationAlternateGeographicAddress } from './entities/geographic-address-validation-alternate-geographic-address.entity';
+import { GeographicAddress } from '../geographic-address/entities/geographic-address.entity';
 import { CreateGeographicAddressValidationDto, UpdateGeographicAddressValidationDto, QueryGeographicAddressValidationDto } from './dto';
 import * as hooks from './geographic-address-validation.hooks';
 
@@ -51,11 +52,39 @@ export class GeographicAddressValidationService {
 
   async create(dto: CreateGeographicAddressValidationDto): Promise<Record<string, any>> {
     const input = (await hooks.beforeCreate(dto as Record<string, any>)) ?? (dto as Record<string, any>);
+    // a reference to a row that does not exist is not a valid reference:
+    // drop it rather than setting a dangling FK or inventing the row
+    if ((input as Record<string, any>)?.submittedGeographicAddress?.id) {
+      const __submittedGeographicAddress = await this.dataSource.getRepository(GeographicAddress).findOne({
+        where: { id: (input as Record<string, any>).submittedGeographicAddress.id },
+      });
+      if (!__submittedGeographicAddress) delete (input as Record<string, any>).submittedGeographicAddress;
+    }
+    // a reference to a row that does not exist is not a valid reference:
+    // drop it rather than setting a dangling FK or inventing the row
+    if ((input as Record<string, any>)?.validGeographicAddress?.id) {
+      const __validGeographicAddress = await this.dataSource.getRepository(GeographicAddress).findOne({
+        where: { id: (input as Record<string, any>).validGeographicAddress.id },
+      });
+      if (!__validGeographicAddress) delete (input as Record<string, any>).validGeographicAddress;
+    }
     const pending: PendingRef[] = [];
     const entity = this.buildGeographicAddressValidation(input, pending);
     if (!entity.atType) {
       entity.atType = 'GeographicAddressValidation';
     }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -176,7 +205,15 @@ export class GeographicAddressValidationService {
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
-    e.alternateGeographicAddress = (input?.alternateGeographicAddress ?? []).map((i: Record<string, any>) => this.buildGeographicAddressValidationAlternateGeographicAddress(i, pending, e));
+    if (input?.submittedGeographicAddress?.id) {
+      // reference only: the row is NOT created here
+      e.submittedGeographicAddress = { id: input.submittedGeographicAddress.id } as GeographicAddress;
+    }
+    if (input?.validGeographicAddress?.id) {
+      // reference only: the row is NOT created here
+      e.validGeographicAddress = { id: input.validGeographicAddress.id } as GeographicAddress;
+    }
+    e.alternateGeographicAddress = (input?.alternateGeographicAddress ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildGeographicAddressValidationAlternateGeographicAddress(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
@@ -196,8 +233,9 @@ export class GeographicAddressValidationService {
 
   private buildGeographicAddressGeographicSubAddress(input: Record<string, any>, pending: PendingRef[], owner: GeographicAddressValidationAlternateGeographicAddress): GeographicAddressGeographicSubAddress {
     const e = this.geographicAddressGeographicSubAddressRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.buildingName = input?.['buildingName'];
     e.levelNumber = input?.['levelNumber'];
     e.levelType = input?.['levelType'];
@@ -215,8 +253,9 @@ export class GeographicAddressValidationService {
 
   private buildGeographicAddressValidationAlternateGeographicAddress(input: Record<string, any>, pending: PendingRef[], owner: GeographicAddressValidation): GeographicAddressValidationAlternateGeographicAddress {
     const e = this.geographicAddressValidationAlternateGeographicAddressRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.city = input?.['city'];
     e.country = input?.['country'];
     e.locality = input?.['locality'];
@@ -234,7 +273,7 @@ export class GeographicAddressValidationService {
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
     e.geographicLocation = input?.geographicLocation ? this.buildGeographicLocationRefOrValue(input.geographicLocation, pending) : undefined;
-    e.geographicSubAddress = (input?.geographicSubAddress ?? []).map((i: Record<string, any>) => this.buildGeographicAddressGeographicSubAddress(i, pending, e));
+    e.geographicSubAddress = (input?.geographicSubAddress ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildGeographicAddressGeographicSubAddress(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
@@ -247,14 +286,15 @@ export class GeographicAddressValidationService {
     out.validationResult = e.validationResult;
     out.state = e.state;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF673_BASE_PATH}/geographicAddressValidation/${e.id}`;
     out.submittedGeographicAddress = e.submittedGeographicAddress
       ? stripEmpty({
           id: e.submittedGeographicAddress.id,
           href: `/${TMF673_BASE_PATH}/geographicAddress/${e.submittedGeographicAddress.id}`,
           name: (e.submittedGeographicAddress as Record<string, any>).name,
+          '@type': 'GeographicAddress',
           '@referredType': 'GeographicAddress',
         })
       : undefined;
@@ -263,10 +303,11 @@ export class GeographicAddressValidationService {
           id: e.validGeographicAddress.id,
           href: `/${TMF673_BASE_PATH}/geographicAddress/${e.validGeographicAddress.id}`,
           name: (e.validGeographicAddress as Record<string, any>).name,
+          '@type': 'GeographicAddress',
           '@referredType': 'GeographicAddress',
         })
       : undefined;
-    out.alternateGeographicAddress = (e.alternateGeographicAddress ?? []).map((c) => this.mapGeographicAddressValidationAlternateGeographicAddress(c, e.id));
+    out.alternateGeographicAddress = [...(e.alternateGeographicAddress ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapGeographicAddressValidationAlternateGeographicAddress(c, e.id));
     return stripEmpty(out);
   }
 
@@ -284,7 +325,7 @@ export class GeographicAddressValidationService {
 
   private mapGeographicAddressGeographicSubAddress(e: GeographicAddressGeographicSubAddress, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.buildingName = e.buildingName;
     out.levelNumber = e.levelNumber;
     out.levelType = e.levelType;
@@ -298,14 +339,14 @@ export class GeographicAddressValidationService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF673_BASE_PATH}/geographicAddressValidation/${rootId}/geographicSubAddress/${e.id}`;
+      out.href = `/${TMF673_BASE_PATH}/geographicAddressValidation/${rootId}/geographicSubAddress/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
 
   private mapGeographicAddressValidationAlternateGeographicAddress(e: GeographicAddressValidationAlternateGeographicAddress, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.city = e.city;
     out.country = e.country;
     out.locality = e.locality;
@@ -323,10 +364,10 @@ export class GeographicAddressValidationService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF673_BASE_PATH}/geographicAddressValidation/${rootId}/alternateGeographicAddress/${e.id}`;
+      out.href = `/${TMF673_BASE_PATH}/geographicAddressValidation/${rootId}/alternateGeographicAddress/${e.refId ?? e.id}`;
     }
     out.geographicLocation = e.geographicLocation ? this.mapGeographicLocationRefOrValue(e.geographicLocation) : undefined;
-    out.geographicSubAddress = (e.geographicSubAddress ?? []).map((c) => this.mapGeographicAddressGeographicSubAddress(c, rootId));
+    out.geographicSubAddress = [...(e.geographicSubAddress ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapGeographicAddressGeographicSubAddress(c, rootId));
     return stripEmpty(out);
   }
 }

@@ -12,9 +12,8 @@
     "eventExchangeConstant": "TMF737_EVENT_EXCHANGE",
     "eventTypeEnum": "RevenueSharingReportEventType",
     "serviceNameSuggestion": "revenue-sharing-report-service",
-    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf737/5.0.0/openapi/TMF737-Revenue_Sharing_Report_Management-v5.0.0.oas.yaml",
-    "generatorVersion": "0.1.0",
-    "markdownSupplement": "D:/oh-my-tmf-agent-workspace/documents/tmf737/5.0.0/userguide/TMF737_Revenue_Sharing_Reports_userguide.md"
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf737/5.0.0/openapi/TMF737-Revenue_Sharing_Report_Management-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
   },
   "resources": [
     {

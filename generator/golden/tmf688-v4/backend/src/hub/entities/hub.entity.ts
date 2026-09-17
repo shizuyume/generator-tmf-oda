@@ -7,7 +7,7 @@ import { Expose } from 'class-transformer';
  */
 @Entity('hub')
 export class Hub {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** The URI that will be POSTed to when a notification is triggered */

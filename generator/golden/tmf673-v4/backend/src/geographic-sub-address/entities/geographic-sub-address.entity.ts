@@ -7,7 +7,7 @@ import { Expose } from 'class-transformer';
  */
 @Entity('geographic_sub_address')
 export class GeographicSubAddress {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** allows for buildings that have well-known names */

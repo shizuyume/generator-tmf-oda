@@ -9,7 +9,7 @@ import { GeographicSubAddress2 } from './geographic-sub-address2.entity';
  */
 @Entity('geographic_address')
 export class GeographicAddress {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** City that the address is in */

@@ -8,7 +8,7 @@ import { GeographicPoint } from './geographic-point.entity';
  */
 @Entity('geographic_location')
 export class GeographicLocation {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** Name of the geo location */

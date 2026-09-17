@@ -9,7 +9,7 @@ import { RetrieveGeographicLocationThing } from './retrieve-geographic-location-
  */
 @Entity('retrieve_geographic_location')
 export class RetrieveGeographicLocation {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** Status of the task (inProgress, terminatedWithErrror, done) */

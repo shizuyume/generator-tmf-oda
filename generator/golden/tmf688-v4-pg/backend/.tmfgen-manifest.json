@@ -40,7 +40,32 @@
           "importPath": "hub/hub.module"
         }
       ],
-      "seeds": [],
+      "seeds": [
+        {
+          "resource": "Event",
+          "dir": "tmf-event",
+          "serviceClass": "EventService",
+          "seedConst": null,
+          "localSeedConst": "eventLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "Topic",
+          "dir": "topic",
+          "serviceClass": "TopicService",
+          "seedConst": null,
+          "localSeedConst": "topicLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "Hub",
+          "dir": "hub",
+          "serviceClass": "HubService",
+          "seedConst": null,
+          "localSeedConst": "hubLocalSeed",
+          "count": 0
+        }
+      ],
       "entities": [
         {
           "className": "Event",

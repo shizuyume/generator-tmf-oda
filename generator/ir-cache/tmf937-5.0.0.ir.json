@@ -1,0 +1,303 @@
+{
+  "meta": {
+    "tmfNumber": "937",
+    "specTitle": "Open Gateway Product Usage",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/openGatewayProductUsage/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF937_BASE_PATH",
+    "eventExchange": "openGatewayProductUsage.events",
+    "eventExchangeConstant": "TMF937_EVENT_EXCHANGE",
+    "eventTypeEnum": "OpenGatewayProductUsageEventType",
+    "serviceNameSuggestion": "open-gateway-product-usage-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf937/5.0.0/openapi/TMF937-Open_Gateway_Product_Usage-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "OpenGatewayExportJob",
+      "camelName": "openGatewayExportJob",
+      "kebabName": "open-gateway-export-job",
+      "tableName": "open_gateway_export_job",
+      "pathSegment": "exportJob",
+      "pathKey": "exportJob",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TM Forum Open APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date on which the job was completed. This attribute exists only when status is Succeeded."
+        },
+        {
+          "kind": "scalar",
+          "name": "contentType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "application/gzip"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "The format of the export file. In Open Gateway context it is always application/gzip"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date on which the job was created."
+        },
+        {
+          "kind": "scalar",
+          "name": "path",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "/productUsage"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "JSON Pointer relative to the API root node that points to the resource acting as the source for streaming content to the export destination specified by the ExportJob. Set to /productUsage in Open Gateway context for this API."
+        },
+        {
+          "kind": "scalar",
+          "name": "query",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Used to scope the exported data. Identical to GET filter construct using the API node defined by path as base. In Open Gateway context, contains the query parameters used to filter ProductUsage records for export, in particular start and end completionDate."
+        },
+        {
+          "kind": "scalar",
+          "name": "url",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 1000
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "URL of the file containing exported data."
+        },
+        {
+          "kind": "scalar",
+          "name": "signature",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "JWS (JSON Web Signature) signature of the exported zip file. Used to verify the authenticity and integrity of the exported data."
+        },
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "Succeeded"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Status of the export job. In this context can only be Succeeded. There is no requirement to share non Succeeded ExportJob."
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listExportJob",
+          "summary": "List or find exportJob objects",
+          "description": "List or find exportJob objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "before",
+              "in": "query",
+              "description": "An opaque string value representing the page results before the cursor value",
+              "required": false
+            },
+            {
+              "name": "after",
+              "in": "query",
+              "description": "An opaque string value representing the page results after the cursor value",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "in": "query",
+              "description": "The default direction is Ascending order, the use of the modifier in front of the sort field name, “-“, changes the sort order direction.",
+              "required": false
+            },
+            {
+              "name": "filter",
+              "in": "query",
+              "description": "Filter a collection using JSONPath",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveExportJob",
+          "summary": "Retrieves a exportJob by ID",
+          "description": "This operation retrieves a exportJob entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/exportJob",
+        "item": "/exportJob/{id}"
+      },
+      "notificationEvents": []
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [],
+  "warnings": [
+    "No OpenGatewayExportJob_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No OpenGatewayExportJob_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "OpenGatewayExportJob has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "OpenGatewayExportJob spec declares no create/update/delete operation; those routes are NOT emitted."
+  ]
+}

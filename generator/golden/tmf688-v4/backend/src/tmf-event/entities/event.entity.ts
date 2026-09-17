@@ -11,11 +11,11 @@ import { RelatedParty } from './related-party.entity';
  */
 @Entity('event')
 export class Event {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** The correlation id for this event. */
-  @Column({ type: 'varchar', length: 36, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   correlationId?: string;
 
   /** An explnatory of the event. */
@@ -27,7 +27,7 @@ export class Event {
   domain?: string;
 
   /** The identifier of the notification. */
-  @Column({ type: 'varchar', length: 36, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   eventId?: string;
 
   /** Time of the event occurrence. */

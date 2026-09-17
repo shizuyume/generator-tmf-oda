@@ -1,0 +1,4366 @@
+{
+  "meta": {
+    "tmfNumber": "686",
+    "specTitle": "Topology",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/topologyDiscovery/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF686_BASE_PATH",
+    "eventExchange": "topologyDiscovery.events",
+    "eventExchangeConstant": "TMF686_EVENT_EXCHANGE",
+    "eventTypeEnum": "TopologyDiscoveryEventType",
+    "serviceNameSuggestion": "topology-discovery-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf686/4.0.0/openapi/TMF686_Topology_API_v4.0.0_beta_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "Graph",
+      "camelName": "graph",
+      "kebabName": "graph",
+      "tableName": "graph",
+      "pathSegment": "graph",
+      "pathKey": "graph",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Graph is a directed graph representing edges connecting vertices.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name given to this REST resource"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "edge",
+          "targetRef": "EdgeCollectionRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "edgeHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "edgeBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "edgeSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "edgeType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "edgeReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "vertex",
+          "targetRef": "VertexCollectionRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "vertexHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "vertexBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "vertexSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "vertexType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "vertexReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "GraphRelationship",
+          "tableName": "graph_relationship",
+          "nameCandidates": [
+            "GraphRelationship",
+            "GraphRelationship"
+          ],
+          "refLike": false,
+          "propertyName": "graphRelationship",
+          "itemRef": "GraphRelationship",
+          "description": "Relationship to another Graph.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The name given to the target Grapph instance"
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of relationship such as adjacency, connectivity"
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The association role for this Graph"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "Graph_Create",
+        "required": [
+          "name"
+        ],
+        "properties": [
+          "description",
+          "name",
+          "edge",
+          "graphRelationship",
+          "vertex",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "Graph_Update",
+        "required": [],
+        "properties": [
+          "description",
+          "name",
+          "edge",
+          "graphRelationship",
+          "vertex",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listGraph",
+          "summary": "List or find Graph objects",
+          "description": "This operation list or find Graph entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createGraph",
+          "summary": "Creates a Graph",
+          "description": "This operation creates a Graph entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveGraph",
+          "summary": "Retrieves a Graph by ID",
+          "description": "This operation retrieves a Graph entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Graph",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchGraph",
+          "summary": "Updates partially a Graph",
+          "description": "This operation updates partially a Graph entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Graph",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteGraph",
+          "summary": "Deletes a Graph",
+          "description": "This operation deletes a Graph entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Graph",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/graph",
+        "item": "/graph/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "graphChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "GRAPH_CHANGE"
+        },
+        {
+          "eventName": "graphCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "GRAPH_CREATE"
+        },
+        {
+          "eventName": "graphDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "GRAPH_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "Vertex",
+      "camelName": "vertex",
+      "kebabName": "vertex",
+      "tableName": "vertex",
+      "pathSegment": "vertex",
+      "pathKey": "graph/vertex",
+      "parentSegments": [
+        "graph"
+      ],
+      "nested": true,
+      "description": "A Vertex is connected by directed Edges to other vertices in a Graph.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name given to this REST resource"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "entity",
+          "targetRef": "EntityRef",
+          "description": "Entity which this Vertex represents.",
+          "columns": [
+            {
+              "name": "entityId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "entitySchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "graph",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "graph_id",
+          "required": false,
+          "description": "Graph which this Vertex is contained in.",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        },
+        {
+          "name": "subGraph",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "sub_graph_id",
+          "required": false,
+          "description": "SubGraph which this Vertex represents.",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        },
+        {
+          "name": "vertexSpecification",
+          "targetResource": "VertexSpecification",
+          "targetTable": "vertex_specification",
+          "relation": "many-to-one",
+          "joinColumn": "vertex_specification_id",
+          "required": false,
+          "description": "",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "version",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "EdgeRef",
+          "tableName": "edge_ref",
+          "nameCandidates": [
+            "EdgeRef",
+            "VertexEdgeRef"
+          ],
+          "refLike": false,
+          "propertyName": "edge",
+          "itemRef": "EdgeRef",
+          "description": "Directed Edges which this Vertex is connected by. (optional, read only)",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "Characteristic",
+          "tableName": "characteristic",
+          "nameCandidates": [
+            "Characteristic",
+            "VertexCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "vertexCharacteristic",
+          "itemRef": "Characteristic",
+          "description": "Describes a given characteristic of an object or entity through a name/value pair.",
+          "minItems": null,
+          "requiredFields": [
+            "name",
+            "value"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "Name of the characteristic"
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Data type of the value of the characteristic"
+            },
+            {
+              "kind": "json",
+              "name": "value",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "CharacteristicRelationship",
+              "tableName": "characteristic_relationship",
+              "nameCandidates": [
+                "CharacteristicRelationship",
+                "CharacteristicRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicRelationship",
+              "itemRef": "CharacteristicRelationship",
+              "description": "Another Characteristic that is related to the current Characteristic.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "Vertex_Create",
+        "required": [
+          "name",
+          "graph"
+        ],
+        "properties": [
+          "description",
+          "name",
+          "edge",
+          "entity",
+          "graph",
+          "subGraph",
+          "vertexCharacteristic",
+          "vertexSpecification",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "Vertex_Update",
+        "required": [],
+        "properties": [
+          "description",
+          "name",
+          "edge",
+          "entity",
+          "graph",
+          "subGraph",
+          "vertexCharacteristic",
+          "vertexSpecification",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listVertex",
+          "summary": "List or find Vertex objects",
+          "description": "This operation list or find Vertex entities",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createVertex",
+          "summary": "Creates a Vertex",
+          "description": "This operation creates a Vertex entity.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveVertex",
+          "summary": "Retrieves a Vertex by ID",
+          "description": "This operation retrieves a Vertex entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Vertex",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchVertex",
+          "summary": "Updates partially a Vertex",
+          "description": "This operation updates partially a Vertex entity.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Vertex",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteVertex",
+          "summary": "Deletes a Vertex",
+          "description": "This operation deletes a Vertex entity.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Vertex",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/graph/{graphId}/vertex",
+        "item": "/graph/{graphId}/vertex/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "vertexChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "VERTEX_CHANGE"
+        },
+        {
+          "eventName": "vertexCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "VERTEX_CREATE"
+        },
+        {
+          "eventName": "vertexDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "VERTEX_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "Edge",
+      "camelName": "edge",
+      "kebabName": "edge",
+      "tableName": "edge",
+      "pathSegment": "edge",
+      "pathKey": "graph/edge",
+      "parentSegments": [
+        "graph"
+      ],
+      "nested": true,
+      "description": "Edge is a directed edge connecting vertices in a directed Graph.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "bidirectional",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates if this Edge is birectional (true) or unidirection originating from the first vertex (false)."
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name given to this REST resource"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "entity",
+          "targetRef": "EntityRef",
+          "description": "Entity which this Edge represents.",
+          "columns": [
+            {
+              "name": "entityId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "entitySchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "entityReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "edgeSpecification",
+          "targetResource": "EdgeSpecification",
+          "targetTable": "edge_specification",
+          "relation": "many-to-one",
+          "joinColumn": "edge_specification_id",
+          "required": false,
+          "description": "",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "version",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        },
+        {
+          "name": "graph",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "graph_id",
+          "required": false,
+          "description": "Graph which this Edge is contained in.",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        },
+        {
+          "name": "subGraph",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "sub_graph_id",
+          "required": false,
+          "description": "SubGraph which this Edge represents.",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "Characteristic",
+          "tableName": "characteristic",
+          "nameCandidates": [
+            "Characteristic",
+            "EdgeCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "edgeCharacteristic",
+          "itemRef": "Characteristic",
+          "description": "Describes a given characteristic of an object or entity through a name/value pair.",
+          "minItems": null,
+          "requiredFields": [
+            "name",
+            "value"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "Name of the characteristic"
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Data type of the value of the characteristic"
+            },
+            {
+              "kind": "json",
+              "name": "value",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "CharacteristicRelationship",
+              "tableName": "characteristic_relationship",
+              "nameCandidates": [
+                "CharacteristicRelationship",
+                "CharacteristicRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicRelationship",
+              "itemRef": "CharacteristicRelationship",
+              "description": "Another Characteristic that is related to the current Characteristic.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "VertexRef",
+          "tableName": "vertex_ref",
+          "nameCandidates": [
+            "VertexRef",
+            "EdgeVertexRef"
+          ],
+          "refLike": false,
+          "propertyName": "vertex",
+          "itemRef": "VertexRef",
+          "description": "Graph Vertices connected by this Edge.",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "Edge_Create",
+        "required": [
+          "name",
+          "graph"
+        ],
+        "properties": [
+          "bidirectional",
+          "description",
+          "name",
+          "edgeCharacteristic",
+          "edgeSpecification",
+          "entity",
+          "graph",
+          "subGraph",
+          "vertex",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "Edge_Update",
+        "required": [],
+        "properties": [
+          "bidirectional",
+          "description",
+          "name",
+          "edgeCharacteristic",
+          "edgeSpecification",
+          "entity",
+          "graph",
+          "subGraph",
+          "vertex",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listEdge",
+          "summary": "List or find Edge objects",
+          "description": "This operation list or find Edge entities",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createEdge",
+          "summary": "Creates a Edge",
+          "description": "This operation creates a Edge entity.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveEdge",
+          "summary": "Retrieves a Edge by ID",
+          "description": "This operation retrieves a Edge entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Edge",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchEdge",
+          "summary": "Updates partially a Edge",
+          "description": "This operation updates partially a Edge entity.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Edge",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteEdge",
+          "summary": "Deletes a Edge",
+          "description": "This operation deletes a Edge entity.",
+          "params": [
+            {
+              "name": "graphId",
+              "in": "path",
+              "description": "Identifier of the parent Graph entity",
+              "required": true
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Edge",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/graph/{graphId}/edge",
+        "item": "/graph/{graphId}/edge/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "edgeChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "EDGE_CHANGE"
+        },
+        {
+          "eventName": "edgeCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "EDGE_CREATE"
+        },
+        {
+          "eventName": "edgeDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "EDGE_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "VertexSpecification",
+      "camelName": "vertexSpecification",
+      "kebabName": "vertex-specification",
+      "tableName": "vertex_specification",
+      "pathSegment": "vertexSpecification",
+      "pathKey": "vertexSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A Vertex is connected by directed Edges to other vertices in a Graph.\nA VertexSpecification is a base class that represents a generic means for implementing a particular type of Vertex. In essence, a VertexSpecification defines the common attributes and relationships of a set of related Vertices, while Vertex defines a specific instance that is based on a particular VertexSpecification.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "lifecycleStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Used to indicate the current lifecycle status of the vertex specification"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name given to this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Vertex Specification version"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "The period for which this REST resource is valid",
+          "columns": [
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RelatedParty",
+          "tableName": "related_party",
+          "nameCandidates": [
+            "RelatedParty",
+            "VertexSpecificationRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedParty",
+          "description": "A related party defines party or party role linked to a specific entity.",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "VertexSpecificationCharacteristic",
+          "tableName": "vertex_specification_characteristic",
+          "nameCandidates": [
+            "VertexSpecificationCharacteristic",
+            "VertexSpecificationVertexSpecCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "vertexSpecCharacteristic",
+          "itemRef": "VertexSpecificationCharacteristic",
+          "description": "A characteristic quality or distinctive feature of a VertexSpecification.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "configurable",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "If true, the Boolean indicates that the target Characteristic is configurable"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative that explains the CharacteristicSpecification."
+            },
+            {
+              "kind": "scalar",
+              "name": "extensible",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "An indicator that specifies that the values for the characteristic can be extended by adding new values when instantiating a characteristic for a resource."
+            },
+            {
+              "kind": "scalar",
+              "name": "isUnique",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Specifies if the value of this characteristic is unique across all entities instantiated from the specification that uses this characteristc. For example, consider a ProductSpecification for a set-top box, with a CharacteristicSpecification cardID. Each set-top box must have a different value for cardID, so this isUnique attribute would be set to true for the characteristic."
+            },
+            {
+              "kind": "scalar",
+              "name": "maxCardinality",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The maximum number of instances a CharacteristicValue can take on. For example, zero to five phone numbers in a group calling plan, where five is the value for the maxCardinality."
+            },
+            {
+              "kind": "scalar",
+              "name": "minCardinality",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The minimum number of instances a CharacteristicValue can take on. For example, zero to five phone numbers in a group calling plan, where zero is the value for the minCardinality."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A word, term, or phrase by which this characteristic specification is known and distinguished from other characteristic specifications."
+            },
+            {
+              "kind": "scalar",
+              "name": "regex",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A rule or principle represented in regular JsonLdExpression used to derive the value of a characteristic value."
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A kind of value that the characteristic can take on, such as numeric, text and so forth"
+            },
+            {
+              "kind": "scalar",
+              "name": "atValueSchemaLocation",
+              "expose": "@valueSchemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "This (optional) field provides a link to the schema describing the value type."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "The period of time for which a characteristic is applicable.",
+              "columns": [
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "VertexSpecificationCharacteristicRelationship",
+              "tableName": "vertex_specification_characteristic_relationship",
+              "nameCandidates": [
+                "VertexSpecificationCharacteristicRelationship",
+                "VertexSpecificationCharacteristicVertexSpecCharRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "vertexSpecCharRelationship",
+              "itemRef": "VertexSpecificationCharacteristicRelationship",
+              "description": "An aggregation, migration, substitution, dependency or exclusivity relationship between/among Specification Characteristics.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "characteristicSpecificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of the characteristic within the specification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the target characteristic within the specification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of relationship such as aggregation, migration, substitution, dependency, exclusivity"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "vertexSpecificationHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Hyperlink reference to the vertex specification containing the target characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "vertexSpecificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of the vertex specification containing the target characteristic"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The period for which the object is valid",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "CharacteristicValueSpecification",
+              "tableName": "characteristic_value_specification",
+              "nameCandidates": [
+                "CharacteristicValueSpecification",
+                "VertexSpecificationCharacteristicVertexSpecCharacteristicValue"
+              ],
+              "refLike": false,
+              "propertyName": "vertexSpecCharacteristicValue",
+              "itemRef": "CharacteristicValueSpecification",
+              "description": "A CharacteristicValueSpecification object is used to define a set of attributes, each of which can be assigned to a corresponding set of attributes in a VertexSpecificationCharacteristic object. The values of the attributes in the CharacteristicValueSpecification object describe the values of the attributes that a corresponding VertexSpecificationCharacteristic object can take on.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "isDefault",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, the Boolean Indicates if the value is the default value for a characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "rangeInterval",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "An indicator that specifies the inclusion or exclusion of the valueFrom and valueTo attributes. If applicable, possible values are \"open\", \"closed\", \"closedBottom\" and \"closedTop\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "regex",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A regular JsonLdExpression constraint for given value"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A length, surface, volume, dry measure, liquid measure, money, weight, time, and the like. In general, a determinate quantity or magnitude of the kind designated, taken as a standard of comparison for others of the same kind, in assigning to them numerical values, as 1 foot, 1 yard, 1 mile, 1 square foot."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueFrom",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The low range value that a characteristic can take on"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueTo",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The upper range value that a characteristic can take on"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A kind of value that the characteristic value can take on, such as numeric, text and so forth"
+                },
+                {
+                  "kind": "json",
+                  "name": "value",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The period of time for which a value is applicable.",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "VertexSpecification_Create",
+        "required": [
+          "name"
+        ],
+        "properties": [
+          "description",
+          "lastUpdate",
+          "lifecycleStatus",
+          "name",
+          "version",
+          "relatedParty",
+          "validFor",
+          "vertexSpecCharacteristic",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "VertexSpecification_Update",
+        "required": [],
+        "properties": [
+          "description",
+          "lastUpdate",
+          "lifecycleStatus",
+          "name",
+          "version",
+          "relatedParty",
+          "validFor",
+          "vertexSpecCharacteristic",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": true
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listVertexSpecification",
+          "summary": "List or find VertexSpecification objects",
+          "description": "This operation list or find VertexSpecification entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createVertexSpecification",
+          "summary": "Creates a VertexSpecification",
+          "description": "This operation creates a VertexSpecification entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveVertexSpecification",
+          "summary": "Retrieves a VertexSpecification by ID",
+          "description": "This operation retrieves a VertexSpecification entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the VertexSpecification",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchVertexSpecification",
+          "summary": "Updates partially a VertexSpecification",
+          "description": "This operation updates partially a VertexSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the VertexSpecification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteVertexSpecification",
+          "summary": "Deletes a VertexSpecification",
+          "description": "This operation deletes a VertexSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the VertexSpecification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/vertexSpecification",
+        "item": "/vertexSpecification/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "vertexSpecificationChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "VERTEX_SPECIFICATION_CHANGE"
+        },
+        {
+          "eventName": "vertexSpecificationCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "VERTEX_SPECIFICATION_CREATE"
+        },
+        {
+          "eventName": "vertexSpecificationDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "VERTEX_SPECIFICATION_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "EdgeSpecification",
+      "camelName": "edgeSpecification",
+      "kebabName": "edge-specification",
+      "tableName": "edge_specification",
+      "pathSegment": "edgeSpecification",
+      "pathKey": "edgeSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A directed Edge connects Vertices in a Graph.\nAn EdgeSpecification is a base class that represents a generic means for implementing a particular type of Edge. In essence, an EdgeSpecification defines the common attributes and relationships of a set of related Edges, while Edge defines a specific instance that is based on a particular EdgeSpecification.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update of this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "lifecycleStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Used to indicate the current lifecycle status of the edge specification"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name given to this REST resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Edge Specification version"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "The period for which this REST resource is valid",
+          "columns": [
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "EdgeSpecificationCharacteristic",
+          "tableName": "edge_specification_characteristic",
+          "nameCandidates": [
+            "EdgeSpecificationCharacteristic",
+            "EdgeSpecificationEdgeSpecCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "edgeSpecCharacteristic",
+          "itemRef": "EdgeSpecificationCharacteristic",
+          "description": "A characteristic quality or distinctive feature of an EdgeSpecification.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "configurable",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "If true, the Boolean indicates that the target Characteristic is configurable"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative that explains the CharacteristicSpecification."
+            },
+            {
+              "kind": "scalar",
+              "name": "extensible",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "An indicator that specifies that the values for the characteristic can be extended by adding new values when instantiating a characteristic for a resource."
+            },
+            {
+              "kind": "scalar",
+              "name": "isUnique",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Specifies if the value of this characteristic is unique across all entities instantiated from the specification that uses this characteristc. For example, consider a ProductSpecification for a set-top box, with a CharacteristicSpecification cardID. Each set-top box must have a different value for cardID, so this isUnique attribute would be set to true for the characteristic."
+            },
+            {
+              "kind": "scalar",
+              "name": "maxCardinality",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The maximum number of instances a CharacteristicValue can take on. For example, zero to five phone numbers in a group calling plan, where five is the value for the maxCardinality."
+            },
+            {
+              "kind": "scalar",
+              "name": "minCardinality",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The minimum number of instances a CharacteristicValue can take on. For example, zero to five phone numbers in a group calling plan, where zero is the value for the minCardinality."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A word, term, or phrase by which this characteristic specification is known and distinguished from other characteristic specifications."
+            },
+            {
+              "kind": "scalar",
+              "name": "regex",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A rule or principle represented in regular JsonLdExpression used to derive the value of a characteristic value."
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A kind of value that the characteristic can take on, such as numeric, text and so forth"
+            },
+            {
+              "kind": "scalar",
+              "name": "atValueSchemaLocation",
+              "expose": "@valueSchemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "This (optional) field provides a link to the schema describing the value type."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "The period of time for which a characteristic is applicable.",
+              "columns": [
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "EdgeSpecificationCharacteristicRelationship",
+              "tableName": "edge_specification_characteristic_relationship",
+              "nameCandidates": [
+                "EdgeSpecificationCharacteristicRelationship",
+                "EdgeSpecificationCharacteristicEdgeSpecCharRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "edgeSpecCharRelationship",
+              "itemRef": "EdgeSpecificationCharacteristicRelationship",
+              "description": "An aggregation, migration, substitution, dependency or exclusivity relationship between/among Specification Characteristics.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "characteristicSpecificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of the characteristic within the specification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "edgeSpecificationHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Hyperlink reference to the edge specification containing the target characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "edgeSpecificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of the edge specification containing the target characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the target characteristic within the specification"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of relationship such as aggregation, migration, substitution, dependency, exclusivity"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The period for which the object is valid",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "CharacteristicValueSpecification",
+              "tableName": "characteristic_value_specification",
+              "nameCandidates": [
+                "CharacteristicValueSpecification",
+                "EdgeSpecificationCharacteristicEdgeSpecCharacteristicValue"
+              ],
+              "refLike": false,
+              "propertyName": "edgeSpecCharacteristicValue",
+              "itemRef": "CharacteristicValueSpecification",
+              "description": "A CharacteristicValueSpecification object is used to define a set of attributes, each of which can be assigned to a corresponding set of attributes in a EdgeSpecificationCharacteristic object. The values of the attributes in the CharacteristicValueSpecification object describe the values of the attributes that a corresponding EdgeSpecificationCharacteristic object can take on.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "isDefault",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, the Boolean Indicates if the value is the default value for a characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "rangeInterval",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "An indicator that specifies the inclusion or exclusion of the valueFrom and valueTo attributes. If applicable, possible values are \"open\", \"closed\", \"closedBottom\" and \"closedTop\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "regex",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A regular JsonLdExpression constraint for given value"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A length, surface, volume, dry measure, liquid measure, money, weight, time, and the like. In general, a determinate quantity or magnitude of the kind designated, taken as a standard of comparison for others of the same kind, in assigning to them numerical values, as 1 foot, 1 yard, 1 mile, 1 square foot."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueFrom",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The low range value that a characteristic can take on"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueTo",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The upper range value that a characteristic can take on"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A kind of value that the characteristic value can take on, such as numeric, text and so forth"
+                },
+                {
+                  "kind": "json",
+                  "name": "value",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The period of time for which a value is applicable.",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "RelatedParty",
+          "tableName": "related_party",
+          "nameCandidates": [
+            "RelatedParty",
+            "EdgeSpecificationRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedParty",
+          "description": "A related party defines party or party role linked to a specific entity.",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "EdgeSpecification_Create",
+        "required": [
+          "name"
+        ],
+        "properties": [
+          "description",
+          "lastUpdate",
+          "lifecycleStatus",
+          "name",
+          "version",
+          "edgeSpecCharacteristic",
+          "relatedParty",
+          "validFor",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "EdgeSpecification_Update",
+        "required": [],
+        "properties": [
+          "description",
+          "lastUpdate",
+          "lifecycleStatus",
+          "name",
+          "version",
+          "edgeSpecCharacteristic",
+          "relatedParty",
+          "validFor",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": true
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listEdgeSpecification",
+          "summary": "List or find EdgeSpecification objects",
+          "description": "This operation list or find EdgeSpecification entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createEdgeSpecification",
+          "summary": "Creates a EdgeSpecification",
+          "description": "This operation creates a EdgeSpecification entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveEdgeSpecification",
+          "summary": "Retrieves a EdgeSpecification by ID",
+          "description": "This operation retrieves a EdgeSpecification entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the EdgeSpecification",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchEdgeSpecification",
+          "summary": "Updates partially a EdgeSpecification",
+          "description": "This operation updates partially a EdgeSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the EdgeSpecification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteEdgeSpecification",
+          "summary": "Deletes a EdgeSpecification",
+          "description": "This operation deletes a EdgeSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the EdgeSpecification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/edgeSpecification",
+        "item": "/edgeSpecification/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "edgeSpecificationChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "EDGE_SPECIFICATION_CHANGE"
+        },
+        {
+          "eventName": "edgeSpecificationCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "EDGE_SPECIFICATION_CREATE"
+        },
+        {
+          "eventName": "edgeSpecificationDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "EDGE_SPECIFICATION_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "TopologyDiscoveryJob",
+      "camelName": "topologyDiscoveryJob",
+      "kebabName": "topology-discovery-job",
+      "tableName": "topology_discovery_job",
+      "pathSegment": "topologyDiscoveryJob",
+      "pathKey": "topologyDiscoveryJob",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Represents a task used to discover topology from providers",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date at which the job was completed"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date at which the job was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "accepted",
+            "terminatedWithError",
+            "inProgress",
+            "done"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "Status of the topology discover job"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": {
+        "schemaName": "TopologyDiscoveryJob_Create",
+        "required": [],
+        "properties": [
+          "completionDate",
+          "creationDate",
+          "status",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TopologyDiscoveryJob_Update",
+        "required": [],
+        "properties": [
+          "completionDate",
+          "creationDate",
+          "status",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTopologyDiscoveryJob",
+          "summary": "List or find TopologyDiscoveryJob objects",
+          "description": "This operation list or find TopologyDiscoveryJob entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTopologyDiscoveryJob",
+          "summary": "Creates a TopologyDiscoveryJob",
+          "description": "This operation creates a TopologyDiscoveryJob entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTopologyDiscoveryJob",
+          "summary": "Retrieves a TopologyDiscoveryJob by ID",
+          "description": "This operation retrieves a TopologyDiscoveryJob entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TopologyDiscoveryJob",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTopologyDiscoveryJob",
+          "summary": "Updates partially a TopologyDiscoveryJob",
+          "description": "This operation updates partially a TopologyDiscoveryJob entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TopologyDiscoveryJob",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": null
+      },
+      "paths": {
+        "collection": "/topologyDiscoveryJob",
+        "item": "/topologyDiscoveryJob/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "topologyDiscoveryJobCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TOPOLOGY_DISCOVERY_JOB_CREATE"
+        },
+        {
+          "eventName": "topologyDiscoveryJobStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TOPOLOGY_DISCOVERY_JOB_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "MergeTopologyGraphJob",
+      "camelName": "mergeTopologyGraphJob",
+      "kebabName": "merge-topology-graph-job",
+      "tableName": "merge_topology_graph_job",
+      "pathSegment": "mergeTopologyGraphJob",
+      "pathKey": "mergeTopologyGraphJob",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Merges two or more Graphs into a single graph.",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date at which the job was completed"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date at which the job was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "accepted",
+            "terminatedWithError",
+            "inProgress",
+            "done"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "Status of the merge job"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [
+        {
+          "name": "graphResult",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "graph_result_id",
+          "required": false,
+          "description": "The created topology graph",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GraphRef",
+          "tableName": "graph_ref",
+          "nameCandidates": [
+            "GraphRef",
+            "MergeTopologyGraphJobMergeTopologyGraphRef"
+          ],
+          "refLike": false,
+          "propertyName": "mergeTopologyGraph",
+          "itemRef": "GraphRef",
+          "description": "URI with query string of the Topology GraphIds to be merged",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "MergeTopologyGraphJob_Create",
+        "required": [
+          "mergeTopologyGraph"
+        ],
+        "properties": [
+          "completionDate",
+          "creationDate",
+          "graphResult",
+          "mergeTopologyGraph",
+          "status",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "MergeTopologyGraphJob_Update",
+        "required": [],
+        "properties": [
+          "completionDate",
+          "creationDate",
+          "graphResult",
+          "mergeTopologyGraph",
+          "status",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listMergeTopologyGraphJob",
+          "summary": "List or find MergeTopologyGraphJob objects",
+          "description": "This operation list or find MergeTopologyGraphJob entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createMergeTopologyGraphJob",
+          "summary": "Creates a MergeTopologyGraphJob",
+          "description": "This operation creates a MergeTopologyGraphJob entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveMergeTopologyGraphJob",
+          "summary": "Retrieves a MergeTopologyGraphJob by ID",
+          "description": "This operation retrieves a MergeTopologyGraphJob entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the MergeTopologyGraphJob",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchMergeTopologyGraphJob",
+          "summary": "Updates partially a MergeTopologyGraphJob",
+          "description": "This operation updates partially a MergeTopologyGraphJob entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the MergeTopologyGraphJob",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": null
+      },
+      "paths": {
+        "collection": "/mergeTopologyGraphJob",
+        "item": "/mergeTopologyGraphJob/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "mergeTopologyGraphJobCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "MERGE_TOPOLOGY_GRAPH_JOB_CREATE"
+        },
+        {
+          "eventName": "mergeTopologyGraphJobStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "MERGE_TOPOLOGY_GRAPH_JOB_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "TopologyQueryJob",
+      "camelName": "topologyQueryJob",
+      "kebabName": "topology-query-job",
+      "tableName": "topology_query_job",
+      "pathSegment": "topologyQueryJob",
+      "pathKey": "topologyQueryJob",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Represents a task used to query topology in the service",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date at which the job was completed"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date at which the job was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "accepted",
+            "terminatedWithError",
+            "inProgress",
+            "done"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "Status of the topology query job"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [
+        {
+          "name": "graphSource",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "graph_source_id",
+          "required": false,
+          "description": "The topology graph to be queried",
+          "projectedProps": [
+            "id",
+            "href",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type",
+            "@referredType"
+          ]
+        },
+        {
+          "name": "graphTemplate",
+          "targetResource": "Graph",
+          "targetTable": "graph",
+          "relation": "many-to-one",
+          "joinColumn": "graph_template_id",
+          "required": false,
+          "description": "Attributes of the created Graph",
+          "projectedProps": [
+            "id",
+            "href",
+            "description",
+            "name",
+            "@baseType",
+            "@schemaLocation",
+            "@type"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "GraphRef",
+          "tableName": "graph_ref",
+          "nameCandidates": [
+            "GraphRef",
+            "TopologyQueryJobGraphResultRef"
+          ],
+          "refLike": false,
+          "propertyName": "graphResult",
+          "itemRef": "GraphRef",
+          "description": "The topology graph(s) created by the query",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "JSONPathQueryJsonLdExpression",
+          "tableName": "json_path_query_json_ld_expression",
+          "nameCandidates": [
+            "JSONPathQueryJsonLdExpression",
+            "TopologyQueryJobQueryMatch"
+          ],
+          "refLike": false,
+          "propertyName": "queryMatch",
+          "itemRef": "JSONPathQueryJsonLdExpression",
+          "description": "Pattern to search for in graph",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "VertexRef",
+          "tableName": "vertex_ref",
+          "nameCandidates": [
+            "VertexRef",
+            "TopologyQueryJobVertexResultRef"
+          ],
+          "refLike": false,
+          "propertyName": "vertexResult",
+          "itemRef": "VertexRef",
+          "description": "The vertices result of the query",
+          "minItems": null,
+          "requiredFields": [
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "TopologyQueryJob_Create",
+        "required": [
+          "graphSource"
+        ],
+        "properties": [
+          "completionDate",
+          "creationDate",
+          "graphResult",
+          "graphSource",
+          "graphTemplate",
+          "queryMatch",
+          "status",
+          "vertexResult",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TopologyQueryJob_Update",
+        "required": [],
+        "properties": [
+          "completionDate",
+          "creationDate",
+          "graphResult",
+          "graphSource",
+          "graphTemplate",
+          "queryMatch",
+          "status",
+          "vertexResult",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTopologyQueryJob",
+          "summary": "List or find TopologyQueryJob objects",
+          "description": "This operation list or find TopologyQueryJob entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTopologyQueryJob",
+          "summary": "Creates a TopologyQueryJob",
+          "description": "This operation creates a TopologyQueryJob entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTopologyQueryJob",
+          "summary": "Retrieves a TopologyQueryJob by ID",
+          "description": "This operation retrieves a TopologyQueryJob entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TopologyQueryJob",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTopologyQueryJob",
+          "summary": "Updates partially a TopologyQueryJob",
+          "description": "This operation updates partially a TopologyQueryJob entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TopologyQueryJob",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": null
+      },
+      "paths": {
+        "collection": "/topologyQueryJob",
+        "item": "/topologyQueryJob/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "topologyQueryJobCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TOPOLOGY_QUERY_JOB_CREATE"
+        },
+        {
+          "eventName": "topologyQueryJobStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TOPOLOGY_QUERY_JOB_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/edgeChangeEvent",
+      "eventName": "edgeChangeEvent",
+      "resource": "Edge",
+      "eventKind": "Change",
+      "operationId": "listenToEdgeChangeEvent"
+    },
+    {
+      "path": "/listener/edgeCreateEvent",
+      "eventName": "edgeCreateEvent",
+      "resource": "Edge",
+      "eventKind": "Create",
+      "operationId": "listenToEdgeCreateEvent"
+    },
+    {
+      "path": "/listener/edgeDeleteEvent",
+      "eventName": "edgeDeleteEvent",
+      "resource": "Edge",
+      "eventKind": "Delete",
+      "operationId": "listenToEdgeDeleteEvent"
+    },
+    {
+      "path": "/listener/edgeSpecificationChangeEvent",
+      "eventName": "edgeSpecificationChangeEvent",
+      "resource": "EdgeSpecification",
+      "eventKind": "Change",
+      "operationId": "listenToEdgeSpecificationChangeEvent"
+    },
+    {
+      "path": "/listener/edgeSpecificationCreateEvent",
+      "eventName": "edgeSpecificationCreateEvent",
+      "resource": "EdgeSpecification",
+      "eventKind": "Create",
+      "operationId": "listenToEdgeSpecificationCreateEvent"
+    },
+    {
+      "path": "/listener/edgeSpecificationDeleteEvent",
+      "eventName": "edgeSpecificationDeleteEvent",
+      "resource": "EdgeSpecification",
+      "eventKind": "Delete",
+      "operationId": "listenToEdgeSpecificationDeleteEvent"
+    },
+    {
+      "path": "/listener/graphChangeEvent",
+      "eventName": "graphChangeEvent",
+      "resource": "Graph",
+      "eventKind": "Change",
+      "operationId": "listenToGraphChangeEvent"
+    },
+    {
+      "path": "/listener/graphCreateEvent",
+      "eventName": "graphCreateEvent",
+      "resource": "Graph",
+      "eventKind": "Create",
+      "operationId": "listenToGraphCreateEvent"
+    },
+    {
+      "path": "/listener/graphDeleteEvent",
+      "eventName": "graphDeleteEvent",
+      "resource": "Graph",
+      "eventKind": "Delete",
+      "operationId": "listenToGraphDeleteEvent"
+    },
+    {
+      "path": "/listener/mergeTopologyGraphJobCreateEvent",
+      "eventName": "mergeTopologyGraphJobCreateEvent",
+      "resource": "MergeTopologyGraphJob",
+      "eventKind": "Create",
+      "operationId": "listenToMergeTopologyGraphJobCreateEvent"
+    },
+    {
+      "path": "/listener/mergeTopologyGraphJobStateChangeEvent",
+      "eventName": "mergeTopologyGraphJobStateChangeEvent",
+      "resource": "MergeTopologyGraphJob",
+      "eventKind": "StateChange",
+      "operationId": "listenToMergeTopologyGraphJobStateChangeEvent"
+    },
+    {
+      "path": "/listener/topologyDiscoveryJobCreateEvent",
+      "eventName": "topologyDiscoveryJobCreateEvent",
+      "resource": "TopologyDiscoveryJob",
+      "eventKind": "Create",
+      "operationId": "listenToTopologyDiscoveryJobCreateEvent"
+    },
+    {
+      "path": "/listener/topologyDiscoveryJobStateChangeEvent",
+      "eventName": "topologyDiscoveryJobStateChangeEvent",
+      "resource": "TopologyDiscoveryJob",
+      "eventKind": "StateChange",
+      "operationId": "listenToTopologyDiscoveryJobStateChangeEvent"
+    },
+    {
+      "path": "/listener/topologyQueryJobCreateEvent",
+      "eventName": "topologyQueryJobCreateEvent",
+      "resource": "TopologyQueryJob",
+      "eventKind": "Create",
+      "operationId": "listenToTopologyQueryJobCreateEvent"
+    },
+    {
+      "path": "/listener/topologyQueryJobStateChangeEvent",
+      "eventName": "topologyQueryJobStateChangeEvent",
+      "resource": "TopologyQueryJob",
+      "eventKind": "StateChange",
+      "operationId": "listenToTopologyQueryJobStateChangeEvent"
+    },
+    {
+      "path": "/listener/vertexChangeEvent",
+      "eventName": "vertexChangeEvent",
+      "resource": "Vertex",
+      "eventKind": "Change",
+      "operationId": "listenToVertexChangeEvent"
+    },
+    {
+      "path": "/listener/vertexCreateEvent",
+      "eventName": "vertexCreateEvent",
+      "resource": "Vertex",
+      "eventKind": "Create",
+      "operationId": "listenToVertexCreateEvent"
+    },
+    {
+      "path": "/listener/vertexDeleteEvent",
+      "eventName": "vertexDeleteEvent",
+      "resource": "Vertex",
+      "eventKind": "Delete",
+      "operationId": "listenToVertexDeleteEvent"
+    },
+    {
+      "path": "/listener/vertexSpecificationChangeEvent",
+      "eventName": "vertexSpecificationChangeEvent",
+      "resource": "VertexSpecification",
+      "eventKind": "Change",
+      "operationId": "listenToVertexSpecificationChangeEvent"
+    },
+    {
+      "path": "/listener/vertexSpecificationCreateEvent",
+      "eventName": "vertexSpecificationCreateEvent",
+      "resource": "VertexSpecification",
+      "eventKind": "Create",
+      "operationId": "listenToVertexSpecificationCreateEvent"
+    },
+    {
+      "path": "/listener/vertexSpecificationDeleteEvent",
+      "eventName": "vertexSpecificationDeleteEvent",
+      "resource": "VertexSpecification",
+      "eventKind": "Delete",
+      "operationId": "listenToVertexSpecificationDeleteEvent"
+    }
+  ],
+  "warnings": [
+    "Graph has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "Vertex has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "Edge has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TopologyDiscoveryJob has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TopologyDiscoveryJob spec declares no delete operation; those routes are NOT emitted.",
+    "MergeTopologyGraphJob has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "MergeTopologyGraphJob spec declares no delete operation; those routes are NOT emitted.",
+    "TopologyQueryJob has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TopologyQueryJob spec declares no delete operation; those routes are NOT emitted."
+  ]
+}

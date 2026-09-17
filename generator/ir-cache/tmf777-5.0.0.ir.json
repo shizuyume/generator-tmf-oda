@@ -1,0 +1,1196 @@
+{
+  "meta": {
+    "tmfNumber": "777",
+    "specTitle": "Outage Management",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/outageManagement/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF777_BASE_PATH",
+    "eventExchange": "outage.events",
+    "eventExchangeConstant": "TMF777_EVENT_EXCHANGE",
+    "eventTypeEnum": "OutageEventType",
+    "serviceNameSuggestion": "outage-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf777/5.0.0/openapi/TMF777-Outage_Management-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "Outage",
+      "camelName": "outage",
+      "kebabName": "outage",
+      "tableName": "outage",
+      "pathSegment": "outage",
+      "pathKey": "outage",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The name of the outage. A concise string or identifier that briefly distinguishes or categorizes the outage."
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A textual succinct description of the nature, symptoms, cause, or effect of the outage."
+        },
+        {
+          "kind": "scalar",
+          "name": "isPlanned",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "true if outage is planned. false if outage unplanned"
+        },
+        {
+          "kind": "scalar",
+          "name": "domain",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The network domain or technology context of the outage, for example RAN, PON, OTN, Cloud, Cross-Domain etc"
+        },
+        {
+          "kind": "scalar",
+          "name": "reason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A textual succinct description of the cause/reason for the outage."
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "initiated",
+            "declared",
+            "partiallyRestored",
+            "restored",
+            "closed",
+            "cancelled"
+          ],
+          "enumRef": "OutageStateType",
+          "nullable": true,
+          "description": "Possible values for the state of an Outage"
+        },
+        {
+          "kind": "scalar",
+          "name": "stateChangeDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Time the state was last changed"
+        },
+        {
+          "kind": "scalar",
+          "name": "stateChangeReason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The reason of state change"
+        },
+        {
+          "kind": "scalar",
+          "name": "impact",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "extensive",
+            "significant",
+            "moderate",
+            "minor"
+          ],
+          "enumRef": "ImpactType",
+          "nullable": true,
+          "description": "Possible values for the impact of an Incident"
+        },
+        {
+          "kind": "scalar",
+          "name": "outageType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Describes the type of outage"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates the time (as a date + time) at which the outage was created. It indicates the time when an outage instance is created after identifiying incident or change request and recording suspected impact."
+        },
+        {
+          "kind": "scalar",
+          "name": "estimatedDateToResolve",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates the estimated date (as a date + time) at which the outage will be resolved. That is, when all the affected service and/or locations are restored."
+        },
+        {
+          "kind": "scalar",
+          "name": "estimatedNextUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The estimated time when next update will be provided"
+        },
+        {
+          "kind": "scalar",
+          "name": "totalNumberOfServiceImpacted",
+          "tsType": "number",
+          "column": {
+            "type": "int"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Once the service impact is finalised, this will represent the total number of services impacted."
+        },
+        {
+          "kind": "scalar",
+          "name": "totalNumberOfLocationImpacted",
+          "tsType": "number",
+          "column": {
+            "type": "int"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Once the location impact is finalised, this will represent the total number of locations impacted."
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update of the Outage"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "period",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "periodStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "periodEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "ChangeRequestRef",
+          "tableName": "change_request_ref",
+          "nameCandidates": [
+            "ChangeRequestRef",
+            "OutageRootCauseChangeRequestRef"
+          ],
+          "refLike": false,
+          "propertyName": "rootCauseChangeRequest",
+          "itemRef": "ChangeRequestRef",
+          "description": "List of change request(s) that are associated to the outage. At least one of rootCauseChangeRequest or rootCauseIncident should be present.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "IncidentRef",
+          "tableName": "incident_ref",
+          "nameCandidates": [
+            "IncidentRef",
+            "OutageRootCauseIncidentRef"
+          ],
+          "refLike": true,
+          "propertyName": "rootCauseIncident",
+          "itemRef": "IncidentRef",
+          "description": "List of incident(s) that are associated to the outage. At least one of rootCauseChangeRequest or rootCauseIncident should be present.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related incident"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedPlaceRefOrValue",
+          "tableName": "related_place_ref_or_value",
+          "nameCandidates": [
+            "RelatedPlaceRefOrValue",
+            "OutageAffectedLocation"
+          ],
+          "refLike": false,
+          "propertyName": "affectedLocation",
+          "itemRef": "RelatedPlaceRefOrValue",
+          "description": "A list of the locations affected by the outage. At least one of affectedService or affectedLocation should be present.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "json",
+              "name": "place",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ServiceRefOrValue",
+          "tableName": "service_ref_or_value",
+          "nameCandidates": [
+            "ServiceRefOrValue",
+            "OutageAffectedService"
+          ],
+          "refLike": false,
+          "propertyName": "affectedService",
+          "itemRef": "ServiceRefOrValue",
+          "description": "List of the services affected by the outage. At least one of affectedService or affectedLocation should be present.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedPlaceRefOrValue",
+          "tableName": "related_place_ref_or_value",
+          "nameCandidates": [
+            "RelatedPlaceRefOrValue",
+            "OutageRestoredLocation"
+          ],
+          "refLike": false,
+          "propertyName": "restoredLocation",
+          "itemRef": "RelatedPlaceRefOrValue",
+          "description": "A list of the locations restored and no longer affected by the outage.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "json",
+              "name": "place",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ServiceRefOrValue",
+          "tableName": "service_ref_or_value",
+          "nameCandidates": [
+            "ServiceRefOrValue",
+            "OutageRestoredService"
+          ],
+          "refLike": false,
+          "propertyName": "restoredService",
+          "itemRef": "ServiceRefOrValue",
+          "description": "List of the services restored and no longer affected by the outage.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "OutageRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "List of parties or party roles playing a role within the outage",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedEntityRefOrValue",
+          "tableName": "related_entity_ref_or_value",
+          "nameCandidates": [
+            "RelatedEntityRefOrValue",
+            "OutageRelatedEntity"
+          ],
+          "refLike": false,
+          "propertyName": "relatedEntity",
+          "itemRef": "RelatedEntityRefOrValue",
+          "description": "List of related entities associated with this outage. This could be cost, reporting management template etc",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "json",
+              "name": "entity",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "Note",
+          "tableName": "note",
+          "nameCandidates": [
+            "Note",
+            "OutageNote"
+          ],
+          "refLike": false,
+          "propertyName": "note",
+          "itemRef": "Note",
+          "description": "A list of comments or notes made on the outage",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "author",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Author of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "date",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "text",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Text of the note"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ExternalIdentifier",
+          "tableName": "external_identifier",
+          "nameCandidates": [
+            "ExternalIdentifier",
+            "OutageExternalIdentifier"
+          ],
+          "refLike": false,
+          "propertyName": "externalIdentifier",
+          "itemRef": "ExternalIdentifier",
+          "description": "External identifier of the outage instance that is different to the current system",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "owner",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the external system that owns the entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "externalIdentifierType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of the identification, typically would be the type of the entity within the external system"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "Outage_FVO",
+        "required": [
+          "@type",
+          "name",
+          "isPlanned",
+          "reason"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "name",
+          "description",
+          "isPlanned",
+          "domain",
+          "reason",
+          "state",
+          "stateChangeReason",
+          "impact",
+          "outageType",
+          "estimatedDateToResolve",
+          "estimatedNextUpdate",
+          "period",
+          "rootCauseChangeRequest",
+          "rootCauseIncident",
+          "affectedLocation",
+          "affectedService",
+          "totalNumberOfServiceImpacted",
+          "totalNumberOfLocationImpacted",
+          "restoredLocation",
+          "restoredService",
+          "relatedParty",
+          "relatedEntity",
+          "note",
+          "externalIdentifier"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "Outage_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "name",
+          "description",
+          "isPlanned",
+          "domain",
+          "reason",
+          "state",
+          "stateChangeReason",
+          "impact",
+          "outageType",
+          "estimatedDateToResolve",
+          "estimatedNextUpdate",
+          "period",
+          "rootCauseChangeRequest",
+          "rootCauseIncident",
+          "affectedLocation",
+          "affectedService",
+          "totalNumberOfServiceImpacted",
+          "totalNumberOfLocationImpacted",
+          "restoredLocation",
+          "restoredService",
+          "relatedParty",
+          "relatedEntity",
+          "note",
+          "externalIdentifier"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "Outage_create_example",
+          "value": {
+            "@type": "Outage",
+            "@schemaLocation": "http://my.schemas/Outage.schema.json",
+            "name": "QWR23 FDH down",
+            "description": "broadband outage due to software failure at FDH",
+            "isPlanned": false,
+            "domain": "broadband",
+            "reason": "software failure at FDH",
+            "state": "initiated",
+            "stateChangeReason": "identified from INC-789789",
+            "impact": "significant",
+            "outageType": "significant local",
+            "estimatedDateToResolve": "2025-04-23T10:16:56Z",
+            "estimatedNextUpdate": "2025-04-23T05:16:56Z",
+            "period": {
+              "startDateTime": "2025-04-23T04:16:56Z"
+            },
+            "rootCauseIncident": [
+              {
+                "@type": "IncidentRef",
+                "@schemaLocation": "http://my.schemas/Incident.schema.json",
+                "href": "http://serverlocation:port/tmf-api/Incident/v4/incident/789789",
+                "id": "789789",
+                "name": "Incident - 59840 software failure",
+                "@referredType": "Incident"
+              }
+            ],
+            "affectedLocation": [
+              {
+                "@type": "RelatedPlaceRefOrValue",
+                "@schemaLocation": "http://my.schemas/RelatedPlaceRefOrValue.schema.json",
+                "role": "localDistributionPoint",
+                "place": {
+                  "@type": "PlaceRef",
+                  "@schemaLocation": "http://my.schemas/PlaceRef.schema.json",
+                  "href": "https://mycsp.com:8080/tmf-api/geographicLocationManagement/v5/geographicLocation/2435",
+                  "id": "2435",
+                  "name": "FDH location",
+                  "@referredType": "GeographicLocation"
+                }
+              }
+            ],
+            "totalNumberOfServiceImpacted": 3,
+            "totalNumberOfLocationImpacted": 1,
+            "affectedService": [
+              {
+                "@type": "ServiceRef",
+                "@schemaLocation": "http://my.schemas/Service.schema.json",
+                "href": "http://serverlocation:port/tmf-api/serviceInventory/v5/service/123699",
+                "id": "123699",
+                "name": "broadband connectivity service",
+                "@referredType": "Service"
+              },
+              {
+                "@type": "ServiceRef",
+                "@schemaLocation": "http://my.schemas/Service.schema.json",
+                "href": "http://serverlocation:port/tmf-api/serviceInventory/v5/service/123700",
+                "id": "123700",
+                "name": "broadband connectivity service",
+                "@referredType": "Service"
+              },
+              {
+                "@type": "ServiceRef",
+                "@schemaLocation": "http://my.schemas/Service.schema.json",
+                "href": "http://serverlocation:port/tmf-api/serviceInventory/v5/service/123701",
+                "id": "123701",
+                "name": "broadband connectivity service",
+                "@referredType": "Service"
+              }
+            ],
+            "relatedParty": [
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "@schemaLocation": "http://my.schemas/RelatedPartyRefOrPartyRoleRef.schema.json",
+                "role": "restorationCoordinator",
+                "partyOrPartyRole": {
+                  "@type": "PartyRef",
+                  "@schemaLocation": "http://my.schemas/PartyRef.schema.json",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organisation/9866",
+                  "id": "9866",
+                  "name": "NOC - 3494839",
+                  "@referredType": "Organisation"
+                }
+              }
+            ],
+            "relatedEntity": [
+              {
+                "@type": "RelatedEntityRefOrValue",
+                "@schemaLocation": "http://my.schemas/RelatedEntityRefOrValue.schema.json",
+                "role": "associated cost",
+                "entity": {
+                  "@type": "EntityRef",
+                  "@schemaLocation": "http://my.schemas/Entity.schema.json",
+                  "href": "https://mycsp.com:8080/tmf-api/costManagement/v5/projectedCost/9866",
+                  "id": "9866",
+                  "@referredType": "ProjectedCost"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listOutage",
+          "summary": "List or find Outage objects",
+          "description": "List or find Outage objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "before",
+              "in": "query",
+              "description": "An opaque string value representing the page results before the cursor value",
+              "required": false
+            },
+            {
+              "name": "after",
+              "in": "query",
+              "description": "An opaque string value representing the page results after the cursor value",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "in": "query",
+              "description": "The default direction is Ascending order, the use of the modifier in front of the sort field name, “-“, changes the sort order direction.",
+              "required": false
+            },
+            {
+              "name": "filter",
+              "in": "query",
+              "description": "Filter a collection using JSONPath",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createOutage",
+          "summary": "Creates a Outage",
+          "description": "This operation creates a Outage entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveOutage",
+          "summary": "Retrieves a Outage by ID",
+          "description": "This operation retrieves a Outage entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchOutage",
+          "summary": "Updates partially a Outage",
+          "description": "This operation updates partially a Outage entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteOutage",
+          "summary": "Deletes a Outage",
+          "description": "This operation deletes a Outage entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/outage",
+        "item": "/outage/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "outageAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "OUTAGE_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "outageCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "OUTAGE_CREATE"
+        },
+        {
+          "eventName": "outageDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "OUTAGE_DELETE"
+        },
+        {
+          "eventName": "outageStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "OUTAGE_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/outageAttributeValueChangeEvent",
+      "eventName": "outageAttributeValueChangeEvent",
+      "resource": "Outage",
+      "eventKind": "AttributeValueChange",
+      "operationId": "outageAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/outageCreateEvent",
+      "eventName": "outageCreateEvent",
+      "resource": "Outage",
+      "eventKind": "Create",
+      "operationId": "outageCreateEvent"
+    },
+    {
+      "path": "/listener/outageDeleteEvent",
+      "eventName": "outageDeleteEvent",
+      "resource": "Outage",
+      "eventKind": "Delete",
+      "operationId": "outageDeleteEvent"
+    },
+    {
+      "path": "/listener/outageStateChangeEvent",
+      "eventName": "outageStateChangeEvent",
+      "resource": "Outage",
+      "eventKind": "StateChange",
+      "operationId": "outageStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "Outage has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

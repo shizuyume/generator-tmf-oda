@@ -7,10 +7,10 @@ import { Expose } from 'class-transformer';
  */
 @Entity('event_reporting_system_ref')
 export class EventReportingSystemRef {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
-  @Column({ type: 'varchar', length: 36, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   refId?: string;
 
   @Column({ type: 'varchar', length: 1000, nullable: true })

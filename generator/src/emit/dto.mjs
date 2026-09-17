@@ -30,8 +30,21 @@ function decoratorsFor(field, required) {
     return [required ? '@ApiProperty()' : '@ApiPropertyOptional()', opt];
   }
   if (field.tsType === 'Date' || /date/i.test(field.name)) {
-    // dates arrive as ISO strings; the reference attaches no date validator
-    return [api];
+    // A date field lands in a `timestamp` column, so garbage in it is not a validation
+    // nit - it is a crash. The reference attaches no date validator, and copying that
+    // meant `{"timeRaised": "hello"}` sailed past the ValidationPipe and failed in
+    // Postgres instead:
+    //
+    //   500  invalid input syntax for type timestamp:
+    //        "0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN"
+    //
+    // Malformed input owes the client a 400. `format: 'date-time'` goes on the
+    // ApiProperty for the same reason: without it Swagger UI shows a bare `string`
+    // and gives a consumer no way to know what shape is expected.
+    const apiDate = required
+      ? "@ApiProperty({ format: 'date-time' })"
+      : "@ApiPropertyOptional({ format: 'date-time' })";
+    return [apiDate, opt, '@IsDateString()'];
   }
   if (field.tsType === 'number') return [api];
   if (field.tsType === 'boolean') return [api, opt, '@IsBoolean()'];
@@ -125,7 +138,7 @@ function nestedClass(registry, ownerClass, fieldName, spec, requiredNames = []) 
       fields: child.fields,
       flattenedRefs: child.flattenedRefs,
       children: child.children,
-    });
+    }, child.requiredFields ?? []);   // same reason as the sub-resource call below
     members.push(renderMember(child.propertyName, { kind: 'scalar', tsType: 'any' }, false, { dto: inner, array: true }));
   }
   for (const at of ['@type', '@baseType', '@schemaLocation', '@referredType']) {
@@ -139,7 +152,7 @@ function nestedClass(registry, ownerClass, fieldName, spec, requiredNames = []) 
 }
 
 function collectImports(text) {
-  const validators = ['IsDefined', 'IsOptional', 'IsString', 'IsArray', 'ArrayMinSize', 'IsBoolean', 'ValidateNested']
+  const validators = ['IsDefined', 'IsOptional', 'IsString', 'IsArray', 'ArrayMinSize', 'IsBoolean', 'IsDateString', 'ValidateNested']
     .filter(v => text.includes(`@${v}(`));
   const swagger = ['ApiProperty', 'ApiPropertyOptional'].filter(v => text.includes(`@${v}(`));
   const transformer = text.includes('@Type(') ? ['Type'] : [];
@@ -219,7 +232,15 @@ export function renderPayloadDto(resource, mode) {
       fields: sub.fields,
       flattenedRefs: sub.flattenedRefs,
       children: sub.children,
-    });
+      // The sub-schema's own required list. Omitting it made EVERY nested field
+      // optional in the DTO while entityPlan still emitted the column NOT NULL from
+      // the same list - so leaving a required nested attribute out passed validation
+      // and then died in the database:
+      //   500  null value in column "name" of relation "tracking_record_extension_info"
+      //        violates not-null constraint
+      // Malformed input owes the client a 400, and the two sides have to read the
+      // same list to agree.
+    }, sub.requiredFields ?? []);
     members.push(renderMember(sub.propertyName, { kind: 'scalar', tsType: 'any' }, false,
       { dto, array: true, minItems: mode === 'create' ? sub.minItems : null }));
     if (sub.minItems) notes.push(`${sub.propertyName} minItems: ${sub.minItems} (enforced on create)`);
@@ -252,8 +273,18 @@ export function renderPayloadDto(resource, mode) {
  * `houseFilters` - so a resource without a lifecycleStatus column never builds a
  * query against one.
  */
-export function renderQueryDto(resource) {
+export function renderQueryDto(resource, nested = null) {
   const className = `Query${resource.name}Dto`;
+  // A nested resource is scoped by its parent key. The controller reads it from the
+  // route path and merges it in, so it is declared here purely to keep that call
+  // type-safe - it is not a client-supplied query parameter.
+  const parentFields = (nested?.params ?? []).flatMap(pp => [
+    '',
+    `  /** Parent key from the nested route path; set by the controller, not by the client. */`,
+    '  @IsOptional()',
+    '  @IsString()',
+    `  ${pp}?: string;`,
+  ]);
   const applied = Object.entries(resource.houseFilters)
     .filter(([, v]) => v).map(([k]) => k).join(', ');
 
@@ -272,6 +303,7 @@ export function renderQueryDto(resource) {
       '  @IsOptional()',
       '  @IsString()',
       '  id?: string;',
+      ...parentFields,
       '}',
       '',
     ].join('\n'),

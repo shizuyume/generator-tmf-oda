@@ -10,8 +10,15 @@ import { GeographicLocationRefOrValue } from './geographic-location-ref-or-value
  */
 @Entity('geographic_address_validation_alternate_geographic_address')
 export class GeographicAddressValidationAlternateGeographicAddress {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
+
+  /** The id the client gave this item. Unique within its parent only, so it is not the primary key; served back as `id`. */
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  refId?: string;
+
+  @Column({ type: 'int', nullable: true })
+  sortOrder?: number;
 
   /** City that the address is in */
   @Column({ type: 'varchar', length: 255, nullable: true })

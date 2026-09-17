@@ -8,7 +8,7 @@ import { RelatedParty } from './related-party.entity';
 
 @Entity('geographic_site')
 export class GeographicSite {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** A code that may be used for some addressing schemes eg: [ANSI T1.253-1999] */

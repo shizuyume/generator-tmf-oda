@@ -1,6 +1,22 @@
 {
-  "targetRoot": "D:/Neuronworks/project/tm-forum",
-  "feTargetRoot": "D:/oh-my-tmf-agent-workspace/result",
-  "fePortRange": [5012, 5099],
-  "overrides": {}
+  "targetRoot": "C:/REPOSITORY",
+  "feTargetRoot": "C:/REPOSITORY/oh-my-tmf-agent-workspace/result",
+  "fePortRange": [
+    5012,
+    5099
+  ],
+  "overrides": {
+    "MeasurementCollectionJob.performanceIndicatorGroupSpecification": {
+      "tableName": "measurement_collection_job_pi_group_spec"
+    },
+    "PerformanceIndicatorGroupSpecification.performanceIndicatorSpecification": {
+      "tableName": "pi_group_spec_indicator_spec"
+    },
+    "TestEnvironmentProvisioningExecution.generalTestArtifact": {
+      "tableName": "test_env_prov_exec_general_artifact_ref"
+    },
+    "EdgeSpecification.edgeSpecCharacteristic.edgeSpecCharacteristicValue": {
+      "tableName": "edge_spec_char_value"
+    }
+  }
 }

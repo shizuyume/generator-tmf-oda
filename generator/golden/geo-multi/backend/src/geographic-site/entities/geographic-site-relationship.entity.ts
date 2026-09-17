@@ -6,8 +6,15 @@ import { TimePeriod } from './time-period.entity';
 
 @Entity('geographic_site_relationship')
 export class GeographicSiteRelationship {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
+
+  /** The id the client gave this item. Unique within its parent only, so it is not the primary key; served back as `id`. */
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  refId?: string;
+
+  @Column({ type: 'int', nullable: true })
+  sortOrder?: number;
 
   /** Type of relationship */
   @Column({ type: 'varchar', length: 100 })

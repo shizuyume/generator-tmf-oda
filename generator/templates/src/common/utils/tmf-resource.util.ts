@@ -67,12 +67,23 @@ export function applyVersionBump(
   // `null` (an unset DB column) and `undefined` (a key the client never sent)
   // both mean "no value" - without normalising them first, every no-op PATCH
   // on a row with any nullable column would spuriously read as "changed".
-  const normalize = (v: any) => (v === null || v === undefined ? undefined : v);
+  const normalize = (v: any) => v ?? undefined;
   const changed = Object.keys(oldSnapshot).some(
     (k) => JSON.stringify(normalize(oldSnapshot[k])) !== JSON.stringify(normalize(newSnapshot[k])),
   );
   return changed ? nextVersion(previous, false) : (previous ?? '1.0');
 }
+
+/**
+ * Whether `@type` survives attribute selection. The two CTK generations demand the
+ * OPPOSITE here and cannot both be satisfied:
+ *   - v4 kits assert "Instance has only id, href and filtered attribute" - including
+ *     `@type` fails TMF704/705/706/707.
+ *   - v5 conformance profiles schema-validate every response and reject a payload
+ *     without it - omitting `@type` fails TMF736/738.
+ * So it is decided per component at generate time from the spec's major version.
+ */
+const INCLUDE_ATYPE_IN_FIELD_SELECTION = {{INCLUDE_ATYPE}};
 
 export function projectFields(
   items: Record<string, any>[],
@@ -82,8 +93,7 @@ export function projectFields(
   const fieldList = fields.split(',').map((f) => f.trim());
   return items.map((item) => {
     const projected: Record<string, any> = {};
-    // Always include mandatory TMF attributes
-    if (item['@type']) projected['@type'] = item['@type'];
+    if (INCLUDE_ATYPE_IN_FIELD_SELECTION && item['@type']) projected['@type'] = item['@type'];
     if (item.id) projected.id = item.id;
     if (item.href) projected.href = item.href;
     for (const field of fieldList) {

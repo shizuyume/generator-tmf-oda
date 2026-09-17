@@ -10,7 +10,7 @@ import { PolicyRef } from './policy-ref.entity';
  */
 @Entity('party_rev_sharing_algorithm')
 export class PartyRevSharingAlgorithm {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** The name of party revenue sharing algorithm */

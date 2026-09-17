@@ -16,16 +16,16 @@ class GeometryDto {
   href?: string;
 
   /** x coordinate (usually latitude) */
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsDefined()
   @IsString()
-  x?: string;
+  x: string;
 
   /** y coordinate (usually longitude) */
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsDefined()
   @IsString()
-  y?: string;
+  y: string;
 
   /** z coordinate (usually elevation) */
   @ApiPropertyOptional()

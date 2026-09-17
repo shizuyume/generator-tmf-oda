@@ -8,8 +8,11 @@ import { PartyRevSharingAlgorithm } from './party-rev-sharing-algorithm.entity';
  */
 @Entity('policy_ref')
 export class PolicyRef {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
+
+  @Column({ type: 'int', nullable: true })
+  sortOrder?: number;
 
   /** The actual type of the target instance when needed for disambiguation. */
   @Column({ type: 'varchar', length: 100, nullable: true })

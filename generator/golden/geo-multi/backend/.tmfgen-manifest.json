@@ -40,7 +40,32 @@
           "importPath": "geographic-sub-address/geographic-sub-address.module"
         }
       ],
-      "seeds": [],
+      "seeds": [
+        {
+          "resource": "GeographicAddress",
+          "dir": "geographic-address",
+          "serviceClass": "GeographicAddressService",
+          "seedConst": null,
+          "localSeedConst": "geographicAddressLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "GeographicAddressValidation",
+          "dir": "geographic-address-validation",
+          "serviceClass": "GeographicAddressValidationService",
+          "seedConst": null,
+          "localSeedConst": "geographicAddressValidationLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "GeographicSubAddress",
+          "dir": "geographic-sub-address",
+          "serviceClass": "GeographicSubAddressService",
+          "seedConst": null,
+          "localSeedConst": "geographicSubAddressLocalSeed",
+          "count": 0
+        }
+      ],
       "entities": [
         {
           "className": "GeographicAddressValidation",
@@ -105,7 +130,16 @@
           "importPath": "geographic-site/geographic-site.module"
         }
       ],
-      "seeds": [],
+      "seeds": [
+        {
+          "resource": "GeographicSite",
+          "dir": "geographic-site",
+          "serviceClass": "GeographicSiteService",
+          "seedConst": null,
+          "localSeedConst": "geographicSiteLocalSeed",
+          "count": 0
+        }
+      ],
       "entities": [
         {
           "className": "GeographicSite",
@@ -212,7 +246,32 @@
           "importPath": "retrieve-location-relation/retrieve-location-relation.module"
         }
       ],
-      "seeds": [],
+      "seeds": [
+        {
+          "resource": "GeographicLocation",
+          "dir": "geographic-location",
+          "serviceClass": "GeographicLocationService",
+          "seedConst": null,
+          "localSeedConst": "geographicLocationLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "RetrieveGeographicLocation",
+          "dir": "retrieve-geographic-location",
+          "serviceClass": "RetrieveGeographicLocationService",
+          "seedConst": null,
+          "localSeedConst": "retrieveGeographicLocationLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "RetrieveLocationRelation",
+          "dir": "retrieve-location-relation",
+          "serviceClass": "RetrieveLocationRelationService",
+          "seedConst": null,
+          "localSeedConst": "retrieveLocationRelationLocalSeed",
+          "count": 0
+        }
+      ],
       "entities": [
         {
           "className": "GeographicLocation",

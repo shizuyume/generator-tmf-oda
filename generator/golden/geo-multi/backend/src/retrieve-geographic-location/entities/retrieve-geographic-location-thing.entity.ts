@@ -4,7 +4,7 @@ import { Expose } from 'class-transformer';
 
 @Entity('retrieve_geographic_location_thing')
 export class RetrieveGeographicLocationThing {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })

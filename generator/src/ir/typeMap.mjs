@@ -5,8 +5,13 @@ import { words } from './naming.mjs';
  *
  * Column shapes are taken from the golden reference
  * (partnership_management/backend/src/partnership/entities/*.entity.ts).
- * Invariant that is NOT negotiable, because SKILL.md gates on it:
- *   - id-like scalars are varchar(36), regardless of target database
+ * id-like scalars were varchar(36), sized for a bare UUID, and SKILL.md gates on
+ * that. TM Forum's OWN examples break it: TMF936 ships a productOffering whose
+ * productOfferingTermOrConditionSpecification.id is
+ * "ab7792f8-6628-4c4b-a557-699adc26d4ce_terms_1" - 44 characters, a UUID with a
+ * composite suffix. Seeding that example failed with "value too long for type
+ * character varying(36)", and a spec-conformant client sending the same id would
+ * get a 500. Widened to ID_COLUMN_LENGTH below, regardless of target database.
  *
  * Dates are database-target-dependent: `datetime` under sqlite (the
  * generator's default), `timestamptz` under postgres - driven by the
@@ -14,9 +19,16 @@ import { words } from './naming.mjs';
  * ir/buildIR.mjs).
  */
 
+/**
+ * Room for a UUID plus a composite suffix, which real TMF payloads use. Not 1000 (the
+ * href width): an id this long is already pathological, and keeping it bounded keeps
+ * index sizes and error messages sane.
+ */
+export const ID_COLUMN_LENGTH = 100;
+
 const NAME_RULES = [
   // [ test(fieldName, lastWord), column, tsType ]
-  [(n, w) => n === 'id' || /(^|[a-z])Id$/.test(n), { type: 'varchar', length: 36 }, 'string'],
+  [(n, w) => n === 'id' || /(^|[a-z])Id$/.test(n), { type: 'varchar', length: ID_COLUMN_LENGTH }, 'string'],
   [(n, w) => w === 'href', { type: 'varchar', length: 1000 }, 'string'],
   [(n, w) => w === 'schemalocation' || /SchemaLocation$/i.test(n), { type: 'varchar', length: 1000 }, 'string'],
   [(n, w) => n === 'description', { type: 'text' }, 'string'],

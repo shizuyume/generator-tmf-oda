@@ -1,0 +1,6 @@
+{
+  "targetRoot": "C:/REPOSITORY",
+  "feTargetRoot": "C:/REPOSITORY/oh-my-tmf-agent-workspace/result",
+  "fePortRange": [5012, 5099],
+  "overrides": {}
+}

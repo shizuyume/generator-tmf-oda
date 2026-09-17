@@ -1,4 +1,5 @@
-import { pascal, snake, camel } from '../ir/naming.mjs';
+import { identifier, pascal, snake, camel } from '../ir/naming.mjs';
+import { ID_COLUMN_LENGTH } from '../ir/typeMap.mjs';
 
 /**
  * IR -> a flat list of entity descriptors ready for rendering.
@@ -29,7 +30,10 @@ import { pascal, snake, camel } from '../ir/naming.mjs';
  * PostgreSQL's 63-byte identifier limit enforced.
  */
 
-const PK_COLUMN = { type: 'varchar', length: 36 };
+// Same width as any other id-like column (typeMap.ID_COLUMN_LENGTH): buildX assigns
+// a CLIENT-supplied `input.id` straight into the primary key, so a composite id like
+// TMF936's "<uuid>_terms_1" has to fit here too.
+const PK_COLUMN = { type: 'varchar', length: ID_COLUMN_LENGTH };
 const TRAILER_PROPS = ['@type', '@baseType', '@schemaLocation'];
 const GENERIC_REF_NAMES = new Set(['Entity', 'EntityRef', 'BaseRef', 'Addressable', 'Extensible', 'Ref', 'Any']);
 
@@ -47,28 +51,8 @@ const UNUSABLE_NAMES = new Set([
   'EventSubscription', 'EventLog',
 ]);
 
-const PG_IDENTIFIER_LIMIT = 63;
-const SQLITE_MAX_JOIN_TABLES = 64; // sqlite.org/limits.html #9: max tables in a join
 
-/**
- * SQLite's query planner refuses to compile a SELECT touching more than 64
- * tables (root + every LEFT JOINed child/ref/sibling-resource entity). This
- * is a hard compile error at query time under sqlite, harmless under
- * postgres - callers should only check this when the resolved database
- * target is (or defaults to) sqlite.
- *
- * @param {string} resourceName
- * @param {number} tableCount root + non-root entities + resourceRefs
- * @returns {string|null} a warning message, or null if under the limit
- */
-export function checkSqliteJoinLimit(resourceName, tableCount) {
-  if (tableCount <= SQLITE_MAX_JOIN_TABLES) return null;
-  return (
-    `${resourceName}: findAll() would join ${tableCount} tables, over SQLite's ` +
-    `${SQLITE_MAX_JOIN_TABLES}-table join limit; the query will fail to compile at runtime ` +
-    `under sqlite - target postgres with --database postgres, or reduce nesting`
-  );
-}
+const PG_IDENTIFIER_LIMIT = 63;
 
 function refNameCandidates(parentClass, fieldName, targetRef) {
   const usable = targetRef && !GENERIC_REF_NAMES.has(targetRef) && !UNUSABLE_NAMES.has(targetRef);
@@ -98,15 +82,23 @@ function tmfTrailer(isRoot, defaultType) {
   ];
 }
 
+/**
+ * `housekeeping: true` marks a column as OURS rather than the spec's. It is what
+ * lets the service emitter tell an internal @UpdateDateColumn named `lastUpdate`
+ * apart from TMF936/TMF737's own client-visible `lastUpdate` scalar - the two are
+ * indistinguishable by name, and treating the spec's field as housekeeping silently
+ * dropped it from the builder and the response mapper (accepted on POST, never
+ * stored, never returned).
+ */
 const softDeleteColumns = () => ([
-  { name: 'deletedAt', tsType: 'Date', deleteDateColumn: true, optional: true },
-  { name: 'deletedBy', tsType: 'string', column: { type: 'varchar', length: 100, nullable: true }, optional: true },
-  { name: 'deletedReason', tsType: 'string', column: { type: 'varchar', length: 255, nullable: true }, optional: true },
+  { name: 'deletedAt', tsType: 'Date', deleteDateColumn: true, optional: true, housekeeping: true },
+  { name: 'deletedBy', tsType: 'string', column: { type: 'varchar', length: 100, nullable: true }, optional: true, housekeeping: true },
+  { name: 'deletedReason', tsType: 'string', column: { type: 'varchar', length: 255, nullable: true }, optional: true, housekeeping: true },
 ]);
 
 const auditColumns = () => ([
-  { name: 'createdDate', tsType: 'Date', createDateColumn: true },
-  { name: 'lastUpdate', tsType: 'Date', updateDateColumn: true },
+  { name: 'createdDate', tsType: 'Date', createDateColumn: true, housekeeping: true },
+  { name: 'lastUpdate', tsType: 'Date', updateDateColumn: true, housekeeping: true },
 ]);
 
 /**
@@ -242,7 +234,39 @@ function expandSub(sub, parentKey, parentClassHint, opts, out) {
   const ov = opts.overrides?.[key];
   const classHint = sub.nameCandidates?.[0] ?? sub.className;
 
-  const columns = [{ name: 'id', tsType: 'string', primary: true, column: { ...PK_COLUMN } }];
+  // The PK is SURROGATE, and the client-supplied `id` is a separate column - the
+  // same split `refToPlan` makes, for the same reason. A TMF sub-resource's `id`
+  // identifies it WITHIN its parent: TMF931's own examples number every order's
+  // items "1", "2", "3", so three orders each posting an item "1" collided on one
+  // primary key. TypeORM read that as the row already existing and turned the
+  // second insert into an UPDATE, re-parenting the item and leaving the earlier
+  // order with an empty `productOrderItem` - which then failed the OAS `minItems: 1`.
+  // `sourceProp: 'id'` puts it back on the wire as `id` (see `referredIdPresent`
+  // in service.mjs), so the response shape does not change.
+  // A refLike sub-resource already carries the referenced id in its own `refId`
+  // field (a reference's `id` is the TARGET's, not its own), so adding ours would
+  // declare the member twice - TS2300, which is a hard compile error.
+  const hasClientId = (sub.fields ?? []).some(f => f.name === 'refId' || f.sourceProp === 'id');
+  const columns = [
+    { name: 'id', tsType: 'string', primary: true, column: { ...PK_COLUMN } },
+    ...(hasClientId ? [] : [{
+      name: 'refId', tsType: 'string', sourceProp: 'id', optional: true,
+      description: "The id the client gave this item. Unique within its parent only, so it is not the primary key; served back as `id`.",
+      column: { type: 'varchar', length: ID_COLUMN_LENGTH, nullable: true },
+    }]),
+    // Position in the array the client sent. A TMF array is ORDERED, but a
+    // one-to-many has no inherent order: the list query (one big join) and the item
+    // query (findOne with relations) return the same rows in DIFFERENT orders, and
+    // TMF936's kit deep-compares the two - `expected [ Array(2) ] to deeply equal
+    // [ Array(2) ]`. This kept it stable by accident while the client's `id` was the
+    // primary key; with a surrogate key it has to be recorded explicitly.
+    // `housekeeping: true` keeps it off the wire and out of the builder's field loop
+    // (the parent's map callback assigns it), and the mapper sorts by it.
+    {
+      name: 'sortOrder', tsType: 'number', optional: true, housekeeping: true,
+      column: { type: 'int', nullable: true },
+    },
+  ];
   const relations = [{
     kind: 'many-to-one-owner',
     property: ownerPropertyFor(sub.fields),
@@ -290,7 +314,7 @@ function expandSub(sub, parentKey, parentClassHint, opts, out) {
     // a ref wrapper's own row id is internal (fresh uuid every rebuild), so the
     // client-visible identity is the REFERRED id, stored as `refId`; an owned
     // entity's own `id` column IS client-suppliable (see refToPlan/renderBuilder).
-    correlationColumn: sub.refLike ? 'refId' : 'id',
+    correlationColumn: 'refId',
     correlationWireKey: 'id',
     requiredFields: sub.requiredFields ?? [],
   });
@@ -332,6 +356,7 @@ export function buildEntityPlan(resource, options = {}) {
       joinColumn: rr.joinColumn,
       nullable: !rr.required,
       projectedProps: rr.projectedProps,
+      refSchema: rr.refSchema ?? null,
     });
   }
 
@@ -424,6 +449,13 @@ export function resolveEntityNames(allEntities) {
   for (const entity of ordered) {
     const hash = shapeHash(entity);
     let chosen = null;
+
+    // Every candidate has to be a legal TypeScript identifier before it is picked.
+    // Sub-entity names are built from the SPEC's schema name, so TMF924's
+    // `5GSliceService` produced children like `5GSliceServiceAreaOfService` - class
+    // declarations and imports that cannot be parsed at all. Sanitising the resource
+    // name in the IR does not reach these, because they are synthesised here.
+    entity.nameCandidates = entity.nameCandidates.map(identifier);
 
     for (const candidate of entity.nameCandidates) {
       const taken = byName.get(candidate);

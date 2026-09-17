@@ -12,7 +12,7 @@
     "eventExchangeConstant": "TMF736_EVENT_EXCHANGE",
     "eventTypeEnum": "RevenueSharingAlgorithmEventType",
     "serviceNameSuggestion": "revenue-sharing-algorithm-service",
-    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf736/5.0.0/openapi/TMF736-Revenue_Sharing_Algorithm_Management-v5.0.0.oas.yaml",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf736/5.0.0/openapi/TMF736-Revenue_Sharing_Algorithm_Management-v5.0.0.oas.yaml",
     "generatorVersion": "0.1.0"
   },
   "resources": [

@@ -7,7 +7,7 @@ import { Expose } from 'class-transformer';
  */
 @Entity('topic')
 export class Topic {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** is the filter that will be applied on the content of the Event. */

@@ -65,6 +65,18 @@ export class PartyRevSharingAlgorithmService {
     if (!entity.atType) {
       entity.atType = 'PartyRevSharingAlgorithm';
     }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -86,12 +98,12 @@ export class PartyRevSharingAlgorithmService {
     // house filters available for this resource: name, q, sort
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.actionVariable', 'actionVariable')
+      .leftJoinAndSelect('e.conditionVariable', 'conditionVariable')
+      .leftJoinAndSelect('e.policy', 'policy')
       .leftJoinAndSelect('actionVariable.policyAction', 'actionVariablePolicyAction')
       .leftJoinAndSelect('actionVariable.policyActionVariable', 'actionVariablePolicyActionVariable')
-      .leftJoinAndSelect('e.conditionVariable', 'conditionVariable')
       .leftJoinAndSelect('conditionVariable.policyCondition', 'conditionVariablePolicyCondition')
       .leftJoinAndSelect('conditionVariable.policyConditionVariable', 'conditionVariablePolicyConditionVariable')
-      .leftJoinAndSelect('e.policy', 'policy')
       .where('e.deletedAt IS NULL');
 
     applyBaseFilters(qb, query, 'e');
@@ -226,9 +238,9 @@ export class PartyRevSharingAlgorithmService {
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
     const prevPolicyByKey = new Map((prev?.policy ?? []).map((c: any) => [c.refId, c]));
-    e.policy = (input?.policy ?? []).map((i: Record<string, any>) => this.buildPolicyRef(i, pending, e, prevPolicyByKey.get(i?.['id'])));
-    e.conditionVariable = (input?.conditionVariable ?? []).map((i: Record<string, any>) => this.buildPartyRevSharingPolicyConditionVariable(i, pending, e));
-    e.actionVariable = (input?.actionVariable ?? []).map((i: Record<string, any>) => this.buildPartyRevSharingPolicyActionVariable(i, pending, e));
+    e.policy = (input?.policy ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildPolicyRef(i, pending, e, prevPolicyByKey.get(i?.['id'])), { sortOrder: __i }));
+    e.conditionVariable = (input?.conditionVariable ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildPartyRevSharingPolicyConditionVariable(i, pending, e), { sortOrder: __i }));
+    e.actionVariable = (input?.actionVariable ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildPartyRevSharingPolicyActionVariable(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
@@ -277,8 +289,9 @@ export class PartyRevSharingAlgorithmService {
 
   private buildPartyRevSharingPolicyConditionVariable(input: Record<string, any>, pending: PendingRef[], owner: PartyRevSharingAlgorithm): PartyRevSharingPolicyConditionVariable {
     const e = this.partyRevSharingPolicyConditionVariableRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.value = input?.['value'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
@@ -304,8 +317,9 @@ export class PartyRevSharingAlgorithmService {
 
   private buildPartyRevSharingPolicyActionVariable(input: Record<string, any>, pending: PendingRef[], owner: PartyRevSharingAlgorithm): PartyRevSharingPolicyActionVariable {
     const e = this.partyRevSharingPolicyActionVariableRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.value = input?.['value'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
@@ -322,12 +336,12 @@ export class PartyRevSharingAlgorithmService {
     out.name = e.name;
     out.description = e.description;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF736_BASE_PATH}/partyRevSharingAlgorithm/${e.id}`;
-    out.policy = (e.policy ?? []).map((c) => this.mapPolicyRef(c));
-    out.conditionVariable = (e.conditionVariable ?? []).map((c) => this.mapPartyRevSharingPolicyConditionVariable(c, e.id));
-    out.actionVariable = (e.actionVariable ?? []).map((c) => this.mapPartyRevSharingPolicyActionVariable(c, e.id));
+    out.policy = [...(e.policy ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapPolicyRef(c));
+    out.conditionVariable = [...(e.conditionVariable ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapPartyRevSharingPolicyConditionVariable(c, e.id));
+    out.actionVariable = [...(e.actionVariable ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapPartyRevSharingPolicyActionVariable(c, e.id));
     return stripEmpty(out);
   }
 
@@ -370,13 +384,13 @@ export class PartyRevSharingAlgorithmService {
 
   private mapPartyRevSharingPolicyConditionVariable(e: PartyRevSharingPolicyConditionVariable, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.value = e.value;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF736_BASE_PATH}/partyRevSharingAlgorithm/${rootId}/conditionVariable/${e.id}`;
+      out.href = `/${TMF736_BASE_PATH}/partyRevSharingAlgorithm/${rootId}/conditionVariable/${e.refId ?? e.id}`;
     }
     out.policyCondition = e.policyCondition ? this.mapPolicyConditionRef(e.policyCondition) : undefined;
     out.policyConditionVariable = e.policyConditionVariable ? this.mapPolicyVariableRef(e.policyConditionVariable) : undefined;
@@ -397,13 +411,13 @@ export class PartyRevSharingAlgorithmService {
 
   private mapPartyRevSharingPolicyActionVariable(e: PartyRevSharingPolicyActionVariable, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.value = e.value;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF736_BASE_PATH}/partyRevSharingAlgorithm/${rootId}/actionVariable/${e.id}`;
+      out.href = `/${TMF736_BASE_PATH}/partyRevSharingAlgorithm/${rootId}/actionVariable/${e.refId ?? e.id}`;
     }
     out.policyAction = e.policyAction ? this.mapPolicyActionRef(e.policyAction) : undefined;
     out.policyActionVariable = e.policyActionVariable ? this.mapPolicyVariableRef(e.policyActionVariable) : undefined;

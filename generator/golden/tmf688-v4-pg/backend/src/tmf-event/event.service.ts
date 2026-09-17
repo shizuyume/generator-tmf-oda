@@ -15,7 +15,7 @@ import { CharacteristicRelationship } from './entities/characteristic-relationsh
 import { Characteristic } from './entities/characteristic.entity';
 import { RelatedParty } from './entities/related-party.entity';
 import { CreateEventDto, UpdateEventDto, QueryEventDto } from './dto';
-import * as hooks from './tmf-event.hooks';
+import * as hooks from './event.hooks';
 
 /** A normalised ref row that must be persisted before the aggregate referencing it. */
 type PendingRef = { target: new () => any; entity: Record<string, any> };
@@ -31,8 +31,8 @@ function stripEmpty(obj: Record<string, any>): Record<string, any> {
 }
 
 @Injectable()
-export class TmfEventService {
-  private readonly logger = new Logger(TmfEventService.name);
+export class EventService {
+  private readonly logger = new Logger(EventService.name);
 
   constructor(
     @InjectRepository(Event)
@@ -62,6 +62,18 @@ export class TmfEventService {
     if (!entity.atType) {
       entity.atType = 'Event';
     }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -77,10 +89,10 @@ export class TmfEventService {
     // house filters available for this resource: q, sort
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.analyticCharacteristic', 'analyticCharacteristic')
-      .leftJoinAndSelect('analyticCharacteristic.characteristicRelationship', 'analyticCharacteristicCharacteristicRelationship')
       .leftJoinAndSelect('e.relatedParty', 'relatedParty')
       .leftJoinAndSelect('e.reportingSystem', 'reportingSystem')
       .leftJoinAndSelect('e.source', 'source')
+      .leftJoinAndSelect('analyticCharacteristic.characteristicRelationship', 'analyticCharacteristicCharacteristicRelationship')
       .where('e.deletedAt IS NULL');
 
     applyBaseFilters(qb, query, 'e');
@@ -131,8 +143,8 @@ export class TmfEventService {
     e.atBaseType = input?.['@baseType'];
     e.reportingSystem = input?.reportingSystem ? this.buildEventReportingSystemRef(input.reportingSystem, pending) : undefined;
     e.source = input?.source ? this.buildEventSourceRef(input.source, pending) : undefined;
-    e.analyticCharacteristic = (input?.analyticCharacteristic ?? []).map((i: Record<string, any>) => this.buildCharacteristic(i, pending, e));
-    e.relatedParty = (input?.relatedParty ?? []).map((i: Record<string, any>) => this.buildRelatedParty(i, pending, e));
+    e.analyticCharacteristic = (input?.analyticCharacteristic ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildCharacteristic(i, pending, e), { sortOrder: __i }));
+    e.relatedParty = (input?.relatedParty ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildRelatedParty(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
@@ -166,8 +178,9 @@ export class TmfEventService {
 
   private buildCharacteristicRelationship(input: Record<string, any>, pending: PendingRef[], owner: Characteristic): CharacteristicRelationship {
     const e = this.characteristicRelationshipRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.relationshipType = input?.['relationshipType'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
@@ -177,22 +190,24 @@ export class TmfEventService {
 
   private buildCharacteristic(input: Record<string, any>, pending: PendingRef[], owner: Event): Characteristic {
     const e = this.characteristicRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.name = input?.['name'];
     e.valueType = input?.['valueType'];
     e.value = input?.['value'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
-    e.characteristicRelationship = (input?.characteristicRelationship ?? []).map((i: Record<string, any>) => this.buildCharacteristicRelationship(i, pending, e));
+    e.characteristicRelationship = (input?.characteristicRelationship ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildCharacteristicRelationship(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
   private buildRelatedParty(input: Record<string, any>, pending: PendingRef[], owner: Event): RelatedParty {
     const e = this.relatedPartyRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.name = input?.['name'];
     e.role = input?.['role'];
     e.atType = input?.['@type'];
@@ -216,13 +231,13 @@ export class TmfEventService {
     out.title = e.title;
     out.event = e.event;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF688_BASE_PATH}/event/${e.id}`;
     out.reportingSystem = e.reportingSystem ? this.mapEventReportingSystemRef(e.reportingSystem) : undefined;
     out.source = e.source ? this.mapEventSourceRef(e.source) : undefined;
-    out.analyticCharacteristic = (e.analyticCharacteristic ?? []).map((c) => this.mapCharacteristic(c, e.id));
-    out.relatedParty = (e.relatedParty ?? []).map((c) => this.mapRelatedParty(c, e.id));
+    out.analyticCharacteristic = [...(e.analyticCharacteristic ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapCharacteristic(c, e.id));
+    out.relatedParty = [...(e.relatedParty ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapRelatedParty(c, e.id));
     return stripEmpty(out);
   }
 
@@ -252,20 +267,20 @@ export class TmfEventService {
 
   private mapCharacteristicRelationship(e: CharacteristicRelationship, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.relationshipType = e.relationshipType;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF688_BASE_PATH}/event/${rootId}/characteristicRelationship/${e.id}`;
+      out.href = `/${TMF688_BASE_PATH}/event/${rootId}/characteristicRelationship/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
 
   private mapCharacteristic(e: Characteristic, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.name = e.name;
     out.valueType = e.valueType;
     out.value = e.value;
@@ -273,22 +288,22 @@ export class TmfEventService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF688_BASE_PATH}/event/${rootId}/analyticCharacteristic/${e.id}`;
+      out.href = `/${TMF688_BASE_PATH}/event/${rootId}/analyticCharacteristic/${e.refId ?? e.id}`;
     }
-    out.characteristicRelationship = (e.characteristicRelationship ?? []).map((c) => this.mapCharacteristicRelationship(c, rootId));
+    out.characteristicRelationship = [...(e.characteristicRelationship ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapCharacteristicRelationship(c, rootId));
     return stripEmpty(out);
   }
 
   private mapRelatedParty(e: RelatedParty, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.name = e.name;
     out.role = e.role;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF688_BASE_PATH}/event/${rootId}/relatedParty/${e.id}`;
+      out.href = `/${TMF688_BASE_PATH}/event/${rootId}/relatedParty/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }

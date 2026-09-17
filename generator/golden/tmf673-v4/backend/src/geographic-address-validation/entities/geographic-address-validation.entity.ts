@@ -9,7 +9,7 @@ import { GeographicAddressValidationAlternateGeographicAddress } from './geograp
  */
 @Entity('geographic_address_validation')
 export class GeographicAddressValidation {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   /** Indicator provided by the requester to specify if alternate addresses must be provided in case of partial or fail result. */
@@ -59,6 +59,7 @@ export class GeographicAddressValidation {
   // reference to a sibling resource of this service
   @ManyToOne(() => GeographicAddress, {
     eager: true,
+    cascade: true,
     nullable: true,
   })
   @JoinColumn({ name: 'submitted_geographic_address_id' })
@@ -67,6 +68,7 @@ export class GeographicAddressValidation {
   // reference to a sibling resource of this service
   @ManyToOne(() => GeographicAddress, {
     eager: true,
+    cascade: true,
     nullable: true,
   })
   @JoinColumn({ name: 'valid_geographic_address_id' })

@@ -341,6 +341,58 @@ yang dimiliki langsung (owned, bukan reference-wrapper — mis. item
 tersintesis di response (`.../{rootSegment}/{rootId}/{ownProperty}/{ownId}`,
 identifier-shaped, bukan route yang benar-benar bisa di-dereference).
 
+### PK sub-resource selalu surrogate, `id` client disimpan terpisah
+
+Sebuah owned sub-resource (`kind: 'child'`) **tidak pernah** memakai `id` dari
+payload sebagai primary key. PK-nya selalu `uuidv4()` baru, dan `id` yang
+dikirim client disimpan di kolom `refId` lalu dikembalikan lagi apa adanya
+sebagai `id` di response — jadi bentuk wire-nya tidak berubah.
+
+Alasannya: `id` sub-resource TMF cuma unik **di dalam parent-nya**. Contoh dari
+TM Forum sendiri: semua contoh TMF931 menomori `productOrderItem` sebagai
+`"1"`, `"2"`, `"3"` per order. Waktu `id` itu dipakai sebagai PK, tiga order
+yang masing-masing mengirim item `"1"` bertabrakan di satu primary key;
+TypeORM membacanya sebagai "baris sudah ada" sehingga insert kedua jadi
+**UPDATE** yang memindahkan FK item itu ke order terakhir. Hasilnya dua order
+pertama kehilangan seluruh `productOrderItem`-nya dan gagal di validasi OAS
+`minItems: 1` — bug yang tidak kelihatan sampai ada lebih dari satu instance.
+
+Pemisahan ini persis pola yang sudah dipakai `refToPlan` untuk
+reference-wrapper (`PolicyRef` dkk.), jadi entity `refLike` yang sudah punya
+`refId` sendiri tidak ditambahi kolom kedua. Kalau client tidak mengirim `id`,
+response tetap mengembalikan PK surrogate-nya, supaya `id` tidak pernah kosong.
+
+### Referensi ke resource sibling: hanya yang required yang di-upsert
+
+`many-to-one-resource` (FK ke resource lain di komponen yang sama) diperlakukan
+berbeda tergantung `required:` di spec:
+
+- **Required** — FK-nya tidak boleh null, jadi baris target ikut ditulis
+  bersama aggregate-nya, termasuk referensi required milik target itu sendiri
+  (TMF708 bersarang dua tingkat).
+- **Nullable** — hanya di-attach lewat `{ id }`. `create()` memeriksa dulu
+  apakah baris target benar-benar ada; kalau tidak ada, key-nya dibuang.
+  Referensi ke baris yang tidak ada bukan referensi yang valid, dan
+  membuatkan barisnya justru merusak resource lain: CTK TMF654 mengirim
+  `bucket {id:"11"}` untuk bucket yang tidak ada, dan meng-upsert-nya menaruh
+  baris kosong di listing `/Bucket` — 180 assertion gagal karena itu.
+
+Konsekuensinya, urutan seeding mengikuti **referensi**, bukan urutan deklarasi
+di spec: `seed.ts` mengurutkan resource secara topologis supaya target sebuah
+referensi selalu di-seed lebih dulu (TMF936 mendeklarasikan ProductOffering
+sebelum ProductSpecification padahal setiap offering mereferensikan
+specification).
+
+### `@type` pada proyeksi referensi sibling
+
+Proyeksi referensi di response mengisi `@type` dengan nama **schema referensi**
+yang dideklarasikan spec untuk properti itu (mis.
+`OpenGatewayProductSpecificationRef`), sedangkan `@referredType` berisi nama
+entity yang dituju. Schema v5 menandai `@type` required di setiap schema Ref
+(dipakai sebagai discriminator), jadi tanpa itu response gagal validasi schema.
+Kalau spec meng-inline entity penuh alih-alih Ref, nama schema itulah yang
+dipakai; fallback-nya konvensi TMF `<Entity>Ref`.
+
 ## 10. Troubleshooting
 
 - **`error: cannot load spec` / `$ref` tidak bisa diresolusi** — spec vendor-nya

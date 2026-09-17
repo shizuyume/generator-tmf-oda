@@ -1,0 +1,1838 @@
+{
+  "meta": {
+    "tmfNumber": "706",
+    "specTitle": "Test Data",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/testData/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF706_BASE_PATH",
+    "eventExchange": "testData.events",
+    "eventExchangeConstant": "TMF706_EVENT_EXCHANGE",
+    "eventTypeEnum": "TestDataEventType",
+    "serviceNameSuggestion": "test-data-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf706/4.0.0/openapi/TMF706_Test_Data_Management_API_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "TestDataInstance",
+      "camelName": "testDataInstance",
+      "kebabName": "test-data-instance",
+      "tableName": "test_data_instance",
+      "pathSegment": "testDataInstance",
+      "pathKey": "testDataInstance",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed test data instance resource",
+      "composedFrom": [],
+      "required": [
+        "testDataInstanceDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description for the artifact"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version"
+        },
+        {
+          "kind": "scalar",
+          "name": "versionDescription",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version description"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "incomplete",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "enumRef": "ManagedArtifactStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a managed artifact: 'incomplete', 'beta', 'stable', 'deprecated'"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "agreement",
+          "targetRef": "TestAgreement",
+          "description": "",
+          "columns": [
+            {
+              "name": "agreementName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementTerms",
+              "sourceProp": "terms",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testDataInstanceDefinition",
+          "targetRef": "TestDataInstanceDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "testDataInstanceDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataInstanceDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Attribute",
+          "tableName": "attribute",
+          "nameCandidates": [
+            "Attribute",
+            "TestDataInstanceAttribute"
+          ],
+          "refLike": false,
+          "propertyName": "attribute",
+          "itemRef": "Attribute",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The attribute description"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "characteristic",
+              "targetRef": "Characteristic",
+              "description": "",
+              "columns": [
+                {
+                  "name": "characteristicId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicValueType",
+                  "sourceProp": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyWithContactInfo",
+          "tableName": "related_party_with_contact_info",
+          "nameCandidates": [
+            "RelatedPartyWithContactInfo",
+            "TestDataInstanceRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyWithContactInfo",
+          "description": "Related party specialization that includes contact information",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ContactMedium",
+              "tableName": "contact_medium",
+              "nameCandidates": [
+                "ContactMedium",
+                "RelatedPartyWithContactInfoContact"
+              ],
+              "refLike": false,
+              "propertyName": "contact",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestDataInstance_Create",
+        "required": [
+          "testDataInstanceDefinition",
+          "description",
+          "version"
+        ],
+        "properties": [
+          "description",
+          "version",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "testDataInstanceDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TestDataInstance_Update",
+        "required": [
+          "testDataInstanceDefinition"
+        ],
+        "properties": [
+          "description",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "testDataInstanceDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestDataInstance",
+          "summary": "List or find TestDataInstance objects",
+          "description": "This operation list or find TestDataInstance entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestDataInstance",
+          "summary": "Creates a TestDataInstance",
+          "description": "This operation creates a TestDataInstance entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestDataInstance",
+          "summary": "Retrieves a TestDataInstance by ID",
+          "description": "This operation retrieves a TestDataInstance entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestDataInstance",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTestDataInstance",
+          "summary": "Updates partially a TestDataInstance",
+          "description": "This operation updates partially a TestDataInstance entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestDataInstance",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteTestDataInstance",
+          "summary": "Deletes a TestDataInstance",
+          "description": "This operation deletes a TestDataInstance entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestDataInstance",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testDataInstance",
+        "item": "/testDataInstance/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testDataInstanceAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "TEST_DATA_INSTANCE_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "testDataInstanceChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "TEST_DATA_INSTANCE_CHANGE"
+        },
+        {
+          "eventName": "testDataInstanceCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_DATA_INSTANCE_CREATE"
+        },
+        {
+          "eventName": "testDataInstanceDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_DATA_INSTANCE_DELETE"
+        },
+        {
+          "eventName": "testDataInstanceStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TEST_DATA_INSTANCE_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "TestDataSchema",
+      "camelName": "testDataSchema",
+      "kebabName": "test-data-schema",
+      "tableName": "test_data_schema",
+      "pathSegment": "testDataSchema",
+      "pathKey": "testDataSchema",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed test data schema resource",
+      "composedFrom": [],
+      "required": [
+        "testDataSchemaDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description for the artifact"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version"
+        },
+        {
+          "kind": "scalar",
+          "name": "versionDescription",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version description"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "incomplete",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "enumRef": "ManagedArtifactStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a managed artifact: 'incomplete', 'beta', 'stable', 'deprecated'"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "agreement",
+          "targetRef": "TestAgreement",
+          "description": "",
+          "columns": [
+            {
+              "name": "agreementName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementTerms",
+              "sourceProp": "terms",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testDataSchemaDefinition",
+          "targetRef": "TestDataSchemaDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "testDataSchemaDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionCode",
+              "sourceProp": "code",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testDataSchemaDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Attribute",
+          "tableName": "attribute",
+          "nameCandidates": [
+            "Attribute",
+            "TestDataSchemaAttribute"
+          ],
+          "refLike": false,
+          "propertyName": "attribute",
+          "itemRef": "Attribute",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The attribute description"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "characteristic",
+              "targetRef": "Characteristic",
+              "description": "",
+              "columns": [
+                {
+                  "name": "characteristicId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicValueType",
+                  "sourceProp": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyWithContactInfo",
+          "tableName": "related_party_with_contact_info",
+          "nameCandidates": [
+            "RelatedPartyWithContactInfo",
+            "TestDataSchemaRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyWithContactInfo",
+          "description": "Related party specialization that includes contact information",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ContactMedium",
+              "tableName": "contact_medium",
+              "nameCandidates": [
+                "ContactMedium",
+                "RelatedPartyWithContactInfoContact"
+              ],
+              "refLike": false,
+              "propertyName": "contact",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestDataSchema_Create",
+        "required": [
+          "testDataSchemaDefinition",
+          "description",
+          "version"
+        ],
+        "properties": [
+          "description",
+          "version",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "testDataSchemaDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TestDataSchema_Update",
+        "required": [
+          "testDataSchemaDefinition"
+        ],
+        "properties": [
+          "description",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "testDataSchemaDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestDataSchema",
+          "summary": "List or find TestDataSchema objects",
+          "description": "This operation list or find TestDataSchema entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestDataSchema",
+          "summary": "Creates a TestDataSchema",
+          "description": "This operation creates a TestDataSchema entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestDataSchema",
+          "summary": "Retrieves a TestDataSchema by ID",
+          "description": "This operation retrieves a TestDataSchema entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestDataSchema",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTestDataSchema",
+          "summary": "Updates partially a TestDataSchema",
+          "description": "This operation updates partially a TestDataSchema entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestDataSchema",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteTestDataSchema",
+          "summary": "Deletes a TestDataSchema",
+          "description": "This operation deletes a TestDataSchema entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestDataSchema",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testDataSchema",
+        "item": "/testDataSchema/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testDataSchemaAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "TEST_DATA_SCHEMA_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "testDataSchemaChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "TEST_DATA_SCHEMA_CHANGE"
+        },
+        {
+          "eventName": "testDataSchemaCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_DATA_SCHEMA_CREATE"
+        },
+        {
+          "eventName": "testDataSchemaDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_DATA_SCHEMA_DELETE"
+        },
+        {
+          "eventName": "testDataSchemaStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "TEST_DATA_SCHEMA_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/testDataInstanceAttributeValueChangeEvent",
+      "eventName": "testDataInstanceAttributeValueChangeEvent",
+      "resource": "TestDataInstance",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToTestDataInstanceAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/testDataInstanceChangeEvent",
+      "eventName": "testDataInstanceChangeEvent",
+      "resource": "TestDataInstance",
+      "eventKind": "Change",
+      "operationId": "listenToTestDataInstanceChangeEvent"
+    },
+    {
+      "path": "/listener/testDataInstanceCreateEvent",
+      "eventName": "testDataInstanceCreateEvent",
+      "resource": "TestDataInstance",
+      "eventKind": "Create",
+      "operationId": "listenToTestDataInstanceCreateEvent"
+    },
+    {
+      "path": "/listener/testDataInstanceDeleteEvent",
+      "eventName": "testDataInstanceDeleteEvent",
+      "resource": "TestDataInstance",
+      "eventKind": "Delete",
+      "operationId": "listenToTestDataInstanceDeleteEvent"
+    },
+    {
+      "path": "/listener/testDataInstanceStateChangeEvent",
+      "eventName": "testDataInstanceStateChangeEvent",
+      "resource": "TestDataInstance",
+      "eventKind": "StateChange",
+      "operationId": "listenToTestDataInstanceStateChangeEvent"
+    },
+    {
+      "path": "/listener/testDataSchemaAttributeValueChangeEvent",
+      "eventName": "testDataSchemaAttributeValueChangeEvent",
+      "resource": "TestDataSchema",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToTestDataSchemaAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/testDataSchemaChangeEvent",
+      "eventName": "testDataSchemaChangeEvent",
+      "resource": "TestDataSchema",
+      "eventKind": "Change",
+      "operationId": "listenToTestDataSchemaChangeEvent"
+    },
+    {
+      "path": "/listener/testDataSchemaCreateEvent",
+      "eventName": "testDataSchemaCreateEvent",
+      "resource": "TestDataSchema",
+      "eventKind": "Create",
+      "operationId": "listenToTestDataSchemaCreateEvent"
+    },
+    {
+      "path": "/listener/testDataSchemaDeleteEvent",
+      "eventName": "testDataSchemaDeleteEvent",
+      "resource": "TestDataSchema",
+      "eventKind": "Delete",
+      "operationId": "listenToTestDataSchemaDeleteEvent"
+    },
+    {
+      "path": "/listener/testDataSchemaStateChangeEvent",
+      "eventName": "testDataSchemaStateChangeEvent",
+      "resource": "TestDataSchema",
+      "eventKind": "StateChange",
+      "operationId": "listenToTestDataSchemaStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "TestDataInstance has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestDataSchema has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

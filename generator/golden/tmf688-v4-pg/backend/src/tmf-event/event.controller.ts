@@ -5,15 +5,15 @@ import { Response } from 'express';
 import { TMF688_BASE_PATH } from '../common/constants/tmf.constants';
 import { ApiKeyGuard } from '../common/guards/api-key.guard';
 import { PaginationInterceptor } from '../common/interceptors/pagination.interceptor';
-import { TmfEventService } from './tmf-event.service';
+import { EventService } from './event.service';
 import { CreateEventDto, QueryEventDto } from './dto';
 
 @ApiTags('event')
 @UseGuards(ApiKeyGuard)
 @UseInterceptors(PaginationInterceptor)
 @Controller(`${TMF688_BASE_PATH}/event`)
-export class TmfEventController {
-  constructor(private readonly service: TmfEventService) {}
+export class EventController {
+  constructor(private readonly service: EventService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

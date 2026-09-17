@@ -72,9 +72,23 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
   // property name is a syntax error, not just a lint nit. Sanitise it the same way
   // the invariant trailer does (atType, atBaseType, ...) and carry the original wire
   // name via `expose` so the DTO/entity/service still round-trip the real JSON key.
+  //
+  // The same applies to ANY property name that is not a legal identifier, not just
+  // '@'-prefixed ones. TMF924 declares `NB-IoTSupport`; a hyphen makes it a
+  // subtraction in a class body:
+  //
+  //   NB-IoTSupport?: Record<string, any>;
+  //     ~ error TS1068: Unexpected token. A constructor, method, accessor, or
+  //       property was expected.
+  //
+  // Both cases are handled identically: a safe TS name plus `expose` carrying the
+  // real JSON key, so the wire contract is unchanged.
   const atMatch = /^@(.+)/.exec(fieldName);
-  const safeName = atMatch ? `at${pascal(atMatch[1])}` : fieldName;
-  const exposeName = atMatch ? fieldName : undefined;
+  const legalIdentifier = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(fieldName);
+  const safeName = atMatch
+    ? `at${pascal(atMatch[1])}`
+    : (legalIdentifier ? fieldName : camel(fieldName));
+  const exposeName = atMatch || !legalIdentifier ? fieldName : undefined;
 
   // A $ref may point at a scalar, an array, or an object - resolve before branching.
   const { schema: effective, refTarget } = resolveEffective(doc, rawSchema);

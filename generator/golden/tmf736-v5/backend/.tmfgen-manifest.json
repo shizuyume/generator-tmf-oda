@@ -28,6 +28,7 @@
           "dir": "party-rev-sharing-algorithm",
           "serviceClass": "PartyRevSharingAlgorithmService",
           "seedConst": "partyRevSharingAlgorithmSeed",
+          "localSeedConst": "partyRevSharingAlgorithmLocalSeed",
           "count": 1
         }
       ],

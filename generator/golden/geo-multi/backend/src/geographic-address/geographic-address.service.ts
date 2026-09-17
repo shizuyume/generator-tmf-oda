@@ -46,6 +46,36 @@ export class GeographicAddressService {
     return this.repository;
   }
 
+  async create(dto: CreateGeographicAddressDto): Promise<Record<string, any>> {
+    const input = (await hooks.beforeCreate(dto as Record<string, any>)) ?? (dto as Record<string, any>);
+    const pending: PendingRef[] = [];
+    const entity = this.buildGeographicAddress(input, pending);
+    if (!entity.atType) {
+      entity.atType = 'GeographicAddress';
+    }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
+    // normalised ref rows first, then the aggregate that points at them
+    for (const ref of pending) {
+      await this.dataSource.getRepository(ref.target).save(ref.entity);
+    }
+    await this.repository.save(entity);
+    const saved = await this.findEntity(entity.id);
+    const response = this.mapGeographicAddress(saved);
+    this.logger.log(`created geographicAddress ${saved.id}`);
+    return response;
+  }
+
   async findAll(query: QueryGeographicAddressDto): Promise<{ data: Record<string, any>[]; total: number }> {
     // house filters available for this resource: name, q, sort
     const qb = this.repository.createQueryBuilder('e')
@@ -103,7 +133,7 @@ export class GeographicAddressService {
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
     e.geographicLocation = input?.geographicLocation ? this.buildGeographicLocationRefOrValue(input.geographicLocation, pending) : undefined;
-    e.geographicSubAddress = (input?.geographicSubAddress ?? []).map((i: Record<string, any>) => this.buildGeographicSubAddress2(i, pending, e));
+    e.geographicSubAddress = (input?.geographicSubAddress ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildGeographicSubAddress2(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
@@ -123,8 +153,9 @@ export class GeographicAddressService {
 
   private buildGeographicSubAddress2(input: Record<string, any>, pending: PendingRef[], owner: GeographicAddress): GeographicSubAddress2 {
     const e = this.geographicSubAddress2Repository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.buildingName = input?.['buildingName'];
     e.levelNumber = input?.['levelNumber'];
     e.levelType = input?.['levelType'];
@@ -158,11 +189,11 @@ export class GeographicAddressService {
     out.streetSuffix = e.streetSuffix;
     out.streetType = e.streetType;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF673_BASE_PATH}/geographicAddress/${e.id}`;
     out.geographicLocation = e.geographicLocation ? this.mapGeographicLocationRefOrValue(e.geographicLocation) : undefined;
-    out.geographicSubAddress = (e.geographicSubAddress ?? []).map((c) => this.mapGeographicSubAddress2(c, e.id));
+    out.geographicSubAddress = [...(e.geographicSubAddress ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapGeographicSubAddress2(c, e.id));
     return stripEmpty(out);
   }
 
@@ -180,7 +211,7 @@ export class GeographicAddressService {
 
   private mapGeographicSubAddress2(e: GeographicSubAddress2, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.buildingName = e.buildingName;
     out.levelNumber = e.levelNumber;
     out.levelType = e.levelType;
@@ -194,7 +225,7 @@ export class GeographicAddressService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF673_BASE_PATH}/geographicAddress/${rootId}/geographicSubAddress/${e.id}`;
+      out.href = `/${TMF673_BASE_PATH}/geographicAddress/${rootId}/geographicSubAddress/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }

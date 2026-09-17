@@ -40,7 +40,32 @@
           "importPath": "geographic-sub-address/geographic-sub-address.module"
         }
       ],
-      "seeds": [],
+      "seeds": [
+        {
+          "resource": "GeographicAddress",
+          "dir": "geographic-address",
+          "serviceClass": "GeographicAddressService",
+          "seedConst": null,
+          "localSeedConst": "geographicAddressLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "GeographicAddressValidation",
+          "dir": "geographic-address-validation",
+          "serviceClass": "GeographicAddressValidationService",
+          "seedConst": null,
+          "localSeedConst": "geographicAddressValidationLocalSeed",
+          "count": 0
+        },
+        {
+          "resource": "GeographicSubAddress",
+          "dir": "geographic-sub-address",
+          "serviceClass": "GeographicSubAddressService",
+          "seedConst": null,
+          "localSeedConst": "geographicSubAddressLocalSeed",
+          "count": 0
+        }
+      ],
       "entities": [
         {
           "className": "GeographicAddressValidation",

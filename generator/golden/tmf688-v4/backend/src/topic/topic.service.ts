@@ -47,6 +47,18 @@ export class TopicService {
     if (!entity.atType) {
       entity.atType = 'Topic';
     }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -136,8 +148,8 @@ export class TopicService {
     out.headerQuery = e.headerQuery;
     out.name = e.name;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF688_BASE_PATH}/topic/${e.id}`;
     return stripEmpty(out);
   }

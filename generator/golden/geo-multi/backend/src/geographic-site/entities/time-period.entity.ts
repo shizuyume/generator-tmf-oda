@@ -7,7 +7,7 @@ import { Expose } from 'class-transformer';
  */
 @Entity('time_period')
 export class TimePeriod {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
+  @PrimaryColumn({ type: 'varchar', length: 100 })
   id: string;
 
   @Column({ type: 'datetime', nullable: true })

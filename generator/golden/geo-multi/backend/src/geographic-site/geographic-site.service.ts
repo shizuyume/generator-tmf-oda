@@ -65,6 +65,18 @@ export class GeographicSiteService {
     if (!entity.atType) {
       entity.atType = 'GeographicSite';
     }
+    // A create must produce something the client can then READ.
+    //
+    // Where the spec lets a client choose the id, it may pick one belonging to a
+    // soft-deleted row. save() then UPDATES that invisible row, and findEntity below -
+    // which filters deletedAt IS NULL - cannot see it, so a POST answered
+    //   404 "<Resource> <id> not found"
+    // while quietly overwriting a row nobody can reach. From the API's point of view
+    // that id was free: GET on it already returned 404. So the row is resurrected
+    // rather than left buried.
+    entity.deletedAt = null as unknown as Date;
+    entity.deletedBy = undefined;
+    entity.deletedReason = undefined;
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -86,10 +98,10 @@ export class GeographicSiteService {
     // house filters available for this resource: name, q, sort
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.calendar', 'calendar')
-      .leftJoinAndSelect('calendar.hourPeriod', 'calendarHourPeriod')
       .leftJoinAndSelect('e.place', 'place')
       .leftJoinAndSelect('e.relatedParty', 'relatedParty')
       .leftJoinAndSelect('e.siteRelationship', 'siteRelationship')
+      .leftJoinAndSelect('calendar.hourPeriod', 'calendarHourPeriod')
       .leftJoinAndSelect('siteRelationship.validFor', 'siteRelationshipValidFor')
       .where('e.deletedAt IS NULL');
 
@@ -217,17 +229,18 @@ export class GeographicSiteService {
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
-    e.calendar = (input?.calendar ?? []).map((i: Record<string, any>) => this.buildCalendarPeriod(i, pending, e));
-    e.place = (input?.place ?? []).map((i: Record<string, any>) => this.buildPlaceRefOrValue(i, pending, e));
-    e.relatedParty = (input?.relatedParty ?? []).map((i: Record<string, any>) => this.buildRelatedParty(i, pending, e));
-    e.siteRelationship = (input?.siteRelationship ?? []).map((i: Record<string, any>) => this.buildGeographicSiteRelationship(i, pending, e));
+    e.calendar = (input?.calendar ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildCalendarPeriod(i, pending, e), { sortOrder: __i }));
+    e.place = (input?.place ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildPlaceRefOrValue(i, pending, e), { sortOrder: __i }));
+    e.relatedParty = (input?.relatedParty ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildRelatedParty(i, pending, e), { sortOrder: __i }));
+    e.siteRelationship = (input?.siteRelationship ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildGeographicSiteRelationship(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
   private buildHourPeriod(input: Record<string, any>, pending: PendingRef[], owner: CalendarPeriod): HourPeriod {
     const e = this.hourPeriodRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.endHour = input?.['endHour'];
     e.startHour = input?.['startHour'];
     e.atType = input?.['@type'];
@@ -238,22 +251,24 @@ export class GeographicSiteService {
 
   private buildCalendarPeriod(input: Record<string, any>, pending: PendingRef[], owner: GeographicSite): CalendarPeriod {
     const e = this.calendarPeriodRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.day = input?.['day'];
     e.status = input?.['status'];
     e.timeZone = input?.['timeZone'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
-    e.hourPeriod = (input?.hourPeriod ?? []).map((i: Record<string, any>) => this.buildHourPeriod(i, pending, e));
+    e.hourPeriod = (input?.hourPeriod ?? []).map((i: Record<string, any>, __i: number) => Object.assign(this.buildHourPeriod(i, pending, e), { sortOrder: __i }));
     return e;
   }
 
   private buildPlaceRefOrValue(input: Record<string, any>, pending: PendingRef[], owner: GeographicSite): PlaceRefOrValue {
     const e = this.placeRefOrValueRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.name = input?.['name'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
@@ -263,8 +278,9 @@ export class GeographicSiteService {
 
   private buildRelatedParty(input: Record<string, any>, pending: PendingRef[], owner: GeographicSite): RelatedParty {
     const e = this.relatedPartyRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.name = input?.['name'];
     e.role = input?.['role'];
     e.atType = input?.['@type'];
@@ -287,8 +303,9 @@ export class GeographicSiteService {
 
   private buildGeographicSiteRelationship(input: Record<string, any>, pending: PendingRef[], owner: GeographicSite): GeographicSiteRelationship {
     const e = this.geographicSiteRelationshipRepository.create();
-    e.id = input?.id ?? uuidv4();
+    e.id = uuidv4();
     e.owner = owner;
+    e.refId = input?.['id'];
     e.relationshipType = input?.['relationshipType'];
     e.role = input?.['role'];
     e.atType = input?.['@type'];
@@ -307,33 +324,33 @@ export class GeographicSiteService {
     out.name = e.name;
     out.status = e.status;
     out['@type'] = e.atType;
-    out['@schemaLocation'] = e.atSchemaLocation;
-    out['@baseType'] = e.atBaseType;
+    out['@schemaLocation'] = e.atSchemaLocation ?? '';
+    out['@baseType'] = e.atBaseType ?? '';
     out.href = `/${TMF674_BASE_PATH}/geographicSite/${e.id}`;
-    out.calendar = (e.calendar ?? []).map((c) => this.mapCalendarPeriod(c, e.id));
-    out.place = (e.place ?? []).map((c) => this.mapPlaceRefOrValue(c, e.id));
-    out.relatedParty = (e.relatedParty ?? []).map((c) => this.mapRelatedParty(c, e.id));
-    out.siteRelationship = (e.siteRelationship ?? []).map((c) => this.mapGeographicSiteRelationship(c, e.id));
+    out.calendar = [...(e.calendar ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapCalendarPeriod(c, e.id));
+    out.place = [...(e.place ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapPlaceRefOrValue(c, e.id));
+    out.relatedParty = [...(e.relatedParty ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapRelatedParty(c, e.id));
+    out.siteRelationship = [...(e.siteRelationship ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapGeographicSiteRelationship(c, e.id));
     return stripEmpty(out);
   }
 
   private mapHourPeriod(e: HourPeriod, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.endHour = e.endHour;
     out.startHour = e.startHour;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/hourPeriod/${e.id}`;
+      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/hourPeriod/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
 
   private mapCalendarPeriod(e: CalendarPeriod, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.day = e.day;
     out.status = e.status;
     out.timeZone = e.timeZone;
@@ -341,35 +358,35 @@ export class GeographicSiteService {
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/calendar/${e.id}`;
+      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/calendar/${e.refId ?? e.id}`;
     }
-    out.hourPeriod = (e.hourPeriod ?? []).map((c) => this.mapHourPeriod(c, rootId));
+    out.hourPeriod = [...(e.hourPeriod ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((c) => this.mapHourPeriod(c, rootId));
     return stripEmpty(out);
   }
 
   private mapPlaceRefOrValue(e: PlaceRefOrValue, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.name = e.name;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/place/${e.id}`;
+      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/place/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
 
   private mapRelatedParty(e: RelatedParty, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.name = e.name;
     out.role = e.role;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/relatedParty/${e.id}`;
+      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/relatedParty/${e.refId ?? e.id}`;
     }
     return stripEmpty(out);
   }
@@ -387,14 +404,14 @@ export class GeographicSiteService {
 
   private mapGeographicSiteRelationship(e: GeographicSiteRelationship, rootId?: string): Record<string, any> {
     const out: Record<string, any> = {};
-    out.id = e.id;
+    out.id = e.refId ?? e.id;
     out.relationshipType = e.relationshipType;
     out.role = e.role;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;
     if (rootId) {
-      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/siteRelationship/${e.id}`;
+      out.href = `/${TMF674_BASE_PATH}/geographicSite/${rootId}/siteRelationship/${e.refId ?? e.id}`;
     }
     out.validFor = e.validFor ? this.mapTimePeriod(e.validFor) : undefined;
     return stripEmpty(out);

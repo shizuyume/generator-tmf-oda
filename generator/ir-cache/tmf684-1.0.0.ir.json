@@ -1,0 +1,920 @@
+{
+  "meta": {
+    "tmfNumber": "684",
+    "specTitle": "Shipment Tracking Management",
+    "specVersion": "1.0.0",
+    "versionMajor": "1",
+    "dialect": "swagger2",
+    "basePath": "shipmentTracking/v1",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF684_BASE_PATH",
+    "eventExchange": "v1.events",
+    "eventExchangeConstant": "TMF684_EVENT_EXCHANGE",
+    "eventTypeEnum": "V1EventType",
+    "serviceNameSuggestion": "v1-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf684/1.0.0/openapi/TMF684-ShipmentTracking-v1.0.0.swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "TrackingDetailsType",
+      "specName": "TrackingDetailsType",
+      "camelName": "trackingDetailsType",
+      "kebabName": "tracking-details-type",
+      "tableName": "tracking_details_type",
+      "pathSegment": "shipmentTracking",
+      "pathKey": "shipmentTracking",
+      "parentSegments": [],
+      "nested": false,
+      "description": "",
+      "composedFrom": [],
+      "required": [
+        "id",
+        "href",
+        "status",
+        "carrier",
+        "addressTo",
+        "trackingDate"
+      ],
+      "infraFields": [
+        "id",
+        "href"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "carrier",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Carrier that is performing the shipment"
+        },
+        {
+          "kind": "scalar",
+          "name": "trackingCode",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Tracking code in the carrier network"
+        },
+        {
+          "kind": "scalar",
+          "name": "carrierTrackingUrl",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "URL to a public page provided by the carrier that shows tracking details for this tracker"
+        },
+        {
+          "kind": "scalar",
+          "name": "trackingDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Date when the shipment began to be tracked"
+        },
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Current status of the package"
+        },
+        {
+          "kind": "scalar",
+          "name": "statusChangeDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the tracking status last changed"
+        },
+        {
+          "kind": "scalar",
+          "name": "statusChangeReason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Text describing the reason for the status of the tracking"
+        },
+        {
+          "kind": "scalar",
+          "name": "weight",
+          "tsType": "number",
+          "column": {
+            "type": "float"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Weight of the package in grams"
+        },
+        {
+          "kind": "scalar",
+          "name": "estimatedDeliveryDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Estimated deliveryDate"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "addressFrom",
+          "targetRef": "AddressType",
+          "description": "",
+          "columns": [
+            {
+              "name": "addressFromStreetNr",
+              "sourceProp": "streetNr",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStreetNrSuffix",
+              "sourceProp": "streetNrSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStreetNrLast",
+              "sourceProp": "streetNrLast",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStreetNrLastSuffix",
+              "sourceProp": "streetNrLastSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStreetName",
+              "sourceProp": "streetName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStreetType",
+              "sourceProp": "streetType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStreetSuffix",
+              "sourceProp": "streetSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromPostcode",
+              "sourceProp": "postcode",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromLocality",
+              "sourceProp": "locality",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromCity",
+              "sourceProp": "city",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromStateOrProvince",
+              "sourceProp": "stateOrProvince",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromCountry",
+              "sourceProp": "country",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressFromSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "addressTo",
+          "targetRef": "AddressType",
+          "description": "",
+          "columns": [
+            {
+              "name": "addressToStreetNr",
+              "sourceProp": "streetNr",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStreetNrSuffix",
+              "sourceProp": "streetNrSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStreetNrLast",
+              "sourceProp": "streetNrLast",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStreetNrLastSuffix",
+              "sourceProp": "streetNrLastSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStreetName",
+              "sourceProp": "streetName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStreetType",
+              "sourceProp": "streetType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStreetSuffix",
+              "sourceProp": "streetSuffix",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToPostcode",
+              "sourceProp": "postcode",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToLocality",
+              "sourceProp": "locality",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToCity",
+              "sourceProp": "city",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToStateOrProvince",
+              "sourceProp": "stateOrProvince",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToCountry",
+              "sourceProp": "country",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "addressToSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "CheckpointType",
+          "tableName": "checkpoint_type",
+          "nameCandidates": [
+            "CheckpointType",
+            "TrackingDetailsTypeCheckpoint"
+          ],
+          "refLike": false,
+          "propertyName": "checkpoint",
+          "itemRef": "CheckpointType",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Status of the package at the time of the scan event"
+            },
+            {
+              "kind": "scalar",
+              "name": "message",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Message describing the performed action e.g.: attempted delivery, departed from warehouse..."
+            },
+            {
+              "kind": "scalar",
+              "name": "date",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "scalar",
+              "name": "checkPost",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Location display name"
+            },
+            {
+              "kind": "scalar",
+              "name": "city",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Local administrative name such as a city, town, municipality or council, partido, concello, etc. that might comprise smaller entities"
+            },
+            {
+              "kind": "scalar",
+              "name": "stateOrProvince",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Region, state, or province"
+            },
+            {
+              "kind": "scalar",
+              "name": "country",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Country"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "OrderRefType",
+          "tableName": "order_ref_type",
+          "nameCandidates": [
+            "OrderRefType",
+            "TrackingDetailsTypeOrder"
+          ],
+          "refLike": false,
+          "propertyName": "order",
+          "itemRef": "OrderRefType",
+          "description": "Order that triggered this shipment",
+          "minItems": null,
+          "requiredFields": [
+            "id",
+            "href"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Screen name of the order"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "retrieveTrackings",
+          "summary": "Retrieve tracking details of a shipment",
+          "description": "",
+          "params": [
+            {
+              "name": "order.id",
+              "in": "query",
+              "description": "Id of the order whose shipment has to be fetched",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200"
+          ]
+        },
+        "create": {
+          "operationId": "createTracking",
+          "summary": "Create tracking details of a shipment",
+          "description": "",
+          "params": [],
+          "statuses": [
+            "201"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTracking",
+          "summary": "Retrieve tracking details of a shipment",
+          "description": "",
+          "params": [
+            {
+              "name": "trackingId",
+              "in": "path",
+              "description": "Id of the shipment that needs to be fetched",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200"
+          ]
+        },
+        "update": {
+          "operationId": "modifyTracking",
+          "summary": "Modify tracking details of a shipment",
+          "description": "",
+          "params": [
+            {
+              "name": "trackingId",
+              "in": "path",
+              "description": "Id of the shipment that needs to be modified",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "201"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteTracking",
+          "summary": "Delete tracking details of a shipment",
+          "description": "",
+          "params": [
+            {
+              "name": "trackingId",
+              "in": "path",
+              "description": "Id of the shipment that must be deleted",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/shipmentTracking",
+        "item": "/shipmentTracking/{trackingId}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "CheckpointType",
+      "specName": "CheckpointType",
+      "camelName": "checkpointType",
+      "kebabName": "checkpoint-type",
+      "tableName": "checkpoint_type",
+      "pathSegment": "checkpoint",
+      "pathKey": "shipmentTracking/checkpoint",
+      "parentSegments": [
+        "shipmentTracking"
+      ],
+      "nested": true,
+      "description": "",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Status of the package at the time of the scan event"
+        },
+        {
+          "kind": "scalar",
+          "name": "message",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Message describing the performed action e.g.: attempted delivery, departed from warehouse..."
+        },
+        {
+          "kind": "scalar",
+          "name": "date",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": ""
+        },
+        {
+          "kind": "scalar",
+          "name": "checkPost",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Location display name"
+        },
+        {
+          "kind": "scalar",
+          "name": "city",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Local administrative name such as a city, town, municipality or council, partido, concello, etc. that might comprise smaller entities"
+        },
+        {
+          "kind": "scalar",
+          "name": "stateOrProvince",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Region, state, or province"
+        },
+        {
+          "kind": "scalar",
+          "name": "country",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Country"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": null,
+        "create": {
+          "operationId": "createTrackingCheckpoint",
+          "summary": "Add checkpoint to a shipment tracking",
+          "description": "",
+          "params": [
+            {
+              "name": "trackingId",
+              "in": "path",
+              "description": "Id of the tracking the checkpoint where be added onto",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "201"
+          ]
+        },
+        "retrieve": null,
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/shipmentTracking/{trackingId}/checkpoint",
+        "item": null
+      },
+      "notificationEvents": []
+    }
+  ],
+  "hub": {
+    "present": false,
+    "specMethods": {
+      "post": false,
+      "delete": false,
+      "get": false
+    }
+  },
+  "listeners": [],
+  "warnings": [
+    "No TrackingDetailsType_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No TrackingDetailsType_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "TrackingDetailsType has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "No CheckpointType_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No CheckpointType_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "CheckpointType has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "CheckpointType spec declares no list/retrieve/update/delete operation; those routes are NOT emitted."
+  ]
+}

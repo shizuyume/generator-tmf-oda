@@ -21,6 +21,23 @@ export const camel = s => {
 export const kebab = s => words(s).join('-');
 export const snake = s => words(s).join('_');
 
+/**
+ * Force a name to be a legal JavaScript identifier.
+ *
+ * A resource name is used verbatim as a class name (`${name}Controller`,
+ * `Create${name}Dto`, ...). TMF924 calls its resource `5GSliceService`, and an
+ * identifier cannot start with a digit - the emitted service did not merely
+ * misbehave, it could not be PARSED:
+ *
+ *   import { 5GSliceServiceService } from './5-g-slice-service.service';
+ *            ~ error TS1003: Identifier expected.
+ *
+ * The `Tmf` prefix matches what emit/moduleNaming.mjs already does when a resource
+ * name collides with a scaffold-owned one. A no-op for every name that is already
+ * valid, which is all of them apart from the 5G ones.
+ */
+export const identifier = s => (/^[A-Za-z_$]/.test(String(s)) ? s : `Tmf${s}`);
+
 /** 'Revenue Sharing Algorithm Management' -> 'revenueSharingAlgorithmManagement' */
 export const apiName = title => camel(title);
 

@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PartyRevSharingAlgorithmService } from './party-rev-sharing-algorithm/party-rev-sharing-algorithm.service';
 import { partyRevSharingAlgorithmSeed } from './party-rev-sharing-algorithm/party-rev-sharing-algorithm.seed';
+import { partyRevSharingAlgorithmLocalSeed } from './party-rev-sharing-algorithm/party-rev-sharing-algorithm.seed.local';
 
 const logger = new Logger('seed');
 
@@ -46,7 +47,7 @@ async function main(): Promise<void> {
   try {
   await seedResource(
     'PartyRevSharingAlgorithm',
-    partyRevSharingAlgorithmSeed,
+    [...partyRevSharingAlgorithmSeed, ...partyRevSharingAlgorithmLocalSeed],
     (payload) => app.get(PartyRevSharingAlgorithmService).create(payload as never),
     () => app.get(PartyRevSharingAlgorithmService).findAll({} as never),
   );

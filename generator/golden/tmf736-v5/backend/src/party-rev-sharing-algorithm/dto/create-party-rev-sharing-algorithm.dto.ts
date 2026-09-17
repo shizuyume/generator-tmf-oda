@@ -19,10 +19,10 @@ class PolicyDto {
   href?: string;
 
   /** unique identifier */
-  @ApiPropertyOptional()
-  @IsOptional()
+  @ApiProperty()
+  @IsDefined()
   @IsString()
-  id?: string;
+  id: string;
 
   /** Name of the referred entity. */
   @ApiPropertyOptional()
