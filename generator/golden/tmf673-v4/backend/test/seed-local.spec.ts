@@ -9,7 +9,10 @@ import { geographicSubAddressLocalSeed } from '../src/geographic-sub-address/geo
 
 const SEEDS: [string, Record<string, any>[]][] = [
   ['geographicAddressLocalSeed', geographicAddressLocalSeed],
-  ['geographicAddressValidationLocalSeed', geographicAddressValidationLocalSeed],
+  [
+    'geographicAddressValidationLocalSeed',
+    geographicAddressValidationLocalSeed,
+  ],
   ['geographicSubAddressLocalSeed', geographicSubAddressLocalSeed],
 ];
 

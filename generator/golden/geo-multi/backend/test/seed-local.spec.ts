@@ -13,7 +13,10 @@ import { retrieveLocationRelationLocalSeed } from '../src/retrieve-location-rela
 
 const SEEDS: [string, Record<string, any>[]][] = [
   ['geographicAddressLocalSeed', geographicAddressLocalSeed],
-  ['geographicAddressValidationLocalSeed', geographicAddressValidationLocalSeed],
+  [
+    'geographicAddressValidationLocalSeed',
+    geographicAddressValidationLocalSeed,
+  ],
   ['geographicSubAddressLocalSeed', geographicSubAddressLocalSeed],
   ['geographicSiteLocalSeed', geographicSiteLocalSeed],
   ['geographicLocationLocalSeed', geographicLocationLocalSeed],
