@@ -19,8 +19,12 @@ const MODULES: [string, Hooks][] = [
 
 describe.each(MODULES)('%s hooks', (_name, hooks) => {
   it('leaves the update payload and the mapped response untouched', async () => {
-    await expect(hooks.beforeUpdate('id-1', { name: 'A' })).resolves.toBeUndefined();
-    await expect(hooks.afterFindOne({ id: 'id-1' }, {})).resolves.toBeUndefined();
+    await expect(
+      hooks.beforeUpdate('id-1', { name: 'A' }),
+    ).resolves.toBeUndefined();
+    await expect(
+      hooks.afterFindOne({ id: 'id-1' }, {}),
+    ).resolves.toBeUndefined();
   });
 
   it('either passes the create payload through or returns it enriched', async () => {
