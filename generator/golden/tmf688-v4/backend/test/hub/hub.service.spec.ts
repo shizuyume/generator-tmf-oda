@@ -16,7 +16,6 @@ import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
 import { Test } from '@nestjs/testing';
 import { HubService } from '../../src/hub/hub.service';
 import { HubController } from '../../src/hub/hub.controller';
-import { EventEventType } from '../../src/event/event-types';
 import { CreateHubDto } from '../../src/hub/dto';
 import { Hub } from '../../src/hub/entities/hub.entity';
 import * as hooks from '../../src/hub/hub.hooks';
@@ -126,6 +125,11 @@ describe('HubService', () => {
   });
 
   describe('create', () => {
+    beforeEach(() => {
+      // beforeCreate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);
+    });
+
     it('persists every scalar and answers with the stored resource plus its href', async () => {
       repo.findOne.mockResolvedValue(entity());
       const res = await service.create(scalarPayload() as never);

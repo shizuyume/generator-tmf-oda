@@ -16,7 +16,6 @@ import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
 import { Test } from '@nestjs/testing';
 import { EventService } from '../../src/tmf-event/event.service';
 import { EventController } from '../../src/tmf-event/event.controller';
-import { EventEventType } from '../../src/event/event-types';
 import { CreateEventDto } from '../../src/tmf-event/dto';
 import { Characteristic } from '../../src/tmf-event/entities/characteristic.entity';
 import { CharacteristicRelationship } from '../../src/tmf-event/entities/characteristic-relationship.entity';
@@ -188,6 +187,11 @@ describe('EventService', () => {
   });
 
   describe('create', () => {
+    beforeEach(() => {
+      // beforeCreate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);
+    });
+
     it('persists every scalar and answers with the stored resource plus its href', async () => {
       repo.findOne.mockResolvedValue(entity());
       const res = await service.create(scalarPayload() as never);

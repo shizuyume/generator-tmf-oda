@@ -128,6 +128,11 @@ describe('TopicService', () => {
   });
 
   describe('create', () => {
+    beforeEach(() => {
+      // beforeCreate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);
+    });
+
     it('persists every scalar and answers with the stored resource plus its href', async () => {
       repo.findOne.mockResolvedValue(entity());
       const res = await service.create(scalarPayload() as never);

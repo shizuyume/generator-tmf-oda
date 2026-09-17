@@ -40,7 +40,11 @@ const PRINT_WIDTH = 80;
  *       `../event/event-types` in the service (renderService's import list,
  *       host.eventTypeStyle === 'enum'), named ir.meta.eventTypeEnum. The
  *       barrel declares one enum per hosted component and exports it even when
- *       the spec declared no notification events, so the import always resolves.
+ *       the spec declared no notification events, so the import always resolves
+ *       for a generator-owned service. It is emitted ONLY when the file
+ *       actually references the enum - the create-event assertion is the one
+ *       thing that does - because a hand-written host owns its own event types
+ *       and has no such module to import from.
  *   entity class imports
  *       one per DISTINCT resolved class name across plan.entities - the same
  *       `uniqueClasses` de-duplication renderService does - each from the
@@ -428,7 +432,24 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
   }
 
   /* ── the it()s, at their final indentation inside describe('create') ── */
-  const body = [];
+  //
+  // Every one of them calls create(), and create()'s FIRST statement is
+  // `hooks.beforeCreate(dto) ?? dto`. Left to the real module, all of them
+  // silently assume the shipped stub still returns undefined - so the moment
+  // someone implements beforeCreate, which the file they own explicitly invites
+  // (`return { ...dto, city: normalise(dto.city) }`), a file stamped
+  // DO NOT EDIT goes red for doing exactly what it was made for. That is the
+  // Critical plan 2 had to retract, one step milder.
+  //
+  // So the hook is neutralised for the whole describe. The one it() that IS
+  // about the hook re-spies it with a payload of its own, which wins over this.
+  const body = [
+    '    beforeEach(() => {',
+    "      // beforeCreate is user-owned; only the it() below is about it",
+    "      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);",
+    '    });',
+    '',
+  ];
 
   body.push(
     "    it('persists every scalar and answers with the stored resource plus its href', async () => {",
@@ -456,6 +477,11 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       "    it('emits a create event carrying the mapped response', async () => {",
       '      repo.findOne.mockResolvedValue(entity());',
       '      const res = await service.create({} as never);',
+      // UNREACHABLE TODAY, and kept deliberately. `host` is non-null only on
+      // the inject path, and emit/index.mjs returns before emitSpecs() on that
+      // path - an inject run emits no specs at all. This branch is what the
+      // assertion will need the day specs are emitted for a hand-written host,
+      // whose emitter takes an object rather than positional arguments.
       ...(host?.callStyle === 'object'
         ? [
             `      expect(eventEmitter.${emitMethod}).toHaveBeenCalledWith(`,
@@ -654,6 +680,10 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
 
   return {
     consts,
+    // The enum is referenced by the create-event assertion alone. A host that
+    // owns its own event types has no src/event/event-types module, so an
+    // ungated import would fail to resolve in every emitted spec.
+    needsEventEnum: !!createEvent && host?.eventTypeStyle !== 'literal',
     hooksImport: `import * as hooks from '${src}/${fileBase}.hooks';`,
     lines: [
       `describe(${q(svcClass)}, () => {`,
@@ -1041,7 +1071,9 @@ function specFor({ resource, plan, dir, nested }, deps) {
     "import { Test } from '@nestjs/testing';",
     `import { ${resource.name}Service } from '${src}/${fileBase}.service';`,
     `import { ${resource.name}Controller } from '${src}/${fileBase}.controller';`,
-    `import { ${meta.eventTypeEnum} } from '../../src/event/event-types';`,
+    ...(svc.needsEventEnum
+      ? [`import { ${meta.eventTypeEnum} } from '../../src/event/event-types';`]
+      : []),
     ...(ctrl.dtoImports.length
       ? importLine(ctrl.dtoImports, `${src}/dto`)
       : []),

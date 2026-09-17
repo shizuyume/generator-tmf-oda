@@ -16,7 +16,6 @@ import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
 import { Test } from '@nestjs/testing';
 import { RetrieveGeographicLocationService } from '../../src/retrieve-geographic-location/retrieve-geographic-location.service';
 import { RetrieveGeographicLocationController } from '../../src/retrieve-geographic-location/retrieve-geographic-location.controller';
-import { GeographicLocationEventType } from '../../src/event/event-types';
 import { CreateRetrieveGeographicLocationDto } from '../../src/retrieve-geographic-location/dto';
 import { GeographicLocationReferred } from '../../src/retrieve-geographic-location/entities/geographic-location-referred.entity';
 import { RetrieveGeographicLocation } from '../../src/retrieve-geographic-location/entities/retrieve-geographic-location.entity';
@@ -139,6 +138,11 @@ describe('RetrieveGeographicLocationService', () => {
   });
 
   describe('create', () => {
+    beforeEach(() => {
+      // beforeCreate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);
+    });
+
     it('persists every scalar and answers with the stored resource plus its href', async () => {
       repo.findOne.mockResolvedValue(entity());
       const res = await service.create(scalarPayload() as never);

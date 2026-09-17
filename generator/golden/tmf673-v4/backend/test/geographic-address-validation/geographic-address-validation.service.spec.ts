@@ -16,7 +16,6 @@ import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
 import { Test } from '@nestjs/testing';
 import { GeographicAddressValidationService } from '../../src/geographic-address-validation/geographic-address-validation.service';
 import { GeographicAddressValidationController } from '../../src/geographic-address-validation/geographic-address-validation.controller';
-import { GeographicAddressEventType } from '../../src/event/event-types';
 import {
   CreateGeographicAddressValidationDto,
   UpdateGeographicAddressValidationDto,
@@ -175,6 +174,11 @@ describe('GeographicAddressValidationService', () => {
   });
 
   describe('create', () => {
+    beforeEach(() => {
+      // beforeCreate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);
+    });
+
     it('persists every scalar and answers with the stored resource plus its href', async () => {
       repo.findOne.mockResolvedValue(entity());
       const res = await service.create(scalarPayload() as never);

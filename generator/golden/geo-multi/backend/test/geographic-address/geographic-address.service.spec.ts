@@ -15,7 +15,6 @@ import { PATH_METADATA } from '@nestjs/common/constants';
 import { Test } from '@nestjs/testing';
 import { GeographicAddressService } from '../../src/geographic-address/geographic-address.service';
 import { GeographicAddressController } from '../../src/geographic-address/geographic-address.controller';
-import { GeographicAddressEventType } from '../../src/event/event-types';
 import { GeographicAddress } from '../../src/geographic-address/entities/geographic-address.entity';
 import { GeographicLocationRefOrValue } from '../../src/geographic-address-validation/entities/geographic-location-ref-or-value.entity';
 import { GeographicSubAddress2 } from '../../src/geographic-address/entities/geographic-sub-address2.entity';
@@ -179,6 +178,11 @@ describe('GeographicAddressService', () => {
   });
 
   describe('create', () => {
+    beforeEach(() => {
+      // beforeCreate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(undefined);
+    });
+
     it('persists every scalar and answers with the stored resource plus its href', async () => {
       repo.findOne.mockResolvedValue(entity());
       const res = await service.create(scalarPayload() as never);
