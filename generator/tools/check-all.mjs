@@ -11,7 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const here = path.dirname(url.fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -74,6 +74,14 @@ function guardrailReport(roots, { skipDirNames = SKIP_DIRS, forbid = FE_FORBID }
   }
   return hits;
 }
+
+/**
+ * Minimum LINE coverage the emitted Jest suite must reach on a generated
+ * service, in percent. Raise it, never lower it: if a change drops below this,
+ * the fix is more assertions (or a narrowed collectCoverageFrom, said out loud),
+ * not a smaller number. Only read under --runtime.
+ */
+const COVERAGE_MIN = 90;
 
 const runtimeIdx = process.argv.indexOf('--runtime');
 const runtimeBackend = runtimeIdx > -1 ? process.argv[runtimeIdx + 1] : null;
@@ -235,6 +243,85 @@ if (runtimeBackend) {
       cmd: ['tools/validate-dto.mjs', runtimeBackend, 'party-rev-sharing-algorithm', 'create'],
       ok: out => /(\d+)\/\1 expectations met/.test(out),
       summary: out => out.match(/\d+\/\d+ expectations met/)?.[0] ?? '',
+    },
+    {
+      // The emitted Jest suite. Golden proves the specs are byte-stable; only
+      // RUNNING them proves they pass and reach the coverage the emitter exists
+      // to deliver. Two assertions, in order, and the first one gates the second:
+      //   1. the suite exits 0,
+      //   2. line coverage >= COVERAGE_MIN.
+      // A suite that dies before writing coverage/lcov.info must never read as a
+      // pass, so lcov.info is deleted up front (a stale file from an earlier green
+      // run would otherwise certify a broken one) and a missing/unparseable file
+      // is itself a failure, not a skip.
+      name: `emitted suite: green + line coverage >= ${COVERAGE_MIN}%`,
+      run: () => {
+        const backend = path.resolve(runtimeBackend);
+        const lcovPath = path.join(backend, 'coverage', 'lcov.info');
+        const lines = [];
+
+        // Yarn's workspace hoisting puts jest in the SERVICE ROOT's node_modules,
+        // where `npx jest` from backend/ cannot find it (it looks under a scoped
+        // path that does not exist - same breakage the build gate documents). So
+        // resolve jest's own bin by walking up, and run it with this node.
+        let jestBin = null;
+        for (let dir = backend; ;) {
+          const cand = path.join(dir, 'node_modules', 'jest', 'bin', 'jest.js');
+          if (fs.existsSync(cand)) { jestBin = cand; break; }
+          const up = path.dirname(dir);
+          if (up === dir) break;
+          dir = up;
+        }
+        if (!jestBin) return 'SUITE FAILED: jest not installed under ' + backend + ' (run yarn install first)';
+
+        fs.rmSync(lcovPath, { force: true });
+
+        // spawnSync, not execFileSync: Jest writes its pass/fail summary to
+        // STDERR even on success, and execFileSync's return value is stdout
+        // alone - so the suite's own counts would be invisible here.
+        const res = spawnSync(process.execPath, [jestBin, '--coverage', '--ci'], {
+          cwd: backend, encoding: 'utf8', stdio: 'pipe', maxBuffer: 64 * 1024 * 1024,
+        });
+        const suiteOut = String(res.stdout ?? '') + String(res.stderr ?? '');
+        const suiteOk = res.status === 0;
+        const counts = suiteOut.match(/^(Test Suites|Tests):.*$/gm) ?? [];
+        lines.push(`suite: exit ${res.status === null ? `signal ${res.signal}` : res.status}${counts.length ? ' | ' + counts.map(c => c.replace(/\s+/g, ' ').trim()).join(' | ') : ''}`);
+        if (!suiteOk) {
+          lines.push(...(suiteOut.split('\n').filter(l => /●|✕|FAIL |Cannot find|Error:/.test(l)).slice(0, 8)));
+          lines.push('SUITE FAILED: the emitted suite did not exit 0 - coverage not read');
+          return lines.join('\n');
+        }
+
+        // Coverage comes from lcov.info, not the text summary: the summary's
+        // format is Jest's to change, lcov's LF/LH is a stable contract.
+        // LF = lines found, LH = lines hit, one pair per SF: file entry.
+        let lcov;
+        try { lcov = fs.readFileSync(lcovPath, 'utf8'); } catch (err) {
+          lines.push(`COVERAGE GATE FAIL: cannot read ${path.relative(backend, lcovPath)} (${err.code ?? err.message}) - the suite exited 0 but produced no lcov report`);
+          return lines.join('\n');
+        }
+        const sum = (re) => (lcov.match(re) ?? []).reduce((a, l) => a + Number(l.split(':')[1]), 0);
+        const found = sum(/^LF:\d+$/gm);
+        const hit = sum(/^LH:\d+$/gm);
+        const files = (lcov.match(/^SF:/gm) ?? []).length;
+        if (!found) {
+          lines.push(`COVERAGE GATE FAIL: ${path.relative(backend, lcovPath)} has no LF: records (${files} file entries) - nothing was measured`);
+          return lines.join('\n');
+        }
+        const pct = (hit / found) * 100;
+        // Both numbers, pass or fail: a gate that only says "failed" without
+        // saying how far short it fell wastes the run it took to produce.
+        lines.push(`coverage: lines ${hit}/${found} = ${pct.toFixed(2)}% over ${files} file(s), threshold ${COVERAGE_MIN}%`);
+        lines.push(pct >= COVERAGE_MIN
+          ? `COVERAGE GATE OK: ${pct.toFixed(2)}% >= ${COVERAGE_MIN}%`
+          : `COVERAGE GATE FAIL: ${pct.toFixed(2)}% < ${COVERAGE_MIN}% - short by ${(COVERAGE_MIN - pct).toFixed(2)} points (${Math.ceil((COVERAGE_MIN / 100) * found) - hit} more covered line(s) needed)`);
+        return lines.join('\n');
+      },
+      ok: out => /^COVERAGE GATE OK:/m.test(out),
+      summary: out => [
+        out.match(/^coverage: .*$/m)?.[0],
+        out.match(/^(COVERAGE GATE (?:OK|FAIL)|SUITE FAILED):.*$/m)?.[0],
+      ].filter(Boolean).join(' | ') || 'gate produced no verdict',
     },
   );
 }
