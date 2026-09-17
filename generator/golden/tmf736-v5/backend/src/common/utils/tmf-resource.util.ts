@@ -67,7 +67,7 @@ export function applyVersionBump(
   // `null` (an unset DB column) and `undefined` (a key the client never sent)
   // both mean "no value" - without normalising them first, every no-op PATCH
   // on a row with any nullable column would spuriously read as "changed".
-  const normalize = (v: any) => (v === null || v === undefined ? undefined : v);
+  const normalize = (v: any) => v ?? undefined;
   const changed = Object.keys(oldSnapshot).some(
     (k) => JSON.stringify(normalize(oldSnapshot[k])) !== JSON.stringify(normalize(newSnapshot[k])),
   );
