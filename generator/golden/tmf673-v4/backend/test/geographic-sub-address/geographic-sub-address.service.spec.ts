@@ -17,6 +17,7 @@ import { GeographicSubAddressService } from '../../src/geographic-sub-address/ge
 import { GeographicSubAddressController } from '../../src/geographic-sub-address/geographic-sub-address.controller';
 import { GeographicAddressEventType } from '../../src/event/event-types';
 import { GeographicSubAddress } from '../../src/geographic-sub-address/entities/geographic-sub-address.entity';
+import * as hooks from '../../src/geographic-sub-address/geographic-sub-address.hooks';
 
 type AnyRec = Record<string, any>;
 
@@ -55,6 +56,32 @@ const ID = 'res-1';
 const FIELD = 'buildingName';
 const LIST_QUERY = { limit: 5 };
 
+/** The `@type` a create stamps on a payload that carries none. */
+const AT_TYPE = 'GeographicSubAddress';
+/** One the payload supplies instead, which must survive that default. */
+const SUPPLIED_AT_TYPE = 'CustomGeographicSubAddress';
+
+/** Each settable root scalar: the payload key it is read from -> its column. */
+const SCALARS: Record<string, string> = {
+  buildingName: 'buildingName',
+  levelNumber: 'levelNumber',
+  levelType: 'levelType',
+  name: 'name',
+  privateStreetName: 'privateStreetName',
+  privateStreetNumber: 'privateStreetNumber',
+  subAddressType: 'subAddressType',
+  subUnitNumber: 'subUnitNumber',
+  subUnitType: 'subUnitType',
+  '@schemaLocation': 'atSchemaLocation',
+  '@baseType': 'atBaseType',
+};
+
+function scalarPayload(): AnyRec {
+  const out: AnyRec = {};
+  for (const w of Object.keys(SCALARS)) out[w] = `res-${SCALARS[w]}`;
+  return out;
+}
+
 function entity(over: AnyRec = {}): AnyRec {
   return {
     id: 'res-1',
@@ -79,6 +106,95 @@ describe('GeographicSubAddress entities', () => {
     for (const E of [GeographicSubAddress]) {
       expect(new (E as new () => object)()).toBeInstanceOf(E as never);
     }
+  });
+});
+
+describe('GeographicSubAddressService', () => {
+  let repo: AnyRec;
+  let refSave: jest.Mock;
+  let dataSource: AnyRec;
+  let eventEmitter: AnyRec;
+  let service: GeographicSubAddressService;
+
+  beforeEach(() => {
+    repo = makeRepo();
+    refSave = jest.fn(async (e: AnyRec) => e);
+    dataSource = {
+      getRepository: jest.fn(() => ({
+        create: jest.fn((v: AnyRec) => v),
+        findOne: jest.fn(async () => null),
+        save: refSave,
+      })),
+    };
+    eventEmitter = { emitEvent: jest.fn() };
+    service = new GeographicSubAddressService(
+      repo as never,
+      dataSource as never,
+      eventEmitter as never,
+    );
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('create', () => {
+    it('persists every scalar and answers with the stored resource plus its href', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      const res = await service.create(scalarPayload() as never);
+
+      const persisted = repo.save.mock.calls[0][0];
+      for (const w of Object.keys(SCALARS)) {
+        expect(persisted[SCALARS[w]]).toBe(`res-${SCALARS[w]}`);
+      }
+      expect(res.id).toBe(ID);
+      expect(res.href).toBe(HREF);
+    });
+
+    it('keeps a client-supplied id and defaults @type to GeographicSubAddress', async () => {
+      repo.findOne.mockResolvedValue(entity({ id: 'chosen' }));
+      await service.create({ id: 'chosen' } as never);
+      const persisted = repo.save.mock.calls[0][0];
+      expect(persisted.id).toBe('chosen');
+      expect(persisted.atType).toBe(AT_TYPE);
+    });
+
+    it('generates a uuid when no id is supplied and keeps a supplied @type', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      await service.create({ '@type': SUPPLIED_AT_TYPE } as never);
+      const persisted = repo.save.mock.calls[0][0];
+      expect(persisted.id).toMatch(/^[0-9a-f-]{36}$/);
+      expect(persisted.atType).toBe(SUPPLIED_AT_TYPE);
+    });
+
+    it('clears the soft-delete stamps so a reused id is resurrected', async () => {
+      // A client may reuse the id of a row that was soft-deleted. Left stamped,
+      // save() updates a row findEntity cannot see, and the POST answers 404
+      // on the very id it just wrote.
+      repo.findOne.mockResolvedValue(entity());
+      await service.create({ id: 'chosen' } as never);
+      const persisted = repo.save.mock.calls[0][0];
+      expect(persisted.deletedAt).toBeNull();
+      expect(persisted.deletedBy).toBeUndefined();
+      expect(persisted.deletedReason).toBeUndefined();
+    });
+
+    it('builds from the payload the beforeCreate hook returns, not the dto', async () => {
+      // beforeCreate lives in a file tmfgen does not manage. What it returns is
+      // its owner's business, so it is SPIED here rather than asserted on: what
+      // is under test is that create builds from the value it got back.
+      const HOOK_PAYLOAD: AnyRec = {
+        id: 'from-hook',
+        buildingName: 'res-from-hook',
+      };
+      jest.spyOn(hooks, 'beforeCreate').mockResolvedValue(HOOK_PAYLOAD);
+      repo.findOne.mockResolvedValue(entity());
+      await service.create({ id: 'ignored' } as never);
+
+      const persisted = repo.save.mock.calls[0][0];
+      expect(persisted.id).toBe('from-hook');
+      expect(persisted.buildingName).toBe('res-from-hook');
+    });
   });
 });
 

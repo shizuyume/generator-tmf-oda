@@ -360,6 +360,9 @@ export function emitResources(ir, options) {
     resolve,
     entityDirOf: className => dirByClass.get(className) ?? null,
     meta: ir.meta,
+    // the emitter contract renderService was given: a hand-written host takes a
+    // different event dialect, so the spec must assert the call IT emits
+    host,
   }, writeFile);
 
   return {

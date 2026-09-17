@@ -42,7 +42,7 @@ const EMITTERS = [
 /**
  * @param {{ components: object[], resources: object[], seeds: object[],
  *           plans: object[], resolve: Function, entityDirOf: Function,
- *           meta: object }} ctx
+ *           meta: object, host: object|null }} ctx
  *   `components` is the manifest union (see wiring.mjs's orderedComponents);
  *   `resources` and `seeds` are those components' entries flattened, in the
  *   same order the shared files use. `plans`, `resolve`, `entityDirOf` and
