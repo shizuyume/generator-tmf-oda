@@ -1,0 +1,20 @@
+Invalid FE Spec: unknown-field-type.yaml:
+
+pages[0].forms.add.fields[1].type   (line 164)
+
+Unknown field type: "dropdownn"
+
+Supported:
+- text
+- textarea
+- number
+- email
+- password
+- select
+- toggle
+- repeatable
+- date
+- datetime
+- checkbox
+- radio
+- autocomplete

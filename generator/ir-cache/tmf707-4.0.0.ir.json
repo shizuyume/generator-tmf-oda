@@ -1,0 +1,1358 @@
+{
+  "meta": {
+    "tmfNumber": "707",
+    "specTitle": "Test Result",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/testResult/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF707_BASE_PATH",
+    "eventExchange": "testResult.events",
+    "eventExchangeConstant": "TMF707_EVENT_EXCHANGE",
+    "eventTypeEnum": "TestResultEventType",
+    "serviceNameSuggestion": "test-result-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf707/4.0.0/openapi/TMF707_Test_Result_Management_API_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "TestCaseResult",
+      "camelName": "testCaseResult",
+      "kebabName": "test-case-result",
+      "tableName": "test_case_result",
+      "pathSegment": "testCaseResult",
+      "pathKey": "testCaseResult",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed test case result resource",
+      "composedFrom": [],
+      "required": [
+        "testCaseResultDefinition",
+        "testExecution"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "testCaseResultDefinition",
+          "targetRef": "TestCaseResultDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "testCaseResultDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testCaseResultDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testExecution",
+          "targetRef": "TestCaseExecutionRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "testExecutionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionDataCorrelationId",
+              "sourceProp": "dataCorrelationId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": {
+        "schemaName": "TestCaseResult_Create",
+        "required": [
+          "testCaseResultDefinition",
+          "testExecution"
+        ],
+        "properties": [
+          "testCaseResultDefinition",
+          "testExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TestCaseResult_Update",
+        "required": [
+          "testCaseResultDefinition",
+          "testExecution"
+        ],
+        "properties": [
+          "testCaseResultDefinition",
+          "testExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestCaseResult",
+          "summary": "List or find TestCaseResult objects",
+          "description": "This operation list or find TestCaseResult entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestCaseResult",
+          "summary": "Creates a TestCaseResult",
+          "description": "This operation creates a TestCaseResult entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestCaseResult",
+          "summary": "Retrieves a TestCaseResult by ID",
+          "description": "This operation retrieves a TestCaseResult entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestCaseResult",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTestCaseResult",
+          "summary": "Updates partially a TestCaseResult",
+          "description": "This operation updates partially a TestCaseResult entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestCaseResult",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteTestCaseResult",
+          "summary": "Deletes a TestCaseResult",
+          "description": "This operation deletes a TestCaseResult entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestCaseResult",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testCaseResult",
+        "item": "/testCaseResult/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testCaseResultChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "TEST_CASE_RESULT_CHANGE"
+        },
+        {
+          "eventName": "testCaseResultCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_CASE_RESULT_CREATE"
+        },
+        {
+          "eventName": "testCaseResultDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_CASE_RESULT_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "TestSuiteResult",
+      "camelName": "testSuiteResult",
+      "kebabName": "test-suite-result",
+      "tableName": "test_suite_result",
+      "pathSegment": "testSuiteResult",
+      "pathKey": "testSuiteResult",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed test case result resource",
+      "composedFrom": [],
+      "required": [
+        "testExecution",
+        "testSuiteResultDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "testExecution",
+          "targetRef": "TestSuiteExecutionRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "testExecutionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionDataCorrelationId",
+              "sourceProp": "dataCorrelationId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testSuiteResultDefinition",
+          "targetRef": "TestSuiteResultDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "testSuiteResultDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testSuiteResultDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": {
+        "schemaName": "TestSuiteResult_Create",
+        "required": [
+          "testExecution",
+          "testSuiteResultDefinition"
+        ],
+        "properties": [
+          "testExecution",
+          "testSuiteResultDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TestSuiteResult_Update",
+        "required": [
+          "testExecution",
+          "testSuiteResultDefinition"
+        ],
+        "properties": [
+          "testExecution",
+          "testSuiteResultDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestSuiteResult",
+          "summary": "List or find TestSuiteResult objects",
+          "description": "This operation list or find TestSuiteResult entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestSuiteResult",
+          "summary": "Creates a TestSuiteResult",
+          "description": "This operation creates a TestSuiteResult entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestSuiteResult",
+          "summary": "Retrieves a TestSuiteResult by ID",
+          "description": "This operation retrieves a TestSuiteResult entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestSuiteResult",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTestSuiteResult",
+          "summary": "Updates partially a TestSuiteResult",
+          "description": "This operation updates partially a TestSuiteResult entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestSuiteResult",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteTestSuiteResult",
+          "summary": "Deletes a TestSuiteResult",
+          "description": "This operation deletes a TestSuiteResult entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestSuiteResult",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testSuiteResult",
+        "item": "/testSuiteResult/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "testSuiteResultChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "TEST_SUITE_RESULT_CHANGE"
+        },
+        {
+          "eventName": "testSuiteResultCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "TEST_SUITE_RESULT_CREATE"
+        },
+        {
+          "eventName": "testSuiteResultDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "TEST_SUITE_RESULT_DELETE"
+        }
+      ]
+    },
+    {
+      "name": "NonFunctionalTestResult",
+      "camelName": "nonFunctionalTestResult",
+      "kebabName": "non-functional-test-result",
+      "tableName": "non_functional_test_result",
+      "pathSegment": "nonFunctionalTestResult",
+      "pathKey": "nonFunctionalTestResult",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed non-functional test result resource",
+      "composedFrom": [],
+      "required": [
+        "nonFunctionalTestResultDefinition",
+        "testExecution"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "nonFunctionalTestResultDefinition",
+          "targetRef": "NonFunctionalTestResultDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "nonFunctionalTestResultDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "nonFunctionalTestResultDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testExecution",
+          "targetRef": "NonFunctionalTestExecutionRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "testExecutionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionDataCorrelationId",
+              "sourceProp": "dataCorrelationId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testExecutionReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": {
+        "schemaName": "NonFunctionalTestResult_Create",
+        "required": [
+          "nonFunctionalTestResultDefinition",
+          "testExecution"
+        ],
+        "properties": [
+          "nonFunctionalTestResultDefinition",
+          "testExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "NonFunctionalTestResult_Update",
+        "required": [
+          "nonFunctionalTestResultDefinition",
+          "testExecution"
+        ],
+        "properties": [
+          "nonFunctionalTestResultDefinition",
+          "testExecution",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listNonFunctionalTestResult",
+          "summary": "List or find NonFunctionalTestResult objects",
+          "description": "This operation list or find NonFunctionalTestResult entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createNonFunctionalTestResult",
+          "summary": "Creates a NonFunctionalTestResult",
+          "description": "This operation creates a NonFunctionalTestResult entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveNonFunctionalTestResult",
+          "summary": "Retrieves a NonFunctionalTestResult by ID",
+          "description": "This operation retrieves a NonFunctionalTestResult entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the NonFunctionalTestResult",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchNonFunctionalTestResult",
+          "summary": "Updates partially a NonFunctionalTestResult",
+          "description": "This operation updates partially a NonFunctionalTestResult entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the NonFunctionalTestResult",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteNonFunctionalTestResult",
+          "summary": "Deletes a NonFunctionalTestResult",
+          "description": "This operation deletes a NonFunctionalTestResult entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the NonFunctionalTestResult",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/nonFunctionalTestResult",
+        "item": "/nonFunctionalTestResult/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "nonFunctionalTestResultChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "NON_FUNCTIONAL_TEST_RESULT_CHANGE"
+        },
+        {
+          "eventName": "nonFunctionalTestResultCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "NON_FUNCTIONAL_TEST_RESULT_CREATE"
+        },
+        {
+          "eventName": "nonFunctionalTestResultDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "NON_FUNCTIONAL_TEST_RESULT_DELETE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/nonFunctionalTestResultChangeEvent",
+      "eventName": "nonFunctionalTestResultChangeEvent",
+      "resource": "NonFunctionalTestResult",
+      "eventKind": "Change",
+      "operationId": "listenToNonFunctionalTestResultChangeEvent"
+    },
+    {
+      "path": "/listener/nonFunctionalTestResultCreateEvent",
+      "eventName": "nonFunctionalTestResultCreateEvent",
+      "resource": "NonFunctionalTestResult",
+      "eventKind": "Create",
+      "operationId": "listenToNonFunctionalTestResultCreateEvent"
+    },
+    {
+      "path": "/listener/nonFunctionalTestResultDeleteEvent",
+      "eventName": "nonFunctionalTestResultDeleteEvent",
+      "resource": "NonFunctionalTestResult",
+      "eventKind": "Delete",
+      "operationId": "listenToNonFunctionalTestResultDeleteEvent"
+    },
+    {
+      "path": "/listener/testCaseResultChangeEvent",
+      "eventName": "testCaseResultChangeEvent",
+      "resource": "TestCaseResult",
+      "eventKind": "Change",
+      "operationId": "listenToTestCaseResultChangeEvent"
+    },
+    {
+      "path": "/listener/testCaseResultCreateEvent",
+      "eventName": "testCaseResultCreateEvent",
+      "resource": "TestCaseResult",
+      "eventKind": "Create",
+      "operationId": "listenToTestCaseResultCreateEvent"
+    },
+    {
+      "path": "/listener/testCaseResultDeleteEvent",
+      "eventName": "testCaseResultDeleteEvent",
+      "resource": "TestCaseResult",
+      "eventKind": "Delete",
+      "operationId": "listenToTestCaseResultDeleteEvent"
+    },
+    {
+      "path": "/listener/testSuiteResultChangeEvent",
+      "eventName": "testSuiteResultChangeEvent",
+      "resource": "TestSuiteResult",
+      "eventKind": "Change",
+      "operationId": "listenToTestSuiteResultChangeEvent"
+    },
+    {
+      "path": "/listener/testSuiteResultCreateEvent",
+      "eventName": "testSuiteResultCreateEvent",
+      "resource": "TestSuiteResult",
+      "eventKind": "Create",
+      "operationId": "listenToTestSuiteResultCreateEvent"
+    },
+    {
+      "path": "/listener/testSuiteResultDeleteEvent",
+      "eventName": "testSuiteResultDeleteEvent",
+      "resource": "TestSuiteResult",
+      "eventKind": "Delete",
+      "operationId": "listenToTestSuiteResultDeleteEvent"
+    }
+  ],
+  "warnings": [
+    "TestCaseResult has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestSuiteResult has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "NonFunctionalTestResult has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

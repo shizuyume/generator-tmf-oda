@@ -1,0 +1,11 @@
+Invalid FE Spec: unknown-page-view.yaml:
+
+pages[0].view   (line 137)
+
+Unknown page view: "grid"
+
+Supported:
+- list
+- form
+- detail
+- dashboard

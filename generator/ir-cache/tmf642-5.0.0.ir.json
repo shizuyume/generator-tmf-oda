@@ -1,0 +1,3280 @@
+{
+  "meta": {
+    "tmfNumber": "642",
+    "specTitle": "Alarm",
+    "specVersion": "5.0.1",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/alarm/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF642_BASE_PATH",
+    "eventExchange": "alarm.events",
+    "eventExchangeConstant": "TMF642_EVENT_EXCHANGE",
+    "eventTypeEnum": "AlarmEventType",
+    "serviceNameSuggestion": "alarm-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf642/5.0.0/openapi/TMF642_Alarm_v5.0.1.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "AckAlarm",
+      "specName": "AckAlarm",
+      "camelName": "ackAlarm",
+      "kebabName": "ack-alarm",
+      "tableName": "ack_alarm",
+      "pathSegment": "ackAlarm",
+      "pathKey": "ackAlarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "terminatedWithError",
+            "inProgress",
+            "done",
+            "cancel",
+            "canceled"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Current state of the operation task"
+        },
+        {
+          "kind": "scalar",
+          "name": "ackSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the acknowledging system"
+        },
+        {
+          "kind": "scalar",
+          "name": "ackTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Time of the acknowledgement"
+        },
+        {
+          "kind": "scalar",
+          "name": "ackUserId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the acknowledging user"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "AckAlarmAckedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "ackedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "The successfully acknowledged alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "AckAlarmAlarmPattern"
+          ],
+          "refLike": false,
+          "propertyName": "alarmPattern",
+          "itemRef": "AlarmRefOrValue",
+          "description": "Alarm patterns to match target alarms. An alarm will match if all of the attributes in any of the patterns compare equal to those attributes of the alarm.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "AckAlarm_FVO",
+        "required": [
+          "@type",
+          "ackSystemId",
+          "ackUserId",
+          "alarmPattern"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "state",
+          "ackSystemId",
+          "ackTime",
+          "ackUserId",
+          "ackedAlarm",
+          "alarmPattern"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "AckAlarm_create_example_01",
+          "value": {
+            "ackSystemId": "ems-1",
+            "ackUserId": "bob@example.net",
+            "ackTime": "2019-07-03T03:33:12.623Z",
+            "@type": "AckAlarm",
+            "alarmPattern": [
+              {
+                "@type": "AlarmRef",
+                "id": "8675309"
+              },
+              {
+                "@type": "AlarmRef",
+                "id": "8675399"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listAckAlarm",
+          "summary": "List or find AckAlarm objects",
+          "description": "List or find AckAlarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createAckAlarm",
+          "summary": "Creates a AckAlarm",
+          "description": "This operation creates a AckAlarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveAckAlarm",
+          "summary": "Retrieves a AckAlarm by ID",
+          "description": "This operation retrieves a AckAlarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/ackAlarm",
+        "item": "/ackAlarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "ackAlarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "ACK_ALARM_CREATE"
+        },
+        {
+          "eventName": "ackAlarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "ACK_ALARM_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "Alarm",
+      "specName": "Alarm",
+      "camelName": "alarm",
+      "kebabName": "alarm",
+      "tableName": "alarm",
+      "pathSegment": "alarm",
+      "pathKey": "alarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "externalAlarmId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "An identifier of the alarm in the source system."
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "raised",
+            "updated",
+            "cleared"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Defines the alarm state during its life cycle (raised, updated, cleared)."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "communicationsAlarm",
+            "processingErrorAlarm",
+            "environmentalAlarm",
+            "qualityOfServiceAlarm",
+            "equipmentAlarm",
+            "integrityViolation",
+            "operationalViolation",
+            "physicalViolation",
+            "securityService",
+            "mechanismViolation",
+            "timeDomainViolation"
+          ],
+          "enumRef": "AlarmType",
+          "nullable": true,
+          "description": "Categorizes the alarm (X.733 8.1.1, 3GPP TS 32.111-2 Annex A)"
+        },
+        {
+          "kind": "scalar",
+          "name": "perceivedSeverity",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "critical",
+            "major",
+            "minor",
+            "warning",
+            "indeterminate",
+            "cleared"
+          ],
+          "enumRef": "PerceivedSeverity",
+          "nullable": true,
+          "description": "Lists the possible severities that can be allocated to an Alarm. The values are consistent with ITU-T Recommendation X.733.\nOnce an alarm has been cleared, its perceived severity is set to 'cleared' and can no longer be set."
+        },
+        {
+          "kind": "scalar",
+          "name": "probableCause",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides the probable cause of the alarm. The values are consistent with ITU-T Recommendation X.733 or 3GPP TS 32.111-2 Annex B."
+        },
+        {
+          "kind": "scalar",
+          "name": "specificProblem",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides more specific information about the alarm."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmedObjectType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The type (class) of the managed object associated with the event."
+        },
+        {
+          "kind": "scalar",
+          "name": "reportingSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Reporting system identity."
+        },
+        {
+          "kind": "scalar",
+          "name": "sourceSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Source system identity."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmDetails",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Contains further information on the alarm."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmRaisedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates the time (as a date + time) at which the alarm occurred at its source."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmChangedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates the last date and time when the alarm is changed on the alarm-owning system. Any change to the alarm whether coming from the alarmed resource, or triggered by a change from the client is changing this time."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmClearedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates the time (as a date + time) at which the alarm is cleared at the source. "
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmReportingTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates the time (as a date + time) at which the alarm was reported by the owning OSS. It might be different from the alarmRaisedTime. For instance, if the alarm list is maintained by an EMS, the alarmRaisedtime would be the time the alarm\n  was detected by the NE, while the alarmReportingTime would be the time this alarm was stored in the alarm list of the EMS."
+        },
+        {
+          "kind": "scalar",
+          "name": "ackState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "unacknowledged",
+            "acknowledged"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides the Acknowledgement State of the alarm (unacknowledged, acknowledged)."
+        },
+        {
+          "kind": "scalar",
+          "name": "ackSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides the name of the system that last changed the ackState of an alarm, i.e. acknowledged or unacknowledged the alarm."
+        },
+        {
+          "kind": "scalar",
+          "name": "ackUserId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides the id of the user who has last changed the ack state of the alarm, i.e. acknowledged or unacknowledged the alarm."
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmEscalation",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates if this alarm has been escalated or not. "
+        },
+        {
+          "kind": "scalar",
+          "name": "clearSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides the id of the system where the user who invoked the alarmCleared operation is located. "
+        },
+        {
+          "kind": "scalar",
+          "name": "clearUserId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Provides the id of the user who invoked the alarmCleared operation"
+        },
+        {
+          "kind": "scalar",
+          "name": "isRootCause",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates whether the alarm is a root cause alarm.. "
+        },
+        {
+          "kind": "scalar",
+          "name": "plannedOutageIndicator",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "InService",
+            "OutOfService"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates that the Managed Object (related to this alarm) is in planned outage (in planned maintenance, or out-of-service). "
+        },
+        {
+          "kind": "scalar",
+          "name": "proposedRepairedActions",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates proposed repair actions, if known to the system emitting the alarm."
+        },
+        {
+          "kind": "scalar",
+          "name": "serviceAffecting",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Indicates whether the alarm affects service or not."
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "alarmedObject",
+          "targetRef": "AlarmedObjectRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "alarmedObjectType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "alarmedObjectBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "alarmedObjectSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "alarmedObjectHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "alarmedObjectId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "alarmedObjectName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "alarmedObjectReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "crossedThresholdInformation",
+          "targetRef": "CrossedThresholdInformation",
+          "description": "",
+          "columns": [
+            {
+              "name": "crossedThresholdInformationDirection",
+              "sourceProp": "direction",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "crossedThresholdInformationGranularity",
+              "sourceProp": "granularity",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "crossedThresholdInformationIndicatorName",
+              "sourceProp": "indicatorName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "crossedThresholdInformationIndicatorUnit",
+              "sourceProp": "indicatorUnit",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "crossedThresholdInformationObservedValue",
+              "sourceProp": "observedValue",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "crossedThresholdInformationThresholdCrossingDescription",
+              "sourceProp": "thresholdCrossingDescription",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "ServiceRef",
+          "tableName": "service_ref",
+          "nameCandidates": [
+            "ServiceRef",
+            "AlarmAffectedServiceRef"
+          ],
+          "refLike": true,
+          "propertyName": "affectedService",
+          "itemRef": "ServiceRef",
+          "description": "Provides list of affected services.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "Comment",
+          "tableName": "comment",
+          "nameCandidates": [
+            "Comment",
+            "AlarmComment"
+          ],
+          "refLike": false,
+          "propertyName": "comment",
+          "itemRef": "Comment",
+          "description": "Provides list of Comments regards Alarm.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "userId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates the user commenting the alarm."
+            },
+            {
+              "kind": "scalar",
+              "name": "systemId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates the system identifier on which the client set the comment."
+            },
+            {
+              "kind": "scalar",
+              "name": "time",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates the time commenting the alarm"
+            },
+            {
+              "kind": "scalar",
+              "name": "comment",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates the text of the comment."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRef",
+          "tableName": "alarm_ref",
+          "nameCandidates": [
+            "AlarmRef",
+            "AlarmCorrelatedAlarmRef"
+          ],
+          "refLike": true,
+          "propertyName": "correlatedAlarm",
+          "itemRef": "AlarmRef",
+          "description": "Provides list of correlated Alarms.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRef",
+          "tableName": "alarm_ref",
+          "nameCandidates": [
+            "AlarmRef",
+            "AlarmParentAlarmRef"
+          ],
+          "refLike": true,
+          "propertyName": "parentAlarm",
+          "itemRef": "AlarmRef",
+          "description": "Provides list of parrent Alarms.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedPlace",
+          "tableName": "related_place",
+          "nameCandidates": [
+            "RelatedPlace",
+            "AlarmPlace"
+          ],
+          "refLike": false,
+          "propertyName": "place",
+          "itemRef": "RelatedPlace",
+          "description": "List of related places, which are affected by Alarm.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "relatedPlace",
+              "targetRef": "Place",
+              "description": "",
+              "columns": [
+                {
+                  "name": "relatedPlaceType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPlaceBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPlaceSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPlaceHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPlaceId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "Alarm_FVO",
+        "required": [
+          "@type",
+          "alarmType",
+          "perceivedSeverity",
+          "probableCause",
+          "alarmedObject",
+          "sourceSystemId",
+          "state",
+          "alarmRaisedTime"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "externalAlarmId",
+          "state",
+          "alarmType",
+          "perceivedSeverity",
+          "probableCause",
+          "specificProblem",
+          "alarmedObjectType",
+          "alarmedObject",
+          "reportingSystemId",
+          "sourceSystemId",
+          "alarmDetails",
+          "alarmRaisedTime",
+          "alarmChangedTime",
+          "alarmClearedTime",
+          "alarmReportingTime",
+          "ackState",
+          "ackSystemId",
+          "ackUserId",
+          "affectedService",
+          "alarmEscalation",
+          "clearSystemId",
+          "clearUserId",
+          "comment",
+          "correlatedAlarm",
+          "crossedThresholdInformation",
+          "isRootCause",
+          "parentAlarm",
+          "plannedOutageIndicator",
+          "proposedRepairedActions",
+          "serviceAffecting",
+          "place"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "Alarm_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "externalAlarmId",
+          "state",
+          "alarmType",
+          "perceivedSeverity",
+          "probableCause",
+          "specificProblem",
+          "alarmedObjectType",
+          "alarmedObject",
+          "reportingSystemId",
+          "alarmDetails",
+          "alarmChangedTime",
+          "alarmClearedTime",
+          "alarmReportingTime",
+          "ackState",
+          "ackSystemId",
+          "ackUserId",
+          "affectedService",
+          "alarmEscalation",
+          "clearSystemId",
+          "clearUserId",
+          "comment",
+          "correlatedAlarm",
+          "crossedThresholdInformation",
+          "isRootCause",
+          "parentAlarm",
+          "plannedOutageIndicator",
+          "proposedRepairedActions",
+          "serviceAffecting",
+          "place"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "Alarm_create_example_01",
+          "value": {
+            "externalAlarmId": "5551212",
+            "state": "raised",
+            "@type": "Alarm",
+            "alarmType": "environmentalAlarm",
+            "perceivedSeverity": "minor",
+            "probableCause": "rectifierLowVoltage",
+            "specificProblem": "ps=3,sl=1,in=8",
+            "alarmedObjectType": "NePowerSupply",
+            "alarmedObject": {
+              "@type": "AlarmedObjectRef",
+              "@referredType": "Resource",
+              "id": "93051825",
+              "href": "/resourceInventoryManagement/v5/resource/93051825"
+            },
+            "sourceSystemId": "ems-1",
+            "alarmDetails": "voltage=204",
+            "alarmRaisedTime": "2019-07-03T03:32:17.235Z",
+            "alarmReportingTime": "2019-07-03T03:32:17.552Z"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listAlarm",
+          "summary": "List or find Alarm objects",
+          "description": "List or find Alarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createAlarm",
+          "summary": "Creates a Alarm",
+          "description": "This operation creates a Alarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveAlarm",
+          "summary": "Retrieves a Alarm by ID",
+          "description": "This operation retrieves a Alarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchAlarm",
+          "summary": "Updates partially a Alarm",
+          "description": "This operation updates partially a Alarm entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteAlarm",
+          "summary": "Deletes a Alarm",
+          "description": "This operation deletes a Alarm entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/alarm",
+        "item": "/alarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "alarmAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "ALARM_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "alarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "ALARM_CREATE"
+        },
+        {
+          "eventName": "alarmDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "ALARM_DELETE"
+        },
+        {
+          "eventName": "alarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "ALARM_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "ClearAlarm",
+      "specName": "ClearAlarm",
+      "camelName": "clearAlarm",
+      "kebabName": "clear-alarm",
+      "tableName": "clear_alarm",
+      "pathSegment": "clearAlarm",
+      "pathKey": "clearAlarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "terminatedWithError",
+            "inProgress",
+            "done",
+            "cancel",
+            "canceled"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Current state of the operation task"
+        },
+        {
+          "kind": "scalar",
+          "name": "clearSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the clearing system"
+        },
+        {
+          "kind": "scalar",
+          "name": "clearUserId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the clearing user"
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmClearedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Time of the alarm clearing"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "ClearAlarmAlarmPattern"
+          ],
+          "refLike": false,
+          "propertyName": "alarmPattern",
+          "itemRef": "AlarmRefOrValue",
+          "description": "Alarm patterns to match target alarms. An alarm will match if all of the sttributes in any of the patterns compare equal to those attributes of the alarm.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "ClearAlarmClearedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "clearedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "The successfully cleared alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "ClearAlarm_FVO",
+        "required": [
+          "@type",
+          "clearSystemId",
+          "clearUserId",
+          "alarmClearedTime",
+          "alarmPattern"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "state",
+          "clearSystemId",
+          "clearUserId",
+          "alarmClearedTime",
+          "alarmPattern",
+          "clearedAlarm"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "ClearAlarm_create_example",
+          "value": {
+            "@type": "ClearAlarm",
+            "clearSystemId": "ems-1",
+            "clearUserId": "bob@example.net",
+            "alarmClearedTime": "2019-07-03T03:55:45.937Z",
+            "alarmPattern": [
+              {
+                "@type": "AlarmRef",
+                "id": "8675309"
+              },
+              {
+                "@type": "AlarmRef",
+                "id": "8675399"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listClearAlarm",
+          "summary": "List or find ClearAlarm objects",
+          "description": "List or find ClearAlarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createClearAlarm",
+          "summary": "Creates a ClearAlarm",
+          "description": "This operation creates a ClearAlarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveClearAlarm",
+          "summary": "Retrieves a ClearAlarm by ID",
+          "description": "This operation retrieves a ClearAlarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/clearAlarm",
+        "item": "/clearAlarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "clearAlarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "CLEAR_ALARM_CREATE"
+        },
+        {
+          "eventName": "clearAlarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "CLEAR_ALARM_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "CommentAlarm",
+      "specName": "CommentAlarm",
+      "camelName": "commentAlarm",
+      "kebabName": "comment-alarm",
+      "tableName": "comment_alarm",
+      "pathSegment": "commentAlarm",
+      "pathKey": "commentAlarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "terminatedWithError",
+            "inProgress",
+            "done",
+            "cancel",
+            "canceled"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Current state of the operation task"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "comment",
+          "targetRef": "Comment",
+          "description": "",
+          "columns": [
+            {
+              "name": "commentType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "commentBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "commentSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "commentUserId",
+              "sourceProp": "userId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "commentSystemId",
+              "sourceProp": "systemId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "commentTime",
+              "sourceProp": "time",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "commentComment",
+              "sourceProp": "comment",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "CommentAlarmAlarmPattern"
+          ],
+          "refLike": false,
+          "propertyName": "alarmPattern",
+          "itemRef": "AlarmRefOrValue",
+          "description": "Alarm patterns to match target alarms. An alarm will match if all of the sttributes in any of the patterns compare equal to those attributes of the alarm.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "CommentAlarmCommentedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "commentedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "The successfully commented alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "CommentAlarm_FVO",
+        "required": [
+          "@type",
+          "comment",
+          "alarmPattern"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "state",
+          "comment",
+          "alarmPattern",
+          "commentedAlarm"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CommentAlarm_create_example",
+          "value": {
+            "@type": "CommentAlarm",
+            "comment": {
+              "@type": "Comment",
+              "userId": "bob@example.net",
+              "systemId": "ems-1",
+              "time": "2019-07-03T03:37:33.827Z",
+              "comment": "Dispatched"
+            },
+            "alarmPattern": [
+              {
+                "@type": "Alarm",
+                "id": "8675309"
+              },
+              {
+                "@type": "Alarm",
+                "id": "8675399"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listCommentAlarm",
+          "summary": "List or find CommentAlarm objects",
+          "description": "List or find CommentAlarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createCommentAlarm",
+          "summary": "Creates a CommentAlarm",
+          "description": "This operation creates a CommentAlarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveCommentAlarm",
+          "summary": "Retrieves a CommentAlarm by ID",
+          "description": "This operation retrieves a CommentAlarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/commentAlarm",
+        "item": "/commentAlarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "commentAlarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "COMMENT_ALARM_CREATE"
+        },
+        {
+          "eventName": "commentAlarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "COMMENT_ALARM_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "GroupAlarm",
+      "specName": "GroupAlarm",
+      "camelName": "groupAlarm",
+      "kebabName": "group-alarm",
+      "tableName": "group_alarm",
+      "pathSegment": "groupAlarm",
+      "pathKey": "groupAlarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "terminatedWithError",
+            "inProgress",
+            "done",
+            "cancel",
+            "canceled"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Current state of the operation task"
+        },
+        {
+          "kind": "scalar",
+          "name": "sourceSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Source system identifier"
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmChangedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Time of the correlation"
+        },
+        {
+          "kind": "json",
+          "name": "parentAlarm",
+          "tsType": "Record<string, any>",
+          "column": {
+            "type": "simple-json"
+          },
+          "nullable": true,
+          "reason": "object with no scalar props"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "GroupAlarmCorrelatedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "correlatedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "Correlated alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "GroupAlarmGroupedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "groupedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "The successfully correlated alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "GroupAlarm_FVO",
+        "required": [
+          "@type",
+          "sourceSystemId",
+          "alarmChangedTime",
+          "parentAlarm",
+          "correlatedAlarm"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "state",
+          "sourceSystemId",
+          "alarmChangedTime",
+          "parentAlarm",
+          "correlatedAlarm",
+          "groupedAlarm"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "GroupAlarm_create_example",
+          "value": {
+            "@type": "GroupAlarm",
+            "sourceSystemId": "ems-1",
+            "alarmChangedTime": "2019-07-03T03:32:52.744Z",
+            "parentAlarm": {
+              "@type": "AlarmRef",
+              "id": "8675309"
+            },
+            "correlatedAlarm": [
+              {
+                "@type": "AlarmRef",
+                "id": "8675399"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listGroupAlarm",
+          "summary": "List or find GroupAlarm objects",
+          "description": "List or find GroupAlarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createGroupAlarm",
+          "summary": "Creates a GroupAlarm",
+          "description": "This operation creates a GroupAlarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveGroupAlarm",
+          "summary": "Retrieves a GroupAlarm by ID",
+          "description": "This operation retrieves a GroupAlarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/groupAlarm",
+        "item": "/groupAlarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "groupAlarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "GROUP_ALARM_CREATE"
+        },
+        {
+          "eventName": "groupAlarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "GROUP_ALARM_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "UnAckAlarm",
+      "specName": "UnAckAlarm",
+      "camelName": "unAckAlarm",
+      "kebabName": "un-ack-alarm",
+      "tableName": "un_ack_alarm",
+      "pathSegment": "unAckAlarm",
+      "pathKey": "unAckAlarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "terminatedWithError",
+            "inProgress",
+            "done",
+            "cancel",
+            "canceled"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Current state of the operation task"
+        },
+        {
+          "kind": "scalar",
+          "name": "ackSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the unacknowledging system"
+        },
+        {
+          "kind": "scalar",
+          "name": "ackUserId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the unacknowledging user"
+        },
+        {
+          "kind": "scalar",
+          "name": "ackTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Time of the unacknowledgement"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "UnAckAlarmAlarmPattern"
+          ],
+          "refLike": false,
+          "propertyName": "alarmPattern",
+          "itemRef": "AlarmRefOrValue",
+          "description": "Alarm patterns to match target alarms. An alarm will match if all of the sttributes in any of the patterns compare equal to those attributes of the alarm.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "UnAckAlarmUnAckedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "unAckedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "The successfully unacknowledged alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "UnAckAlarm_FVO",
+        "required": [
+          "@type",
+          "ackSystemId",
+          "ackUserId",
+          "alarmPattern"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "state",
+          "ackSystemId",
+          "ackUserId",
+          "ackTime",
+          "alarmPattern",
+          "unAckedAlarm"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "UnAckAlarm_create_example",
+          "value": {
+            "@type": "UnAckAlarm",
+            "ackSystemId": "ems-1",
+            "ackUserId": "bob@example.net",
+            "ackTime": "2019-07-03T03:38:06.890Z",
+            "alarmPattern": [
+              {
+                "@type": "AlarmRef",
+                "id": "8675309"
+              },
+              {
+                "@type": "AlarmRef",
+                "id": "8675399"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listUnAckAlarm",
+          "summary": "List or find UnAckAlarm objects",
+          "description": "List or find UnAckAlarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createUnAckAlarm",
+          "summary": "Creates a UnAckAlarm",
+          "description": "This operation creates a UnAckAlarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveUnAckAlarm",
+          "summary": "Retrieves a UnAckAlarm by ID",
+          "description": "This operation retrieves a UnAckAlarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/unAckAlarm",
+        "item": "/unAckAlarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "unAckAlarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "UN_ACK_ALARM_CREATE"
+        },
+        {
+          "eventName": "unAckAlarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "UN_ACK_ALARM_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "UnGroupAlarm",
+      "specName": "UnGroupAlarm",
+      "camelName": "unGroupAlarm",
+      "kebabName": "un-group-alarm",
+      "tableName": "un_group_alarm",
+      "pathSegment": "unGroupAlarm",
+      "pathKey": "unGroupAlarm",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "terminatedWithError",
+            "inProgress",
+            "done",
+            "cancel",
+            "canceled"
+          ],
+          "enumRef": null,
+          "nullable": true,
+          "description": "Current state of the operation task"
+        },
+        {
+          "kind": "scalar",
+          "name": "sourceSystemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Source system identifier"
+        },
+        {
+          "kind": "scalar",
+          "name": "alarmChangedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Time of the uncorrelation"
+        },
+        {
+          "kind": "json",
+          "name": "parentAlarm",
+          "tsType": "Record<string, any>",
+          "column": {
+            "type": "simple-json"
+          },
+          "nullable": true,
+          "reason": "object with no scalar props"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "UnGroupAlarmCorrelatedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "correlatedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "Correlated alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "AlarmRefOrValue",
+          "tableName": "alarm_ref_or_value",
+          "nameCandidates": [
+            "AlarmRefOrValue",
+            "UnGroupAlarmUnGroupedAlarm"
+          ],
+          "refLike": false,
+          "propertyName": "unGroupedAlarm",
+          "itemRef": "AlarmRefOrValue",
+          "description": "The successfully uncorrelated alarms",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "UnGroupAlarm_FVO",
+        "required": [
+          "@type",
+          "sourceSystemId",
+          "alarmChangedTime",
+          "parentAlarm",
+          "correlatedAlarm"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "state",
+          "sourceSystemId",
+          "alarmChangedTime",
+          "parentAlarm",
+          "correlatedAlarm",
+          "unGroupedAlarm"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "UnGroupAlarm_create_example",
+          "value": {
+            "@type": "UnGroupAlarm",
+            "sourceSystemId": "ems-1",
+            "alarmChangedTime": "2019-07-03T03:42:12.861Z",
+            "parentAlarm": {
+              "@type": "Alarm",
+              "id": "8675309"
+            },
+            "correlatedAlarm": [
+              {
+                "@type": "Alarm",
+                "id": "8675399"
+              },
+              {
+                "@type": "Alarm",
+                "id": "8675399"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listUnGroupAlarm",
+          "summary": "List or find UnGroupAlarm objects",
+          "description": "List or find UnGroupAlarm objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createUnGroupAlarm",
+          "summary": "Creates a UnGroupAlarm",
+          "description": "This operation creates a UnGroupAlarm entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveUnGroupAlarm",
+          "summary": "Retrieves a UnGroupAlarm by ID",
+          "description": "This operation retrieves a UnGroupAlarm entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/unGroupAlarm",
+        "item": "/unGroupAlarm/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "unGroupAlarmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "UN_GROUP_ALARM_CREATE"
+        },
+        {
+          "eventName": "unGroupAlarmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "UN_GROUP_ALARM_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/ackAlarmCreateEvent",
+      "eventName": "ackAlarmCreateEvent",
+      "resource": "AckAlarm",
+      "eventKind": "Create",
+      "operationId": "ackAlarmCreateEvent"
+    },
+    {
+      "path": "/listener/ackAlarmStateChangeEvent",
+      "eventName": "ackAlarmStateChangeEvent",
+      "resource": "AckAlarm",
+      "eventKind": "StateChange",
+      "operationId": "ackAlarmStateChangeEvent"
+    },
+    {
+      "path": "/listener/alarmAttributeValueChangeEvent",
+      "eventName": "alarmAttributeValueChangeEvent",
+      "resource": "Alarm",
+      "eventKind": "AttributeValueChange",
+      "operationId": "alarmAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/alarmCreateEvent",
+      "eventName": "alarmCreateEvent",
+      "resource": "Alarm",
+      "eventKind": "Create",
+      "operationId": "alarmCreateEvent"
+    },
+    {
+      "path": "/listener/alarmDeleteEvent",
+      "eventName": "alarmDeleteEvent",
+      "resource": "Alarm",
+      "eventKind": "Delete",
+      "operationId": "alarmDeleteEvent"
+    },
+    {
+      "path": "/listener/alarmStateChangeEvent",
+      "eventName": "alarmStateChangeEvent",
+      "resource": "Alarm",
+      "eventKind": "StateChange",
+      "operationId": "alarmStateChangeEvent"
+    },
+    {
+      "path": "/listener/clearAlarmCreateEvent",
+      "eventName": "clearAlarmCreateEvent",
+      "resource": "ClearAlarm",
+      "eventKind": "Create",
+      "operationId": "clearAlarmCreateEvent"
+    },
+    {
+      "path": "/listener/clearAlarmStateChangeEvent",
+      "eventName": "clearAlarmStateChangeEvent",
+      "resource": "ClearAlarm",
+      "eventKind": "StateChange",
+      "operationId": "clearAlarmStateChangeEvent"
+    },
+    {
+      "path": "/listener/commentAlarmCreateEvent",
+      "eventName": "commentAlarmCreateEvent",
+      "resource": "CommentAlarm",
+      "eventKind": "Create",
+      "operationId": "commentAlarmCreateEvent"
+    },
+    {
+      "path": "/listener/commentAlarmStateChangeEvent",
+      "eventName": "commentAlarmStateChangeEvent",
+      "resource": "CommentAlarm",
+      "eventKind": "StateChange",
+      "operationId": "commentAlarmStateChangeEvent"
+    },
+    {
+      "path": "/listener/groupAlarmCreateEvent",
+      "eventName": "groupAlarmCreateEvent",
+      "resource": "GroupAlarm",
+      "eventKind": "Create",
+      "operationId": "groupAlarmCreateEvent"
+    },
+    {
+      "path": "/listener/groupAlarmStateChangeEvent",
+      "eventName": "groupAlarmStateChangeEvent",
+      "resource": "GroupAlarm",
+      "eventKind": "StateChange",
+      "operationId": "groupAlarmStateChangeEvent"
+    },
+    {
+      "path": "/listener/unAckAlarmCreateEvent",
+      "eventName": "unAckAlarmCreateEvent",
+      "resource": "UnAckAlarm",
+      "eventKind": "Create",
+      "operationId": "unAckAlarmCreateEvent"
+    },
+    {
+      "path": "/listener/unAckAlarmStateChangeEvent",
+      "eventName": "unAckAlarmStateChangeEvent",
+      "resource": "UnAckAlarm",
+      "eventKind": "StateChange",
+      "operationId": "unAckAlarmStateChangeEvent"
+    },
+    {
+      "path": "/listener/unGroupAlarmCreateEvent",
+      "eventName": "unGroupAlarmCreateEvent",
+      "resource": "UnGroupAlarm",
+      "eventKind": "Create",
+      "operationId": "unGroupAlarmCreateEvent"
+    },
+    {
+      "path": "/listener/unGroupAlarmStateChangeEvent",
+      "eventName": "unGroupAlarmStateChangeEvent",
+      "resource": "UnGroupAlarm",
+      "eventKind": "StateChange",
+      "operationId": "unGroupAlarmStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No AckAlarm_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "AckAlarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "AckAlarm spec declares no update/delete operation; those routes are NOT emitted.",
+    "Alarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "No ClearAlarm_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "ClearAlarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "ClearAlarm spec declares no update/delete operation; those routes are NOT emitted.",
+    "No CommentAlarm_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "CommentAlarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "CommentAlarm spec declares no update/delete operation; those routes are NOT emitted.",
+    "No GroupAlarm_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "GroupAlarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "GroupAlarm spec declares no update/delete operation; those routes are NOT emitted.",
+    "No UnAckAlarm_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "UnAckAlarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "UnAckAlarm spec declares no update/delete operation; those routes are NOT emitted.",
+    "No UnGroupAlarm_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "UnGroupAlarm has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "UnGroupAlarm spec declares no update/delete operation; those routes are NOT emitted."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "geographic-address-management",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @geographic-address-management/backend start:dev",
+    "build": "yarn workspace @geographic-address-management/backend build",
+    "start": "yarn workspace @geographic-address-management/backend start",
+    "start:prod": "yarn workspace @geographic-address-management/backend start:prod",
+    "lint": "yarn workspace @geographic-address-management/backend lint"
+  }
+}

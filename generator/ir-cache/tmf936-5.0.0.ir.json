@@ -1,0 +1,2162 @@
+{
+  "meta": {
+    "tmfNumber": "936",
+    "specTitle": "Open Gateway Operate API - Product Catalog",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/openGatewayOperateApiProductCatalog/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF936_BASE_PATH",
+    "eventExchange": "openGatewayOperateApiProductCatalog.events",
+    "eventExchangeConstant": "TMF936_EVENT_EXCHANGE",
+    "eventTypeEnum": "OpenGatewayOperateApiProductCatalogEventType",
+    "serviceNameSuggestion": "open-gateway-operate-api-product-catalog-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf936/5.0.0/openapi/TMF936-Open_Gateway_Operate_API_-_Product_Catalog-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "OpenGatewayProductOffering",
+      "camelName": "openGatewayProductOffering",
+      "kebabName": "open-gateway-product-offering",
+      "tableName": "open_gateway_product_offering",
+      "pathSegment": "productOffering",
+      "pathKey": "productOffering",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "DcsProductOffering",
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the productOffering"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the productOffering"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update"
+        },
+        {
+          "kind": "scalar",
+          "name": "lifecycleStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "inTest",
+            "active",
+            "launched",
+            "retired",
+            "obsolete"
+          ],
+          "enumRef": "OpenGatewayProductOfferingLifecycleStatusType",
+          "nullable": true,
+          "description": "Used to indicate the ProductOffering lifecycleStatus with limited enum values for Open Gateway context."
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Version of the ProductOffering. Version SHOULD use the semantic versioning X.Y.Z version format where X identifies a major version, Y is the minor version and Z a fix."
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "productSpecification",
+          "targetResource": "OpenGatewayProductSpecification",
+          "targetTable": "open_gateway_product_specification",
+          "relation": "many-to-one",
+          "joinColumn": "product_specification_id",
+          "required": false,
+          "description": "",
+          "projectedProps": [
+            "@type",
+            "@baseType",
+            "@schemaLocation",
+            "href",
+            "id",
+            "name",
+            "@referredType",
+            "version"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "DcsCategoryRef",
+          "tableName": "dcs_category_ref",
+          "nameCandidates": [
+            "DcsCategoryRef",
+            "OpenGatewayProductOfferingCategoryRef"
+          ],
+          "refLike": true,
+          "propertyName": "category",
+          "itemRef": "DcsCategoryRef",
+          "description": "NOT USED YET IN OPEN GATEWAY CONTEXT.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "OpenGatewayProductOfferingPrice",
+          "tableName": "open_gateway_product_offering_price",
+          "nameCandidates": [
+            "OpenGatewayProductOfferingPrice",
+            "OpenGatewayProductOfferingProductOfferingPrice"
+          ],
+          "refLike": false,
+          "propertyName": "productOfferingPrice",
+          "itemRef": "OpenGatewayProductOfferingPrice",
+          "description": "An amount, usually of money, that is asked for or allowed when a ProductOffering is bought, rented, or leased. The price is valid for a defined period of time and may not represent the actual price paid by a customer.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the productOfferingPrice"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Description of the productOfferingPrice"
+            },
+            {
+              "kind": "scalar",
+              "name": "lastUpdate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the last update time of this ProductOfferingPrice"
+            },
+            {
+              "kind": "scalar",
+              "name": "lifecycleStatus",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "inTest",
+                "active",
+                "retired",
+                "obsolete"
+              ],
+              "enumRef": "OpenGatewayProductOfferingPriceLifecycleStatus",
+              "nullable": true,
+              "description": "Used to indicate the current ProductOfferingPrice lifecyclestatus with limited enum values for Open Gateway context."
+            },
+            {
+              "kind": "scalar",
+              "name": "priceType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "composite"
+              ],
+              "enumRef": "OpenGatewayProductOfferingPriceType",
+              "nullable": true,
+              "description": "Used to indicate the ProductOfferingPrice priceType with limited enum values for Open Gateway context. Kept for base schema ProductOfferingPrice backward compatibility reason."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "OpenGatewayAllowedProductAction",
+          "tableName": "open_gateway_allowed_product_action",
+          "nameCandidates": [
+            "OpenGatewayAllowedProductAction",
+            "OpenGatewayProductOfferingAllowedAction"
+          ],
+          "refLike": false,
+          "propertyName": "allowedAction",
+          "itemRef": "OpenGatewayAllowedProductAction",
+          "description": "List of actions that can be executed (in context of a product order) on products instantiated from this offering",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "action",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "add",
+                "delete"
+              ],
+              "enumRef": "OpenGatewayAllowedProductActionType",
+              "nullable": true,
+              "description": "Used to indicate the AllowedProductAction action with limited enum values for Open Gateway context."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "atTargetProductOrderItemSchema",
+              "targetRef": "TargetProductOrderItemSchema",
+              "description": "",
+              "columns": [
+                {
+                  "name": "targetProductOrderItemSchemaType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "targetProductOrderItemSchemaSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "OpenGatewayProductOfferingTermOrConditionSpecification",
+          "tableName": "open_gateway_product_offering_term_or_condition_specification",
+          "nameCandidates": [
+            "OpenGatewayProductOfferingTermOrConditionSpecification",
+            "OpenGatewayProductOfferingProductOfferingTermOrConditionSpecification"
+          ],
+          "refLike": false,
+          "propertyName": "productOfferingTermOrConditionSpecification",
+          "itemRef": "OpenGatewayProductOfferingTermOrConditionSpecification",
+          "description": "List of ProductOfferingTermOrConditionSpecification applicable for the ProductOffering.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the productOfferingTermOrConditionSpecification"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative that explains in detail what the productOfferingTermOrConditionSpecification is"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "attachment",
+              "targetRef": "OpenGatewayFileAttachment",
+              "description": "",
+              "columns": [
+                {
+                  "name": "attachmentType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "attachmentBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "attachmentSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "attachmentMimeType",
+                  "sourceProp": "mimeType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "attachmentContent",
+                  "sourceProp": "content",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "BundledProductOffering",
+          "tableName": "bundled_product_offering",
+          "nameCandidates": [
+            "BundledProductOffering",
+            "OpenGatewayProductOfferingBundledProductOffering"
+          ],
+          "refLike": true,
+          "propertyName": "bundledProductOffering",
+          "itemRef": "BundledProductOffering",
+          "description": "A type of ProductOffering that belongs to a grouping of ProductOfferings made available to the market. It inherits of all attributes of ProductOffering.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "version",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Version of the product offering"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "bundledProductOfferingOption",
+              "targetRef": "BundledProductOfferingOption",
+              "description": "",
+              "columns": [
+                {
+                  "name": "bundledProductOfferingOptionType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "bundledProductOfferingOptionBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "bundledProductOfferingOptionSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "bundledProductOfferingOptionNumberRelOfferDefault",
+                  "sourceProp": "numberRelOfferDefault",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "bundledProductOfferingOptionNumberRelOfferLowerLimit",
+                  "sourceProp": "numberRelOfferLowerLimit",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "bundledProductOfferingOptionNumberRelOfferUpperLimit",
+                  "sourceProp": "numberRelOfferUpperLimit",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "OpenGatewayAttachment",
+          "tableName": "open_gateway_attachment",
+          "nameCandidates": [
+            "OpenGatewayAttachment",
+            "OpenGatewayProductOfferingAttachment"
+          ],
+          "refLike": false,
+          "propertyName": "attachment",
+          "itemRef": "OpenGatewayAttachment",
+          "description": "This attribute can be used to attach additional documentation for the productOffering, like marketing documentation ...",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "termsAndConditions",
+                "developerDocumentation"
+              ],
+              "enumRef": "OpenGatewayAttachmentType",
+              "nullable": true,
+              "description": "Used to indicate the Attachment attachmentType with limited enum values for Open Gateway context."
+            },
+            {
+              "kind": "scalar",
+              "name": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "a technical characterization of the attachment content format using IETF Mime Types"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": true
+      },
+      "seedExamples": [
+        {
+          "label": "GET item: Retrieve_a_standalone_productOffering",
+          "value": {
+            "id": "5e9b10e5-d707-4a16-89d1-687c7f0bf81a",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/5e9b10e5-d707-4a16-89d1-687c7f0bf81a",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Open Gateway Location Verification bundle offer",
+            "description": "Location Verification bundle offer. Includes Location Verification CAMARA API for antifraud purpose and a bucket of 10000 API calls for verify location usage, recurring monthly, usage non blocked when bucket is empty.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "OpenGatewayProductOrderItemAdd",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/OpenGatewayProductOrderItemAdd.schema.json#/definitions/OpenGatewayProductOrderItemAdd"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "bundledProductOffering": [
+              {
+                "@type": "BundledProductOffering",
+                "bundledProductOfferingOption": {
+                  "@type": "BundledProductOfferingOption",
+                  "numberRelOfferDefault": 1,
+                  "numberRelOfferLowerLimit": 1,
+                  "numberRelOfferUpperLimit": 1
+                },
+                "id": "ab7792f8-6628-4c4b-a557-699adc26d4ce",
+                "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/ab7792f8-6628-4c4b-a557-699adc26d4ce",
+                "@referredType": "OpenGatewayProductOffering",
+                "version": "1.0.0"
+              },
+              {
+                "@type": "BundledProductOffering",
+                "bundledProductOfferingOption": {
+                  "@type": "BundledProductOfferingOption",
+                  "numberRelOfferDefault": 1,
+                  "numberRelOfferLowerLimit": 1,
+                  "numberRelOfferUpperLimit": 1
+                },
+                "id": "0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+                "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+                "@referredType": "OpenGatewayProductOffering",
+                "version": "1.0.0"
+              }
+            ],
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "5e9b10e5-d707-4a16-89d1-687c7f0bf81a_terms_1",
+                "name": "Open Gateway Location Verification bundle Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "cvUGFnZXMg...2l0ZUlkKD==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ],
+            "productOfferingPrice": [
+              {
+                "id": "1",
+                "@type": "OpenGatewayProductOfferingPrice",
+                "lifecycleStatus": "active",
+                "name": "Bundle price for Location Verification",
+                "description": "One Time 3 EUR + recurring 10 EUR/month, including 100000 API calls monthly + 9 EUR per Verify Location API call usage when usage bucket is over until the bucket is refilled next month for FR, ES and GB. One Time 3 USD + recurring 10 USD/month, including 100000 API calls monthly + 9 USD per Verify Location API call usage for US.",
+                "lastUpdate": "2023-09-01T00:00:00Z",
+                "priceType": "composite"
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET item: Retrieve_a_bundle_productOffering",
+          "value": {
+            "id": "2d4ef4d3-08ce-441d-ac76-133b6dad0ccb",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/2d4ef4d3-08ce-441d-ac76-133b6dad0ccb",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Location Verification Antifraud CAMARA API Standalone",
+            "description": "Location Verification product offering standalone, for antifraud purpose, accessible with CAMARA API.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "ProductOrderItemAddLocationVerificationAntifraudStandalone",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/LocationVerificationAntifraudStandalone.schema.json#/definitions/ProductOrderItemAddLocationVerificationAntifraudStandalone"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "productSpecification": {
+              "@type": "OpenGatewayProductSpecificationRef",
+              "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "name": "Location Verification Antifraud CAMARA API",
+              "version": "1.0.0",
+              "@referredType": "ApiProductSpecification"
+            },
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "2d4ef4d3-08ce-441d-ac76-133b6dad0ccb_terms_1",
+                "name": "Location Verification Antifraud CAMARA API Standalone Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "JVBERi0xL...DQolJUVPRg==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ],
+            "productOfferingPrice": [
+              {
+                "id": "1",
+                "@type": "OpenGatewayProductOfferingPrice",
+                "lifecycleStatus": "active",
+                "name": "Location Verification Antifraud CAMARA API Standalone Usage Price",
+                "description": "Location Verification for Antifraud standalone product offering price. 8 EUR per API call for usage verify location for FR, ES and GB. 8 USD per API call for usage verify location for US.",
+                "lastUpdate": "2023-09-01T00:00:00Z",
+                "priceType": "composite"
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET item: Retrieve_a_bundled_productOffering_for_API",
+          "value": {
+            "id": "ab7792f8-6628-4c4b-a557-699adc26d4ce",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/ab7792f8-6628-4c4b-a557-699adc26d4ce",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Location Verification Antifraud CAMARA API Bundled",
+            "description": "Location Verification product offering bundled, for antifraud purpose, accessible with CAMARA API.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "ProductOrderItemAddLocationVerificationAntifraudBundled",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/ProductOrderItemAddLocationVerificationAntifraudBundled.schema.json#/definitions/ProductOrderItemAddLocationVerificationAntifraudBundled"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "productSpecification": {
+              "@type": "OpenGatewayProductSpecificationRef",
+              "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productSpecification/4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "name": "Location Verification Antifraud CAMARA API",
+              "version": "1.0.0",
+              "@referredType": "ApiProductSpecification"
+            },
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "ab7792f8-6628-4c4b-a557-699adc26d4ce_terms_1",
+                "name": "Location Verification Antifraud CAMARA API Standalone Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "JVBERi0xL...DQolJUVPRg==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET item: Retrieve_a_bundled_productOffering_for_usage_volume",
+          "value": {
+            "id": "0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Location Verification Verify Usage Volume Recurring Bundled",
+            "description": "Location Verification Usage Volume of 10000 API calls for verify location usage, included in a bucket, recurring monthly, usage non blocked when bucket is empty.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "OpenGatewayProductOrderItemAdd",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/OpenGatewayProductOrderItemAdd.schema.json#/definitions/OpenGatewayProductOrderItemAdd"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "productSpecification": {
+              "@type": "OpenGatewayProductSpecificationRef",
+              "id": "7407a0fd-9a01-47a2-b32a-1ab85bde3d32",
+              "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/7407a0fd-9a01-47a2-b32a-1ab85bde3d32",
+              "name": "Location Verification Verify Usage Volume",
+              "version": "1.0.0",
+              "@referredType": "UsageVolumeProductSpecification"
+            },
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "0a2782b7-81a7-4af9-9e4f-d51bc690ec2d_terms_1",
+                "name": "Location Verification Verify Usage Volume Recurring Bundled Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "LjcNCiW...vUGFnZXMg==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET list: List_all_productOffering_with_lifecycleStatus_launched[0]",
+          "value": {
+            "id": "0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Location Verification Verify Usage Volume Recurring Bundled",
+            "description": "Location Verification Usage Volume of 10000 API calls for verify location usage, included in a bucket, recurring monthly, usage non blocked when bucket is empty.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "OpenGatewayProductOrderItemAdd",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/OpenGatewayProductOrderItemAdd.schema.json#/definitions/OpenGatewayProductOrderItemAdd"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "productSpecification": {
+              "@type": "OpenGatewayProductSpecificationRef",
+              "id": "7407a0fd-9a01-47a2-b32a-1ab85bde3d32",
+              "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/7407a0fd-9a01-47a2-b32a-1ab85bde3d32",
+              "name": "Location Verification Verify Usage Volume",
+              "version": "1.0.0",
+              "@referredType": "UsageVolumeProductSpecification"
+            },
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "0a2782b7-81a7-4af9-9e4f-d51bc690ec2d_terms_1",
+                "name": "Location Verification Verify Usage Volume Recurring Bundled Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "LjcNCiW...vUGFnZXMg==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET list: List_all_productOffering_with_lifecycleStatus_launched[1]",
+          "value": {
+            "id": "2d4ef4d3-08ce-441d-ac76-133b6dad0ccb",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/2d4ef4d3-08ce-441d-ac76-133b6dad0ccb",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Location Verification Antifraud CAMARA API Standalone",
+            "description": "Location Verification product offering standalone, for antifraud purpose, accessible with CAMARA API.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "ProductOrderItemAddLocationVerificationAntifraudStandalone",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/LocationVerificationAntifraudStandalone.schema.json#/definitions/ProductOrderItemAddLocationVerificationAntifraudStandalone"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "productSpecification": {
+              "@type": "OpenGatewayProductSpecificationRef",
+              "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "name": "Location Verification Antifraud CAMARA API",
+              "version": "1.0.0",
+              "@referredType": "ApiProductSpecification"
+            },
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "2d4ef4d3-08ce-441d-ac76-133b6dad0ccb_terms_1",
+                "name": "Location Verification Antifraud CAMARA API Standalone Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "JVBERi0xL...DQolJUVPRg==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ],
+            "productOfferingPrice": [
+              {
+                "id": "1",
+                "@type": "OpenGatewayProductOfferingPrice",
+                "lifecycleStatus": "active",
+                "name": "Location Verification Antifraud CAMARA API Standalone Usage Price",
+                "description": "Location Verification for Antifraud standalone product offering price. 8 EUR per API call for usage verify for FR, ES and GB. 8 USD per API call for usage verify for US.",
+                "lastUpdate": "2023-09-01T00:00:00Z",
+                "priceType": "composite"
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET list: List_all_productOffering_with_lifecycleStatus_launched[2]",
+          "value": {
+            "id": "5e9b10e5-d707-4a16-89d1-687c7f0bf81a",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/5e9b10e5-d707-4a16-89d1-687c7f0bf81a",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Open Gateway Location Verification bundle offer",
+            "description": "Location Verification bundle offer. Includes Location Verification CAMARA API for antifraud purpose and a bucket of 10000 API calls for verify location usage, recurring monthly, usage non blocked when bucket is empty.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "OpenGatewayProductOrderItemAdd",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/OpenGatewayProductOrderItemAdd.schema.json#/definitions/OpenGatewayProductOrderItemAdd"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Customer/DCS/GSMAOperateAPI/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "bundledProductOffering": [
+              {
+                "@type": "BundledProductOffering",
+                "bundledProductOfferingOption": {
+                  "@type": "BundledProductOfferingOption",
+                  "numberRelOfferDefault": 1,
+                  "numberRelOfferLowerLimit": 1,
+                  "numberRelOfferUpperLimit": 1
+                },
+                "id": "ab7792f8-6628-4c4b-a557-699adc26d4ce",
+                "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/ab7792f8-6628-4c4b-a557-699adc26d4ce",
+                "@referredType": "OpenGatewayProductOffering",
+                "version": "1.0.0"
+              },
+              {
+                "@type": "BundledProductOffering",
+                "bundledProductOfferingOption": {
+                  "@type": "BundledProductOfferingOption",
+                  "numberRelOfferDefault": 1,
+                  "numberRelOfferLowerLimit": 1,
+                  "numberRelOfferUpperLimit": 1
+                },
+                "id": "0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+                "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/0a2782b7-81a7-4af9-9e4f-d51bc690ec2d",
+                "@referredType": "OpenGatewayProductOffering",
+                "version": "1.0.0"
+              }
+            ],
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "5e9b10e5-d707-4a16-89d1-687c7f0bf81a_terms_1",
+                "name": "Open Gateway Location Verification bundle Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "cvUGFnZXMg...2l0ZUlkKD==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ],
+            "productOfferingPrice": [
+              {
+                "id": "1",
+                "@type": "OpenGatewayProductOfferingPrice",
+                "lifecycleStatus": "active",
+                "name": "Bundle price for Location Verification",
+                "description": "One Time 3 EUR + recurring 10 EUR/month, including 100000 API calls monthly + 9 EUR per Verify Location API call usage when usage bucket is over until the bucket is refilled next month for FR, ES and GB. One Time 3 USD + recurring 10 USD/month, including 100000 API calls monthly + 9 USD per Verify Location API call usage for US.",
+                "lastUpdate": "2023-09-01T00:00:00Z",
+                "priceType": "composite"
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET list: List_all_productOffering_with_lifecycleStatus_launched[3]",
+          "value": {
+            "id": "ab7792f8-6628-4c4b-a557-699adc26d4ce",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/productOffering/ab7792f8-6628-4c4b-a557-699adc26d4ce",
+            "@type": "OpenGatewayProductOffering",
+            "@baseType": "DcsProductOffering",
+            "lifecycleStatus": "launched",
+            "version": "1.0.0",
+            "name": "Location Verification Antifraud CAMARA API Bundled",
+            "description": "Location Verification product offering bundled, for antifraud purpose, accessible with CAMARA API.",
+            "lastUpdate": "2023-07-01T00:00:00Z",
+            "allowedAction": [
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "1",
+                "action": "add",
+                "@targetProductOrderItemSchema": {
+                  "@type": "ProductOrderItemAddLocationVerificationAntifraudBundled",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/ProductOrderItemAddLocationVerificationAntifraudBundled.schema.json#/definitions/ProductOrderItemAddLocationVerificationAntifraudBundled"
+                }
+              },
+              {
+                "@type": "OpenGatewayAllowedProductAction",
+                "id": "2",
+                "action": "delete",
+                "@targetProductOrderItemSchema": {
+                  "@type": "DcsProductOrderItemDelete",
+                  "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/DcsProductOrderItemDelete.schema.json#/definitions/DcsProductOrderItemDelete"
+                }
+              }
+            ],
+            "productSpecification": {
+              "@type": "OpenGatewayProductSpecificationRef",
+              "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/4b6591ef-5ede-4885-9543-0c5e9070ade9",
+              "name": "Location Verification Antifraud CAMARA API",
+              "version": "1.0.0",
+              "@referredType": "ApiProductSpecification"
+            },
+            "productOfferingTermOrConditionSpecification": [
+              {
+                "@type": "OpenGatewayProductOfferingTermOrConditionSpecification",
+                "id": "ab7792f8-6628-4c4b-a557-699adc26d4ce_terms_1",
+                "name": "Location Verification Antifraud CAMARA API Standalone Product Offering Terms and Conditions for ApplicationOwner",
+                "description": "Terms and conditions to be approved by ApplicationOwner at the order.",
+                "attachment": {
+                  "@type": "OpenGatewayFileAttachment",
+                  "content": "JVBERi0xL...DQolJUVPRg==",
+                  "mimeType": "application/pdf",
+                  "attachmentType": "termsAndConditions"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listProductOffering",
+          "summary": "List or find productOffering objects",
+          "description": "List or find productOffering objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "before",
+              "in": "query",
+              "description": "An opaque string value representing the page results before the cursor value",
+              "required": false
+            },
+            {
+              "name": "after",
+              "in": "query",
+              "description": "An opaque string value representing the page results after the cursor value",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "in": "query",
+              "description": "The default direction is Ascending order, the use of the modifier in front of the sort field name, “-“, changes the sort order direction.",
+              "required": false
+            },
+            {
+              "name": "filter",
+              "in": "query",
+              "description": "Filter a collection using JSONPath",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveProductOffering",
+          "summary": "Retrieves a productOffering by ID",
+          "description": "This operation retrieves a productOffering entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/productOffering",
+        "item": "/productOffering/{id}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "OpenGatewayProductSpecification",
+      "camelName": "openGatewayProductSpecification",
+      "kebabName": "open-gateway-product-specification",
+      "tableName": "open_gateway_product_specification",
+      "pathSegment": "productSpecification",
+      "pathKey": "productSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "DcsProductSpecification",
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Name of the productSpecification"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the productSpecification"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time of the last update"
+        },
+        {
+          "kind": "scalar",
+          "name": "lifecycleStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "inTest",
+            "active",
+            "retired",
+            "obsolete"
+          ],
+          "enumRef": "OpenGatewayProductSpecificationLifecycleStatus",
+          "nullable": true,
+          "description": "Used to indicate the current ProductSpecification lifecycleStatus with limited enum values for Open Gateway context."
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Version of the ProductSpecification. Version SHOULD use the semantic versioning X.Y.Z version format where X identifies a major version, Y is the minor version and Z a fix."
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "targetProductSchema",
+          "targetRef": "TargetProductSchema",
+          "description": "",
+          "columns": [
+            {
+              "name": "targetProductSchemaType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "targetProductSchemaSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "DcsCategoryRef",
+          "tableName": "dcs_category_ref",
+          "nameCandidates": [
+            "DcsCategoryRef",
+            "OpenGatewayProductSpecificationCategoryRef"
+          ],
+          "refLike": true,
+          "propertyName": "category",
+          "itemRef": "DcsCategoryRef",
+          "description": "NOT USED YET IN OPEN GATEWAY CONTEXT.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "OpenGatewayProductSpecificationRelationship",
+          "tableName": "open_gateway_product_specification_relationship",
+          "nameCandidates": [
+            "OpenGatewayProductSpecificationRelationship",
+            "OpenGatewayProductSpecificationProductSpecificationRelationship"
+          ],
+          "refLike": true,
+          "propertyName": "productSpecificationRelationship",
+          "itemRef": "OpenGatewayProductSpecificationRelationship",
+          "description": "A migration, substitution, dependency or exclusivity relationship between/among product specifications.",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "requires",
+                "appliesOn"
+              ],
+              "enumRef": null,
+              "nullable": true,
+              "description": "Indicates the possible values of relationshipType between ProductSpecification. requires means that the related productSpecification is required to be ordered before; appliesOne means that the related productSpecification describes the product to which the productspecification will apply (for example a UsageVolume product applies on an Api product)."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "DcsAllowedProductAction",
+          "tableName": "dcs_allowed_product_action",
+          "nameCandidates": [
+            "DcsAllowedProductAction",
+            "OpenGatewayProductSpecificationAllowedAction"
+          ],
+          "refLike": false,
+          "propertyName": "allowedAction",
+          "itemRef": "DcsAllowedProductAction",
+          "description": "List of actions that can be executed (in context of a product order) on products instantiated from this productSpecification",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "action",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The name of the action. Values must be taken from this list (or extended it adding more values) : add, modify, delete."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "atTargetProductOrderItemSchema",
+              "targetRef": "TargetProductOrderItemSchema",
+              "description": "",
+              "columns": [
+                {
+                  "name": "targetProductOrderItemSchemaType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "targetProductOrderItemSchemaSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "OpenGatewayAttachment",
+          "tableName": "open_gateway_attachment",
+          "nameCandidates": [
+            "OpenGatewayAttachment",
+            "OpenGatewayProductSpecificationAttachment"
+          ],
+          "refLike": false,
+          "propertyName": "attachment",
+          "itemRef": "OpenGatewayAttachment",
+          "description": "This attribute can be used to attach additional documentation for the productSpecification, like technical documentation, frequently asked questions, getting started, ...",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "termsAndConditions",
+                "developerDocumentation"
+              ],
+              "enumRef": "OpenGatewayAttachmentType",
+              "nullable": true,
+              "description": "Used to indicate the Attachment attachmentType with limited enum values for Open Gateway context."
+            },
+            {
+              "kind": "scalar",
+              "name": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "a technical characterization of the attachment content format using IETF Mime Types"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": true
+      },
+      "seedExamples": [
+        {
+          "label": "GET item: Retrieve_a_productSpecification_by_id",
+          "value": {
+            "@type": "ApiProductSpecification",
+            "@baseType": "OpenGatewayProductSpecification",
+            "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/4b6591ef-5ede-4885-9543-0c5e9070ade9",
+            "name": "Location Verification Antifraud CAMARA API",
+            "version": "1.0.0",
+            "lifecycleStatus": "active",
+            "description": "Location Verification product specification, for antifraud purpose, accessible with CAMARA API.",
+            "lastUpdate": "2023-09-23T16:42:23Z",
+            "targetProductSchema": {
+              "@type": "ApiProductLocationVerificationAntifraud",
+              "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/LocationVerificationAntifraud.schema.json#/definitions/ApiProductLocationVerificationAntifraud"
+            },
+            "apiStandardName": "CAMARA",
+            "apiVersionInformation": [
+              {
+                "@type": "ApiVersionInformation",
+                "apiName": "location-verification",
+                "apiVersion": "1.0.0",
+                "apiBasePath": "/location-verification/v1",
+                "apiStatus": "active",
+                "apiGrantInformation": [
+                  {
+                    "@type": "ApiGrantInformation",
+                    "purpose": "dpv:FraudPreventionAndDetection",
+                    "legalBasis": "dpv:Consent",
+                    "scope": [
+                      "location-verification:verify"
+                    ],
+                    "grantType": [
+                      "authorization_code",
+                      "urn:openid:params:grant-type:ciba"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "attachment": [
+              {
+                "@type": "OpenGatewayURLAttachment",
+                "url": "https://mycsp.com/OpenGateway/documentation/LocationVerificationDeveloperGuide.html",
+                "attachmentType": "developerDocumentation",
+                "mimeType": "text/html"
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET list: List_all_productSpecification_with_lifecycleStatus_launched[0]",
+          "value": {
+            "@type": "UsageVolumeProductSpecification",
+            "@baseType": "OpenGatewayProductSpecification",
+            "id": "7407a0fd-9a01-47a2-b32a-1ab85bde3d32",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/7407a0fd-9a01-47a2-b32a-1ab85bde3d32",
+            "name": "Location Verification Verify Usage Volume",
+            "version": "1.0.0",
+            "lifecycleStatus": "active",
+            "description": "Location Verification Usage Volume of 10000 API calls for verify location usage, included in a bucket, recurring monthly, usage non blocked when bucket is empty.",
+            "lastUpdate": "2023-09-23T16:42:23Z",
+            "targetProductSchema": {
+              "@type": "UsageVolumeProductLocationVerification",
+              "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/UsageVolumeLocationVerification.schema.json#/definitions/UsageVolumeProductLocationVerification"
+            },
+            "productSpecificationRelationship": [
+              {
+                "@type": "OpenGatewayProductSpecificationRelationship",
+                "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+                "relationshipType": "requires",
+                "@referredType": "ApiProductSpecification"
+              }
+            ]
+          }
+        },
+        {
+          "label": "GET list: List_all_productSpecification_with_lifecycleStatus_launched[1]",
+          "value": {
+            "@type": "ApiProductSpecification",
+            "@baseType": "OpenGatewayProductSpecification",
+            "id": "4b6591ef-5ede-4885-9543-0c5e9070ade9",
+            "href": "https://mycsp.com/tmf-api/openGatewayOperateAPIProductCatalog/v5/4b6591ef-5ede-4885-9543-0c5e9070ade9",
+            "name": "Location Verification Antifraud CAMARA API",
+            "version": "1.0.0",
+            "lifecycleStatus": "active",
+            "description": "Location Verification product specification, for antifraud purpose, accessible with CAMARA API.",
+            "lastUpdate": "2023-09-23T16:42:23Z",
+            "targetProductSchema": {
+              "@type": "ApiProductLocationVerificationAntifraud",
+              "@schemaLocation": "https://mycsp.com/tmf-api/schemas/Tmf/Product/DCS/GSMAOperateAPI/LocationVerificationAntifraudStandalone.schema.json#/definitions/ApiProductLocationVerificationAntifraud"
+            },
+            "apiStandardName": "CAMARA",
+            "apiVersionInformation": [
+              {
+                "@type": "ApiVersionInformation",
+                "apiName": "location-verification",
+                "apiVersion": "1.0.0",
+                "apiBasePath": "/location-verification/v1",
+                "apiStatus": "active",
+                "apiGrantInformation": [
+                  {
+                    "@type": "ApiGrantInformation",
+                    "purpose": "dpv:FraudPreventionAndDetection",
+                    "legalBasis": "dpv:Consent",
+                    "scope": [
+                      "location-verification:verify"
+                    ],
+                    "grantType": [
+                      "authorization_code",
+                      "urn:openid:params:grant-type:ciba"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "attachment": [
+              {
+                "@type": "OpenGatewayURLAttachment",
+                "url": "https://mycsp.com/OpenGateway/documentation/LocationVerificationDeveloperGuide.html",
+                "attachmentType": "developerDocumentation",
+                "mimeType": "text/html"
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listProductSpecification",
+          "summary": "List or find productSpecification objects",
+          "description": "List or find productSpecification objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "before",
+              "in": "query",
+              "description": "An opaque string value representing the page results before the cursor value",
+              "required": false
+            },
+            {
+              "name": "after",
+              "in": "query",
+              "description": "An opaque string value representing the page results after the cursor value",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "in": "query",
+              "description": "The default direction is Ascending order, the use of the modifier in front of the sort field name, “-“, changes the sort order direction.",
+              "required": false
+            },
+            {
+              "name": "filter",
+              "in": "query",
+              "description": "Filter a collection using JSONPath",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveProductSpecification",
+          "summary": "Retrieves a productSpecification by ID",
+          "description": "This operation retrieves a productSpecification entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/productSpecification",
+        "item": "/productSpecification/{id}"
+      },
+      "notificationEvents": []
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/productOfferingAttributeValueChangeEvent",
+      "eventName": "productOfferingAttributeValueChangeEvent",
+      "resource": null,
+      "eventKind": "productOfferingAttributeValueChange",
+      "operationId": "productOfferingAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/productOfferingCreateEvent",
+      "eventName": "productOfferingCreateEvent",
+      "resource": null,
+      "eventKind": "productOfferingCreate",
+      "operationId": "productOfferingCreateEvent"
+    },
+    {
+      "path": "/listener/productOfferingDeleteEvent",
+      "eventName": "productOfferingDeleteEvent",
+      "resource": null,
+      "eventKind": "productOfferingDelete",
+      "operationId": "productOfferingDeleteEvent"
+    },
+    {
+      "path": "/listener/productOfferingStateChangeEvent",
+      "eventName": "productOfferingStateChangeEvent",
+      "resource": null,
+      "eventKind": "productOfferingStateChange",
+      "operationId": "productOfferingStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No OpenGatewayProductOffering_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No OpenGatewayProductOffering_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "OpenGatewayProductOffering spec declares no create/update/delete operation; those routes are NOT emitted.",
+    "No OpenGatewayProductSpecification_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No OpenGatewayProductSpecification_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "OpenGatewayProductSpecification spec declares no create/update/delete operation; those routes are NOT emitted.",
+    "Listener paths not matched to any resource: productOfferingAttributeValueChangeEvent, productOfferingCreateEvent, productOfferingDeleteEvent, productOfferingStateChangeEvent"
+  ]
+}

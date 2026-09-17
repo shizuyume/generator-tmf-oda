@@ -1,0 +1,857 @@
+{
+  "meta": {
+    "tmfNumber": "675",
+    "specTitle": "API GeographicLocation",
+    "specVersion": "1.0.0",
+    "versionMajor": "1",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/geographicLocation/v1",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF675_BASE_PATH",
+    "eventExchange": "geographicLocation.events",
+    "eventExchangeConstant": "TMF675_EVENT_EXCHANGE",
+    "eventTypeEnum": "GeographicLocationEventType",
+    "serviceNameSuggestion": "geographic-location-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf675/4.0.0/openapi/TMF675-GeographicLocation-v1.0.0.swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "GeographicLocation",
+      "camelName": "geographicLocation",
+      "kebabName": "geographic-location",
+      "tableName": "geographic_location",
+      "pathSegment": "geographicLocation",
+      "pathKey": "geographicLocation",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Structured textual way of describing a geographic location. A geographic location allows describing through coordinate(s), a point, a line or a space.",
+      "composedFrom": [],
+      "required": [
+        "name",
+        "geometryType",
+        "spatialRef",
+        "accuracy",
+        "geometry"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@type",
+        "@schemaLocation"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Name of the geo location"
+        },
+        {
+          "kind": "scalar",
+          "name": "geometryType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Type of the geographic location - one of: point, line, graph, ring polygon"
+        },
+        {
+          "kind": "scalar",
+          "name": "spatialRef",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Geocoding referential"
+        },
+        {
+          "kind": "scalar",
+          "name": "accuracy",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Accuracy of the coordinate specified"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "GeographicLocationGeometry",
+          "tableName": "geographic_location_geometry",
+          "propertyName": "geometry",
+          "itemRef": "GeographicPoint",
+          "description": "A GeoPoint defines a geographic point through coordinates",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "x",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "x coordinate (usually latitude)"
+            },
+            {
+              "kind": "scalar",
+              "name": "y",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "y coordinate (usually longitude)"
+            },
+            {
+              "kind": "scalar",
+              "name": "z",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "z coordinate (usually elevation)"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "geographicLocationFind",
+          "summary": "List geographic locations",
+          "description": "This operation list geographic location entities.\nAttribute selection is enabled for all first level attributes. \nFiltering may be available depending on the compliance level supported by an implementation.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Attribute selection",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index to start of resources to be provided in response requested by client",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response requested by client",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "geographicLocationGet",
+          "summary": "Retrieve a geographic location",
+          "description": "This operation retrieves a geographic location entity.\nAttribute selection is enabled for all first level attributes.\nFiltering on sub-resources may be available depending on the compliance level supported by an implementation.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [
+            {
+              "name": "geographicLocationId",
+              "in": "path",
+              "description": "Unique identifier of the geographic location",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Attribute selection",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/geographicLocation",
+        "item": "/geographicLocation/{geographicLocationId}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "RetrieveGeographicLocation",
+      "camelName": "retrieveGeographicLocation",
+      "kebabName": "retrieve-geographic-location",
+      "tableName": "retrieve_geographic_location",
+      "pathSegment": "retrieveGeographicLocation",
+      "pathKey": "retrieveGeographicLocation",
+      "parentSegments": [],
+      "nested": false,
+      "description": "This resource is used to manage the request and response to retrieve a thing (any object)",
+      "composedFrom": [],
+      "required": [
+        "thing"
+      ],
+      "infraFields": [
+        "id",
+        "href"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Status of the task (inProgress, terminatedWithErrror, done)"
+        },
+        {
+          "kind": "scalar",
+          "name": "requestedAccuracy",
+          "tsType": "number",
+          "column": {
+            "type": "float"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Requested accuracy of the retrieval"
+        },
+        {
+          "kind": "scalar",
+          "name": "time",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Timestamp of end of task execution"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "thing",
+          "targetRef": "Object",
+          "description": "",
+          "columns": [
+            {
+              "name": "thingType",
+              "sourceProp": "type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "thingUri",
+              "sourceProp": "uri",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "geographicLocation",
+          "targetRef": "GeographicLocationReferred",
+          "description": "",
+          "columns": [
+            {
+              "name": "geographicLocationId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationGeometryType",
+              "sourceProp": "geometryType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationSpatialRef",
+              "sourceProp": "spatialRef",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationAccuracy",
+              "sourceProp": "accuracy",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "geographicLocationType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "retrieveGeographicLocationFind",
+          "summary": "List retrieve geographic location entities",
+          "description": "This operation list retrieveGeographicLocation entities.\nAttribute selection is enabled for all first level attributes.\nFiltering may be available depending on the compliance level supported by an implementation.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Attribute selection",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index to start of resources to be provided in response requested by client",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response requested by client",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "retrieveGeographicLocationCreate",
+          "summary": "Create a retrieve geographic location entity",
+          "description": "This operation creates a retrieve geographic location entity.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveGeographicLocationGet",
+          "summary": "Retrieve a retrieve geographic location entity",
+          "description": "This operation retrieves a retrieve geographic location entity.\nAttribute selection is enabled for all first level attributes.\nFiltering on sub-resources may be available depending on the compliance level supported by an implementation.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [
+            {
+              "name": "retrieveGeographicLocationId",
+              "in": "path",
+              "description": "Unique identifier of the retrieve geographic location task",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Attribute selection",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/retrieveGeographicLocation",
+        "item": "/retrieveGeographicLocation/{retrieveGeographicLocationId}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "RetrieveLocationRelation",
+      "camelName": "retrieveLocationRelation",
+      "kebabName": "retrieve-location-relation",
+      "tableName": "retrieve_location_relation",
+      "pathSegment": "retrieveLocationRelation",
+      "pathKey": "retrieveLocationRelation",
+      "parentSegments": [],
+      "nested": false,
+      "description": "This resource is used to manage the request and response to retrieve the relation between two geographic locations",
+      "composedFrom": [],
+      "required": [
+        "distance",
+        "time",
+        "geographicLocation",
+        "intersection"
+      ],
+      "infraFields": [
+        "id",
+        "href"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "status",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Status of the task (inProgress, terminatedWithErrror, done)"
+        },
+        {
+          "kind": "scalar",
+          "name": "distance",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Calculated distance between location A and location B"
+        },
+        {
+          "kind": "scalar",
+          "name": "time",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": false,
+          "description": "Timestamp of end of task execution"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RetrieveLocationRelationGeographicLocationRef",
+          "tableName": "retrieve_location_relation_geographic_location_ref",
+          "propertyName": "geographicLocation",
+          "itemRef": "GeographicLocationRef",
+          "description": "",
+          "minItems": 2,
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RetrieveLocationRelationIntersection",
+          "tableName": "retrieve_location_relation_intersection",
+          "propertyName": "intersection",
+          "itemRef": "GeographicLocationReferred",
+          "description": "",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "Name of the geo location"
+            },
+            {
+              "kind": "scalar",
+              "name": "geometryType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "Type of the geographic location - one of: point, line, graph, ring polygon"
+            },
+            {
+              "kind": "scalar",
+              "name": "spatialRef",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "Geocoding referential"
+            },
+            {
+              "kind": "scalar",
+              "name": "accuracy",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": false,
+              "description": "Accuracy of the coordinate specified"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "RetrieveLocationRelationIntersectionGeometry",
+              "tableName": "retrieve_location_relation_intersection_geometry",
+              "propertyName": "geometry",
+              "itemRef": "GeographicPointReferred",
+              "description": "",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "x",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": false,
+                  "description": "x coordinate (usually latitude)"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "y",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": false,
+                  "description": "y coordinate (usually longitude)"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "z",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "z coordinate (usually elevation)"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "operations": {
+        "list": {
+          "operationId": "retrieveLocationRelationFind",
+          "summary": "List retrieve location relation entities",
+          "description": "This operation list retrieve location relation entities.\nAttribute selection is enabled for all first level attributes.\nFiltering may be available depending on the compliance level supported by an implementation.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Attribute selection",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index to start of resources to be provided in response requested by client",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response requested by client",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "retrieveLocationRelationCreate",
+          "summary": "Create a retrieve location relation entity",
+          "description": "This operation creates a retrieve location relation entity\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveLocationRelationGet",
+          "summary": "Retrieve a retrieve location relation entity",
+          "description": "This operation retrieves a retrieve location relation entity.\nAttribute selection is enabled for all first level attributes.\nFiltering on sub-resources may be available depending on the compliance level supported by an implementation.\n\nSpecific business errors for current operation will be encapsulated in\n\nHTTP Response 422 Unprocessable entity\n",
+          "params": [
+            {
+              "name": "retrieveLocationRelationId",
+              "in": "path",
+              "description": "Unique identifier of the retrieve location relation task",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Attribute selection",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "404",
+            "405",
+            "422",
+            "500"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/retrieveLocationRelation",
+        "item": "/retrieveLocationRelation/{retrieveLocationRelationId}"
+      },
+      "notificationEvents": []
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": false,
+      "get": false
+    }
+  },
+  "listeners": [],
+  "warnings": [
+    "No GeographicLocation_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No GeographicLocation_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "GeographicLocation has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "GeographicLocation spec declares no create/update/delete operation; those routes are NOT emitted.",
+    "No RetrieveGeographicLocation_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No RetrieveGeographicLocation_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "RetrieveGeographicLocation has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "RetrieveGeographicLocation spec declares no update/delete operation; those routes are NOT emitted.",
+    "No RetrieveLocationRelation_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No RetrieveLocationRelation_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "RetrieveLocationRelation has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "RetrieveLocationRelation spec declares no update/delete operation; those routes are NOT emitted."
+  ]
+}

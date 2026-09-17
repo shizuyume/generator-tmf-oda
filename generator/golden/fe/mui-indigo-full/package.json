@@ -1,0 +1,51 @@
+{
+  "name": "revenue-sharing-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CRA5 + Craco + MUI app (full-repo) scaffolded by fe-gen. GENERATED - edit generated pages via the generator.",
+  "scripts": {
+    "start": "cross-env PORT=5012 craco start",
+    "build": "craco build",
+    "start:prod": "cross-env PORT=5012 npx serve -s build --cors"
+  },
+  "proxy": "http://localhost:3736",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.9.1",
+    "@mui/material": "^9.4.0",
+    "@mui/x-data-grid": "^9.12.0",
+    "lucide-react": "^1.38.0",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "react-hook-form": "^7.87.0",
+    "react-router-dom": "6.30.1",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react-scripts": "5.0.1",
+    "typescript": "^5.9.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

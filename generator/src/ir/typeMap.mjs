@@ -1,0 +1,101 @@
+import { words } from './naming.mjs';
+
+/**
+ * OpenAPI type/format -> { tsType, column, validators }
+ *
+ * Column shapes are taken from the golden reference
+ * (partnership_management/backend/src/partnership/entities/*.entity.ts).
+ * Two invariants were originally declared non-negotiable here, because SKILL.md gates
+ * on them. Both have since been overtaken by evidence and are documented as changed:
+ *
+ *   - dates were `datetime`, never `timestamp` (SQLite portability). Still true in the
+ *     IR; the translation to `timestamp` now happens at emit time per target database
+ *     (emit/entity.mjs), because the scaffold advertises postgres and a `datetime`
+ *     column makes it impossible to boot there.
+ *
+ *   - id-like scalars were varchar(36), sized for a bare UUID. TM Forum's OWN examples
+ *     break that: TMF936 ships a productOffering whose
+ *     productOfferingTermOrConditionSpecification.id is
+ *     "ab7792f8-6628-4c4b-a557-699adc26d4ce_terms_1" - 44 characters, a UUID with a
+ *     composite suffix. Seeding that example failed with "value too long for type
+ *     character varying(36)", and a spec-conformant client sending the same id would
+ *     get a 500. Widened to ID_COLUMN_LENGTH below.
+ */
+
+/**
+ * Room for a UUID plus a composite suffix, which real TMF payloads use. Not 1000 (the
+ * href width): an id this long is already pathological, and keeping it bounded keeps
+ * index sizes and error messages sane.
+ */
+export const ID_COLUMN_LENGTH = 100;
+
+const NAME_RULES = [
+  // [ test(fieldName, lastWord), column, tsType ]
+  [(n, w) => n === 'id' || /(^|[a-z])Id$/.test(n), { type: 'varchar', length: ID_COLUMN_LENGTH }, 'string'],
+  [(n, w) => w === 'href', { type: 'varchar', length: 1000 }, 'string'],
+  [(n, w) => w === 'schemalocation' || /SchemaLocation$/i.test(n), { type: 'varchar', length: 1000 }, 'string'],
+  [(n, w) => n === 'description', { type: 'text' }, 'string'],
+  [(n, w) => /^(lifecycleStatus|status|state|version|role|priority|rating)$/i.test(n.replace(/^@/, '')), { type: 'varchar', length: 50 }, 'string'],
+  [(n, w) => w === 'name', { type: 'varchar', length: 255 }, 'string'],
+  // generic suffix rules run on the LAST WORD so '@type' and '@baseType' agree
+  [(n, w) => ['type', 'kind', 'unit', 'status', 'state', 'role'].includes(w), { type: 'varchar', length: 100 }, 'string'],
+];
+
+const TYPE_RULES = {
+  string: { column: { type: 'varchar', length: 255 }, tsType: 'string', validators: ['IsString'] },
+  integer: { column: { type: 'int' }, tsType: 'number', validators: [] },
+  number: { column: { type: 'float' }, tsType: 'number', validators: [] },
+  boolean: { column: { type: 'boolean' }, tsType: 'boolean', validators: ['IsBoolean'] },
+};
+
+const FORMAT_RULES = {
+  'date-time': { column: { type: 'datetime' }, tsType: 'Date', validators: [] },
+  date: { column: { type: 'datetime' }, tsType: 'Date', validators: [] },
+  uri: { column: { type: 'varchar', length: 1000 }, tsType: 'string', validators: ['IsString'] },
+  int32: { column: { type: 'int' }, tsType: 'number', validators: [] },
+  int64: { column: { type: 'bigint' }, tsType: 'string', validators: [] },
+  float: { column: { type: 'float' }, tsType: 'number', validators: [] },
+  double: { column: { type: 'float' }, tsType: 'number', validators: [] },
+};
+
+/**
+ * @param {string} fieldName
+ * @param {object} schema  a resolved (non-$ref) scalar schema
+ * @returns {{tsType:string, column:object, validators:string[], enumValues:string[]|null}}
+ */
+export function mapScalar(fieldName, schema = {}) {
+  const format = schema.format;
+  const type = schema.type || 'string';
+
+  // format wins over type (date-time is a string in OpenAPI)
+  if (format && FORMAT_RULES[format]) {
+    const r = FORMAT_RULES[format];
+    return { tsType: r.tsType, column: { ...r.column }, validators: [...r.validators], enumValues: null };
+  }
+
+  // enums stay plain varchar + IsString: the reference never uses TypeORM enums
+  if (Array.isArray(schema.enum) && schema.enum.length) {
+    return {
+      tsType: 'string',
+      column: { type: 'varchar', length: 100 },
+      validators: ['IsString'],
+      enumValues: schema.enum,
+    };
+  }
+
+  if (type === 'string') {
+    const parts = words(fieldName);
+    const lastWord = parts[parts.length - 1] || '';
+    for (const [test, column, tsType] of NAME_RULES) {
+      if (test(fieldName, lastWord)) return { tsType, column: { ...column }, validators: ['IsString'], enumValues: null };
+    }
+  }
+
+  const r = TYPE_RULES[type];
+  if (r) return { tsType: r.tsType, column: { ...r.column }, validators: [...r.validators], enumValues: null };
+
+  // unknown scalar -> passthrough json
+  return { tsType: 'any', column: { type: 'simple-json' }, validators: [], enumValues: null };
+}
+
+export const SIMPLE_JSON = { type: 'simple-json' };

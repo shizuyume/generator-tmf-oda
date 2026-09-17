@@ -1,0 +1,2237 @@
+{
+  "meta": {
+    "tmfNumber": "700",
+    "specTitle": "ShippingOrder",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/shippingOrder/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF700_BASE_PATH",
+    "eventExchange": "shippingOrder.events",
+    "eventExchangeConstant": "TMF700_EVENT_EXCHANGE",
+    "eventTypeEnum": "ShippingOrderEventType",
+    "serviceNameSuggestion": "shipping-order-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf700/4.0.0/openapi/TMF700-ShippingOrder-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "ShippingOrder",
+      "specName": "ShippingOrder",
+      "camelName": "shippingOrder",
+      "kebabName": "shipping-order",
+      "tableName": "shipping_order",
+      "pathSegment": "shippingOrder",
+      "pathKey": "shippingOrder",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time when the ProductOrder was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the ProductOrder was completed"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The date and time that the trouble ticket was last updated"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "held",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed",
+            "partial",
+            "assessingCancellation",
+            "pendingCancellation",
+            "draft",
+            "inProgress.accepted"
+          ],
+          "enumRef": "ShippingOrderStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the order"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "relatedShippingOrder",
+          "targetRef": "RelatedShippingOrder",
+          "description": "",
+          "columns": [
+            {
+              "name": "relatedShippingOrderType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedShippingOrderBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedShippingOrderSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "relatedShippingOrderRole",
+              "sourceProp": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "productOrderRef",
+          "targetRef": "ProductOrderRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "productOrderRefType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "productOrderRefBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "productOrderRefSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "productOrderRefHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "productOrderRefId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "productOrderRefName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "productOrderRefReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "shippingInstruction",
+          "targetRef": "ShippingInstruction",
+          "description": "",
+          "columns": [
+            {
+              "name": "shippingInstructionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionShippingType",
+              "sourceProp": "shippingType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionCarrierId",
+              "sourceProp": "carrierId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionCarrierName",
+              "sourceProp": "carrierName",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionCarrierServiceCode",
+              "sourceProp": "carrierServiceCode",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionDeliverySpeed",
+              "sourceProp": "deliverySpeed",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionDeliveryAttempts",
+              "sourceProp": "deliveryAttempts",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionLabelMessage",
+              "sourceProp": "labelMessage",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionPackageType",
+              "sourceProp": "packageType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionWarehouseId",
+              "sourceProp": "warehouseId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionReceiptConfirmation",
+              "sourceProp": "receiptConfirmation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingInstructionSignatureRequired",
+              "sourceProp": "signatureRequired",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "shippingOrderPrice",
+          "targetRef": "Price",
+          "description": "",
+          "columns": [
+            {
+              "name": "shippingOrderPriceType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderPriceBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderPriceSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderPricePercentage",
+              "sourceProp": "percentage",
+              "tsType": "number",
+              "column": {
+                "type": "float"
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderPriceTaxRate",
+              "sourceProp": "taxRate",
+              "tsType": "number",
+              "column": {
+                "type": "float"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "shippingOrderOffering",
+          "targetRef": "ProductOfferingRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "shippingOrderOfferingType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "shippingOrderOfferingVersion",
+              "sourceProp": "version",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "placeFrom",
+          "targetRef": "RelatedPlaceRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "placeFromType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeFromBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeFromSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeFromRole",
+              "sourceProp": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "placeTo",
+          "targetRef": "RelatedPlaceRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "placeToType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeToBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeToSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeToRole",
+              "sourceProp": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RelatedPartyOrPartyRole",
+          "tableName": "related_party_or_party_role",
+          "nameCandidates": [
+            "RelatedPartyOrPartyRole",
+            "ShippingOrderRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyOrPartyRole",
+          "description": "The parties involved in the shipping order",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ShippingOrderItem",
+          "tableName": "shipping_order_item",
+          "nameCandidates": [
+            "ShippingOrderItem",
+            "ShippingOrderItem"
+          ],
+          "refLike": false,
+          "propertyName": "shippingOrderItem",
+          "itemRef": "ShippingOrderItem",
+          "description": "A list of shipping order items. Each shipping order item has a corresponding Shipment(e.g. parcel) which has one or multiple products in it",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "action",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "add",
+                "modify",
+                "delete",
+                "noChange"
+              ],
+              "enumRef": "ShippingOrderItemActionType",
+              "nullable": true,
+              "description": "action to be performed on the shipping order item"
+            },
+            {
+              "kind": "scalar",
+              "name": "quantity",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Quantity ordered"
+            },
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "status of shipping order item. e.g \"active\" , \"savedForLater\""
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "productOrderItem",
+              "targetRef": "ProductOrderItemRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOrderItemType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOrderItemBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOrderItemSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOrderItemProductOrderHref",
+                  "sourceProp": "ProductOrderHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOrderItemReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOrderItemProductOrderId",
+                  "sourceProp": "productOrderId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOrderItemProductOrderItemId",
+                  "sourceProp": "productOrderItemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "product",
+              "targetRef": "ProductRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "shippingInstruction",
+              "targetRef": "ShippingInstruction",
+              "description": "",
+              "columns": [
+                {
+                  "name": "shippingInstructionType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionShippingType",
+                  "sourceProp": "shippingType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionCarrierId",
+                  "sourceProp": "carrierId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionCarrierName",
+                  "sourceProp": "carrierName",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionCarrierServiceCode",
+                  "sourceProp": "carrierServiceCode",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionDeliverySpeed",
+                  "sourceProp": "deliverySpeed",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionDeliveryAttempts",
+                  "sourceProp": "deliveryAttempts",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionLabelMessage",
+                  "sourceProp": "labelMessage",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionPackageType",
+                  "sourceProp": "packageType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionWarehouseId",
+                  "sourceProp": "warehouseId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionReceiptConfirmation",
+                  "sourceProp": "receiptConfirmation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingInstructionSignatureRequired",
+                  "sourceProp": "signatureRequired",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "shippingOrderItemOffer",
+              "targetRef": "ProductOfferingRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "shippingOrderItemOfferType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemOfferVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "productOffering",
+              "targetRef": "ProductOfferingRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOfferingType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "shipment",
+              "targetRef": "Shipment",
+              "description": "",
+              "columns": [
+                {
+                  "name": "shipmentType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentState",
+                  "sourceProp": "state",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentCompletionDate",
+                  "sourceProp": "completionDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentDeliveryDate",
+                  "sourceProp": "deliveryDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentCollectionDate",
+                  "sourceProp": "collectionDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentExpectedDeliveryDate",
+                  "sourceProp": "expectedDeliveryDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shipmentRequestedDeliveryDate",
+                  "sourceProp": "requestedDeliveryDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "shippingOrderItemPrice",
+              "targetRef": "ProductPrice",
+              "description": "",
+              "columns": [
+                {
+                  "name": "shippingOrderItemPriceType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPriceBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPriceSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPriceDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPriceName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPriceRecurringChargePeriod",
+                  "sourceProp": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPriceUnitOfMeasure",
+                  "sourceProp": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "shippingOrderItemPricePriceType",
+                  "sourceProp": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "placeFrom",
+              "targetRef": "RelatedPlaceRefOrValue",
+              "description": "",
+              "columns": [
+                {
+                  "name": "placeFromType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeFromBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeFromSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeFromRole",
+                  "sourceProp": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "placeTo",
+              "targetRef": "RelatedPlaceRefOrValue",
+              "description": "",
+              "columns": [
+                {
+                  "name": "placeToType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeToBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeToSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeToRole",
+                  "sourceProp": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "RelatedPartyOrPartyRole",
+              "tableName": "related_party_or_party_role",
+              "nameCandidates": [
+                "RelatedPartyOrPartyRole",
+                "ShippingOrderItemRelatedParty"
+              ],
+              "refLike": false,
+              "propertyName": "relatedParty",
+              "itemRef": "RelatedPartyOrPartyRole",
+              "description": "The parties involved in the shipping order",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+                },
+                {
+                  "kind": "json",
+                  "name": "partyOrPartyRole",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "Characteristic",
+          "tableName": "characteristic",
+          "nameCandidates": [
+            "Characteristic",
+            "ShippingOrderCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "shippingOrderCharacteristic",
+          "itemRef": "Characteristic",
+          "description": "A list of characteristics that characterize this order ",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the characteristic"
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Data type of the value of the characteristic"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "CharacteristicRelationship",
+              "tableName": "characteristic_relationship",
+              "nameCandidates": [
+                "CharacteristicRelationship",
+                "CharacteristicRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicRelationship",
+              "itemRef": "CharacteristicRelationship",
+              "description": "Collection of characteristic relationships",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "Note",
+          "tableName": "note",
+          "nameCandidates": [
+            "Note",
+            "ShippingOrderNote"
+          ],
+          "refLike": false,
+          "propertyName": "note",
+          "itemRef": "Note",
+          "description": "A list of notes made on this shipping shipment",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "author",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Author of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "date",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "text",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Text of the note"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "ShippingOrder_FVO",
+        "required": [
+          "@type",
+          "shippingOrderItem"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "completionDate",
+          "lastUpdate",
+          "relatedParty",
+          "relatedShippingOrder",
+          "productOrderRef",
+          "shippingInstruction",
+          "shippingOrderItem",
+          "shippingOrderCharacteristic",
+          "note",
+          "shippingOrderPrice",
+          "shippingOrderOffering",
+          "placeFrom",
+          "placeTo"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "ShippingOrder_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "creationDate",
+          "completionDate",
+          "lastUpdate",
+          "relatedParty",
+          "relatedShippingOrder",
+          "productOrderRef",
+          "shippingInstruction",
+          "shippingOrderItem",
+          "shippingOrderCharacteristic",
+          "note",
+          "shippingOrderPrice",
+          "shippingOrderOffering",
+          "state",
+          "placeFrom",
+          "placeTo"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CreateShippingOrder",
+          "value": {
+            "@type": "ShippingOrder",
+            "productOrderRef": {
+              "@type": "ProductOrderRef",
+              "id": "48a28acb-9cf6-4255-8954-660eaa7ea37c",
+              "href": "https://example.com/tmf-api/productOrderingManagement/v5/productOrder/48a28acb-9cf6-4255-8954-660eaa7ea37c"
+            },
+            "relatedParty": [
+              {
+                "@type": "RelatedPartyOrPartyRole",
+                "role": "Recepient",
+                "partyOrPartyRole": {
+                  "@type": "Individual",
+                  "name": "Joe Doe",
+                  "contactMedium": [
+                    {
+                      "@type": "PhoneContactMedium",
+                      "contactMediumIdentifier": "TelephoneNumber",
+                      "preferred": true,
+                      "validFor": {
+                        "startDateTime": "2018-06-12T00:00:00Z",
+                        "endDateTime": "2019-01-01T00:00:00Z"
+                      },
+                      "phoneNumber": "01 09 75 83 51"
+                    },
+                    {
+                      "@type": "GeographicAddressContactMedium",
+                      "postCode": "OX11 6TR",
+                      "city": "Oxford",
+                      "street1": "23 Borney Road"
+                    }
+                  ]
+                }
+              }
+            ],
+            "shippingInstruction": {
+              "@type": "ShippingInstruction",
+              "deliveryAttempts": 3,
+              "deliverySpeed": "SameDay",
+              "labelMessage": "FAO Ink Industries",
+              "packageType": "Bottle",
+              "receiptConfirmation": "SignatureRequired",
+              "shippingType": "largePackage",
+              "signatureRequired": true,
+              "signatureRequiredBy": "adult",
+              "instructionCharacteristic": [
+                {
+                  "@type": "StringCharacteristic",
+                  "name": "CustomerCall",
+                  "value": "Yes, 1h before arriving"
+                }
+              ]
+            },
+            "shippingOrderItem": [
+              {
+                "@type": "ShippingOrderItemItem",
+                "id": "1",
+                "action": "add",
+                "productOrderItem": {
+                  "@type": "ProductOrderItemRef",
+                  "ProductOrderHref": "https://example.com/tmf-api/productOrder/v4/productOrder/14505b4c-2740-4546-9c3a-eea7c983d261",
+                  "productOrderId": "14505b4c-2740-4546-9c3a-eea7c983d261",
+                  "productOrderItemId": "2"
+                },
+                "product": {
+                  "@type": "ProductRef",
+                  "href": "https://example.com/tmf-api/productInventoryManagement/v5/product/552e4c10-a650-487b-b9c4-fbbb73879f24",
+                  "id": "552e4c10-a650-487b-b9c4-fbbb73879f24",
+                  "name": "Apple Iphone"
+                },
+                "quantity": 1,
+                "productOffering": {
+                  "@type": "ProductOfferingRef",
+                  "id": "2c3ec5b4-43a1-4d55-8b02-c292e577f6f9",
+                  "name": "Apple Iphone",
+                  "href": "https://example.com/tmf-api/productCatalogManagement/v4/productOffering/2c3ec5b4-43a1-4d55-8b02-c292e577f6f9"
+                }
+              },
+              {
+                "@type": "ShippingOrderItemItem",
+                "id": "2",
+                "action": "add",
+                "productOrderItem": {
+                  "@type": "ProductOrderItemRef",
+                  "ProductOrderHref": "https://example.com/tmf-api/productOrder/v4/productOrder/d63a2841-19b2-4730-9485-7c4d9d348565",
+                  "productOrderId": "d63a2841-19b2-4730-9485-7c4d9d348565",
+                  "productOrderItemId": "2"
+                },
+                "product": {
+                  "@type": "ProductRef",
+                  "href": "https://example.com/tmf-api/productInventoryManagement/v5/product/c70ba0ba-4cf4-457f-8700-d014d1cbe2f5",
+                  "id": "c70ba0ba-4cf4-457f-8700-d014d1cbe2f5",
+                  "name": "Plantronics X100"
+                },
+                "quantity": 1,
+                "productOffering": {
+                  "@type": "ProductOfferingRef",
+                  "id": "f96744fd-d0d3-4abb-929c-9f68a527892b",
+                  "name": "Plantronics X100",
+                  "href": "https://example.com/tmf-api/productCatalogManagement/v4/productOffering/f96744fd-d0d3-4abb-929c-9f68a527892b"
+                }
+              },
+              {
+                "@type": "ShippingOrderItemItem",
+                "id": "3",
+                "action": "add",
+                "productOrderItem": {
+                  "@type": "ProductOrderItemRef",
+                  "ProductOrderHref": "https://example.com/tmf-api/productOrder/v4/productOrder/4b3c5916-6bc3-4f01-9402-6fc57e2db606",
+                  "productOrderId": "4b3c5916-6bc3-4f01-9402-6fc57e2db606",
+                  "productOrderItemId": "2"
+                },
+                "product": {
+                  "@type": "ProductRef",
+                  "href": "https://example.com/tmf-api/productInventoryManagement/v5/product/046acef8-d397-434a-9334-b57f47393db8",
+                  "id": "046acef8-d397-434a-9334-b57f47393db8",
+                  "name": "Red 75"
+                },
+                "quantity": 1,
+                "productOffering": {
+                  "@type": "ProductOfferingRef",
+                  "id": "45f53a72-92a3-42f6-89cc-a04277f905af",
+                  "name": "Red 75",
+                  "href": "https://example.com/tmf-api/productCatalogManagement/v4/productOffering/45f53a72-92a3-42f6-89cc-a04277f905af"
+                }
+              }
+            ],
+            "shippingOrderPrice": {
+              "@type": "Price",
+              "dutyFreeAmount": {
+                "unit": "EUR",
+                "value": 5
+              },
+              "percentage": 0,
+              "taxIncludedAmount": {
+                "unit": "EUR",
+                "value": 10
+              }
+            },
+            "shippingOrderOffering": {
+              "@type": "ProductOfferingRef",
+              "href": "https://example.com/tmf-api/productCatalogManagement/v4/productOffering/1f5efe5b-b3c9-4307-844a-5a6a288ef7e5",
+              "id": "1f5efe5b-b3c9-4307-844a-5a6a288ef7e5"
+            },
+            "state": "acknowledged",
+            "placeTo": {
+              "@type": "RelatedPlaceRefOrValue",
+              "role": "installationAddress",
+              "place": {
+                "id": "8b103e6d-6ceb-459b-be59-5cec85732064",
+                "href": "https://example.com/geographicAddressManagement/v5/geographicAddress/8b103e6d-6ceb-459b-be59-5cec85732064",
+                "@referredType": "GeographicAddress",
+                "@type": "PlaceRef"
+              }
+            }
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listShippingOrder",
+          "summary": "List or find ShippingOrder objects",
+          "description": "List or find ShippingOrder objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createShippingOrder",
+          "summary": "Creates a ShippingOrder",
+          "description": "This operation creates a ShippingOrder entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveShippingOrder",
+          "summary": "Retrieves a ShippingOrder by ID",
+          "description": "This operation retrieves a ShippingOrder entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchShippingOrder",
+          "summary": "Updates partially a ShippingOrder",
+          "description": "This operation updates partially a ShippingOrder entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteShippingOrder",
+          "summary": "Deletes a ShippingOrder",
+          "description": "This operation deletes a ShippingOrder entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/shippingOrder",
+        "item": "/shippingOrder/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "shippingOrderAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "SHIPPING_ORDER_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "shippingOrderCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "SHIPPING_ORDER_CREATE"
+        },
+        {
+          "eventName": "shippingOrderDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "SHIPPING_ORDER_DELETE"
+        },
+        {
+          "eventName": "shippingOrderStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "SHIPPING_ORDER_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/shippingOrderAttributeValueChangeEvent",
+      "eventName": "shippingOrderAttributeValueChangeEvent",
+      "resource": "ShippingOrder",
+      "eventKind": "AttributeValueChange",
+      "operationId": "shippingOrderAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/shippingOrderCreateEvent",
+      "eventName": "shippingOrderCreateEvent",
+      "resource": "ShippingOrder",
+      "eventKind": "Create",
+      "operationId": "shippingOrderCreateEvent"
+    },
+    {
+      "path": "/listener/shippingOrderDeleteEvent",
+      "eventName": "shippingOrderDeleteEvent",
+      "resource": "ShippingOrder",
+      "eventKind": "Delete",
+      "operationId": "shippingOrderDeleteEvent"
+    },
+    {
+      "path": "/listener/shippingOrderStateChangeEvent",
+      "eventName": "shippingOrderStateChangeEvent",
+      "resource": "ShippingOrder",
+      "eventKind": "StateChange",
+      "operationId": "shippingOrderStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "ShippingOrder has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

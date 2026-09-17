@@ -1,0 +1,772 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tmfgen.local/schemas/fe-spec.schema.json",
+  "title": "TM Forum Frontend Spec (v1 contract)",
+  "description": "Kontrak frontend-spec.yaml M0. Semantic vocabulary netral menetapkan type/render; vocab MUI (variant/color/contained) DILARANG. Fitur v2 (wizard, notifications, avatar-menu, field-level rbac, optionsSource from-api/from-rbac, state zustand) TIDAK diterima.",
+  "x-semantic-vocabulary": [
+    "text-input",
+    "textarea",
+    "number-input",
+    "email-input",
+    "password-input",
+    "select",
+    "toggle",
+    "data-grid",
+    "status-chip",
+    "tag",
+    "row-actions",
+    "button",
+    "modal",
+    "tabs",
+    "card",
+    "description-list",
+    "table",
+    "timeline",
+    "repeatable-group",
+    "typeahead",
+    "date-input",
+    "datetime-input",
+    "checkbox",
+    "radio-group",
+    "stat-card",
+    "chart"
+  ],
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "api", "output", "ui", "formEngine", "layout", "auth", "pages"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "label", "version", "lang", "description"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "label": { "type": "string" },
+        "version": { "type": "string" },
+        "lang": { "enum": ["en", "id"] },
+        "description": { "type": "string" }
+      }
+    },
+    "api": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basePath"],
+      "properties": {
+        "basePath": { "type": "string" },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "endpoints": {
+          "type": "object",
+          "description": "Map nama endpoint -> 'METHOD /path'. Nilai wajib literal atau binding {{config.*}}/{{env.*}} (non-secret).",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["mfe", "full-repo"] },
+        "mfe": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hostApp", "moduleName", "craco", "exposes"],
+          "properties": {
+            "hostApp": { "type": "string" },
+            "moduleName": { "type": "string" },
+            "craco": { "type": "boolean" },
+            "port": { "type": "integer", "minimum": 1024, "maximum": 65535 },
+            "exposes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["key", "target"],
+                "properties": {
+                  "key": { "type": "string" },
+                  "target": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "fullRepo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["router", "state", "packageManager"],
+          "properties": {
+            "router": { "enum": ["react-router"] },
+            "state": { "enum": ["context", "none"] },
+            "packageManager": { "enum": ["npm", "yarn", "pnpm"] },
+            "port": { "type": "integer", "minimum": 1024, "maximum": 65535 }
+          }
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "type": { "const": "mfe" } } }, "then": { "required": ["mfe"] } },
+        { "if": { "properties": { "type": { "const": "full-repo" } } }, "then": { "required": ["fullRepo"] } }
+      ]
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["library", "version", "theme"],
+      "properties": {
+        "library": { "enum": ["mui", "neudela", "fe-default"] },
+        "version": { "type": "string" },
+        "useTokens": { "type": "boolean" },
+        "darkMode": { "type": "boolean" },
+        "theme": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tokens"],
+          "properties": {
+            "name": { "type": "string" },
+            "darkMode": { "type": "boolean" },
+            "tokens": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Token netral — DILARANG vocab MUI (variant/color/style).",
+              "required": ["primary", "surface", "background", "text", "textMuted", "radius", "font"],
+              "properties": {
+                "primary": { "type": "string" },
+                "surface": { "type": "string" },
+                "background": { "type": "string" },
+                "text": { "type": "string" },
+                "textMuted": { "type": "string" },
+                "radius": { "type": ["number", "string"] },
+                "font": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "formEngine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["library", "validator", "defaultMode", "defaultReValidateMode", "behaviour"],
+      "properties": {
+        "library": { "enum": ["react-hook-form"] },
+        "version": { "type": "string" },
+        "validator": { "enum": ["zod"] },
+        "validatorVersion": { "type": "string" },
+        "defaultMode": { "$ref": "#/$defs/formModeGlobal" },
+        "defaultReValidateMode": { "$ref": "#/$defs/reValidateMode" },
+        "behaviour": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["shouldUnregister", "resetOnSubmit"],
+          "properties": {
+            "shouldUnregister": { "type": "boolean" },
+            "resetOnSubmit": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shell", "sidebar", "topbar", "footer"],
+      "properties": {
+        "shell": { "enum": ["sidebar", "topbar", "sidebar-topbar"] },
+        "sidebar": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["collapsible", "itemsSource"],
+          "properties": {
+            "collapsible": { "type": "boolean" },
+            "itemsSource": { "enum": ["from-pages", "manual"] },
+            "items": { "type": "array", "items": { "$ref": "#/$defs/navItem" } }
+          }
+        },
+        "topbar": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["search", "themeToggle"],
+          "properties": {
+            "search": { "type": "boolean" },
+            "themeToggle": { "type": "boolean" },
+            "languageSwitch": { "description": "v1: HANYA false. Omitting = off.", "enum": [false] }
+          }
+        },
+        "footer": { "type": "boolean" }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/page" }
+    },
+    "open-questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "apis": {
+      "description": "F5: registry API bernama, OPSIONAL. Spec tanpa `apis` tetap sah -- api.endpoints (map nama -> 'METHOD /path') tetap bentuk ringkas yang sah dan tidak digantikan.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/apiDef" }
+    },
+    "models": {
+      "description": "F5: shape bernama yang dapat di-$ref (kind: ref) oleh apiDef. Satu entry -> satu interface TS di src/gen/api/types.generated.ts.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/shapeNode" }
+    }
+  },
+  "$defs": {
+    "tone": { "enum": ["primary", "secondary", "ghost", "danger", "warning", "info", "link"] },
+    "httpMethod": { "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+    "scalarKind": {
+      "description": "F5: tipe skalar shapeNode -> TypeScript primitif.",
+      "enum": ["string", "number", "integer", "boolean", "date", "date-time", "unknown"]
+    },
+    "shapeNode": {
+      "description": "F5: deskriptor tipe tertutup -> TypeScript. Diskriminator BERNAMA `kind` (BUKAN `type`) -- menghindari classifier semantic FE (scan() di buildFEIR.mjs) yang mengklasifikasikan key bernama `type`.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["scalar", "object", "array", "ref"] },
+        "scalar": { "$ref": "#/$defs/scalarKind" },
+        "optional": { "type": "boolean" },
+        "enum": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "properties": { "type": "object", "additionalProperties": { "$ref": "#/$defs/shapeNode" } },
+        "items": { "$ref": "#/$defs/shapeNode" },
+        "ref": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "kind": { "const": "scalar" } } }, "then": { "required": ["scalar"] } },
+        { "if": { "properties": { "kind": { "const": "object" } } }, "then": { "required": ["properties"] } },
+        { "if": { "properties": { "kind": { "const": "array"  } } }, "then": { "required": ["items"] } },
+        { "if": { "properties": { "kind": { "const": "ref"    } } }, "then": { "required": ["ref"] } }
+      ]
+    },
+    "apiDef": {
+      "description": "F5: satu entry registry API bernama (top-level `apis[]`).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "method", "path"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][A-Za-z0-9]*$" },
+        "method": { "$ref": "#/$defs/httpMethod" },
+        "path": { "type": "string" },
+        "description": { "type": "string" },
+        "request": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contentType": { "enum": ["application/json"] },
+            "params": { "type": "object", "additionalProperties": { "$ref": "#/$defs/shapeNode" } },
+            "body": { "type": "object", "additionalProperties": { "$ref": "#/$defs/payloadValue" } }
+          }
+        },
+        "response": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["shape"],
+          "properties": {
+            "envelope": { "enum": ["tmf-list", "tmf-item", "raw"] },
+            "shape": { "$ref": "#/$defs/shapeNode" }
+          }
+        }
+      }
+    },
+    "fieldType": {
+      "description": "type field = subset semantic vocabulary dieja pendek di YAML (F3 menambah date/datetime/checkbox/radio/autocomplete). autocomplete memetakan ke vocabulary typeahead yang SUDAH ADA -- bukan entri baru.",
+      "enum": ["text", "textarea", "number", "email", "password", "select", "toggle", "repeatable", "date", "datetime", "checkbox", "radio", "autocomplete"]
+    },
+    "renderKind": {
+      "description": "render = subset semantic vocabulary (tag, status-chip, typeahead, ...) + bentuk komposit v1.",
+      "enum": ["tag", "status-dot", "truncated", "tag-count", "date", "link", "dynamic"]
+    },
+    "blockType": { "enum": ["card", "description-list", "table", "timeline", "summary"] },
+    "searchMode": { "enum": ["server-side", "client-side", "none"] },
+    "paginationScheme": { "enum": ["offset-limit", "page-per-page"] },
+    "formMode": { "enum": ["modal", "page"] },
+    "formModeGlobal": { "enum": ["onChange", "onBlur", "onSubmit", "onTouched", "all"] },
+    "reValidateMode": { "enum": ["onChange", "onBlur", "onSubmit"] },
+    "icon": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+$" },
+    "transformVerb": {
+      "description": "Verb transform tertutup (F3) diterapkan atas nilai `source`. Tanpa argumen -- set tertutup menjaga determinisme.",
+      "enum": ["id", "name", "value", "string", "number", "boolean", "trim", "iso-date", "array-ids", "json"]
+    },
+    "payloadSourceRef": {
+      "description": "Token sumber payload: fields.X / form.X (alias fields.X, sesuai vocabulary requirement doc) / item.X (konteks repeatable) / page.X / const.X.",
+      "type": "string",
+      "pattern": "^(form|fields|item|page|const)\\.[A-Za-z0-9_@$.-]+$"
+    },
+    "payloadValue": {
+      "description": "Value binding: (a) string token lama ('fields.X' / 'item.X' / literal); (b) objek {source, transform} -- transform diterapkan atas nilai source; (c) objek nested (rekonstruksi payload bersarang). (b) dibedakan dari (c) HANYA oleh key `source` -- anyOf + not, BUKAN oneOf (oneOf akan selalu gagal karena (b) juga structurally valid sebagai (c)).",
+      "anyOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source"],
+          "properties": {
+            "source": { "$ref": "#/$defs/payloadSourceRef" },
+            "transform": { "$ref": "#/$defs/transformVerb" }
+          }
+        },
+        {
+          "type": "object",
+          "not": { "required": ["source"] },
+          "additionalProperties": { "$ref": "#/$defs/payloadValue" }
+        }
+      ]
+    },
+    "emptyState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title"],
+      "properties": {
+        "title": { "type": "string" },
+        "action": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "open"],
+          "properties": {
+            "label": { "type": "string" },
+            "open": { "type": "string" }
+          }
+        }
+      }
+    },
+    "emptyAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "open"],
+      "properties": {
+        "label": { "type": "string" },
+        "open": { "type": "string" }
+      }
+    },
+    "validationRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule", "message"],
+      "properties": {
+        "rule": { "type": "string" },
+        "value": {},
+        "message": { "type": "string" }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string" },
+        "label": { "type": "string" },
+        "type": { "$ref": "#/$defs/fieldType" },
+        "required": { "type": "boolean" },
+        "defaultValue": {},
+        "placeholder": { "type": "string" },
+        "readOnly": { "type": "boolean" },
+        "computedFrom": { "type": "string" },
+        "rows": { "type": "integer", "minimum": 1 },
+        "options": { "type": "object", "additionalProperties": { "type": "string" } },
+        "optionsSource": { "description": "v1: HANYA static (from-api/from-rbac = v2).", "enum": ["static"] },
+        "validation": { "type": "array", "items": { "$ref": "#/$defs/validationRule" } },
+        "minItems": { "type": "integer", "minimum": 0 },
+        "itemLabel": { "type": "string" },
+        "addButton": { "type": "string" },
+        "itemPayload": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/payloadValue" }
+        },
+        "itemFields": { "type": "array", "items": { "$ref": "#/$defs/field" } },
+        "minLength": { "type": "integer", "minimum": 0, "description": "F4: rule validasi deklaratif -- turunan zod .min(n)." },
+        "maxLength": { "type": "integer", "minimum": 1, "description": "F4: rule validasi deklaratif -- turunan zod .max(n)." },
+        "pattern": { "type": "string", "format": "regex", "description": "F4: rule validasi deklaratif -- turunan zod .regex(...)." },
+        "min": { "type": ["number", "string"], "description": "F3: batas bawah (number) atau tanggal ISO minimal (date/datetime); juga dipakai F4 sebagai rule validasi deklaratif." },
+        "max": { "type": ["number", "string"], "description": "F3: batas atas (number) atau tanggal ISO maksimal (date/datetime); juga dipakai F4 sebagai rule validasi deklaratif." },
+        "step": { "type": "number", "description": "F3: atribut HTML step untuk number/date/datetime." },
+        "multiple": { "type": "boolean", "description": "F3: pilihan ganda untuk select/autocomplete." },
+        "layout": { "enum": ["inline", "stacked"], "description": "F3: arah render untuk checkbox/radio-group." }
+      }
+    },
+    "button": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string" },
+        "position": { "type": "string" },
+        "variant": { "$ref": "#/$defs/tone" }
+      }
+    },
+    "rowAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "action"],
+      "properties": {
+        "label": { "type": "string" },
+        "icon": { "$ref": "#/$defs/icon" },
+        "action": { "type": "string" },
+        "form": { "type": "string" },
+        "permission": { "type": "string" },
+        "confirm": { "type": "boolean" }
+      }
+    },
+    "toolbarAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "action"],
+      "properties": {
+        "label": { "type": "string" },
+        "variant": { "$ref": "#/$defs/tone" },
+        "position": { "type": "string" },
+        "action": { "type": "string" },
+        "form": { "type": "string" },
+        "permission": { "type": "string" },
+        "icon": { "$ref": "#/$defs/icon" }
+      }
+    },
+    "detailHeaderAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "action"],
+      "properties": {
+        "label": { "type": "string" },
+        "action": { "type": "string" },
+        "form": { "type": "string" },
+        "variant": { "$ref": "#/$defs/tone" },
+        "confirm": { "type": "boolean" },
+        "permission": { "type": "string" },
+        "icon": { "$ref": "#/$defs/icon" }
+      }
+    },
+    "formDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "title", "api", "fields"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/formMode" },
+        "title": { "type": "string" },
+        "width": { "type": "string" },
+        "prefillFrom": { "type": "string" },
+        "controller": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": { "$ref": "#/$defs/formModeGlobal" },
+            "reValidateMode": { "$ref": "#/$defs/reValidateMode" }
+          }
+        },
+        "api": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "path", "payload"],
+          "properties": {
+            "method": { "$ref": "#/$defs/httpMethod" },
+            "path": { "type": "string" },
+            "payload": { "type": "object", "additionalProperties": { "$ref": "#/$defs/payloadValue" } },
+            "ref": { "type": "string", "description": "F5: nama apis[].name -- request/response teregistrasi. Opsional." }
+          }
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "if": { "type": "object", "required": ["reuse"] },
+            "then": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["reuse"],
+              "properties": { "reuse": { "type": "string" } }
+            },
+            "else": { "$ref": "#/$defs/field" }
+          }
+        },
+        "buttons": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "submit": { "$ref": "#/$defs/button" },
+            "cancel": { "$ref": "#/$defs/button" },
+            "next": { "$ref": "#/$defs/button" },
+            "back": { "$ref": "#/$defs/button" }
+          }
+        }
+      }
+    },
+    "listView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["api", "method"],
+      "properties": {
+        "api": { "type": "string" },
+        "method": { "$ref": "#/$defs/httpMethod" },
+        "apiRef": { "type": "string", "description": "F5: nama apis[].name -- bila resolve, tipe request/response teregistrasi dipakai emit/apitype.mjs. Opsional, tidak menggantikan api/method." },
+        "queryParams": { "type": "object", "additionalProperties": { "type": "string" } },
+        "search": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "mode"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "mode": { "$ref": "#/$defs/searchMode" },
+            "debounceMs": { "type": "integer", "minimum": 0 },
+            "placeholder": { "type": "string" },
+            "fields": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "label", "type", "options"],
+            "properties": {
+              "field": { "type": "string" },
+              "label": { "type": "string" },
+              "type": { "enum": ["select"] },
+              "options": { "type": "object", "additionalProperties": { "type": "string" } }
+            }
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "label"],
+            "properties": {
+              "field": { "type": "string" },
+              "label": { "type": "string" },
+              "sortable": { "type": "boolean" },
+              "type": { "enum": ["row-actions"] },
+              "render": { "$ref": "#/$defs/renderKind" },
+              "colorMap": { "type": "object", "additionalProperties": { "type": "string" } },
+              "mono": { "type": "boolean" },
+              "items": { "type": "array", "items": { "$ref": "#/$defs/rowAction" } }
+            }
+          }
+        },
+        "pagination": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "scheme", "perPageOptions"],
+          "properties": {
+            "mode": { "$ref": "#/$defs/searchMode" },
+            "scheme": { "$ref": "#/$defs/paginationScheme" },
+            "perPageOptions": { "type": "array", "items": { "type": "integer", "minimum": 1 } }
+          }
+        },
+        "emptyState": { "$ref": "#/$defs/emptyState" }
+      }
+    },
+    "detailBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "$ref": "#/$defs/blockType" },
+        "title": { "type": "string" },
+        "layout": { "type": "string" },
+        "field": { "type": "string" },
+        "fields": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["field"],
+                "properties": {
+                  "field": { "type": "string" },
+                  "label": { "type": "string" },
+                  "render": { "$ref": "#/$defs/renderKind" },
+                  "mono": { "type": "boolean" }
+                }
+              }
+            ]
+          }
+        },
+        "columns": { "type": "array", "items": { "type": "string" } },
+        "renderColumns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "sub", "label"],
+            "properties": {
+              "field": { "type": "string" },
+              "sub": { "type": "string" },
+              "label": { "type": "string" }
+            }
+          }
+        },
+        "api": { "type": "string" },
+        "emptyState": { "$ref": "#/$defs/emptyState" }
+      }
+    },
+    "detailView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "path", "api"],
+      "properties": {
+        "mode": { "enum": ["page", "modal"] },
+        "path": { "type": "string" },
+        "api": { "type": "string" },
+        "apiRef": { "type": "string", "description": "F5: nama apis[].name -- response teregistrasi. Opsional." },
+        "header": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["title"],
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" },
+            "backButton": { "type": "boolean" },
+            "actions": { "type": "array", "items": { "$ref": "#/$defs/detailHeaderAction" } }
+          }
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "tabs"],
+            "properties": {
+              "type": { "enum": ["tabs"] },
+              "tabs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["label", "blocks"],
+                  "properties": {
+                    "label": { "type": "string" },
+                    "blocks": { "type": "array", "items": { "$ref": "#/$defs/detailBlock" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "navItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string" },
+        "path": { "type": "string" },
+        "icon": { "$ref": "#/$defs/icon" },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/navItem" } }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "title", "icon", "nav", "view"],
+      "properties": {
+        "id": { "type": "string" },
+        "path": { "type": "string" },
+        "title": { "type": "string" },
+        "icon": { "$ref": "#/$defs/icon" },
+        "nav": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "parent": { "type": "string" } }
+        },
+        "permission": { "type": "string" },
+        "view": { "enum": ["list", "form", "detail", "dashboard"] },
+        "list": { "$ref": "#/$defs/listView" },
+        "form": { "$ref": "#/$defs/formDef" },
+        "forms": { "type": "object", "additionalProperties": { "$ref": "#/$defs/formDef" } },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/toolbarAction" } },
+        "detail": { "$ref": "#/$defs/detailView" },
+        "dashboard": { "$ref": "#/$defs/dashboardView" }
+      },
+      "allOf": [
+        { "if": { "properties": { "view": { "const": "list" } } }, "then": { "required": ["list"] } },
+        { "if": { "properties": { "view": { "const": "form" } } }, "then": { "required": ["form"] } },
+        { "if": { "properties": { "view": { "const": "detail" } } }, "then": { "required": ["detail"] } },
+        { "if": { "properties": { "view": { "const": "dashboard" } } }, "then": { "required": ["dashboard"] } }
+      ]
+    },
+    "dashboardSource": {
+      "description": "F7: <apis[].name>.<jsonPath ringkas>, mis. getInventory.total. Resolusi nama diverifikasi gate checkDashboardSources (bukan ajv, butuh cross-ref ke apis[] - F5).",
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*(\\.[A-Za-z0-9_@$-]+)+$"
+    },
+    "dashboardStat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "value"],
+      "properties": {
+        "title": { "type": "string" },
+        "icon": { "$ref": "#/$defs/icon" },
+        "format": { "enum": ["number", "currency", "percent", "text"] },
+        "value": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source"],
+          "properties": { "source": { "$ref": "#/$defs/dashboardSource" } }
+        }
+      }
+    },
+    "dashboardChart": {
+      "description": "F7 v1: TIDAK dirender sebagai chart sungguhan (tanpa dependency chart baru -- guardrail @mui/x-charts). Emitter menulis placeholder + warning terdokumentasi.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "title", "source"],
+      "properties": {
+        "type": { "enum": ["line", "bar", "area", "pie", "donut"] },
+        "title": { "type": "string" },
+        "source": { "$ref": "#/$defs/dashboardSource" },
+        "xField": { "type": "string" },
+        "yField": { "type": "string" }
+      }
+    },
+    "dashboardTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "source"],
+      "properties": {
+        "title": { "type": "string" },
+        "source": { "$ref": "#/$defs/dashboardSource" },
+        "limit": { "type": "integer", "minimum": 1 },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "label"],
+            "properties": {
+              "field": { "type": "string" },
+              "label": { "type": "string" },
+              "render": { "$ref": "#/$defs/renderKind" }
+            }
+          }
+        }
+      }
+    },
+    "dashboardView": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "stats": { "type": "array", "items": { "$ref": "#/$defs/dashboardStat" } },
+        "charts": { "type": "array", "items": { "$ref": "#/$defs/dashboardChart" } },
+        "tables": { "type": "array", "items": { "$ref": "#/$defs/dashboardTable" } }
+      }
+    }
+  }
+}

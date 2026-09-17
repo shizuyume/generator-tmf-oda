@@ -1,0 +1,89 @@
+/* App shell + layout list/modal neudela (template fe-neudela) —
+   dijalankan BERSAMA neudela/styles.css (stylesheet penuh Neuron*). */
+
+html, body { margin: 0; padding: 0; }
+body { font-family: var(--font-family, 'Inter', system-ui, sans-serif); background: var(--color-bg, #fff); color: var(--color-text-primary, #16203a); }
+
+/* shell */
+.neudela-shell { display: flex; flex-direction: column; min-height: 100vh; }
+.neudela-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-4, 16px); height: 56px; flex-shrink: 0;
+  background: var(--color-bg-surface, #fff); border-bottom: 1px solid var(--color-border, #d0d5dd);
+}
+.neudela-topbar__title { font-weight: 600; font-size: var(--fs-text-md, 16px); }
+.neudela-body { display: flex; flex: 1; }
+.neudela-sidebar {
+  width: 232px; flex-shrink: 0; padding: var(--space-3, 12px);
+  background: var(--color-bg-sidebar, #fff); border-right: 1px solid var(--color-border, #d0d5dd);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.neudela-nav-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--radius-sm, 6px);
+  color: var(--color-text-primary, #16203a); text-decoration: none; font-size: var(--fs-text-sm, 14px);
+}
+.neudela-nav-item:hover { background: var(--color-bg-subtle, #f5f5f6); }
+.neudela-nav-item.is-active { background: var(--color-nav-active-bg, #fdf7ed); color: var(--color-nav-active-text, #a23c1b); }
+.neudela-content { flex: 1; padding: var(--space-6, 24px); min-width: 0; overflow-x: auto; }
+
+.neudela-theme-toggle { display: flex; align-items: center; gap: 8px; }
+.neudela-theme-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+.neudela-theme-switch input { opacity: 0; width: 0; height: 0; }
+.neudela-theme-switch__track {
+  position: absolute; inset: 0; border-radius: 9999px; background: var(--color-border, #d0d5dd);
+  transition: background 0.2s; cursor: pointer;
+}
+.neudela-theme-switch__track::before {
+  content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; top: 3px; left: 3px;
+  background: #fff; transition: transform 0.2s;
+}
+.neudela-theme-switch input:checked + .neudela-theme-switch__track { background: var(--color-primary, #df7e30); }
+.neudela-theme-switch input:checked + .neudela-theme-switch__track::before { transform: translateX(18px); }
+
+/* standard list */
+.neudela-standard-list { display: flex; flex-direction: column; gap: 12px; height: 100%; min-height: 60vh; }
+.neudela-standard-list__toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.neudela-standard-list__toolbar-left, .neudela-standard-list__toolbar-right { display: flex; gap: 8px; align-items: center; }
+.neudela-standard-list__table-wrap { flex: 1; overflow: auto; border: 1px solid var(--color-border, #d0d5dd); border-radius: var(--radius-md, 8px); background: var(--color-bg-surface, #fff); }
+.neudela-table { width: 100%; border-collapse: collapse; font-size: var(--fs-text-sm, 14px); }
+.neudela-table th, .neudela-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--color-border, #e4e7ec); vertical-align: top; }
+.neudela-table th { font-weight: 600; background: var(--color-bg-subtle, #f5f5f6); color: var(--color-text-secondary, #667085); }
+.neudela-table tr:last-child td { border-bottom: none; }
+.neudela-table__empty { text-align: center; color: var(--color-text-secondary, #667085); padding: 24px; }
+.neudela-table__actions { white-space: nowrap; width: 1%; }
+.neudela-standard-list__pager { display: flex; align-items: center; justify-content: space-between; }
+.neudela-standard-list__pager-info { color: var(--color-text-secondary, #667085); font-size: var(--fs-text-sm, 14px); }
+.neudela-standard-list__pager-actions { display: flex; gap: 8px; }
+
+/* form + modal */
+.neudela-form-field { margin-bottom: 12px; }
+.neudela-form-repeatable__item { border: 1px solid var(--color-border, #d0d5dd); border-radius: var(--radius-sm, 6px); padding: 10px 12px; margin-bottom: 8px; }
+.neudela-form-repeatable__item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.neudela-form-repeatable__item-label { font-weight: 600; font-size: var(--fs-text-sm, 14px); }
+.neudela-modal-overlay {
+  position: fixed; inset: 0; background: rgba(16, 24, 40, 0.45); display: flex; align-items: flex-start;
+  justify-content: center; padding: 48px 16px; z-index: 100; overflow-y: auto;
+}
+.neudela-modal { width: 100%; max-width: 560px; max-height: calc(100vh - 96px); overflow-y: auto; background: var(--color-bg-surface, #fff); border-radius: var(--radius-lg, 12px); box-shadow: var(--shadow-lg); }
+.neudela-modal__title { font-weight: 600; font-size: var(--fs-text-lg, 18px); padding: 16px 20px; border-bottom: 1px solid var(--color-border, #e4e7ec); }
+.neudela-modal__body { padding: 16px 20px; }
+.neudela-modal__actions { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--color-border, #e4e7ec); }
+
+/* tabs */
+.neudela-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--color-border, #d0d5dd); }
+.neudela-tabs__tab { background: none; border: none; padding: 8px 14px; cursor: pointer; font-size: var(--fs-text-sm, 14px); color: var(--color-text-secondary, #667085); border-bottom: 2px solid transparent; }
+.neudela-tabs__tab.is-active { color: var(--color-primary, #df7e30); border-bottom-color: var(--color-primary, #df7e30); font-weight: 600; }
+
+/* alert + snackbar */
+.neudela-alert { display: flex; align-items: flex-start; gap: 8px; padding: 10px 14px; border-radius: var(--radius-sm, 6px); font-size: var(--fs-text-sm, 14px); }
+.neudela-alert--error { background: var(--color-danger-light, #fef2f2); color: var(--color-danger, #dc2626); }
+.neudela-alert--success { background: var(--color-success-light, #ecfdf5); color: var(--color-success, #059669); }
+.neudela-alert--warning { background: var(--color-warning-light, #fffbeb); color: var(--color-warning, #d97706); }
+.neudela-alert--info { background: var(--color-info-light, #f0f9ff); color: var(--color-info, #0284c7); }
+.neudela-alert__close { background: none; border: none; cursor: pointer; color: inherit; margin-left: auto; padding: 0; }
+.neudela-snackbar { position: fixed; bottom: 16px; left: 16px; z-index: 200; display: none; }
+.neudela-snackbar.is-open { display: block; }
+
+/* box util */
+.neuron-box { box-sizing: border-box; }
+.neudela-table-wrap { overflow: auto; }

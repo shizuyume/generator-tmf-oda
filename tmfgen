@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Wrapper so tmfgen can be run from the repo root, e.g.:
+#   ./tmfgen ir documents/tmf670/4.0.0
+# instead of:
+#   (cd generator && node src/cli.mjs ir --component ../documents/tmf670/4.0.0)
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec node "$here/generator/src/cli.mjs" "$@"

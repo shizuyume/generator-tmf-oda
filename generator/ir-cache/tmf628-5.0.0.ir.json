@@ -1,0 +1,5844 @@
+{
+  "meta": {
+    "tmfNumber": "628",
+    "specTitle": "Performance",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/performance/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF628_BASE_PATH",
+    "eventExchange": "performance.events",
+    "eventExchangeConstant": "TMF628_EVENT_EXCHANGE",
+    "eventTypeEnum": "PerformanceEventType",
+    "serviceNameSuggestion": "performance-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf628/5.0.0/openapi/TMF628_Performance-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "DataAccessEndpoint",
+      "camelName": "dataAccessEndpoint",
+      "kebabName": "data-access-endpoint",
+      "tableName": "data_access_endpoint",
+      "pathSegment": "dataAccessEndpoint",
+      "pathKey": "dataAccessEndpoint",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "LogicalResource",
+        "Resource",
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "category",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Category of the concrete resource. e.g Gold, Silver for MSISDN concrete resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "free-text description of the resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "the name of the resource"
+        },
+        {
+          "kind": "scalar",
+          "name": "endOperatingDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A date time( DateTime). The date till the resource is operating"
+        },
+        {
+          "kind": "scalar",
+          "name": "administrativeState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "locked",
+            "unlocked",
+            "shutdown"
+          ],
+          "enumRef": "ResourceAdministrativeStateType",
+          "nullable": true,
+          "description": "ResourceAdministrativeStateType enumerations; values defined by ITU X.731: 'locked': The resource is administratively prohibited from performing services for its users; 'shutdown': Use of the resource is administratively permitted to existing instances of use only. While the system remains in the shutting down state the manager may at any time cause the managed object to revert to the unlocked state; 'unlocked': The resource is administratively permitted to perform services for its users. This is independent of its inherent operability."
+        },
+        {
+          "kind": "scalar",
+          "name": "operationalState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "enable",
+            "disable"
+          ],
+          "enumRef": "ResourceOperationalStateType",
+          "nullable": true,
+          "description": "ResourceOperationalStateType enumerations; values defined by ITU X.731: 'disable': The resource is totally inoperable and unable to provide service to the user(s); 'enable': The resource is partially or fully operable and available for use."
+        },
+        {
+          "kind": "scalar",
+          "name": "resourceStatus",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "alarm",
+            "available",
+            "installed",
+            "not exists",
+            "pendingRemoval",
+            "planned",
+            "reserved",
+            "standby",
+            "suspended",
+            "unknown"
+          ],
+          "enumRef": "ResourceStatusType",
+          "nullable": true,
+          "description": "ResourceStatusType enumerations"
+        },
+        {
+          "kind": "scalar",
+          "name": "usageState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "idle",
+            "active",
+            "busy"
+          ],
+          "enumRef": "ResourceUsageStateType",
+          "nullable": true,
+          "description": "ResourceUsageStateType enumerations; values defined by ITU X.731: 'idle': The resource is not currently in use; 'active': The resource is in use, and has sufficient spare operating capacity to provide for additional users simultaneously; 'busy': The resource is in use, but it has no spare operating capacity to provide for additional users at this instant."
+        },
+        {
+          "kind": "scalar",
+          "name": "startOperatingDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A date time( DateTime). The date from which the resource is operating"
+        },
+        {
+          "kind": "scalar",
+          "name": "resourceVersion",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A field that identifies the specific version of an instance of a resource."
+        },
+        {
+          "kind": "scalar",
+          "name": "value",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "the value of the logical resource. E.g '0746712345' for  MSISDN's"
+        },
+        {
+          "kind": "scalar",
+          "name": "uri",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 1000
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "URI for using the data access API"
+        },
+        {
+          "kind": "scalar",
+          "name": "apiType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": ""
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "resourceSpecification",
+          "targetRef": "ResourceSpecificationRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "resourceSpecificationType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "resourceSpecificationVersion",
+              "sourceProp": "version",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "intent",
+          "targetRef": "IntentRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "intentType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "intentReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "uriQueryFilter",
+          "targetRef": "DataFilterMap",
+          "description": "",
+          "columns": [
+            {
+              "name": "uriQueryFilterType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "uriQueryFilterBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "uriQueryFilterSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Note",
+          "tableName": "note",
+          "nameCandidates": [
+            "Note",
+            "DataAccessEndpointNote"
+          ],
+          "refLike": false,
+          "propertyName": "note",
+          "itemRef": "Note",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "author",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Author of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "date",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "text",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Text of the note"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedResourceOrderItem",
+          "tableName": "related_resource_order_item",
+          "nameCandidates": [
+            "RelatedResourceOrderItem",
+            "DataAccessEndpointResourceOrderItem"
+          ],
+          "refLike": false,
+          "propertyName": "resourceOrderItem",
+          "itemRef": "RelatedResourceOrderItem",
+          "description": "A list of resource order items related to this resource",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "resourceOrderHref",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Reference of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "resourceOrderId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Unique identifier of a related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "itemAction",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "add",
+                "modify",
+                "delete",
+                "noChange"
+              ],
+              "enumRef": "OrderItemActionType",
+              "nullable": true,
+              "description": "action to be performed on the product"
+            },
+            {
+              "kind": "scalar",
+              "name": "itemId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Identifier of the order item where the resource was managed"
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "role of the resource order item for this resource"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedPlaceRef",
+          "tableName": "related_place_ref",
+          "nameCandidates": [
+            "RelatedPlaceRef",
+            "DataAccessEndpointPlaceRef"
+          ],
+          "refLike": false,
+          "propertyName": "place",
+          "itemRef": "RelatedPlaceRef",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "place",
+              "targetRef": "PlaceRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "placeType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "placeReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "DataAccessEndpointRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ResourceRefOrValue",
+          "tableName": "resource_ref_or_value",
+          "nameCandidates": [
+            "ResourceRefOrValue",
+            "DataAccessEndpointSupportingResource"
+          ],
+          "refLike": false,
+          "propertyName": "supportingResource",
+          "itemRef": "ResourceRefOrValue",
+          "description": "A list of supporting resources (SupportingResource [*]). A collection of resources that support this resource (bundling, link ResourceSpecification)",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ResourceRelationship",
+          "tableName": "resource_relationship",
+          "nameCandidates": [
+            "ResourceRelationship",
+            "DataAccessEndpointResourceRelationship"
+          ],
+          "refLike": false,
+          "propertyName": "resourceRelationship",
+          "itemRef": "ResourceRelationship",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "json",
+              "name": "resource",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of the resource relationship, such as [bundled] if the resource is a bundle and you want to describe the bundled resources inside this bundle; [reliesOn] if the resource needs another already owned resource to rely on (eg: an option on an already owned mobile access resource) [targets] or [isTargeted] (depending on the way of expressing the link) for any other kind of links that may be useful"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "Characteristic",
+              "tableName": "characteristic",
+              "nameCandidates": [
+                "Characteristic",
+                "ResourceRelationshipCharacteristic"
+              ],
+              "refLike": false,
+              "propertyName": "resourceRelationshipCharacteristic",
+              "itemRef": "Characteristic",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Data type of the value of the characteristic"
+                },
+                {
+                  "kind": "json",
+                  "name": "characteristicRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "Characteristic",
+          "tableName": "characteristic",
+          "nameCandidates": [
+            "Characteristic",
+            "DataAccessEndpointResourceCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "resourceCharacteristic",
+          "itemRef": "Characteristic",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the characteristic"
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Data type of the value of the characteristic"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "CharacteristicRelationship",
+              "tableName": "characteristic_relationship",
+              "nameCandidates": [
+                "CharacteristicRelationship",
+                "CharacteristicRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicRelationship",
+              "itemRef": "CharacteristicRelationship",
+              "description": "Collection of characteristic relationships",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "AttachmentRef",
+          "tableName": "attachment_ref",
+          "nameCandidates": [
+            "AttachmentRef",
+            "DataAccessEndpointAttachmentRef"
+          ],
+          "refLike": true,
+          "propertyName": "attachment",
+          "itemRef": "AttachmentRef",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative text describing the content of the attachment"
+            },
+            {
+              "kind": "scalar",
+              "name": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Link to the attachment media/content"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "Feature",
+          "tableName": "feature",
+          "nameCandidates": [
+            "Feature",
+            "DataAccessEndpointActivationFeature"
+          ],
+          "refLike": false,
+          "propertyName": "activationFeature",
+          "itemRef": "Feature",
+          "description": "Configuration features",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "isBundle",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "True if this is a feature group. Default is false."
+            },
+            {
+              "kind": "scalar",
+              "name": "isEnabled",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "True if this feature is enabled. Default is true."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "This is the name for the feature."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "FeatureRelationship",
+              "tableName": "feature_relationship",
+              "nameCandidates": [
+                "FeatureRelationship",
+                "FeatureRelationship"
+              ],
+              "refLike": true,
+              "propertyName": "featureRelationship",
+              "itemRef": "FeatureRelationship",
+              "description": "Collection of feature relationships",
+              "minItems": null,
+              "requiredFields": [
+                "@type",
+                "id"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "This is the name of the target feature."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "excluded",
+                    "includes",
+                    "may include",
+                    "requires"
+                  ],
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "This is the type of the feature relationship."
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "Characteristic",
+              "tableName": "characteristic",
+              "nameCandidates": [
+                "Characteristic",
+                "FeatureCharacteristic"
+              ],
+              "refLike": false,
+              "propertyName": "featureCharacteristic",
+              "itemRef": "Characteristic",
+              "description": "This is a list of Characteristics for a particular feature.",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Data type of the value of the characteristic"
+                },
+                {
+                  "kind": "json",
+                  "name": "characteristicRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PolicyRef",
+              "tableName": "policy_ref",
+              "nameCandidates": [
+                "PolicyRef",
+                "FeaturePolicyConstraintRef"
+              ],
+              "refLike": true,
+              "propertyName": "policyConstraint",
+              "itemRef": "PolicyRef",
+              "description": "Reference to manage a list of feature specification policy constraints",
+              "minItems": null,
+              "requiredFields": [
+                "@type",
+                "id"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "Hyperlink reference"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "unique identifier"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": ""
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "ExternalIdentifier",
+          "tableName": "external_identifier",
+          "nameCandidates": [
+            "ExternalIdentifier",
+            "DataAccessEndpointExternalIdentifier"
+          ],
+          "refLike": false,
+          "propertyName": "externalIdentifier",
+          "itemRef": "ExternalIdentifier",
+          "description": "An identification of this resource that is owned by or originates in a software system different from the current system. The structure identifies the system itself, the nature of the resource within the system and the unique ID of the resource within the system. It is anticipated that multiple external IDs can be held for a single resource, e.g. if the resource passed through multiple systems on the way to the current system.",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "owner",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the external system that owns the entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "externalIdentifierType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of the identification, typically would be the type of the entity within the external system"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "DataAccessEndpoint_FVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "category",
+          "description",
+          "name",
+          "endOperatingDate",
+          "administrativeState",
+          "operationalState",
+          "resourceStatus",
+          "usageState",
+          "validFor",
+          "note",
+          "resourceOrderItem",
+          "place",
+          "relatedParty",
+          "supportingResource",
+          "resourceRelationship",
+          "resourceCharacteristic",
+          "attachment",
+          "resourceSpecification",
+          "startOperatingDate",
+          "resourceVersion",
+          "activationFeature",
+          "intent",
+          "externalIdentifier",
+          "value",
+          "uri",
+          "uriQueryFilter",
+          "apiType"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "DataAccessEndpoint_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "category",
+          "description",
+          "name",
+          "endOperatingDate",
+          "administrativeState",
+          "operationalState",
+          "resourceStatus",
+          "usageState",
+          "validFor",
+          "note",
+          "resourceOrderItem",
+          "place",
+          "relatedParty",
+          "supportingResource",
+          "resourceRelationship",
+          "resourceCharacteristic",
+          "attachment",
+          "resourceSpecification",
+          "startOperatingDate",
+          "resourceVersion",
+          "activationFeature",
+          "intent",
+          "externalIdentifier",
+          "value",
+          "uri",
+          "uriQueryFilter",
+          "apiType"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listDataAccessEndpoint",
+          "summary": "List or find DataAccessEndpoint objects",
+          "description": "List or find DataAccessEndpoint objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveDataAccessEndpoint",
+          "summary": "Retrieves a DataAccessEndpoint by ID",
+          "description": "This operation retrieves a DataAccessEndpoint entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/dataAccessEndpoint",
+        "item": "/dataAccessEndpoint/{id}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "MeasurementCollectionJob",
+      "camelName": "measurementCollectionJob",
+      "kebabName": "measurement-collection-job",
+      "tableName": "measurement_collection_job",
+      "pathSegment": "measurementCollectionJob",
+      "pathKey": "measurementCollectionJob",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "MeasurementJob",
+        "ManagementJob",
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "adminState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "locked",
+            "unlocked"
+          ],
+          "enumRef": "AdministrativeState",
+          "nullable": true,
+          "description": "This is enumeration for Administrative state"
+        },
+        {
+          "kind": "scalar",
+          "name": "creationTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The measurement job creation time."
+        },
+        {
+          "kind": "scalar",
+          "name": "executionState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed"
+          ],
+          "enumRef": "ExecutionStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the execution"
+        },
+        {
+          "kind": "scalar",
+          "name": "jobId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The ID of the management job."
+        },
+        {
+          "kind": "scalar",
+          "name": "jobPriority",
+          "tsType": "number",
+          "column": {
+            "type": "int"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The priority of the management job. The way the management application will use the JobPriority to schedule job execution is application specific and outside the scope. Integer, limited to a range of 1 to 10."
+        },
+        {
+          "kind": "scalar",
+          "name": "lastModifiedTime",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The last time that a measurement job was modified."
+        },
+        {
+          "kind": "scalar",
+          "name": "consumingApplicationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The identifier of the application that consumes performance indicators."
+        },
+        {
+          "kind": "scalar",
+          "name": "producingApplicationId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The identifier of the application that produces performance indicators."
+        },
+        {
+          "kind": "scalar",
+          "name": "granularity",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "g_1mn",
+            "g_5mn",
+            "g_15mn",
+            "g_30mn",
+            "g_1h",
+            "g_24h",
+            "g_1m",
+            "g_1y",
+            "na"
+          ],
+          "enumRef": "Granularity",
+          "nullable": true,
+          "description": "Sampling rate of the collection or production of performance indicators."
+        },
+        {
+          "kind": "scalar",
+          "name": "outputFormat",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": ""
+        },
+        {
+          "kind": "scalar",
+          "name": "reportingPeriod",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "r_1mn",
+            "r_5mn",
+            "r_15mn",
+            "r_30mn",
+            "r_1h",
+            "r_24h",
+            "na"
+          ],
+          "enumRef": "ReportingPeriod",
+          "nullable": true,
+          "description": "Possible values for the reporting period"
+        },
+        {
+          "kind": "scalar",
+          "name": "jobOnDemand",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "True if the job is a single job to be executed immediately in which case the reportingPeriod and scheduleDefinition would not be applicable, false otherwise"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "monitoredInstancesCriteria",
+          "targetRef": "MonitoredInstancesCriteria",
+          "description": "",
+          "columns": [
+            {
+              "name": "monitoredInstancesCriteriaType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "monitoredInstancesCriteriaBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "monitoredInstancesCriteriaSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "monitoredClassCriteria",
+          "targetRef": "MonitoredClassCriteria",
+          "description": "",
+          "columns": [
+            {
+              "name": "monitoredClassCriteriaType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "monitoredClassCriteriaBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "monitoredClassCriteriaSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "monitoredClassCriteriaMonitoredObjectClass",
+              "sourceProp": "monitoredObjectClass",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "monitoredClassCriteriaObjectInstanceFilter",
+              "sourceProp": "objectInstanceFilter",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "jobCollectionFilter",
+          "targetRef": "DataFilterMap",
+          "description": "",
+          "columns": [
+            {
+              "name": "jobCollectionFilterType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "jobCollectionFilterBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "jobCollectionFilterSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "searchTaskFilter",
+          "targetRef": "DataFilterMap",
+          "description": "",
+          "columns": [
+            {
+              "name": "searchTaskFilterType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchTaskFilterBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchTaskFilterSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "FileTransferData",
+          "tableName": "file_transfer_data",
+          "nameCandidates": [
+            "FileTransferData",
+            "MeasurementCollectionJobFileTransferData"
+          ],
+          "refLike": false,
+          "propertyName": "fileTransferData",
+          "itemRef": "FileTransferData",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": 0,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "transportProtocol",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "scalar",
+              "name": "fileLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "scalar",
+              "name": "fileFormat",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "json",
+              "name": "compressionType",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            },
+            {
+              "kind": "json",
+              "name": "packingType",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "retentionPeriod",
+              "targetRef": "Duration",
+              "description": "",
+              "columns": [
+                {
+                  "name": "retentionPeriodAmount",
+                  "sourceProp": "amount",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "retentionPeriodUnits",
+                  "sourceProp": "units",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "DataAccessEndpoint",
+          "tableName": "data_access_endpoint",
+          "nameCandidates": [
+            "DataAccessEndpoint",
+            "MeasurementCollectionJobDataAccessEndpoint"
+          ],
+          "refLike": false,
+          "propertyName": "dataAccessEndpoint",
+          "itemRef": "DataAccessEndpoint",
+          "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+          "minItems": 0,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "category",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Category of the concrete resource. e.g Gold, Silver for MSISDN concrete resource"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "free-text description of the resource"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the name of the resource"
+            },
+            {
+              "kind": "scalar",
+              "name": "endOperatingDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A date time( DateTime). The date till the resource is operating"
+            },
+            {
+              "kind": "scalar",
+              "name": "administrativeState",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "locked",
+                "unlocked",
+                "shutdown"
+              ],
+              "enumRef": "ResourceAdministrativeStateType",
+              "nullable": true,
+              "description": "ResourceAdministrativeStateType enumerations; values defined by ITU X.731: 'locked': The resource is administratively prohibited from performing services for its users; 'shutdown': Use of the resource is administratively permitted to existing instances of use only. While the system remains in the shutting down state the manager may at any time cause the managed object to revert to the unlocked state; 'unlocked': The resource is administratively permitted to perform services for its users. This is independent of its inherent operability."
+            },
+            {
+              "kind": "scalar",
+              "name": "operationalState",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "enable",
+                "disable"
+              ],
+              "enumRef": "ResourceOperationalStateType",
+              "nullable": true,
+              "description": "ResourceOperationalStateType enumerations; values defined by ITU X.731: 'disable': The resource is totally inoperable and unable to provide service to the user(s); 'enable': The resource is partially or fully operable and available for use."
+            },
+            {
+              "kind": "scalar",
+              "name": "resourceStatus",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "alarm",
+                "available",
+                "installed",
+                "not exists",
+                "pendingRemoval",
+                "planned",
+                "reserved",
+                "standby",
+                "suspended",
+                "unknown"
+              ],
+              "enumRef": "ResourceStatusType",
+              "nullable": true,
+              "description": "ResourceStatusType enumerations"
+            },
+            {
+              "kind": "scalar",
+              "name": "usageState",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "idle",
+                "active",
+                "busy"
+              ],
+              "enumRef": "ResourceUsageStateType",
+              "nullable": true,
+              "description": "ResourceUsageStateType enumerations; values defined by ITU X.731: 'idle': The resource is not currently in use; 'active': The resource is in use, and has sufficient spare operating capacity to provide for additional users simultaneously; 'busy': The resource is in use, but it has no spare operating capacity to provide for additional users at this instant."
+            },
+            {
+              "kind": "scalar",
+              "name": "startOperatingDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A date time( DateTime). The date from which the resource is operating"
+            },
+            {
+              "kind": "scalar",
+              "name": "resourceVersion",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A field that identifies the specific version of an instance of a resource."
+            },
+            {
+              "kind": "scalar",
+              "name": "value",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "the value of the logical resource. E.g '0746712345' for  MSISDN's"
+            },
+            {
+              "kind": "scalar",
+              "name": "uri",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "URI for using the data access API"
+            },
+            {
+              "kind": "scalar",
+              "name": "apiType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "resourceSpecification",
+              "targetRef": "ResourceSpecificationRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "resourceSpecificationType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "resourceSpecificationVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "intent",
+              "targetRef": "IntentRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "intentType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "intentBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "intentSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "intentHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "intentId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "intentName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "intentReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "uriQueryFilter",
+              "targetRef": "DataFilterMap",
+              "description": "",
+              "columns": [
+                {
+                  "name": "uriQueryFilterType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "uriQueryFilterBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "uriQueryFilterSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "Note",
+              "tableName": "note",
+              "nameCandidates": [
+                "Note",
+                "DataAccessEndpointNote"
+              ],
+              "refLike": false,
+              "propertyName": "note",
+              "itemRef": "Note",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "author",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Author of the note"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "date",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date of the note"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "text",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Text of the note"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "RelatedResourceOrderItem",
+              "tableName": "related_resource_order_item",
+              "nameCandidates": [
+                "RelatedResourceOrderItem",
+                "DataAccessEndpointResourceOrderItem"
+              ],
+              "refLike": false,
+              "propertyName": "resourceOrderItem",
+              "itemRef": "RelatedResourceOrderItem",
+              "description": "A list of resource order items related to this resource",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "resourceOrderHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Reference of the related entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "resourceOrderId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of a related entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "itemAction",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "add",
+                    "modify",
+                    "delete",
+                    "noChange"
+                  ],
+                  "enumRef": "OrderItemActionType",
+                  "nullable": true,
+                  "description": "action to be performed on the product"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "itemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Identifier of the order item where the resource was managed"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "role of the resource order item for this resource"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "RelatedPlaceRef",
+              "tableName": "related_place_ref",
+              "nameCandidates": [
+                "RelatedPlaceRef",
+                "DataAccessEndpointPlaceRef"
+              ],
+              "refLike": false,
+              "propertyName": "place",
+              "itemRef": "RelatedPlaceRef",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": ""
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "place",
+                  "targetRef": "PlaceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "placeType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "placeBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "placeSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "placeHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "placeId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "placeName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "placeReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "RelatedPartyRefOrPartyRoleRef",
+              "tableName": "related_party_ref_or_party_role_ref",
+              "nameCandidates": [
+                "RelatedPartyRefOrPartyRoleRef",
+                "DataAccessEndpointRelatedPartyRef"
+              ],
+              "refLike": false,
+              "propertyName": "relatedParty",
+              "itemRef": "RelatedPartyRefOrPartyRoleRef",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+                },
+                {
+                  "kind": "json",
+                  "name": "partyOrPartyRole",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "ResourceRefOrValue",
+              "tableName": "resource_ref_or_value",
+              "nameCandidates": [
+                "ResourceRefOrValue",
+                "DataAccessEndpointSupportingResource"
+              ],
+              "refLike": false,
+              "propertyName": "supportingResource",
+              "itemRef": "ResourceRefOrValue",
+              "description": "A list of supporting resources (SupportingResource [*]). A collection of resources that support this resource (bundling, link ResourceSpecification)",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "ResourceRelationship",
+              "tableName": "resource_relationship",
+              "nameCandidates": [
+                "ResourceRelationship",
+                "DataAccessEndpointResourceRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "resourceRelationship",
+              "itemRef": "ResourceRelationship",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "json",
+                  "name": "resourceRelationshipCharacteristic",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "resource",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the resource relationship, such as [bundled] if the resource is a bundle and you want to describe the bundled resources inside this bundle; [reliesOn] if the resource needs another already owned resource to rely on (eg: an option on an already owned mobile access resource) [targets] or [isTargeted] (depending on the way of expressing the link) for any other kind of links that may be useful"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "Characteristic",
+              "tableName": "characteristic",
+              "nameCandidates": [
+                "Characteristic",
+                "DataAccessEndpointResourceCharacteristic"
+              ],
+              "refLike": false,
+              "propertyName": "resourceCharacteristic",
+              "itemRef": "Characteristic",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Data type of the value of the characteristic"
+                },
+                {
+                  "kind": "json",
+                  "name": "characteristicRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "AttachmentRef",
+              "tableName": "attachment_ref",
+              "nameCandidates": [
+                "AttachmentRef",
+                "DataAccessEndpointAttachmentRef"
+              ],
+              "refLike": true,
+              "propertyName": "attachment",
+              "itemRef": "AttachmentRef",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type",
+                "id"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative text describing the content of the attachment"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "url",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Link to the attachment media/content"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "Feature",
+              "tableName": "feature",
+              "nameCandidates": [
+                "Feature",
+                "DataAccessEndpointActivationFeature"
+              ],
+              "refLike": false,
+              "propertyName": "activationFeature",
+              "itemRef": "Feature",
+              "description": "Configuration features",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "isBundle",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "True if this is a feature group. Default is false."
+                },
+                {
+                  "kind": "json",
+                  "name": "featureRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "featureCharacteristic",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "policyConstraint",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "isEnabled",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "True if this feature is enabled. Default is true."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "This is the name for the feature."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "ExternalIdentifier",
+              "tableName": "external_identifier",
+              "nameCandidates": [
+                "ExternalIdentifier",
+                "DataAccessEndpointExternalIdentifier"
+              ],
+              "refLike": false,
+              "propertyName": "externalIdentifier",
+              "itemRef": "ExternalIdentifier",
+              "description": "An identification of this resource that is owned by or originates in a software system different from the current system. The structure identifies the system itself, the nature of the resource within the system and the unique ID of the resource within the system. It is anticipated that multiple external IDs can be held for a single resource, e.g. if the resource passed through multiple systems on the way to the current system.",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "owner",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the external system that owns the entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "externalIdentifierType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the identification, typically would be the type of the entity within the external system"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "ScheduleDefinition",
+          "tableName": "schedule_definition",
+          "nameCandidates": [
+            "ScheduleDefinition",
+            "MeasurementCollectionJobScheduleDefinition"
+          ],
+          "refLike": false,
+          "propertyName": "scheduleDefinition",
+          "itemRef": "ScheduleDefinition",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "scheduleDefinitionStartTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The Start time of the Schedule Definition"
+            },
+            {
+              "kind": "scalar",
+              "name": "scheduleDefinitionEndTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The End time of the Schedule Definition. If the attribute is empty the Schedule run forever, not having a time constraint."
+            },
+            {
+              "kind": "scalar",
+              "name": "recurringFrequency",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A recurring frequency to run a job within day that is included in schedule definition, for example: every 5 minutes, 15 minute, 30 minutes, 1 hour"
+            },
+            {
+              "kind": "json",
+              "name": "excludedDate",
+              "tsType": "Date[]",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "array of scalar"
+            },
+            {
+              "kind": "scalar",
+              "name": "scheduleDefinitionHourRange",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A list of time ranges within a specific day that the schedule will be active on, for example 08:00-12:00, 16:00-19:00."
+            },
+            {
+              "kind": "json",
+              "name": "monthlyScheduleDayOfMonthDefinition",
+              "tsType": "Date[]",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "array of scalar"
+            },
+            {
+              "kind": "json",
+              "name": "dateScheduleDefintion",
+              "tsType": "Date[]",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "array of scalar"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "MonthlyScheduleDayOfWeekDefinition",
+              "targetRef": "MonthlyScheduleDayOfWeekDefinition",
+              "description": "",
+              "columns": [
+                {
+                  "name": "monthlyScheduleDayOfWeekDefinitionType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "monthlyScheduleDayOfWeekDefinitionBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "monthlyScheduleDayOfWeekDefinitionSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "monthlyScheduleDayOfWeekDefinitionRecurringDaySequence",
+                  "sourceProp": "recurringDaySequence",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "DayOfWeekRecurrence",
+              "tableName": "day_of_week_recurrence",
+              "nameCandidates": [
+                "DayOfWeekRecurrence",
+                "ScheduleDefinitionWeeklyScheduledDefinition"
+              ],
+              "refLike": false,
+              "propertyName": "WeeklyScheduledDefinition",
+              "itemRef": "DayOfWeekRecurrence",
+              "description": "The weekly schedule is used to define a schedule that is based on the days of the week, e.g. a schedule that will be active only on Monday and Tuesday.",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "dates",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": ""
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "PerformanceIndicatorGroupSpecification",
+          "tableName": "performance_indicator_group_specification",
+          "nameCandidates": [
+            "PerformanceIndicatorGroupSpecification",
+            "MeasurementCollectionJobPerformanceIndicatorGroupSpecification"
+          ],
+          "refLike": false,
+          "propertyName": "performanceIndicatorGroupSpecification",
+          "itemRef": "PerformanceIndicatorGroupSpecification",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": 0,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A word, term, or phrase by which a PerformanceIndicatorGroupSpecification is tagged."
+            },
+            {
+              "kind": "scalar",
+              "name": "groupCategory",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A grouping or set of PerformanceIndicatorGroupSpecifications that are classified together because of common characteristics, such as technology specific, service specific, or technology/service independent."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "PerformanceIndicatorSpecificationRefOrValue",
+              "tableName": "performance_indicator_specification_ref_or_value",
+              "nameCandidates": [
+                "PerformanceIndicatorSpecificationRefOrValue",
+                "PerformanceIndicatorGroupSpecificationPerformanceIndicatorSpecification"
+              ],
+              "refLike": false,
+              "propertyName": "performanceIndicatorSpecification",
+              "itemRef": "PerformanceIndicatorSpecificationRefOrValue",
+              "description": "A product to be created defined by value or existing defined by reference. The polymorphic attributes @type, @schemaLocation & @referredType are related to the product entity and not the RelatedProductRefOrValue class itself",
+              "minItems": 1,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "PerformanceIndicatorSpecificationRefOrValue",
+          "tableName": "performance_indicator_specification_ref_or_value",
+          "nameCandidates": [
+            "PerformanceIndicatorSpecificationRefOrValue",
+            "MeasurementCollectionJobPerformanceIndicatorSpecification"
+          ],
+          "refLike": false,
+          "propertyName": "performanceIndicatorSpecification",
+          "itemRef": "PerformanceIndicatorSpecificationRefOrValue",
+          "description": "A product to be created defined by value or existing defined by reference. The polymorphic attributes @type, @schemaLocation & @referredType are related to the product entity and not the RelatedProductRefOrValue class itself",
+          "minItems": 0,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "TrackingRecord",
+          "tableName": "tracking_record",
+          "nameCandidates": [
+            "TrackingRecord",
+            "MeasurementCollectionJobTrackingRecord"
+          ],
+          "refLike": false,
+          "propertyName": "trackingRecord",
+          "itemRef": "TrackingRecord",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": 0,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Describes the action being done, such as: ack, clear"
+            },
+            {
+              "kind": "scalar",
+              "name": "systemId",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Describes the system Id from which the action was done"
+            },
+            {
+              "kind": "scalar",
+              "name": "time",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Describes the time at which the action was done"
+            },
+            {
+              "kind": "scalar",
+              "name": "user",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Describes the user doing the action"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "Characteristic",
+              "tableName": "characteristic",
+              "nameCandidates": [
+                "Characteristic",
+                "TrackingRecordCharacteristic"
+              ],
+              "refLike": false,
+              "propertyName": "characteristic",
+              "itemRef": "Characteristic",
+              "description": "A generic list of any type of elements. Used for vendor Extensions or loose element encapsulation from other namespaces",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the characteristic"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Data type of the value of the characteristic"
+                },
+                {
+                  "kind": "json",
+                  "name": "characteristicRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "MeasurementCollectionJob_FVO",
+        "required": [
+          "@type",
+          "consumingApplicationId",
+          "producingApplicationId",
+          "performanceIndicatorSpecification"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "adminState",
+          "creationTime",
+          "executionState",
+          "fileTransferData",
+          "dataAccessEndpoint",
+          "jobId",
+          "jobPriority",
+          "lastModifiedTime",
+          "scheduleDefinition",
+          "consumingApplicationId",
+          "producingApplicationId",
+          "granularity",
+          "performanceIndicatorGroupSpecification",
+          "performanceIndicatorSpecification",
+          "trackingRecord",
+          "monitoredInstancesCriteria",
+          "monitoredClassCriteria",
+          "outputFormat",
+          "reportingPeriod",
+          "jobCollectionFilter",
+          "searchTaskFilter",
+          "jobOnDemand"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "MeasurementCollectionJob_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "fileTransferData",
+          "dataAccessEndpoint",
+          "scheduleDefinition",
+          "consumingApplicationId",
+          "producingApplicationId",
+          "granularity",
+          "performanceIndicatorGroupSpecification",
+          "performanceIndicatorSpecification",
+          "trackingRecord",
+          "outputFormat",
+          "reportingPeriod",
+          "jobCollectionFilter",
+          "searchTaskFilter",
+          "jobOnDemand"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "MeasurementCollectionJobCreate",
+          "value": {
+            "consumingApplicationId": "4000",
+            "creationTime": "2020-06-23T14:12:01.078Z",
+            "jobId": "400",
+            "jobPriority": 3,
+            "lastModifiedTime": "2020-06-23T14:12:01.079Z",
+            "outputFormat": "string",
+            "producingApplicationId": "NT_101",
+            "adminState": "locked",
+            "executionState": "acknowledged",
+            "fileTransferData": [
+              {
+                "fileFormat": "csv",
+                "fileLocation": "https://host:port/tmf-api/performanceManagement/v5/FileTransferData",
+                "transportProtocol": "ftp",
+                "compressionType": {
+                  "compressionEnumType": "no_compression"
+                },
+                "packingType": {
+                  "packingEnumType": "NO_PACKING"
+                },
+                "retentionPeriod": {
+                  "amount": 1,
+                  "units": "month",
+                  "@baseType": "RetentionPeriod",
+                  "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/RetentionPeriod",
+                  "@type": "RetentionPeriod"
+                },
+                "@baseType": "FileTransferData",
+                "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/fileTransferLocation",
+                "@type": "FileTransferData"
+              }
+            ],
+            "granularity": "g_1mn",
+            "performanceIndicatorGroupSpecification": [
+              {
+                "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorGroupSpecification/600",
+                "id": "600",
+                "name": "My critical performance indicators",
+                "groupCategory": "CPUGroup",
+                "performanceIndicatorSpecification": [
+                  {
+                    "id": "5000",
+                    "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorSpecification/5000",
+                    "@type": "PerformanceIndicatorSpecificationRef"
+                  }
+                ],
+                "@baseType": "PerformanceIndicatorGroupSpecification",
+                "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/schemas/Tmf/common/PerformanceIndicatorGroupSpecification.schema.json",
+                "@type": "PerformanceIndicatorGroupSpecification"
+              }
+            ],
+            "performanceIndicatorSpecification": [
+              {
+                "id": "101",
+                "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorSpecification/101",
+                "derivationAlgorithm": "na",
+                "derivationMethod": "average",
+                "description": "The average CPU speed",
+                "indicatorCategory": "CPU",
+                "indicatorUnit": "GHz",
+                "name": "CPU Speed",
+                "perspective": "aggregation over a collection of systems",
+                "collectionType": "cumulative",
+                "indicatorType": "float",
+                "performanceIndicatorSpecRelationship": [
+                  {
+                    "id": "321",
+                    "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorSpecRelationship/321",
+                    "relationshipType": "reliesOn",
+                    "validFor": {
+                      "endDateTime": "1985-04-12T23:20:50.52Z",
+                      "startDateTime": "1985-04-12T23:20:50.52Z"
+                    },
+                    "@baseType": "PerformanceIndicatorSpecRelationship",
+                    "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/schemas/Tmf/common/PerformanceIndicatorSpecRelationship.schema.json",
+                    "@type": "PerformanceIndicatorSpecRelationship"
+                  }
+                ],
+                "validFor": {
+                  "endDateTime": "1985-04-12T23:20:50.52Z",
+                  "startDateTime": "1985-04-12T23:20:50.52Z"
+                },
+                "@baseType": "PerformanceIndicatorSpecification",
+                "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/schemas/Tmf/common/PerformanceIndicatorSpecification.schema.json",
+                "@type": "PerformanceIndicatorSpecification"
+              }
+            ],
+            "reportingPeriod": "r_1mn",
+            "scheduleDefinition": [
+              {
+                "id": "1",
+                "recurringFrequency": "weekly",
+                "scheduleDefinitionEndTime": "2020-06-23T14:12:01.080Z",
+                "scheduleDefinitionHourRange": "2",
+                "scheduleDefinitionStartTime": "2020-06-23T14:12:01.080Z",
+                "WeeklyScheduledDefinition": [
+                  {
+                    "dates": "2020-06-23T14:12:01.080Z",
+                    "@baseType": "WeeklyScheduledDefinition",
+                    "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/schemas/Tmf/common/WeeklyScheduledDefinition.schema.json",
+                    "@type": "WeeklyScheduledDefinition"
+                  }
+                ],
+                "@baseType": "ScheduleDefinition",
+                "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/schemas/Tmf/common/ScheduleDefinition.schema.json",
+                "@type": "ScheduleDefinition"
+              }
+            ],
+            "trackingRecord": [
+              {
+                "id": "TR_101",
+                "href": "https://host:port/tmf-api/performanceManagement/v5/fileTransferLocation",
+                "description": "NT_101 tracking",
+                "systemId": "NT_101",
+                "time": "2020-06-23T17:55:51.671Z",
+                "user": "NP1",
+                "@baseType": "TrackingRecord",
+                "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/fileTransferLocation",
+                "@type": "TrackingRecord"
+              }
+            ],
+            "@baseType": "MeasurementCollectionJob",
+            "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/fileTransferLocation",
+            "@type": "MeasurementCollectionJob"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listMeasurementCollectionJob",
+          "summary": "List or find MeasurementCollectionJob objects",
+          "description": "List or find MeasurementCollectionJob objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createMeasurementCollectionJob",
+          "summary": "Creates a MeasurementCollectionJob",
+          "description": "This operation creates a MeasurementCollectionJob entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveMeasurementCollectionJob",
+          "summary": "Retrieves a MeasurementCollectionJob by ID",
+          "description": "This operation retrieves a MeasurementCollectionJob entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchMeasurementCollectionJob",
+          "summary": "Updates partially a MeasurementCollectionJob",
+          "description": "This operation updates partially a MeasurementCollectionJob entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteMeasurementCollectionJob",
+          "summary": "Deletes a MeasurementCollectionJob",
+          "description": "This operation deletes a MeasurementCollectionJob entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/measurementCollectionJob",
+        "item": "/measurementCollectionJob/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "measurementCollectionJobAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "MEASUREMENT_COLLECTION_JOB_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "measurementCollectionJobCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "MEASUREMENT_COLLECTION_JOB_CREATE"
+        },
+        {
+          "eventName": "measurementCollectionJobDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "MEASUREMENT_COLLECTION_JOB_DELETE"
+        },
+        {
+          "eventName": "measurementCollectionJobExecutionStateChangeEvent",
+          "eventKind": "ExecutionStateChange",
+          "enumMember": "MEASUREMENT_COLLECTION_JOB_EXECUTION_STATE_CHANGE"
+        },
+        {
+          "eventName": "measurementCollectionJobFilesPreparationErrorEvent",
+          "eventKind": "FilesPreparationError",
+          "enumMember": "MEASUREMENT_COLLECTION_JOB_FILES_PREPARATION_ERROR"
+        },
+        {
+          "eventName": "measurementCollectionJobFilesReadyEvent",
+          "eventKind": "FilesReady",
+          "enumMember": "MEASUREMENT_COLLECTION_JOB_FILES_READY"
+        }
+      ]
+    },
+    {
+      "name": "PerformanceIndicatorGroupSpecification",
+      "camelName": "performanceIndicatorGroupSpecification",
+      "kebabName": "performance-indicator-group-specification",
+      "tableName": "performance_indicator_group_specification",
+      "pathSegment": "performanceIndicatorGroupSpecification",
+      "pathKey": "performanceIndicatorGroupSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+      "composedFrom": [
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A word, term, or phrase by which a PerformanceIndicatorGroupSpecification is tagged."
+        },
+        {
+          "kind": "scalar",
+          "name": "groupCategory",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A grouping or set of PerformanceIndicatorGroupSpecifications that are classified together because of common characteristics, such as technology specific, service specific, or technology/service independent."
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "PerformanceIndicatorSpecificationRefOrValue",
+          "tableName": "performance_indicator_specification_ref_or_value",
+          "nameCandidates": [
+            "PerformanceIndicatorSpecificationRefOrValue",
+            "PerformanceIndicatorGroupSpecificationPerformanceIndicatorSpecification"
+          ],
+          "refLike": false,
+          "propertyName": "performanceIndicatorSpecification",
+          "itemRef": "PerformanceIndicatorSpecificationRefOrValue",
+          "description": "A product to be created defined by value or existing defined by reference. The polymorphic attributes @type, @schemaLocation & @referredType are related to the product entity and not the RelatedProductRefOrValue class itself",
+          "minItems": 1,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "PerformanceIndicatorGroupSpecification_FVO",
+        "required": [
+          "@type",
+          "name",
+          "groupCategory"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "name",
+          "groupCategory",
+          "performanceIndicatorSpecification"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "PerformanceIndicatorGroupSpecification_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "name",
+          "groupCategory",
+          "performanceIndicatorSpecification"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "PerformanceIndicatorGroupSpecification_create_example_",
+          "value": {
+            "name": "MyPerformanceIndicatorGroupSpecification",
+            "groupCategory": "CPUGroup",
+            "performanceIndicatorSpecification": [
+              {
+                "id": "5000",
+                "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorSpecification/5000",
+                "name": "CPU speed",
+                "indicatorCategory": "CPU",
+                "indicatorType": "float",
+                "collectionType": "cumulative",
+                "indicatorUnit": "GHz",
+                "@baseType": "PerformanceIndicatorSpecificationRef",
+                "@schemaLocation": "https://myschemas/PerformanceIndicatorSpecification.schema.json",
+                "@type": "PerformanceIndicatorSpecificationRef",
+                "@referredType": "PerformanceIndicatorSpecification"
+              },
+              {
+                "id": "5001",
+                "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorSpecification/5001",
+                "name": "Peak CPU speed",
+                "indicatorCategory": "CPU",
+                "indicatorType": "float",
+                "collectionType": "cumulative",
+                "indicatorUnit": "GHz",
+                "@baseType": "PerformanceIndicatorSpecificationRef",
+                "@schemaLocation": "https://myschemas/PerformanceIndicatorSpecification.schema.json",
+                "@type": "PerformanceIndicatorSpecificationRef",
+                "@referredType": "PerformanceIndicatorSpecification"
+              },
+              {
+                "id": "5002",
+                "href": "https://host:port/tmf-api/performanceManagement/v5/performanceIndicatorSpecification/5002",
+                "name": "Min CPU Speed",
+                "indicatorCategory": "CPU",
+                "indicatorType": "float",
+                "collectionType": "cumulative",
+                "indicatorUnit": "GHz",
+                "version": "1.0",
+                "@baseType": "PerformanceIndicatorSpecification",
+                "@schemaLocation": "https://host:port/tmf-api/performanceManagement/v5/schemas/Tmf/common/PerformanceIndicatorSpecification.schema.json",
+                "@type": "PerformanceIndicatorSpecification"
+              }
+            ],
+            "@baseType": "PerformanceIndicatorGroupSpecification",
+            "@schemaLocation": "https://myschemas/PerformanceIndicatorGroupSpecification.schema.json",
+            "@type": "PerformanceIndicatorGroupSpecification"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listPerformanceIndicatorGroupSpecification",
+          "summary": "List or find PerformanceIndicatorGroupSpecification objects",
+          "description": "List or find PerformanceIndicatorGroupSpecification objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createPerformanceIndicatorGroupSpecification",
+          "summary": "Creates a PerformanceIndicatorGroupSpecification",
+          "description": "This operation creates a PerformanceIndicatorGroupSpecification entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePerformanceIndicatorGroupSpecification",
+          "summary": "Retrieves a PerformanceIndicatorGroupSpecification by ID",
+          "description": "This operation retrieves a PerformanceIndicatorGroupSpecification entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchPerformanceIndicatorGroupSpecification",
+          "summary": "Updates partially a PerformanceIndicatorGroupSpecification",
+          "description": "This operation updates partially a PerformanceIndicatorGroupSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePerformanceIndicatorGroupSpecification",
+          "summary": "Deletes a PerformanceIndicatorGroupSpecification",
+          "description": "This operation deletes a PerformanceIndicatorGroupSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/performanceIndicatorGroupSpecification",
+        "item": "/performanceIndicatorGroupSpecification/{id}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "PerformanceIndicatorSpecification",
+      "camelName": "performanceIndicatorSpecification",
+      "kebabName": "performance-indicator-specification",
+      "tableName": "performance_indicator_specification",
+      "pathSegment": "performanceIndicatorSpecification",
+      "pathKey": "performanceIndicatorSpecification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A word, term, or phrase by which a PerformanceIndicatorSpecification is known and distinguished from other PerformanceIndicatorSpecifications."
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A narrative that explains in detail what the PerformanceIndicatorSpecification is."
+        },
+        {
+          "kind": "scalar",
+          "name": "perspective",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The point of view for the PerformanceIndicatorSpecification, such as a single user instance or aggregation."
+        },
+        {
+          "kind": "scalar",
+          "name": "indicatorCategory",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A grouping or set of PerformanceIndicatorSpecifications that are classified together because of common characteristics, such as technology specific, service specific, or technology/service independent."
+        },
+        {
+          "kind": "scalar",
+          "name": "indicatorType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "string",
+            "int",
+            "float",
+            "double"
+          ],
+          "enumRef": "IndicatorType",
+          "nullable": true,
+          "description": "This is enumeration for Indicator Type"
+        },
+        {
+          "kind": "scalar",
+          "name": "derivationAlgorithm",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A step-by-step procedure used to calculate the value of PerformanceIndicator."
+        },
+        {
+          "kind": "scalar",
+          "name": "derivationMethod",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "For simple calculations, the method used to calculate the value of a PerformanceIndicator, such as average, minimum, maximum, sum and so forth."
+        },
+        {
+          "kind": "scalar",
+          "name": "collectionType",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "cumulative",
+            "delta",
+            "discrete_event",
+            "gauge",
+            "status_inspection"
+          ],
+          "enumRef": "CollectionType",
+          "nullable": true,
+          "description": "This is enumeration for CollectionType state"
+        },
+        {
+          "kind": "scalar",
+          "name": "indicatorUnit",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The unit by which the indicator is measured. For example, seconds, KBs, rate per second, etc."
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "PerformanceIndicatorSpecRelationship",
+          "tableName": "performance_indicator_spec_relationship",
+          "nameCandidates": [
+            "PerformanceIndicatorSpecRelationship",
+            "PerformanceIndicatorSpecificationPerformanceIndicatorSpecRelationship"
+          ],
+          "refLike": false,
+          "propertyName": "performanceIndicatorSpecRelationship",
+          "itemRef": "PerformanceIndicatorSpecRelationship",
+          "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+          "minItems": 0,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The association role for this service specification"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "PerformanceIndicatorSpecification_FVO",
+        "required": [
+          "@type",
+          "indicatorCategory",
+          "indicatorUnit",
+          "indicatorType",
+          "collectionType",
+          "name"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "name",
+          "description",
+          "perspective",
+          "indicatorCategory",
+          "indicatorType",
+          "derivationAlgorithm",
+          "derivationMethod",
+          "validFor",
+          "collectionType",
+          "indicatorUnit",
+          "performanceIndicatorSpecRelationship"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "PerformanceIndicatorSpecification_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "href",
+          "id",
+          "name",
+          "description",
+          "perspective",
+          "indicatorCategory",
+          "indicatorType",
+          "derivationAlgorithm",
+          "derivationMethod",
+          "validFor",
+          "collectionType",
+          "indicatorUnit",
+          "performanceIndicatorSpecRelationship"
+        ],
+        "omitsHref": false,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "PerformanceIndicatorSpecification_create_example_",
+          "value": {
+            "derivationAlgorithm": "na",
+            "derivationMethod": "average",
+            "description": "The average CPU speed",
+            "indicatorCategory": "CPU",
+            "indicatorUnit": "GHz",
+            "name": "CPU Speed",
+            "perspective": "aggregation over a collection of systems",
+            "collectionType": "cumulative",
+            "indicatorType": "float",
+            "performanceIndicatorSpecRelationship": [
+              {
+                "perfSpec": {
+                  "href": "https://host:port/tmf-api/performanceManagement/v5/PerformanceIndicatorSpecification/300"
+                },
+                "relationshipType": "aggregation",
+                "role": "member",
+                "validFor": {
+                  "endDateTime": "2025-04-12T23:20:50.52Z",
+                  "startDateTime": "2022-04-12T23:20:50.52Z"
+                },
+                "@baseType": "PerformanceIndicatorSpecRelationship",
+                "@schemaLocation": "https://myschemas.com/PerformanceIndicatorSpecRelationship.schema.json",
+                "@type": "PerformanceIndicatorSpecRelationship"
+              }
+            ],
+            "validFor": {
+              "endDateTime": "2022-04-12T23:20:50.52Z",
+              "startDateTime": "2022-04-12T23:20:50.52Z"
+            },
+            "@baseType": "PerformanceIndicatorSpecification",
+            "@schemaLocation": "https://myschemas.com/PerformanceIndicatorSpecification.schema.json",
+            "@type": "PerformanceIndicatorSpecification"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listPerformanceIndicatorSpecification",
+          "summary": "List or find PerformanceIndicatorSpecification objects",
+          "description": "List or find PerformanceIndicatorSpecification objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createPerformanceIndicatorSpecification",
+          "summary": "Creates a PerformanceIndicatorSpecification",
+          "description": "This operation creates a PerformanceIndicatorSpecification entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePerformanceIndicatorSpecification",
+          "summary": "Retrieves a PerformanceIndicatorSpecification by ID",
+          "description": "This operation retrieves a PerformanceIndicatorSpecification entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchPerformanceIndicatorSpecification",
+          "summary": "Updates partially a PerformanceIndicatorSpecification",
+          "description": "This operation updates partially a PerformanceIndicatorSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePerformanceIndicatorSpecification",
+          "summary": "Deletes a PerformanceIndicatorSpecification",
+          "description": "This operation deletes a PerformanceIndicatorSpecification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/performanceIndicatorSpecification",
+        "item": "/performanceIndicatorSpecification/{id}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "PerformanceMeasurement",
+      "camelName": "performanceMeasurement",
+      "kebabName": "performance-measurement",
+      "tableName": "performance_measurement",
+      "pathSegment": "performanceMeasurement",
+      "pathKey": "performanceMeasurement",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A free-text description of the performance measurement"
+        },
+        {
+          "kind": "json",
+          "name": "tag",
+          "tsType": "Record<string, any>",
+          "column": {
+            "type": "simple-json"
+          },
+          "nullable": true,
+          "reason": "free-form"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [
+        {
+          "name": "measurementCollectionJob",
+          "targetResource": "MeasurementCollectionJob",
+          "targetTable": "measurement_collection_job",
+          "relation": "many-to-one",
+          "joinColumn": "measurement_collection_job_id",
+          "required": false,
+          "description": "",
+          "projectedProps": [
+            "@type",
+            "@baseType",
+            "@schemaLocation",
+            "href",
+            "id",
+            "name",
+            "@referredType"
+          ]
+        }
+      ],
+      "subResources": [
+        {
+          "className": "PerformanceMeasurementRelationship",
+          "tableName": "performance_measurement_relationship",
+          "nameCandidates": [
+            "PerformanceMeasurementRelationship",
+            "PerformanceMeasurementRelatedMeasurement"
+          ],
+          "refLike": false,
+          "propertyName": "relatedMeasurement",
+          "itemRef": "PerformanceMeasurementRelationship",
+          "description": "related Performance measurements array",
+          "minItems": 0,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            },
+            {
+              "kind": "json",
+              "name": "relatedMeasurement",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The association role for this PerformanceMeasurement"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createShape": null,
+      "updateShape": null,
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listPerformanceMeasurement",
+          "summary": "List or find PerformanceMeasurement objects",
+          "description": "List or find PerformanceMeasurement objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrievePerformanceMeasurement",
+          "summary": "Retrieves a PerformanceMeasurement by ID",
+          "description": "This operation retrieves a PerformanceMeasurement entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/performanceMeasurement",
+        "item": "/performanceMeasurement/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "performanceMeasurementCollectionReadyEvent",
+          "eventKind": "CollectionReady",
+          "enumMember": "PERFORMANCE_MEASUREMENT_COLLECTION_READY"
+        },
+        {
+          "eventName": "performanceMeasurementCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PERFORMANCE_MEASUREMENT_CREATE"
+        }
+      ]
+    },
+    {
+      "name": "TrackingRecord",
+      "camelName": "trackingRecord",
+      "kebabName": "tracking-record",
+      "tableName": "tracking_record",
+      "pathSegment": "trackingRecord",
+      "pathKey": "trackingRecord",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+      "composedFrom": [
+        "Extensible"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Describes the action being done, such as: ack, clear"
+        },
+        {
+          "kind": "scalar",
+          "name": "systemId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Describes the system Id from which the action was done"
+        },
+        {
+          "kind": "scalar",
+          "name": "time",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Describes the time at which the action was done"
+        },
+        {
+          "kind": "scalar",
+          "name": "user",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Describes the user doing the action"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Characteristic",
+          "tableName": "characteristic",
+          "nameCandidates": [
+            "Characteristic",
+            "TrackingRecordCharacteristic"
+          ],
+          "refLike": false,
+          "propertyName": "characteristic",
+          "itemRef": "Characteristic",
+          "description": "A generic list of any type of elements. Used for vendor Extensions or loose element encapsulation from other namespaces",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the characteristic"
+            },
+            {
+              "kind": "scalar",
+              "name": "valueType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Data type of the value of the characteristic"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "CharacteristicRelationship",
+              "tableName": "characteristic_relationship",
+              "nameCandidates": [
+                "CharacteristicRelationship",
+                "CharacteristicRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "characteristicRelationship",
+              "itemRef": "CharacteristicRelationship",
+              "description": "Collection of characteristic relationships",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "TrackingRecord_FVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "description",
+          "characteristic",
+          "systemId",
+          "time",
+          "user"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TrackingRecord_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "description",
+          "characteristic",
+          "systemId",
+          "time",
+          "user",
+          "id"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTrackingRecord",
+          "summary": "List or find TrackingRecord objects",
+          "description": "List or find TrackingRecord objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": null,
+        "retrieve": {
+          "operationId": "retrieveTrackingRecord",
+          "summary": "Retrieves a TrackingRecord by ID",
+          "description": "This operation retrieves a TrackingRecord entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/trackingRecord",
+        "item": "/trackingRecord/{id}"
+      },
+      "notificationEvents": []
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/measurementCollectionJobAttributeValueChangeEvent",
+      "eventName": "measurementCollectionJobAttributeValueChangeEvent",
+      "resource": "MeasurementCollectionJob",
+      "eventKind": "AttributeValueChange",
+      "operationId": "measurementCollectionJobAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/measurementCollectionJobCreateEvent",
+      "eventName": "measurementCollectionJobCreateEvent",
+      "resource": "MeasurementCollectionJob",
+      "eventKind": "Create",
+      "operationId": "measurementCollectionJobCreateEvent"
+    },
+    {
+      "path": "/listener/measurementCollectionJobDeleteEvent",
+      "eventName": "measurementCollectionJobDeleteEvent",
+      "resource": "MeasurementCollectionJob",
+      "eventKind": "Delete",
+      "operationId": "measurementCollectionJobDeleteEvent"
+    },
+    {
+      "path": "/listener/measurementCollectionJobExecutionStateChangeEvent",
+      "eventName": "measurementCollectionJobExecutionStateChangeEvent",
+      "resource": "MeasurementCollectionJob",
+      "eventKind": "ExecutionStateChange",
+      "operationId": "measurementCollectionJobExecutionStateChangeEvent"
+    },
+    {
+      "path": "/listener/measurementCollectionJobFilesPreparationErrorEvent",
+      "eventName": "measurementCollectionJobFilesPreparationErrorEvent",
+      "resource": "MeasurementCollectionJob",
+      "eventKind": "FilesPreparationError",
+      "operationId": "measurementCollectionJobFilesPreparationErrorEvent"
+    },
+    {
+      "path": "/listener/measurementCollectionJobFilesReadyEvent",
+      "eventName": "measurementCollectionJobFilesReadyEvent",
+      "resource": "MeasurementCollectionJob",
+      "eventKind": "FilesReady",
+      "operationId": "measurementCollectionJobFilesReadyEvent"
+    },
+    {
+      "path": "/listener/performanceMeasurementCollectionReadyEvent",
+      "eventName": "performanceMeasurementCollectionReadyEvent",
+      "resource": "PerformanceMeasurement",
+      "eventKind": "CollectionReady",
+      "operationId": "performanceMeasurementCollectionReadyEvent"
+    },
+    {
+      "path": "/listener/performanceMeasurementCreateEvent",
+      "eventName": "performanceMeasurementCreateEvent",
+      "resource": "PerformanceMeasurement",
+      "eventKind": "Create",
+      "operationId": "performanceMeasurementCreateEvent"
+    }
+  ],
+  "warnings": [
+    "DataAccessEndpoint has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "DataAccessEndpoint spec declares no create/update/delete operation; those routes are NOT emitted.",
+    "MeasurementCollectionJob has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "PerformanceIndicatorGroupSpecification has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "PerformanceIndicatorSpecification has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "No PerformanceMeasurement_FVO/_Create schema; create DTO must be derived from the resource schema.",
+    "No PerformanceMeasurement_MVO/_Update schema; update DTO must be derived from the resource schema.",
+    "PerformanceMeasurement has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "PerformanceMeasurement spec declares no create/update/delete operation; those routes are NOT emitted.",
+    "TrackingRecord has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TrackingRecord spec declares no create/update/delete operation; those routes are NOT emitted."
+  ]
+}

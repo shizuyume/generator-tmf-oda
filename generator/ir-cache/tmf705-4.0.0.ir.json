@@ -1,0 +1,3599 @@
+{
+  "meta": {
+    "tmfNumber": "705",
+    "specTitle": "Test Environment Management API",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/testEnvironment/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF705_BASE_PATH",
+    "eventExchange": "testEnvironment.events",
+    "eventExchangeConstant": "TMF705_EVENT_EXCHANGE",
+    "eventTypeEnum": "TestEnvironmentEventType",
+    "serviceNameSuggestion": "test-environment-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf705/4.0.0/openapi/TMF705_Test_Environment_Management_API_v4.0.0_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "AbstractEnvironment",
+      "camelName": "abstractEnvironment",
+      "kebabName": "abstract-environment",
+      "tableName": "abstract_environment",
+      "pathSegment": "abstractEnvironment",
+      "pathKey": "abstractEnvironment",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed abstract environment resource",
+      "composedFrom": [],
+      "required": [
+        "abstractEnvironmentDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description for the artifact"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version"
+        },
+        {
+          "kind": "scalar",
+          "name": "versionDescription",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version description"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "incomplete",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "enumRef": "ManagedArtifactStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a managed artifact: 'incomplete', 'beta', 'stable', 'deprecated'"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "abstractEnvironmentDefinition",
+          "targetRef": "AbstractEnvironmentDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "abstractEnvironmentDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "abstractEnvironmentDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "agreement",
+          "targetRef": "TestAgreement",
+          "description": "",
+          "columns": [
+            {
+              "name": "agreementName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementTerms",
+              "sourceProp": "terms",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Attribute",
+          "tableName": "attribute",
+          "nameCandidates": [
+            "Attribute",
+            "AbstractEnvironmentAttribute"
+          ],
+          "refLike": false,
+          "propertyName": "attribute",
+          "itemRef": "Attribute",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The attribute description"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "characteristic",
+              "targetRef": "Characteristic",
+              "description": "",
+              "columns": [
+                {
+                  "name": "characteristicId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicValueType",
+                  "sourceProp": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyWithContactInfo",
+          "tableName": "related_party_with_contact_info",
+          "nameCandidates": [
+            "RelatedPartyWithContactInfo",
+            "AbstractEnvironmentRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyWithContactInfo",
+          "description": "Related party specialization that includes contact information",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ContactMedium",
+              "tableName": "contact_medium",
+              "nameCandidates": [
+                "ContactMedium",
+                "RelatedPartyWithContactInfoContact"
+              ],
+              "refLike": false,
+              "propertyName": "contact",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "AbstractEnvironment_Create",
+        "required": [
+          "abstractEnvironmentDefinition",
+          "description",
+          "version"
+        ],
+        "properties": [
+          "description",
+          "version",
+          "versionDescription",
+          "abstractEnvironmentDefinition",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "AbstractEnvironment_Update",
+        "required": [
+          "abstractEnvironmentDefinition"
+        ],
+        "properties": [
+          "description",
+          "versionDescription",
+          "abstractEnvironmentDefinition",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listAbstractEnvironment",
+          "summary": "List or find AbstractEnvironment objects",
+          "description": "This operation list or find AbstractEnvironment entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createAbstractEnvironment",
+          "summary": "Creates a AbstractEnvironment",
+          "description": "This operation creates a AbstractEnvironment entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveAbstractEnvironment",
+          "summary": "Retrieves a AbstractEnvironment by ID",
+          "description": "This operation retrieves a AbstractEnvironment entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the AbstractEnvironment",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchAbstractEnvironment",
+          "summary": "Updates partially a AbstractEnvironment",
+          "description": "This operation updates partially a AbstractEnvironment entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the AbstractEnvironment",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteAbstractEnvironment",
+          "summary": "Deletes a AbstractEnvironment",
+          "description": "This operation deletes a AbstractEnvironment entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the AbstractEnvironment",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/abstractEnvironment",
+        "item": "/abstractEnvironment/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "abstractEnvironmentAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "ABSTRACT_ENVIRONMENT_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "abstractEnvironmentChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "ABSTRACT_ENVIRONMENT_CHANGE"
+        },
+        {
+          "eventName": "abstractEnvironmentCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "ABSTRACT_ENVIRONMENT_CREATE"
+        },
+        {
+          "eventName": "abstractEnvironmentDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "ABSTRACT_ENVIRONMENT_DELETE"
+        },
+        {
+          "eventName": "abstractEnvironmentStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "ABSTRACT_ENVIRONMENT_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "ConcreteEnvironmentMetaModel",
+      "camelName": "concreteEnvironmentMetaModel",
+      "kebabName": "concrete-environment-meta-model",
+      "tableName": "concrete_environment_meta_model",
+      "pathSegment": "concreteEnvironmentMetaModel",
+      "pathKey": "concreteEnvironmentMetaModel",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed concrete environment resource metamodel resource",
+      "composedFrom": [],
+      "required": [
+        "concreteEnvironmentMetaModelDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description for the artifact"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version"
+        },
+        {
+          "kind": "scalar",
+          "name": "versionDescription",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version description"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "incomplete",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "enumRef": "ManagedArtifactStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a managed artifact: 'incomplete', 'beta', 'stable', 'deprecated'"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "agreement",
+          "targetRef": "TestAgreement",
+          "description": "",
+          "columns": [
+            {
+              "name": "agreementName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementTerms",
+              "sourceProp": "terms",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "concreteEnvironmentMetaModelDefinition",
+          "targetRef": "ConcreteEnvironmentMetaModelDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "concreteEnvironmentMetaModelDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Attribute",
+          "tableName": "attribute",
+          "nameCandidates": [
+            "Attribute",
+            "ConcreteEnvironmentMetaModelAttribute"
+          ],
+          "refLike": false,
+          "propertyName": "attribute",
+          "itemRef": "Attribute",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The attribute description"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "characteristic",
+              "targetRef": "Characteristic",
+              "description": "",
+              "columns": [
+                {
+                  "name": "characteristicId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicValueType",
+                  "sourceProp": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyWithContactInfo",
+          "tableName": "related_party_with_contact_info",
+          "nameCandidates": [
+            "RelatedPartyWithContactInfo",
+            "ConcreteEnvironmentMetaModelRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyWithContactInfo",
+          "description": "Related party specialization that includes contact information",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ContactMedium",
+              "tableName": "contact_medium",
+              "nameCandidates": [
+                "ContactMedium",
+                "RelatedPartyWithContactInfoContact"
+              ],
+              "refLike": false,
+              "propertyName": "contact",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "ConcreteEnvironmentMetaModel_Create",
+        "required": [
+          "concreteEnvironmentMetaModelDefinition",
+          "description",
+          "version"
+        ],
+        "properties": [
+          "description",
+          "version",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "concreteEnvironmentMetaModelDefinition",
+          "relatedParty",
+          "state",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "ConcreteEnvironmentMetaModel_Update",
+        "required": [
+          "concreteEnvironmentMetaModelDefinition"
+        ],
+        "properties": [
+          "description",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "concreteEnvironmentMetaModelDefinition",
+          "relatedParty",
+          "state",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listConcreteEnvironmentMetaModel",
+          "summary": "List or find ConcreteEnvironmentMetaModel objects",
+          "description": "This operation list or find ConcreteEnvironmentMetaModel entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createConcreteEnvironmentMetaModel",
+          "summary": "Creates a ConcreteEnvironmentMetaModel",
+          "description": "This operation creates a ConcreteEnvironmentMetaModel entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveConcreteEnvironmentMetaModel",
+          "summary": "Retrieves a ConcreteEnvironmentMetaModel by ID",
+          "description": "This operation retrieves a ConcreteEnvironmentMetaModel entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the ConcreteEnvironmentMetaModel",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchConcreteEnvironmentMetaModel",
+          "summary": "Updates partially a ConcreteEnvironmentMetaModel",
+          "description": "This operation updates partially a ConcreteEnvironmentMetaModel entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the ConcreteEnvironmentMetaModel",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteConcreteEnvironmentMetaModel",
+          "summary": "Deletes a ConcreteEnvironmentMetaModel",
+          "description": "This operation deletes a ConcreteEnvironmentMetaModel entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the ConcreteEnvironmentMetaModel",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/concreteEnvironmentMetaModel",
+        "item": "/concreteEnvironmentMetaModel/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "concreteEnvironmentMetaModelAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "CONCRETE_ENVIRONMENT_META_MODEL_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "concreteEnvironmentMetaModelChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "CONCRETE_ENVIRONMENT_META_MODEL_CHANGE"
+        },
+        {
+          "eventName": "concreteEnvironmentMetaModelCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "CONCRETE_ENVIRONMENT_META_MODEL_CREATE"
+        },
+        {
+          "eventName": "concreteEnvironmentMetaModelDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "CONCRETE_ENVIRONMENT_META_MODEL_DELETE"
+        },
+        {
+          "eventName": "concreteEnvironmentMetaModelStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "CONCRETE_ENVIRONMENT_META_MODEL_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "TestResourceAPI",
+      "camelName": "testResourceApi",
+      "kebabName": "test-resource-api",
+      "tableName": "test_resource_api",
+      "pathSegment": "testResourceAPI",
+      "pathKey": "testResourceAPI",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed test resource API resource",
+      "composedFrom": [],
+      "required": [
+        "testResourceAPIDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description for the artifact"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version"
+        },
+        {
+          "kind": "scalar",
+          "name": "versionDescription",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version description"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "incomplete",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "enumRef": "ManagedArtifactStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a managed artifact: 'incomplete', 'beta', 'stable', 'deprecated'"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "agreement",
+          "targetRef": "TestAgreement",
+          "description": "",
+          "columns": [
+            {
+              "name": "agreementName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementTerms",
+              "sourceProp": "terms",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "testResourceAPIDefinition",
+          "targetRef": "TestResourceAPIDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "testResourceApiDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "testResourceApiDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Attribute",
+          "tableName": "attribute",
+          "nameCandidates": [
+            "Attribute",
+            "TestResourceAPIAttribute"
+          ],
+          "refLike": false,
+          "propertyName": "attribute",
+          "itemRef": "Attribute",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The attribute description"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "characteristic",
+              "targetRef": "Characteristic",
+              "description": "",
+              "columns": [
+                {
+                  "name": "characteristicId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicValueType",
+                  "sourceProp": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyWithContactInfo",
+          "tableName": "related_party_with_contact_info",
+          "nameCandidates": [
+            "RelatedPartyWithContactInfo",
+            "TestResourceAPIRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyWithContactInfo",
+          "description": "Related party specialization that includes contact information",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ContactMedium",
+              "tableName": "contact_medium",
+              "nameCandidates": [
+                "ContactMedium",
+                "RelatedPartyWithContactInfoContact"
+              ],
+              "refLike": false,
+              "propertyName": "contact",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "TestResourceAPI_Create",
+        "required": [
+          "testResourceAPIDefinition",
+          "description",
+          "version"
+        ],
+        "properties": [
+          "description",
+          "version",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "testResourceAPIDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "TestResourceAPI_Update",
+        "required": [
+          "testResourceAPIDefinition"
+        ],
+        "properties": [
+          "description",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "relatedParty",
+          "state",
+          "testResourceAPIDefinition",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listTestResourceAPI",
+          "summary": "List or find TestResourceAPI objects",
+          "description": "This operation list or find TestResourceAPI entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createTestResourceAPI",
+          "summary": "Creates a TestResourceAPI",
+          "description": "This operation creates a TestResourceAPI entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveTestResourceAPI",
+          "summary": "Retrieves a TestResourceAPI by ID",
+          "description": "This operation retrieves a TestResourceAPI entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestResourceAPI",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchTestResourceAPI",
+          "summary": "Updates partially a TestResourceAPI",
+          "description": "This operation updates partially a TestResourceAPI entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestResourceAPI",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteTestResourceAPI",
+          "summary": "Deletes a TestResourceAPI",
+          "description": "This operation deletes a TestResourceAPI entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the TestResourceAPI",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/testResourceAPI",
+        "item": "/testResourceAPI/{id}"
+      },
+      "notificationEvents": []
+    },
+    {
+      "name": "ProvisioningArtifact",
+      "camelName": "provisioningArtifact",
+      "kebabName": "provisioning-artifact",
+      "tableName": "provisioning_artifact",
+      "pathSegment": "provisioningArtifact",
+      "pathKey": "provisioningArtifact",
+      "parentSegments": [],
+      "nested": false,
+      "description": "A managed provisioning artifact resource",
+      "composedFrom": [],
+      "required": [
+        "provisioningArtifactDefinition"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description for the artifact"
+        },
+        {
+          "kind": "scalar",
+          "name": "version",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version"
+        },
+        {
+          "kind": "scalar",
+          "name": "versionDescription",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The artifact version description"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "incomplete",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "enumRef": "ManagedArtifactStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a managed artifact: 'incomplete', 'beta', 'stable', 'deprecated'"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "agreement",
+          "targetRef": "TestAgreement",
+          "description": "",
+          "columns": [
+            {
+              "name": "agreementName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementTerms",
+              "sourceProp": "terms",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "agreementUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "provisioningArtifactDefinition",
+          "targetRef": "ProvisioningArtifactDefinition",
+          "description": "",
+          "columns": [
+            {
+              "name": "provisioningArtifactDefinitionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionAttachmentType",
+              "sourceProp": "attachmentType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionContent",
+              "sourceProp": "content",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionDescription",
+              "sourceProp": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionMimeType",
+              "sourceProp": "mimeType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionUrl",
+              "sourceProp": "url",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "provisioningArtifactDefinitionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "Attribute",
+          "tableName": "attribute",
+          "nameCandidates": [
+            "Attribute",
+            "ProvisioningArtifactAttribute"
+          ],
+          "refLike": false,
+          "propertyName": "attribute",
+          "itemRef": "Attribute",
+          "description": "",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The attribute description"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "characteristic",
+              "targetRef": "Characteristic",
+              "description": "",
+              "columns": [
+                {
+                  "name": "characteristicId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicValueType",
+                  "sourceProp": "valueType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "characteristicType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "RelatedPartyWithContactInfo",
+          "tableName": "related_party_with_contact_info",
+          "nameCandidates": [
+            "RelatedPartyWithContactInfo",
+            "ProvisioningArtifactRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyWithContactInfo",
+          "description": "Related party specialization that includes contact information",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ContactMedium",
+              "tableName": "contact_medium",
+              "nameCandidates": [
+                "ContactMedium",
+                "RelatedPartyWithContactInfoContact"
+              ],
+              "refLike": false,
+              "propertyName": "contact",
+              "itemRef": "ContactMedium",
+              "description": "Indicates the contact medium that could be used to contact the party.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "mediumType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the contact medium, such as: email address, telephone number, postal address"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "preferred",
+                  "tsType": "boolean",
+                  "column": {
+                    "type": "boolean"
+                  },
+                  "validators": [
+                    "IsBoolean"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "If true, indicates that is the preferred contact medium"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "characteristic",
+                  "targetRef": "MediumCharacteristic",
+                  "description": "Any additional characteristic(s) of this contact medium",
+                  "columns": [
+                    {
+                      "name": "characteristicId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCity",
+                      "sourceProp": "city",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicContactType",
+                      "sourceProp": "contactType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicCountry",
+                      "sourceProp": "country",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicEmailAddress",
+                      "sourceProp": "emailAddress",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicFaxNumber",
+                      "sourceProp": "faxNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPhoneNumber",
+                      "sourceProp": "phoneNumber",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicPostCode",
+                      "sourceProp": "postCode",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSocialNetworkId",
+                      "sourceProp": "socialNetworkId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStateOrProvince",
+                      "sourceProp": "stateOrProvince",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet1",
+                      "sourceProp": "street1",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicStreet2",
+                      "sourceProp": "street2",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "characteristicType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "validFor",
+                  "targetRef": "TimePeriod",
+                  "description": "The time period that the contact medium is valid for",
+                  "columns": [
+                    {
+                      "name": "validForEndDateTime",
+                      "sourceProp": "endDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "validForStartDateTime",
+                      "sourceProp": "startDateTime",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "ProvisioningArtifact_Create",
+        "required": [
+          "provisioningArtifactDefinition",
+          "description",
+          "version"
+        ],
+        "properties": [
+          "description",
+          "version",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "provisioningArtifactDefinition",
+          "relatedParty",
+          "state",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "ProvisioningArtifact_Update",
+        "required": [
+          "provisioningArtifactDefinition"
+        ],
+        "properties": [
+          "description",
+          "versionDescription",
+          "agreement",
+          "attribute",
+          "provisioningArtifactDefinition",
+          "relatedParty",
+          "state",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listProvisioningArtifact",
+          "summary": "List or find ProvisioningArtifact objects",
+          "description": "This operation list or find ProvisioningArtifact entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createProvisioningArtifact",
+          "summary": "Creates a ProvisioningArtifact",
+          "description": "This operation creates a ProvisioningArtifact entity.",
+          "params": [],
+          "statuses": [
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveProvisioningArtifact",
+          "summary": "Retrieves a ProvisioningArtifact by ID",
+          "description": "This operation retrieves a ProvisioningArtifact entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the ProvisioningArtifact",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchProvisioningArtifact",
+          "summary": "Updates partially a ProvisioningArtifact",
+          "description": "This operation updates partially a ProvisioningArtifact entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the ProvisioningArtifact",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteProvisioningArtifact",
+          "summary": "Deletes a ProvisioningArtifact",
+          "description": "This operation deletes a ProvisioningArtifact entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the ProvisioningArtifact",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/provisioningArtifact",
+        "item": "/provisioningArtifact/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "provisioningArtifactAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PROVISIONING_ARTIFACT_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "provisioningArtifactChangeEvent",
+          "eventKind": "Change",
+          "enumMember": "PROVISIONING_ARTIFACT_CHANGE"
+        },
+        {
+          "eventName": "provisioningArtifactCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PROVISIONING_ARTIFACT_CREATE"
+        },
+        {
+          "eventName": "provisioningArtifactDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PROVISIONING_ARTIFACT_DELETE"
+        },
+        {
+          "eventName": "provisioningArtifactStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "PROVISIONING_ARTIFACT_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/abstractEnvironmentAttributeValueChangeEvent",
+      "eventName": "abstractEnvironmentAttributeValueChangeEvent",
+      "resource": "AbstractEnvironment",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToAbstractEnvironmentAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/abstractEnvironmentChangeEvent",
+      "eventName": "abstractEnvironmentChangeEvent",
+      "resource": "AbstractEnvironment",
+      "eventKind": "Change",
+      "operationId": "listenToAbstractEnvironmentChangeEvent"
+    },
+    {
+      "path": "/listener/abstractEnvironmentCreateEvent",
+      "eventName": "abstractEnvironmentCreateEvent",
+      "resource": "AbstractEnvironment",
+      "eventKind": "Create",
+      "operationId": "listenToAbstractEnvironmentCreateEvent"
+    },
+    {
+      "path": "/listener/abstractEnvironmentDeleteEvent",
+      "eventName": "abstractEnvironmentDeleteEvent",
+      "resource": "AbstractEnvironment",
+      "eventKind": "Delete",
+      "operationId": "listenToAbstractEnvironmentDeleteEvent"
+    },
+    {
+      "path": "/listener/abstractEnvironmentStateChangeEvent",
+      "eventName": "abstractEnvironmentStateChangeEvent",
+      "resource": "AbstractEnvironment",
+      "eventKind": "StateChange",
+      "operationId": "listenToAbstractEnvironmentStateChangeEvent"
+    },
+    {
+      "path": "/listener/concreteEnvironmentMetaModelAttributeValueChangeEvent",
+      "eventName": "concreteEnvironmentMetaModelAttributeValueChangeEvent",
+      "resource": "ConcreteEnvironmentMetaModel",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToConcreteEnvironmentMetaModelAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/concreteEnvironmentMetaModelChangeEvent",
+      "eventName": "concreteEnvironmentMetaModelChangeEvent",
+      "resource": "ConcreteEnvironmentMetaModel",
+      "eventKind": "Change",
+      "operationId": "listenToConcreteEnvironmentMetaModelChangeEvent"
+    },
+    {
+      "path": "/listener/concreteEnvironmentMetaModelCreateEvent",
+      "eventName": "concreteEnvironmentMetaModelCreateEvent",
+      "resource": "ConcreteEnvironmentMetaModel",
+      "eventKind": "Create",
+      "operationId": "listenToConcreteEnvironmentMetaModelCreateEvent"
+    },
+    {
+      "path": "/listener/concreteEnvironmentMetaModelDeleteEvent",
+      "eventName": "concreteEnvironmentMetaModelDeleteEvent",
+      "resource": "ConcreteEnvironmentMetaModel",
+      "eventKind": "Delete",
+      "operationId": "listenToConcreteEnvironmentMetaModelDeleteEvent"
+    },
+    {
+      "path": "/listener/concreteEnvironmentMetaModelStateChangeEvent",
+      "eventName": "concreteEnvironmentMetaModelStateChangeEvent",
+      "resource": "ConcreteEnvironmentMetaModel",
+      "eventKind": "StateChange",
+      "operationId": "listenToConcreteEnvironmentMetaModelStateChangeEvent"
+    },
+    {
+      "path": "/listener/provisioningArtifactAttributeValueChangeEvent",
+      "eventName": "provisioningArtifactAttributeValueChangeEvent",
+      "resource": "ProvisioningArtifact",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToProvisioningArtifactAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/provisioningArtifactChangeEvent",
+      "eventName": "provisioningArtifactChangeEvent",
+      "resource": "ProvisioningArtifact",
+      "eventKind": "Change",
+      "operationId": "listenToProvisioningArtifactChangeEvent"
+    },
+    {
+      "path": "/listener/provisioningArtifactCreateEvent",
+      "eventName": "provisioningArtifactCreateEvent",
+      "resource": "ProvisioningArtifact",
+      "eventKind": "Create",
+      "operationId": "listenToProvisioningArtifactCreateEvent"
+    },
+    {
+      "path": "/listener/provisioningArtifactDeleteEvent",
+      "eventName": "provisioningArtifactDeleteEvent",
+      "resource": "ProvisioningArtifact",
+      "eventKind": "Delete",
+      "operationId": "listenToProvisioningArtifactDeleteEvent"
+    },
+    {
+      "path": "/listener/provisioningArtifactStateChangeEvent",
+      "eventName": "provisioningArtifactStateChangeEvent",
+      "resource": "ProvisioningArtifact",
+      "eventKind": "StateChange",
+      "operationId": "listenToProvisioningArtifactStateChangeEvent"
+    },
+    {
+      "path": "/listener/testResourceAPIAttributeValueChangeEvent",
+      "eventName": "testResourceAPIAttributeValueChangeEvent",
+      "resource": null,
+      "eventKind": "testResourceAPIAttributeValueChange",
+      "operationId": "listenToTestResourceAPIAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/testResourceAPIChangeEvent",
+      "eventName": "testResourceAPIChangeEvent",
+      "resource": null,
+      "eventKind": "testResourceAPIChange",
+      "operationId": "listenToTestResourceAPIChangeEvent"
+    },
+    {
+      "path": "/listener/testResourceAPICreateEvent",
+      "eventName": "testResourceAPICreateEvent",
+      "resource": null,
+      "eventKind": "testResourceAPICreate",
+      "operationId": "listenToTestResourceAPICreateEvent"
+    },
+    {
+      "path": "/listener/testResourceAPIDeleteEvent",
+      "eventName": "testResourceAPIDeleteEvent",
+      "resource": null,
+      "eventKind": "testResourceAPIDelete",
+      "operationId": "listenToTestResourceAPIDeleteEvent"
+    },
+    {
+      "path": "/listener/testResourceAPIStateChangeEvent",
+      "eventName": "testResourceAPIStateChangeEvent",
+      "resource": null,
+      "eventKind": "testResourceAPIStateChange",
+      "operationId": "listenToTestResourceAPIStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "AbstractEnvironment has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "ConcreteEnvironmentMetaModel has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "TestResourceAPI has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "ProvisioningArtifact has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "Listener paths not matched to any resource: testResourceAPIAttributeValueChangeEvent, testResourceAPIChangeEvent, testResourceAPICreateEvent, testResourceAPIDeleteEvent, testResourceAPIStateChangeEvent"
+  ]
+}

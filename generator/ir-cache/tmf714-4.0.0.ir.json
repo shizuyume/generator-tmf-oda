@@ -1,0 +1,1995 @@
+{
+  "meta": {
+    "tmfNumber": "714",
+    "specTitle": "Work Qualification Management",
+    "specVersion": "4.0.0",
+    "versionMajor": "4",
+    "dialect": "swagger2",
+    "basePath": "tmf-api/workQualificationManagement/v4",
+    "basePathSource": "spec.basePath",
+    "basePathConstant": "TMF714_BASE_PATH",
+    "eventExchange": "workQualification.events",
+    "eventExchangeConstant": "TMF714_EVENT_EXCHANGE",
+    "eventTypeEnum": "WorkQualificationEventType",
+    "serviceNameSuggestion": "work-qualification-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf714/4.0.0/openapi/TMF714_Work_Qualification_Management_v4.0.0_beta_swagger.json",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "CheckWorkQualification",
+      "camelName": "checkWorkQualification",
+      "kebabName": "check-work-qualification",
+      "tableName": "check_work_qualification",
+      "pathSegment": "checkWorkQualification",
+      "pathKey": "checkWorkQualification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "CheckWorkQualification is used to validate specific units of work",
+      "composedFrom": [],
+      "required": [
+        "workQualificationItem"
+      ],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "checkWorkQualificationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the workQualification was submitted"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the qualification"
+        },
+        {
+          "kind": "scalar",
+          "name": "effectiveQualificationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Effective date to qualification completion"
+        },
+        {
+          "kind": "scalar",
+          "name": "estimatedResponseDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the requester expect to provide an answer for the qualification request."
+        },
+        {
+          "kind": "scalar",
+          "name": "expectedQualificationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A date (DateTime). Deadline date when the requester expected a qualification answer."
+        },
+        {
+          "kind": "scalar",
+          "name": "expirationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the qualification response expires"
+        },
+        {
+          "kind": "scalar",
+          "name": "externalId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Identifier provided by the requester"
+        },
+        {
+          "kind": "scalar",
+          "name": "instantSyncQualification",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "An indicator which when the value is \"true\" means that requester expects to get qualifcation result immediately in the response. If the indicator is true then the response code of 200 indicates the operation is successful otherwise a task is created with a response 201."
+        },
+        {
+          "kind": "scalar",
+          "name": "provideAlternative",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "When the value is TRUE means that alternative solutions should be provided"
+        },
+        {
+          "kind": "scalar",
+          "name": "provideUnavailabilityReason",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "When the value is TRUE means that unavailability reason are expected for non available units of work."
+        },
+        {
+          "kind": "scalar",
+          "name": "qualificationResult",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Qualification result for this workQualification. It could be:  qualified (all qualification item are qualified), alternate (At least one item alternate and no item with  unqualified), unqualified (At least one item unqualified)"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "accepted",
+            "terminatedWithError",
+            "inProgress",
+            "done"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "State of the workQualification (acknowledged, inProgress, terminatedWithError, done)"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "place",
+          "targetRef": "PlaceRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "placeId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RelatedParty",
+          "tableName": "related_party",
+          "nameCandidates": [
+            "RelatedParty",
+            "CheckWorkQualificationRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedParty",
+          "description": "A list of related party references, defines party or party role linked to this request.",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "CheckWorkQualificationItem",
+          "tableName": "check_work_qualification_item",
+          "nameCandidates": [
+            "CheckWorkQualificationItem",
+            "CheckWorkQualificationWorkQualificationItem"
+          ],
+          "refLike": false,
+          "propertyName": "workQualificationItem",
+          "itemRef": "CheckWorkQualificationItem",
+          "description": "A WorkQualificationItem relates to a specific unit of work being checked in a qualification operation.",
+          "minItems": 1,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "expectedWorkDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The date when the work is expected to take place"
+            },
+            {
+              "kind": "scalar",
+              "name": "expirationDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date when the qualification item response expires"
+            },
+            {
+              "kind": "scalar",
+              "name": "qualificationResult",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Qualification result for workQualification item. It could be: - qualified (requested unit of work is valid), - unqualified (requested unit of work not valid and not alternative available), - alternate (requested unit of work not valid but alternate proposal available)"
+            },
+            {
+              "kind": "scalar",
+              "name": "state",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "State of the qualification item (acknowledged, inProgress, terminatedWithError, done)"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "work",
+              "targetRef": "WorkRefOrValue",
+              "description": "Work structure that allows to identify the unit of work'S composition, its Specification and Characteristics.",
+              "columns": [
+                {
+                  "name": "workId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workCompletionDate",
+                  "sourceProp": "completionDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workExpectedCompletionDate",
+                  "sourceProp": "expectedCompletionDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workOrderDate",
+                  "sourceProp": "orderDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workPercentageComplete",
+                  "sourceProp": "percentageComplete",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workWorkPriority",
+                  "sourceProp": "workPriority",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workWorkType",
+                  "sourceProp": "workType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "AlternateWorkProposal",
+              "tableName": "alternate_work_proposal",
+              "nameCandidates": [
+                "AlternateWorkProposal",
+                "CheckWorkQualificationItemAlternateWorkProposal"
+              ],
+              "refLike": false,
+              "propertyName": "alternateWorkProposal",
+              "itemRef": "AlternateWorkProposal",
+              "description": "Alternate work proposal is used when the requested unit of work is not valid as specified in the request. An alternate proposal could be a distinct workSpecification close to the requested one or the same specification as requested but with a different parameters.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "alternateWorkDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Alternate date where the work could take place in case the expected date cannot be met."
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "alternateWork",
+                  "targetRef": "WorkRefOrValue",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "alternateWorkId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkCompletionDate",
+                      "sourceProp": "completionDate",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkDescription",
+                      "sourceProp": "description",
+                      "tsType": "string",
+                      "column": {
+                        "type": "text"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkExpectedCompletionDate",
+                      "sourceProp": "expectedCompletionDate",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkOrderDate",
+                      "sourceProp": "orderDate",
+                      "tsType": "Date",
+                      "column": {
+                        "type": "datetime"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkPercentageComplete",
+                      "sourceProp": "percentageComplete",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkWorkPriority",
+                      "sourceProp": "workPriority",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkWorkType",
+                      "sourceProp": "workType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "alternateWorkReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "EligibilityUnavailabilityReason",
+              "tableName": "eligibility_unavailability_reason",
+              "nameCandidates": [
+                "EligibilityUnavailabilityReason",
+                "CheckWorkQualificationItemEligibilityUnavailabilityReason"
+              ],
+              "refLike": false,
+              "propertyName": "eligibilityUnavailabilityReason",
+              "itemRef": "EligibilityUnavailabilityReason",
+              "description": "Reason for eligibility result if the productOfferingQualification result is no (meaning the productOffering or productSpec is not available).",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "code",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unavailability reason code."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "label",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unavailability reason label."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "WorkQualificationItemRelationship",
+              "tableName": "work_qualification_item_relationship",
+              "nameCandidates": [
+                "WorkQualificationItemRelationship",
+                "CheckWorkQualificationItemQualificationItemRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "qualificationItemRelationship",
+              "itemRef": "WorkQualificationItemRelationship",
+              "description": "Structure used to describe relationship between WorkQualification items from the same WorkQualification .",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of relationship (ex: reliesOn, connectedTo, etc...)"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "WorkQualificationRelationship",
+              "tableName": "work_qualification_relationship",
+              "nameCandidates": [
+                "WorkQualificationRelationship",
+                "CheckWorkQualificationItemQualificationRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "qualificationRelationship",
+              "itemRef": "WorkQualificationRelationship",
+              "description": "Structure used to describe relationship between WorkQualification item from the same WorkQualification.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The type of relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "TerminationError",
+              "tableName": "termination_error",
+              "nameCandidates": [
+                "TerminationError",
+                "CheckWorkQualificationItemTerminationError"
+              ],
+              "refLike": false,
+              "propertyName": "terminationError",
+              "itemRef": "TerminationError",
+              "description": "If qualificationItem has not been done properly this lists the error(s) that caused termination of the qualification.",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "value",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Text to describe the termination error - for example: Unable to proceed to qualification because incomplete information provided"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "CheckWorkQualification_Create",
+        "required": [
+          "workQualificationItem"
+        ],
+        "properties": [
+          "description",
+          "expectedQualificationDate",
+          "externalId",
+          "instantSyncQualification",
+          "provideAlternative",
+          "provideUnavailabilityReason",
+          "place",
+          "relatedParty",
+          "workQualificationItem",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "CheckWorkQualification_Update",
+        "required": [
+          "workQualificationItem"
+        ],
+        "properties": [
+          "description",
+          "effectiveQualificationDate",
+          "estimatedResponseDate",
+          "expectedQualificationDate",
+          "expirationDate",
+          "externalId",
+          "instantSyncQualification",
+          "provideAlternative",
+          "provideUnavailabilityReason",
+          "qualificationResult",
+          "place",
+          "relatedParty",
+          "state",
+          "workQualificationItem",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listCheckWorkQualification",
+          "summary": "List or find CheckWorkQualification objects",
+          "description": "This operation list or find CheckWorkQualification entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createCheckWorkQualification",
+          "summary": "Creates a CheckWorkQualification",
+          "description": "This operation creates a CheckWorkQualification entity.",
+          "params": [],
+          "statuses": [
+            "200",
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveCheckWorkQualification",
+          "summary": "Retrieves a CheckWorkQualification by ID",
+          "description": "This operation retrieves a CheckWorkQualification entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the CheckWorkQualification",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchCheckWorkQualification",
+          "summary": "Updates partially a CheckWorkQualification",
+          "description": "This operation updates partially a CheckWorkQualification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the CheckWorkQualification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteCheckWorkQualification",
+          "summary": "Deletes a CheckWorkQualification",
+          "description": "This operation deletes a CheckWorkQualification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the CheckWorkQualification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/checkWorkQualification",
+        "item": "/checkWorkQualification/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "checkWorkQualificationAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "CHECK_WORK_QUALIFICATION_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "checkWorkQualificationCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "CHECK_WORK_QUALIFICATION_CREATE"
+        },
+        {
+          "eventName": "checkWorkQualificationDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "CHECK_WORK_QUALIFICATION_DELETE"
+        },
+        {
+          "eventName": "checkWorkQualificationInformationRequiredEvent",
+          "eventKind": "InformationRequired",
+          "enumMember": "CHECK_WORK_QUALIFICATION_INFORMATION_REQUIRED"
+        },
+        {
+          "eventName": "checkWorkQualificationStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "CHECK_WORK_QUALIFICATION_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "QueryWorkQualification",
+      "camelName": "queryWorkQualification",
+      "kebabName": "query-work-qualification",
+      "tableName": "query_work_qualification",
+      "pathSegment": "queryWorkQualification",
+      "pathKey": "queryWorkQualification",
+      "parentSegments": [],
+      "nested": false,
+      "description": "QueryWorkQualification is used to retrieve a list of units of work that are valid in the context of the interaction",
+      "composedFrom": [],
+      "required": [],
+      "infraFields": [
+        "id",
+        "href",
+        "@baseType",
+        "@schemaLocation",
+        "@type"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the qualification"
+        },
+        {
+          "kind": "scalar",
+          "name": "effectiveQualificationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Effective date to qualification completion"
+        },
+        {
+          "kind": "scalar",
+          "name": "estimatedResponseDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the requester expect to provide an answer for the qualification request."
+        },
+        {
+          "kind": "scalar",
+          "name": "expectedQualificationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A date (DateTime). Deadline date when the requester expected a qualification answer."
+        },
+        {
+          "kind": "scalar",
+          "name": "expirationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the qualification response expires"
+        },
+        {
+          "kind": "scalar",
+          "name": "externalId",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 36
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Identifier provided by the requester"
+        },
+        {
+          "kind": "scalar",
+          "name": "instantSyncQualification",
+          "tsType": "boolean",
+          "column": {
+            "type": "boolean"
+          },
+          "validators": [
+            "IsBoolean"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "An indicator which when the value is \"true\" means that requester expects to get qualifcation result immediately in the response. If the indicator is true then the response code of 200 indicates the operation is successful otherwise a task is created with a response 201."
+        },
+        {
+          "kind": "scalar",
+          "name": "queryWorkQualificationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the workQualification was submitted"
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "accepted",
+            "terminatedWithError",
+            "inProgress",
+            "done"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "State of the workQualification (acknowledged, inProgress, terminatedWithError, done)"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "place",
+          "targetRef": "PlaceRefOrValue",
+          "description": "",
+          "columns": [
+            {
+              "name": "placeId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "placeReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "searchCriteria",
+          "targetRef": "WorkQualificationItem",
+          "description": "",
+          "columns": [
+            {
+              "name": "searchCriteriaId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchCriteriaExpectedWorkDate",
+              "sourceProp": "expectedWorkDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchCriteriaExpirationDate",
+              "sourceProp": "expirationDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchCriteriaBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchCriteriaSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "searchCriteriaType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RelatedParty",
+          "tableName": "related_party",
+          "nameCandidates": [
+            "RelatedParty",
+            "QueryWorkQualificationRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedParty",
+          "description": "A list of related party references, defines party or party role linked to this request.",
+          "minItems": null,
+          "requiredFields": [
+            "@referredType",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the related entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "WorkQualificationItem",
+          "tableName": "work_qualification_item",
+          "nameCandidates": [
+            "WorkQualificationItem",
+            "QueryWorkQualificationWorkQualificationItem"
+          ],
+          "refLike": false,
+          "propertyName": "workQualificationItem",
+          "itemRef": "WorkQualificationItem",
+          "description": "A WorkQualificationItem relates to a specific unit of work being checked in a qualification operation.",
+          "minItems": null,
+          "requiredFields": [],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "expectedWorkDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The date when the work is expected to take place"
+            },
+            {
+              "kind": "scalar",
+              "name": "expirationDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date when the qualification item response expires"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "work",
+              "targetRef": "WorkRefOrValue",
+              "description": "Work structure that allows to identify the unit of work'S composition, its Specification and Characteristics.",
+              "columns": [
+                {
+                  "name": "workId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workCompletionDate",
+                  "sourceProp": "completionDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workExpectedCompletionDate",
+                  "sourceProp": "expectedCompletionDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workOrderDate",
+                  "sourceProp": "orderDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workPercentageComplete",
+                  "sourceProp": "percentageComplete",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workWorkPriority",
+                  "sourceProp": "workPriority",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workWorkType",
+                  "sourceProp": "workType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "workReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "EligibilityUnavailabilityReason",
+              "tableName": "eligibility_unavailability_reason",
+              "nameCandidates": [
+                "EligibilityUnavailabilityReason",
+                "WorkQualificationItemEligibilityUnavailabilityReason"
+              ],
+              "refLike": false,
+              "propertyName": "eligibilityUnavailabilityReason",
+              "itemRef": "EligibilityUnavailabilityReason",
+              "description": "Reason for eligibility result if the productOfferingQualification result is no (meaning the productOffering or productSpec is not available).",
+              "minItems": null,
+              "requiredFields": [],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "code",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unavailability reason code."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "label",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unavailability reason label."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "QueryWorkQualification_Create",
+        "required": [
+          "searchCriteria"
+        ],
+        "properties": [
+          "description",
+          "expectedQualificationDate",
+          "externalId",
+          "instantSyncQualification",
+          "place",
+          "relatedParty",
+          "searchCriteria",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "updateShape": {
+        "schemaName": "QueryWorkQualification_Update",
+        "required": [],
+        "properties": [
+          "description",
+          "effectiveQualificationDate",
+          "estimatedResponseDate",
+          "expectedQualificationDate",
+          "expirationDate",
+          "externalId",
+          "instantSyncQualification",
+          "place",
+          "relatedParty",
+          "searchCriteria",
+          "state",
+          "workQualificationItem",
+          "@baseType",
+          "@schemaLocation",
+          "@type"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [],
+      "operations": {
+        "list": {
+          "operationId": "listQueryWorkQualification",
+          "summary": "List or find QueryWorkQualification objects",
+          "description": "This operation list or find QueryWorkQualification entities",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "create": {
+          "operationId": "createQueryWorkQualification",
+          "summary": "Creates a QueryWorkQualification",
+          "description": "This operation creates a QueryWorkQualification entity.",
+          "params": [],
+          "statuses": [
+            "200",
+            "201",
+            "400",
+            "401",
+            "403",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveQueryWorkQualification",
+          "summary": "Retrieves a QueryWorkQualification by ID",
+          "description": "This operation retrieves a QueryWorkQualification entity. Attribute selection is enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the QueryWorkQualification",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to provide in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "update": {
+          "operationId": "patchQueryWorkQualification",
+          "summary": "Updates partially a QueryWorkQualification",
+          "description": "This operation updates partially a QueryWorkQualification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the QueryWorkQualification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteQueryWorkQualification",
+          "summary": "Deletes a QueryWorkQualification",
+          "description": "This operation deletes a QueryWorkQualification entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the QueryWorkQualification",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/queryWorkQualification",
+        "item": "/queryWorkQualification/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "queryWorkQualificationCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "QUERY_WORK_QUALIFICATION_CREATE"
+        },
+        {
+          "eventName": "queryWorkQualificationDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "QUERY_WORK_QUALIFICATION_DELETE"
+        },
+        {
+          "eventName": "queryWorkQualificationStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "QUERY_WORK_QUALIFICATION_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/checkWorkQualificationAttributeValueChangeEvent",
+      "eventName": "checkWorkQualificationAttributeValueChangeEvent",
+      "resource": "CheckWorkQualification",
+      "eventKind": "AttributeValueChange",
+      "operationId": "listenToCheckWorkQualificationAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/checkWorkQualificationCreateEvent",
+      "eventName": "checkWorkQualificationCreateEvent",
+      "resource": "CheckWorkQualification",
+      "eventKind": "Create",
+      "operationId": "listenToCheckWorkQualificationCreateEvent"
+    },
+    {
+      "path": "/listener/checkWorkQualificationDeleteEvent",
+      "eventName": "checkWorkQualificationDeleteEvent",
+      "resource": "CheckWorkQualification",
+      "eventKind": "Delete",
+      "operationId": "listenToCheckWorkQualificationDeleteEvent"
+    },
+    {
+      "path": "/listener/checkWorkQualificationInformationRequiredEvent",
+      "eventName": "checkWorkQualificationInformationRequiredEvent",
+      "resource": "CheckWorkQualification",
+      "eventKind": "InformationRequired",
+      "operationId": "listenToCheckWorkQualificationInformationRequiredEvent"
+    },
+    {
+      "path": "/listener/checkWorkQualificationStateChangeEvent",
+      "eventName": "checkWorkQualificationStateChangeEvent",
+      "resource": "CheckWorkQualification",
+      "eventKind": "StateChange",
+      "operationId": "listenToCheckWorkQualificationStateChangeEvent"
+    },
+    {
+      "path": "/listener/queryWorkQualificationCreateEvent",
+      "eventName": "queryWorkQualificationCreateEvent",
+      "resource": "QueryWorkQualification",
+      "eventKind": "Create",
+      "operationId": "listenToQueryWorkQualificationCreateEvent"
+    },
+    {
+      "path": "/listener/queryWorkQualificationDeleteEvent",
+      "eventName": "queryWorkQualificationDeleteEvent",
+      "resource": "QueryWorkQualification",
+      "eventKind": "Delete",
+      "operationId": "listenToQueryWorkQualificationDeleteEvent"
+    },
+    {
+      "path": "/listener/queryWorkQualificationStateChangeEvent",
+      "eventName": "queryWorkQualificationStateChangeEvent",
+      "resource": "QueryWorkQualification",
+      "eventKind": "StateChange",
+      "operationId": "listenToQueryWorkQualificationStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "CheckWorkQualification has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "QueryWorkQualification has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

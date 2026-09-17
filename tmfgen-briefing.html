@@ -1,0 +1,689 @@
+<title>tmfgen Handbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F1F2ED;
+    --surface:#FFFFFF;
+    --surface-2:#E7E9E2;
+    --ink:#161F26;
+    --ink-soft:#4E5C61;
+    --line:#D5D8CF;
+    --accent:#B9691E;
+    --accent-ink:#4A2A0C;
+    --accent-soft:#F3E1CB;
+    --teal:#1F6F63;
+    --teal-soft:#DCEBE6;
+    --shadow: 0 1px 2px rgba(22,31,38,.06), 0 8px 24px -8px rgba(22,31,38,.12);
+    --font-display:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-body:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10161B;
+      --surface:#171F26;
+      --surface-2:#1E2830;
+      --ink:#ECEFEA;
+      --ink-soft:#A6B2B6;
+      --line:#2B363E;
+      --accent:#E0954B;
+      --accent-ink:#2C1B0C;
+      --accent-soft:#3A2A1A;
+      --teal:#4FBBA8;
+      --teal-soft:#173028;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -10px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10161B;
+    --surface:#171F26;
+    --surface-2:#1E2830;
+    --ink:#ECEFEA;
+    --ink-soft:#A6B2B6;
+    --line:#2B363E;
+    --accent:#E0954B;
+    --accent-ink:#2C1B0C;
+    --accent-soft:#3A2A1A;
+    --teal:#4FBBA8;
+    --teal-soft:#173028;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -10px rgba(0,0,0,.55);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.5;
+    overflow:hidden;
+  }
+  ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
+  h1,h2,h3{ font-family:var(--font-display); text-wrap:balance; margin:0; }
+  p{ margin:0; }
+  ul,ol{ margin:0; padding:0; list-style:none; }
+  a{ color:inherit; }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:2px; }
+
+  /* faint blueprint texture, global, restrained */
+  .grid-tex{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      radial-gradient(currentColor 1px, transparent 1px);
+    background-size:28px 28px;
+    color:var(--accent);
+    opacity:.05;
+  }
+
+  .deck{ position:relative; width:100vw; height:100vh; z-index:1; }
+
+  .slide{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    padding: clamp(1.5rem,4vw,3.5rem) clamp(1.75rem,6vw,6rem);
+    opacity:0; pointer-events:none; transform:translateY(10px);
+  }
+  .slide.active{ opacity:1; pointer-events:auto; transform:none; }
+  @media (prefers-reduced-motion: no-preference){
+    .slide{ transition: opacity .32s ease, transform .32s ease; }
+  }
+
+  .eyebrow-row{ display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; margin-bottom:.9rem; }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:600;
+  }
+  .chip{
+    font-family:var(--font-mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase;
+    padding:.2rem .55rem; border-radius:99px; border:1px solid var(--line); color:var(--ink-soft);
+  }
+  .chip.dev{ border-color:var(--accent); color:var(--accent); }
+  .chip.sa{ border-color:var(--teal); color:var(--teal); }
+  .chip.pm{ color:var(--ink-soft); }
+
+  .slide h2{ font-size:clamp(1.6rem,3.1vw,2.5rem); font-weight:700; letter-spacing:-.01em; }
+  .slide .kicker{ font-size:1rem; color:var(--ink-soft); margin-top:.6rem; max-width:56ch; }
+
+  .body-scroll{ flex:1; min-height:0; overflow-y:auto; margin-top:1.6rem; padding-right:.25rem; }
+  .body-scroll::-webkit-scrollbar{ width:8px; }
+  .body-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
+
+  .cols{ display:grid; gap:1.75rem; }
+  .cols-2{ grid-template-columns: 1fr 1fr; }
+  @media (max-width: 860px){ .cols-2{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:1.15rem 1.3rem; box-shadow:var(--shadow);
+  }
+  .card h3{ font-size:1rem; font-weight:600; margin-bottom:.4rem; }
+  .card p{ color:var(--ink-soft); font-size:.92rem; max-width:46ch; }
+
+  .plain-list{ display:flex; flex-direction:column; gap:.65rem; }
+  .plain-list li{ display:flex; gap:.7rem; align-items:flex-start; font-size:.98rem; }
+  .plain-list li::before{
+    content:""; width:6px; height:6px; margin-top:.55rem; border-radius:99px; background:var(--accent); flex:none;
+  }
+  .plain-list.teal li::before{ background:var(--teal); }
+  .plain-list b{ font-weight:600; }
+  .plain-list .sub{ color:var(--ink-soft); font-size:.9rem; }
+
+  /* cover */
+  .cover{ justify-content:center; }
+  .cover .mark{
+    font-family:var(--font-mono); font-size:.85rem; color:var(--ink-soft); letter-spacing:.08em;
+  }
+  .cover h1{
+    font-size:clamp(2.6rem,7vw,5.2rem); font-weight:700; letter-spacing:-.02em; margin-top:.4rem;
+  }
+  .cover .tagline{ font-size:clamp(1.05rem,2vw,1.35rem); color:var(--ink-soft); margin-top:1rem; max-width:44ch; }
+  .cover .audience{ display:flex; gap:.6rem; margin-top:2rem; flex-wrap:wrap; }
+
+  /* pipeline (wide content -> its own scroll container) */
+  .pipeline-wrap{ overflow-x:auto; padding-bottom:.5rem; }
+  .pipeline{ display:flex; align-items:stretch; gap:0; min-width:max-content; }
+  .stage{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:1.1rem 1.3rem; width:250px; box-shadow:var(--shadow); flex:none;
+  }
+  .stage .num{ font-family:var(--font-mono); font-size:.75rem; color:var(--accent); font-weight:600; }
+  .stage h3{ font-family:var(--font-mono); font-size:1.05rem; margin-top:.3rem; }
+  .stage .role{ font-size:.85rem; color:var(--ink-soft); margin-top:.15rem; }
+  .stage p.desc{ font-size:.88rem; color:var(--ink); margin-top:.6rem; }
+  .stage .when{ font-size:.78rem; color:var(--ink-soft); margin-top:.6rem; padding-top:.6rem; border-top:1px dashed var(--line); }
+  .stage.optional{ border-style:dashed; }
+  .arrow{ display:flex; align-items:center; justify-content:center; width:52px; flex:none; color:var(--ink-soft); font-family:var(--font-mono); font-size:1.1rem; }
+
+  /* directory tree */
+  .tree-wrap{ overflow-x:auto; }
+  .tree{
+    font-family:var(--font-mono); font-size:.86rem; line-height:1.75; white-space:pre;
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:1rem 1.3rem;
+    box-shadow:var(--shadow); display:inline-block; min-width:100%;
+  }
+  .tree .req{ color:var(--accent); font-weight:600; }
+  .tree .opt{ color:var(--teal); font-weight:600; }
+  .tree .no{ color:var(--ink-soft); }
+
+  /* steps */
+  .steps{ counter-reset:step; display:flex; flex-direction:column; gap:1rem; }
+  .steps li{ counter-increment:step; display:grid; grid-template-columns:2.4rem 1fr; gap:1rem; align-items:start; }
+  .steps li::before{
+    content:counter(step,decimal-leading-zero); font-family:var(--font-mono); font-weight:600;
+    color:var(--accent); font-size:.95rem; padding-top:.15rem;
+  }
+  .steps .step-body h3{ font-size:.98rem; font-weight:600; margin-bottom:.3rem; }
+  .steps .step-body p{ color:var(--ink-soft); font-size:.9rem; }
+  code, .code{
+    font-family:var(--font-mono); font-size:.85em; background:var(--surface-2);
+    border:1px solid var(--line); border-radius:5px; padding:.1rem .4rem;
+  }
+  pre.code-block{
+    font-family:var(--font-mono); font-size:.86rem; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; padding:.9rem 1.1rem; box-shadow:var(--shadow);
+    overflow-x:auto; color:var(--ink);
+  }
+  pre.code-block .comment{ color:var(--ink-soft); }
+
+  /* table */
+  .table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); }
+  table{ border-collapse:collapse; width:100%; min-width:640px; background:var(--surface); }
+  th,td{ text-align:left; padding:.65rem .9rem; border-bottom:1px solid var(--line); font-size:.88rem; vertical-align:top; }
+  thead th{ font-family:var(--font-mono); text-transform:uppercase; font-size:.7rem; letter-spacing:.08em; color:var(--ink-soft); background:var(--surface-2); }
+  tbody tr:last-child td{ border-bottom:none; }
+  td code{ white-space:nowrap; }
+
+  .flag-legend{ display:flex; flex-wrap:wrap; gap:.5rem 1rem; margin-top:1rem; font-size:.82rem; color:var(--ink-soft); }
+  .flag-legend b{ font-family:var(--font-mono); color:var(--ink); }
+
+  /* nav chrome */
+  .progress{ position:fixed; top:0; left:0; height:3px; background:var(--accent); z-index:5; }
+  @media (prefers-reduced-motion: no-preference){ .progress{ transition:width .3s ease; } }
+
+  .navbar{
+    position:fixed; right:clamp(1rem,3vw,2.5rem); bottom:clamp(1rem,3vw,2rem);
+    display:flex; align-items:center; gap:.6rem; z-index:5;
+    font-family:var(--font-mono);
+  }
+  .navbar button{
+    width:2.3rem; height:2.3rem; border-radius:99px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); font-size:1rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow);
+  }
+  .navbar button:hover{ border-color:var(--accent); color:var(--accent); }
+  .navbar .count{ font-size:.82rem; color:var(--ink-soft); font-variant-numeric:tabular-nums; padding:0 .3rem; }
+
+  .dotrail{
+    position:fixed; left:clamp(.6rem,2vw,1.5rem); top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:.55rem; z-index:5;
+  }
+  .dotrail button{
+    width:8px; height:8px; border-radius:99px; background:var(--line); border:none; padding:0; cursor:pointer;
+  }
+  .dotrail button.active{ background:var(--accent); width:8px; height:22px; border-radius:4px; }
+  @media (prefers-reduced-motion: no-preference){ .dotrail button{ transition:all .25s ease; } }
+  @media (max-width: 700px){ .dotrail{ display:none; } }
+
+  @media (max-width: 700px){
+    .navbar .count{ display:none; }
+  }
+</style>
+
+<div class="grid-tex" aria-hidden="true"></div>
+<div class="progress" id="progress"></div>
+<div class="dotrail" id="dotrail" aria-label="Navigasi slide"></div>
+
+<main class="deck" id="deck">
+
+  <!-- 1. COVER -->
+  <section class="slide" data-title="Sampul">
+    <div class="cover" style="display:flex; flex-direction:column; flex:1; justify-content:center;">
+      <div class="mark">TM FORUM ODA &middot; BACKEND GENERATOR</div>
+      <h1>tmfgen</h1>
+      <p class="tagline">Spec OpenAPI TM&nbsp;Forum masuk, backend NestJS + TypeORM siap jalan keluar &mdash; deterministik, tanpa LLM di jalur generate.</p>
+      <div class="audience">
+        <span class="chip dev">Developer</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. AGENDA -->
+  <section class="slide" data-title="Agenda">
+    <div class="eyebrow-row"><span class="eyebrow">Agenda</span></div>
+    <h2>Yang akan kita bahas</h2>
+    <p class="kicker">Tiga blok: kenapa tmfgen ada, apa yang perlu disiapkan sebelum generate, dan cara developer memakainya sehari-hari.</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <ul class="plain-list">
+          <li><span><b>Konteks (semua audiens)</b> &mdash; masalah yang dipecahkan, apa itu tmfgen, dan pipeline empat tahapnya.</span></li>
+          <li><span><b>Persiapan sebelum generate</b> &mdash; instalasi, struktur folder <code>documents/</code>, dan kapan memakai skill enrichment.</span></li>
+        </ul>
+        <ul class="plain-list teal">
+          <li><span><b>Untuk developer</b> &mdash; alur kerja langkah-demi-langkah dan referensi CLI.</span></li>
+          <li><span><b>Batasan &amp; jaminan</b> &mdash; apa yang otomatis, apa yang tetap perlu ditulis manual, dan cara memverifikasi hasilnya.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PROBLEM -->
+  <section class="slide" data-title="Masalah">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Konteks</span>
+    </div>
+    <h2>Membangun backend TMF ODA manual itu mahal</h2>
+    <p class="kicker">Repo ini sudah menyimpan spec resmi dari 100+ komponen TM&nbsp;Forum ODA di <code>documents/</code>. Setiap komponen yang dibangun tangan membuka celah yang sama.</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <div class="card">
+          <h3>Biaya membangun manual</h3>
+          <p>Entity, DTO, controller, wiring event/hub, house filter, soft-delete &mdash; semuanya ditulis ulang tiap komponen, memakan waktu developer yang sama berulang kali.</p>
+        </div>
+        <div class="card">
+          <h3>Konsistensi menurun</h3>
+          <p>Semakin banyak servis dan developer, semakin mudah pola berbeda-beda antar servis &mdash; sulit dipertahankan lewat review manual saja.</p>
+        </div>
+        <div class="card">
+          <h3>Spec TMF terus berubah</h3>
+          <p>Update versi spec berarti mengulang penyesuaian manual di semua servis yang memakainya, dengan risiko human error tiap kali.</p>
+        </div>
+        <div class="card">
+          <h3>Jawaban tmfgen</h3>
+          <p>Generate deterministik dari spec resmi: pola yang sama di semua servis, hasil bisa direproduksi, dan diverifikasi lewat test snapshot &mdash; bukan ditebak-tebak.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. WHAT IS TMFGEN -->
+  <section class="slide" data-title="Apa itu tmfgen">
+    <div class="eyebrow-row"><span class="eyebrow">Konteks</span></div>
+    <h2>Apa itu tmfgen</h2>
+    <p class="kicker">Command-line generator kode, bukan asisten AI di jalur generate-nya.</p>
+    <div class="body-scroll">
+      <ul class="plain-list" style="margin-bottom:1.5rem;">
+        <li><span><b>Input:</b> satu spec OpenAPI/Swagger milik komponen TM Forum ODA.</span></li>
+        <li><span><b>Output:</b> backend NestJS + TypeORM yang siap jalan &mdash; entity, DTO, controller, service, wiring hub/listener/event.</span></li>
+        <li><span><b>Jaminan inti:</b> spec input yang sama selalu menghasilkan kode yang identik byte-per-byte. Diverifikasi lewat harness golden-snapshot, bukan sekadar diasumsikan.</span></li>
+        <li><span><b>Bukan pengganti developer:</b> logika bisnis custom tetap ditulis manual, di titik ekstensi yang sengaja tidak pernah disentuh generator (lihat bagian batasan).</span></li>
+      </ul>
+      <div class="card" style="max-width:640px;">
+        <h3>Kenapa deterministik itu penting</h3>
+        <p style="max-width:none;">Regenerasi ulang servis yang sama &mdash; setelah spec berubah, atau template generator diperbaiki &mdash; aman dilakukan kapan saja tanpa takut merusak logika custom yang sudah ditulis manual di titik ekstensi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PIPELINE -->
+  <section class="slide" data-title="Pipeline">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Konteks</span>
+      <span class="chip dev">Developer</span>
+    </div>
+    <h2>Pipeline generator: empat tahap</h2>
+    <p class="kicker">Urutan ini tetap &mdash; <code>ir</code> untuk pratinjau, <code>scaffold</code> sekali per servis, <code>emit</code> aman diulang, <code>inject</code> opsional untuk servis existing.</p>
+    <div class="body-scroll">
+      <div class="pipeline-wrap">
+        <div class="pipeline">
+          <div class="stage">
+            <div class="num">01</div>
+            <h3>ir</h3>
+            <div class="role">Pratinjau</div>
+            <p class="desc">Parsing spec jadi intermediate representation tmfgen; mencetak resource, field wajib, sub-entity, warning. Tidak ada kode ditulis.</p>
+            <div class="when">Jalankan sebelum scaffold &amp; tiap cek dampak perubahan spec/enrichment.</div>
+          </div>
+          <div class="arrow">&rarr;</div>
+          <div class="stage">
+            <div class="num">02</div>
+            <h3>scaffold</h3>
+            <div class="role">Kerangka servis</div>
+            <p class="desc">Membuat direktori servis baru: package.json, main.ts, app.module.ts, .env.example, guard/filter umum, wiring database.</p>
+            <div class="when">Sekali per servis baru &mdash; menolak jalan kalau folder sudah ada.</div>
+          </div>
+          <div class="arrow">&rarr;</div>
+          <div class="stage">
+            <div class="num">03</div>
+            <h3>emit</h3>
+            <div class="role">Generate resource</div>
+            <p class="desc">Menggenerate entity, DTO, controller, service, wiring hub/listener/event untuk tiap resource di spec.</p>
+            <div class="when">Aman diulang &mdash; file hasil generate selalu ditimpa ulang.</div>
+          </div>
+          <div class="arrow">&rarr;</div>
+          <div class="stage optional">
+            <div class="num">04 &middot; opsional</div>
+            <h3>inject</h3>
+            <div class="role">Sisipkan ke servis existing</div>
+            <p class="desc">Logika sama dengan emit, tapi menyasar servis hand-written lewat deteksi konvensi + rencana dry-run.</p>
+            <div class="when">Wajib dry-run dulu, baru <code>--apply</code>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. INSTALL -->
+  <section class="slide" data-title="Instalasi">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Persiapan</span>
+      <span class="chip dev">Developer</span>
+    </div>
+    <h2>Instalasi &amp; konfigurasi</h2>
+    <p class="kicker">Sekali di awal per mesin developer.</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <div>
+          <ul class="plain-list" style="margin-bottom:1rem;">
+            <li><span><b>Prasyarat:</b> Node.js 18+ (dikembangkan di Node 22) dan Yarn 1.x &mdash; servis hasil generate adalah Yarn workspace yang di-pin ke <code>yarn@1.22.22</code>.</span></li>
+            <li><span><b>Setup sekali:</b> masuk ke <code>generator/</code> lalu install dependency generator itu sendiri.</span></li>
+          </ul>
+          <pre class="code-block">cd generator
+npm install</pre>
+        </div>
+        <div>
+          <p style="color:var(--ink-soft); font-size:.92rem; margin-bottom:.6rem;"><b style="color:var(--ink);">generator/tmfgen.config.json</b> &mdash; menunjuk ke lokasi hasil generate:</p>
+          <pre class="code-block">{
+  "targetRoot": "D:/project/tm-forum",
+  "overrides": {},
+  "portRange": [3026, 3099]
+}</pre>
+          <p style="color:var(--ink-soft); font-size:.85rem; margin-top:.6rem;">
+            <code>targetRoot</code> lokasi semua servis &middot; <code>overrides</code> jarang dipakai, diskusikan dulu &middot; <code>portRange</code> cuma fallback kalau identity port bentrok.
+          </p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1.25rem;">
+        <h3>Wrapper CLI: <code>tmfgen</code></h3>
+        <p style="max-width:none;">Dijalankan lewat <code>./tmfgen</code> (bash/git-bash) atau <code>tmfgen</code> (cmd/PowerShell) dari root repo &mdash; tidak perlu <code>cd generator</code> atau prefix <code>node src/cli.mjs</code>. Bentuk lama tetap berfungsi sama persis kalau lebih terbiasa dengannya.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. DOCUMENTS -->
+  <section class="slide" data-title="Menyiapkan dokumen">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Persiapan</span>
+      <span class="chip dev">Developer</span><span class="chip sa">SA</span>
+    </div>
+    <h2>Menyiapkan dokumen komponen TMF</h2>
+    <p class="kicker">tmfgen membaca langsung struktur <code>documents/&lt;tmfNNN&gt;/&lt;versi&gt;/</code> yang sudah dipakai di repo ini.</p>
+    <div class="body-scroll">
+      <div class="tree-wrap">
+        <div class="tree">documents/tmf670/4.0.0/
+├── openapi/                         <span class="req">&larr; satu-satunya input WAJIB (.yaml/.yml/.json)</span>
+│   └── TMF670_..._swagger.json
+├── userguide/                       <span class="opt">&larr; opsional &mdash; sumber untuk skill /enrichment</span>
+│   └── TMF670_..._specification.pdf
+├── conformance/                     <span class="no">&larr; TIDAK dibaca otomatis oleh generator</span>
+│   └── TMF670_..._conformance.pdf
+├── postman/                         <span class="no">&larr; tidak dipakai proses generate</span>
+└── ctk/                             <span class="no">&larr; tidak dipakai proses generate</span></div>
+      </div>
+      <ul class="plain-list" style="margin-top:1.4rem;">
+        <li><span>Ada beberapa file mirip-spec di <code>openapi/</code>? tmfgen mengambil yang urutan alfabetnya paling awal dan melewati yang namanya mengandung <code>postman</code> &mdash; kalau ambigu, arahkan langsung ke file spec-nya.</span></li>
+        <li><span>PDF userguide <b>tidak</b> diparse otomatis oleh generator &mdash; itu tugas skill <code>/enrichment</code>, dibahas berikutnya.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. ENRICHMENT -->
+  <section class="slide" data-title="Enrichment">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Persiapan</span>
+      <span class="chip dev">Developer</span><span class="chip sa">SA</span>
+    </div>
+    <h2>Enrichment: melengkapi apa yang tak ada di spec</h2>
+    <p class="kicker">Spec OAS sering tidak menyertakan deskripsi field yang jelas atau aturan bisnis kontekstual yang justru ada di PDF userguide (dan conformance profile).</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <div>
+          <ul class="plain-list">
+            <li><span>Skill <code>/enrichment &lt;userguide.pdf&gt; [conformance.pdf]</code> membaca PDF, lalu cross-check ke ground truth <code>tmfgen ir</code> &mdash; tidak pernah mempercayai PDF saja.</span></li>
+            <li><span>Menulis <code>documents/&lt;tmfNNN&gt;/&lt;versi&gt;/tmf&lt;NNN&gt;-enrichment.md</code>: deskripsi field + catatan business rule.</span></li>
+            <li><span><b>Aturan keras:</b> hanya memperkaya field yang sudah ada di IR (deskripsi &amp; pengetatan mandatory) &mdash; tidak pernah menciptakan field atau resource baru.</span></li>
+            <li><span>Dipakai lewat <code>-m &lt;file&gt;</code> saat <code>ir</code>/<code>scaffold</code>/<code>emit</code>.</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Contoh nyata &mdash; TMF670 Payment Method</h3>
+          <p style="max-width:none;">1 resource diperkaya, 7 field mendapat deskripsi dari userguide, plus catatan business rule dari conformance profile &mdash; termasuk celah <code>AccountRef</code> yang response-mandatory tapi mudah terlewat kalau cuma baca OAS.</p>
+          <pre class="code-block" style="margin-top:.8rem;">tmfgen ir documents/tmf670/4.0.0 \
+  -m documents/tmf670/4.0.0/tmf670-enrichment.md
+<span class="comment"># → markdown supplement: 1 enrichment(s)</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. DEV WALKTHROUGH -->
+  <section class="slide" data-title="Alur kerja developer">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Untuk developer</span>
+      <span class="chip dev">Developer</span>
+    </div>
+    <h2>Alur kerja developer, langkah demi langkah</h2>
+    <p class="kicker">Dari dokumen siap sampai backend ter-build, dengan wrapper <code>tmfgen</code> di root repo.</p>
+    <div class="body-scroll">
+      <ol class="steps">
+        <li>
+          <div class="step-body">
+            <h3>Pastikan spec bisa dimuat bersih</h3>
+            <p><code>documents/tmf&lt;NNN&gt;/&lt;versi&gt;/openapi/*.yaml|json</code> harus ada; tmfgen akan berhenti dengan pesan jelas kalau ada <code>$ref</code> yang tidak bisa diresolusi.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <h3>(Opsional, direkomendasikan) Jalankan enrichment</h3>
+            <p><code>/enrichment &lt;path-userguide.pdf&gt;</code> untuk menghasilkan <code>tmf&lt;NNN&gt;-enrichment.md</code>.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <h3>Pratinjau dengan <code>ir</code></h3>
+            <p><code>tmfgen ir documents/tmf&lt;NNN&gt;/&lt;versi&gt;</code> &mdash; baca ringkasan resource/field/warning sebelum menulis kode apa pun.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <h3>Scaffold servis baru</h3>
+            <p><code>tmfgen scaffold documents/tmf&lt;NNN&gt;/&lt;versi&gt;</code> &mdash; sekali saja per servis.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <h3>Emit resource</h3>
+            <p><code>tmfgen emit documents/tmf&lt;NNN&gt;/&lt;versi&gt; -m &lt;enrichment.md&gt;</code> &mdash; aman dijalankan ulang kapan saja.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <h3>Verifikasi dengan build sungguhan</h3>
+            <p><code>cd &lt;targetRoot&gt;/&lt;service&gt; && yarn install && yarn build</code>.</p>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <h3>Tulis logika custom di titik ekstensi</h3>
+            <p><code>&lt;resource&gt;.hooks.ts</code> untuk business rule, <code>&lt;resource&gt;.controller.extra.ts</code> untuk route tambahan.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 10. CLI CHEATSHEET -->
+  <section class="slide" data-title="Referensi CLI">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Untuk developer</span>
+      <span class="chip dev">Developer</span>
+    </div>
+    <h2>Referensi CLI singkat</h2>
+    <p class="kicker">Argumen posisional pertama = folder komponen atau file spec &mdash; nama flag hanya perlu ditulis kalau ambigu.</p>
+    <div class="body-scroll">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Perintah</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td><code>tmfgen ir &lt;target&gt;</code></td><td>Pratinjau IR, tanpa menulis kode</td><td><code>./tmfgen ir documents/tmf670/4.0.0</code></td></tr>
+            <tr><td><code>tmfgen scaffold &lt;target&gt;</code></td><td>Buat servis baru (sekali)</td><td><code>./tmfgen scaffold documents/tmf670/4.0.0 -n payment-service</code></td></tr>
+            <tr><td><code>tmfgen emit &lt;target&gt;</code></td><td>Generate / timpa ulang resource</td><td><code>./tmfgen emit documents/tmf670/4.0.0 -m tmf670-enrichment.md</code></td></tr>
+            <tr><td><code>tmfgen inject &lt;host&gt; &lt;target&gt;</code></td><td>Sisipkan ke servis hand-written</td><td><code>./tmfgen inject ./backend documents/tmf679/5.0.0 -a</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flag-legend">
+        <span><b>-n</b> name</span>
+        <span><b>-m</b> md</span>
+        <span><b>-p</b> port</span>
+        <span><b>-r</b> target-root</span>
+        <span><b>-q</b> quiet</span>
+        <span><b>-a</b> apply</span>
+        <span><b>-s</b> spec</span>
+        <span><b>-c</b> component</span>
+        <span><b>-b</b> base-path</span>
+        <span><b>-o</b> out</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. GUARDRAILS -->
+  <section class="slide" data-title="Batasan &amp; jaminan">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Batasan &amp; jaminan</span>
+    </div>
+    <h2>Apa yang tmfgen jamin &mdash; dan tidak</h2>
+    <p class="kicker">Penting untuk memahami batas otomasi ini sebelum menjanjikannya ke stakeholder lain.</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <div class="card">
+          <h3>Required field ikut OAS, bukan conformance PDF</h3>
+          <p style="max-width:none;">Disengaja: OAS adalah kontrak minimum teknis; tabel mandatory di conformance profile kadang tidak sinkron dengannya. Validasi lebih ketat berisiko menolak request yang sah menurut OAS.</p>
+        </div>
+        <div class="card">
+          <h3>File bertanda GENERATED selalu ditimpa</h3>
+          <p style="max-width:none;">Jangan pernah edit manual file berkomentar <code>// GENERATED by tmfgen - DO NOT EDIT.</code> &mdash; akan hilang diam-diam saat <code>emit</code> berikutnya.</p>
+        </div>
+        <div class="card">
+          <h3>Dua titik ekstensi yang aman</h3>
+          <p style="max-width:none;"><code>&lt;resource&gt;.hooks.ts</code> dan <code>&lt;resource&gt;.controller.extra.ts</code> ditulis sekali dan tidak pernah disentuh generator lagi.</p>
+        </div>
+        <div class="card">
+          <h3>Field <code>version</code> dikelola otomatis</h3>
+          <p style="max-width:none;">Field bernama persis <code>version</code> (root/sub-resource) di-set <code>"1.0"</code> saat create dan naik major/minor saat update &mdash; tanpa konfigurasi apa pun.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. VERIFY -->
+  <section class="slide" data-title="Verifikasi">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Untuk developer</span>
+      <span class="chip dev">Developer</span>
+    </div>
+    <h2>Memverifikasi hasil generate</h2>
+    <p class="kicker">Exit CLI yang bersih bukan bukti kode-nya benar &mdash; selalu build sungguhan.</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <div>
+          <h3 style="font-size:1rem; margin-bottom:.5rem;">Setiap generate</h3>
+          <pre class="code-block">cd &lt;targetRoot&gt;/&lt;service&gt;
+yarn install
+yarn build   <span class="comment"># tsc lewat nest build</span></pre>
+        </div>
+        <div>
+          <h3 style="font-size:1rem; margin-bottom:.5rem;">Perubahan pada generator sendiri</h3>
+          <pre class="code-block">cd generator
+node tools/golden.mjs           <span class="comment"># cek vs snapshot</span>
+node tools/golden.mjs --update  <span class="comment"># rekam ulang, cek diff dulu</span>
+node tools/golden.mjs --case tmf736-v5</pre>
+        </div>
+      </div>
+      <p style="color:var(--ink-soft); font-size:.9rem; margin-top:1.2rem; max-width:70ch;">Harness ini juga menguji determinisme: generate kasus yang sama dua kali harus menghasilkan output byte-identik.</p>
+    </div>
+  </section>
+
+  <!-- 13. CLOSING -->
+  <section class="slide" data-title="Referensi">
+    <div class="eyebrow-row"><span class="eyebrow">Penutup</span></div>
+    <h2>Referensi &amp; langkah berikutnya</h2>
+    <p class="kicker">Dokumentasi lengkap ada di repo, bukan di slide ini.</p>
+    <div class="body-scroll">
+      <div class="cols cols-2">
+        <ul class="plain-list">
+          <li><span><b>generator/README.md</b> &mdash; prasyarat, pipeline, resep CLI, troubleshooting lengkap.</span></li>
+        </ul>
+        <ul class="plain-list teal">
+          <li><span><b>Skill /enrichment</b> &mdash; jalankan sebelum generate kalau ingin deskripsi field &amp; business rule yang lebih lengkap.</span></li>
+          <li><span><b>Mulai dari sini:</b> pilih satu komponen di <code>documents/</code>, jalankan <code>tmfgen ir</code>, baca ringkasannya.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="navbar">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <span class="count" id="count">01 / 13</span>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+
+  const progress = document.getElementById('progress');
+  const countEl = document.getElementById('count');
+  const dotrail = document.getElementById('dotrail');
+
+  slides.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.title = s.dataset.title || ('Slide ' + (i+1));
+    b.setAttribute('aria-label', 'Ke slide: ' + b.title);
+    b.addEventListener('click', () => go(i));
+    dotrail.appendChild(b);
+  });
+  const dots = Array.from(dotrail.children);
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function render(){
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    progress.style.width = (((idx+1) / total) * 100) + '%';
+    countEl.textContent = pad(idx+1) + ' / ' + pad(total);
+  }
+
+  function go(i){
+    idx = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => go(idx - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => go(idx + 1));
+
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) { e.preventDefault(); go(idx + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); go(idx - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  let touchX = null;
+  window.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, {passive:true});
+  window.addEventListener('touchend', (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 60) go(idx + (dx < 0 ? 1 : -1));
+    touchX = null;
+  }, {passive:true});
+
+  render();
+})();
+</script>

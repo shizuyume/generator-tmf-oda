@@ -1,0 +1,1728 @@
+{
+  "meta": {
+    "tmfNumber": "737",
+    "specTitle": "Revenue Sharing Report Management",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/revenueSharingReportManagement/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF737_BASE_PATH",
+    "eventExchange": "revenueSharingReport.events",
+    "eventExchangeConstant": "TMF737_EVENT_EXCHANGE",
+    "eventTypeEnum": "RevenueSharingReportEventType",
+    "serviceNameSuggestion": "revenue-sharing-report-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf737/5.0.0/openapi/TMF737-Revenue_Sharing_Report_Management-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "PartyRevSharingReport",
+      "camelName": "partyRevSharingReport",
+      "kebabName": "party-rev-sharing-report",
+      "tableName": "party_rev_sharing_report",
+      "pathSegment": "partyRevSharingReport",
+      "pathKey": "partyRevSharingReport",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "createDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time when the detail was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time when the detail was last updated"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "partyRevSharingModel",
+          "targetRef": "PartyRevSharingModelRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "partyRevSharingModelType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "partyRevSharingModelBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "partyRevSharingModelSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "partyRevSharingModelHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "partyRevSharingModelId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "partyRevSharingModelName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "partyRevSharingModelReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "cdrTransaction",
+          "targetRef": "CdrTransactionRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "cdrTransactionType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "cdrTransactionBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "cdrTransactionSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "cdrTransactionHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "cdrTransactionId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "cdrTransactionName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "cdrTransactionReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        },
+        {
+          "kind": "flattenedRef",
+          "name": "money",
+          "targetRef": "Money",
+          "description": "",
+          "columns": [
+            {
+              "name": "moneyUnit",
+              "sourceProp": "unit",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "moneyValue",
+              "sourceProp": "value",
+              "tsType": "number",
+              "column": {
+                "type": "float"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "PartyRevSharingReportItem",
+          "tableName": "party_rev_sharing_report_item",
+          "nameCandidates": [
+            "PartyRevSharingReportItem",
+            "PartyRevSharingReportItem"
+          ],
+          "refLike": false,
+          "propertyName": "partyRevSharingReportItem",
+          "itemRef": "PartyRevSharingReportItem",
+          "description": "The PartyRevSharingReportItem list revenue share details related to the specified partner",
+          "minItems": 1,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The status of party revenue Share report item detail"
+            },
+            {
+              "kind": "scalar",
+              "name": "createDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date and time when the detail was created"
+            },
+            {
+              "kind": "scalar",
+              "name": "lastUpdate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date and time when the detail was last updated"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "partyRevSharingModelItem",
+              "targetRef": "PartyRevSharingModelItemRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "partyRevSharingModelItemRevenueSharingModelName",
+                  "sourceProp": "revenueSharingModelName",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyRevSharingModelItemRevenueSharingModelHref",
+                  "sourceProp": "revenueSharingModelHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyRevSharingModelItemReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyRevSharingModelItemRevenueSharingModelId",
+                  "sourceProp": "revenueSharingModelId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyRevSharingModelItemItemId",
+                  "sourceProp": "itemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "relatedParty",
+              "targetRef": "RelatedPartyRefOrPartyRoleRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "relatedPartyType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartyBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartySchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartyRole",
+                  "sourceProp": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "partyAccount",
+              "targetRef": "PartyAccountRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "partyAccountType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountStatus",
+                  "sourceProp": "status",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "cdrTransactionItem",
+              "targetRef": "CdrTransactionItemRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "cdrTransactionItemTransactionHref",
+                  "sourceProp": "transactionHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "cdrTransactionItemReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "cdrTransactionItemTransactionId",
+                  "sourceProp": "transactionId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "cdrTransactionItemTransactionItemId",
+                  "sourceProp": "transactionItemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "billPeriod",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "billPeriodStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billPeriodEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "money",
+              "targetRef": "Money",
+              "description": "",
+              "columns": [
+                {
+                  "name": "moneyUnit",
+                  "sourceProp": "unit",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "moneyValue",
+                  "sourceProp": "value",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "bill",
+              "targetRef": "CustomerBillRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "billType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "payment",
+              "targetRef": "PaymentRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "paymentType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "paymentBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "paymentSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "paymentHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "paymentId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "paymentName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "paymentReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "PartyRevSharingReportItemDetail",
+              "tableName": "party_rev_sharing_report_item_detail",
+              "nameCandidates": [
+                "PartyRevSharingReportItemDetail",
+                "PartyRevSharingReportItemSharingReportItemIDetail"
+              ],
+              "refLike": false,
+              "propertyName": "sharingReportItemIDetail",
+              "itemRef": "PartyRevSharingReportItemDetail",
+              "description": "The PartyRevSharingReportItemDetail list revenue share details related to the specified partner",
+              "minItems": 1,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "json",
+                  "name": "product",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "partyRevSharingAlgorithm",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "status",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The status of party revenue Share report item detail"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "createDate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date and time when the detail was created"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "lastUpdate",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date and time when the detail was last updated"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "partyRevSharingModelInvolPrice",
+                  "targetRef": "PartyRevSharingModelInvolPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "partyRevSharingModelInvolPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceRevenueSharingModelId",
+                      "sourceProp": "revenueSharingModelId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceRevenueSharingModelItemId",
+                      "sourceProp": "revenueSharingModelItemId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "partyRevSharingModelInvolPriceInvolPriceId",
+                      "sourceProp": "involPriceId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOffering",
+                  "targetRef": "ProductOfferingRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "money",
+                  "targetRef": "Money",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "moneyUnit",
+                      "sourceProp": "unit",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "moneyValue",
+                      "sourceProp": "value",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ],
+      "createShape": {
+        "schemaName": "PartyRevSharingReport_FVO",
+        "required": [
+          "@type",
+          "money"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "partyRevSharingModel",
+          "cdrTransaction",
+          "partyRevSharingReportItem",
+          "money",
+          "createDate",
+          "lastUpdate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "PartyRevSharingReport_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "partyRevSharingModel",
+          "cdrTransaction",
+          "partyRevSharingReportItem",
+          "money",
+          "createDate",
+          "lastUpdate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CreatePartyRevSharingReport",
+          "value": {
+            "@type": "PartyRevSharingReport",
+            "partyRevSharingModel": {
+              "@type": "PartyRevSharingModelRef",
+              "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingModel/4810",
+              "id": "4810",
+              "name": "Revenue Sharing Model of Mobile handset and smart speaker 2023 product specification",
+              "@referredType": "PartyRevSharingModel"
+            },
+            "partyRevSharingReportItem": [
+              {
+                "@type": "PartyRevSharingReportItem",
+                "partyRevSharingModelItem": {
+                  "@type": "PartyRevSharingModelItemRef",
+                  "itemId": "4811",
+                  "revenueSharingModelId": "4810",
+                  "revenueSharingModelName": "Revenue Sharing Model of MyFirstPartner",
+                  "@referredType": "PartyRevSharingModelItem"
+                },
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "distributor",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                    "id": "2777",
+                    "name": "MyFirstPartner",
+                    "@referredType": "Organization"
+                  }
+                },
+                "partyAccount": {
+                  "@type": "PartyAccountRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/PartyAccount/2788",
+                  "id": "2788",
+                  "name": "MyFirstPartner Account",
+                  "@referredType": "PartyAccount",
+                  "description": "MyFirstPartner Account for revenue share",
+                  "status": "active"
+                },
+                "billPeriod": {
+                  "startDateTime": "2023-02-01T23:59:59.52Z",
+                  "endDateTime": "2023-02-28T23:59:59.52Z"
+                },
+                "sharingReportItemIDetail": [
+                  {
+                    "@type": "PartyRevSharingReportItemDetail",
+                    "partyRevSharingModelInvolPrice": {
+                      "@type": "PartyRevSharingModelInvolPriceRef",
+                      "revenueSharingModelId": "4810",
+                      "revenueSharingModelItemId": "4811",
+                      "involPriceId": "4830",
+                      "id": "4830",
+                      "@referredType": "PartyRevSharingModelInvolPrice"
+                    },
+                    "product": [
+                      {
+                        "@type": "ProductRef",
+                        "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/Product/7810",
+                        "id": "7810",
+                        "name": "Mobile handset 2023 product of MyFirstPartner",
+                        "@referredType": "Product"
+                      }
+                    ],
+                    "productOffering": {
+                      "@type": "ProductOfferingRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOffering/6810",
+                      "id": "6810",
+                      "name": "Mobile handset 2023",
+                      "@referredType": "ProductOffering"
+                    },
+                    "productOfferingPrice": {
+                      "@type": "ProductOfferingPriceRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOfferingPrice/6820",
+                      "id": "6820",
+                      "name": "Mobile handset 2023 distribution price",
+                      "@referredType": "ProductOfferingPrice"
+                    },
+                    "partyRevSharingAlgorithm": [
+                      {
+                        "@type": "PartyRevSharingAlgorithmRef",
+                        "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingAlgorithm/4840",
+                        "id": "4840",
+                        "name": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price  of MyFirstPartner",
+                        "@referredType": "PartyRevSharingAlgorithm"
+                      }
+                    ],
+                    "money": {
+                      "unit": "USD",
+                      "value": 50000
+                    },
+                    "status": "Paid",
+                    "createDate": "2023-03-01T01:16:34.854Z",
+                    "lastUpdate": "2023-03-10T01:16:34.854Z"
+                  },
+                  {
+                    "@type": "PartyRevSharingReportItemDetail",
+                    "partyRevSharingModelInvolPrice": {
+                      "@type": "PartyRevSharingModelInvolPriceRef",
+                      "revenueSharingModelId": "4810",
+                      "revenueSharingModelItemId": "4811",
+                      "involPriceId": "4832",
+                      "id": "4832",
+                      "@referredType": "PartyRevSharingModelInvolPrice"
+                    },
+                    "product": [
+                      {
+                        "@type": "ProductRef",
+                        "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/Product/7811",
+                        "id": "7811",
+                        "name": "Smart speakers 2023 product of MyFirstPartner",
+                        "@referredType": "Product"
+                      }
+                    ],
+                    "productOffering": {
+                      "@type": "ProductOfferingRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOffering/6812",
+                      "id": "6812",
+                      "name": "smart speakers 2023",
+                      "@referredType": "ProductOffering"
+                    },
+                    "productOfferingPrice": {
+                      "@type": "ProductOfferingPriceRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOfferingPrice/6822",
+                      "id": "6822",
+                      "name": "smart speakers 2023 distribution price",
+                      "@referredType": "ProductOfferingPrice"
+                    },
+                    "partyRevSharingAlgorithm": [
+                      {
+                        "@type": "PartyRevSharingAlgorithmRef",
+                        "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingAlgorithm/4842",
+                        "id": "4842",
+                        "name": "distribute charge revenue share calculate policy for smart speakers 2023 distribution price",
+                        "@referredType": "PartyRevSharingAlgorithm"
+                      }
+                    ],
+                    "money": {
+                      "unit": "USD",
+                      "value": 30000
+                    },
+                    "status": "Paid",
+                    "createDate": "2023-03-01T01:16:34.854Z",
+                    "lastUpdate": "2023-03-10T01:16:34.854Z"
+                  }
+                ],
+                "money": {
+                  "unit": "USD",
+                  "value": 80000
+                },
+                "bill": {
+                  "@type": "CustomerBillRef",
+                  "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/CustomerBill/2001",
+                  "id": "2001",
+                  "name": "Customer 202302 bill of MyFirstPartner",
+                  "@referredType": "CustomerBill"
+                },
+                "payment": {
+                  "@type": "PaymentRef",
+                  "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/Payment/5001",
+                  "id": "5001",
+                  "name": "Customer 202302 bill payment of MyFirstPartner",
+                  "@referredType": "Payment"
+                },
+                "status": "Paid",
+                "createDate": "2023-03-01T01:16:34.854Z",
+                "lastUpdate": "2023-03-10T01:16:34.854Z"
+              },
+              {
+                "@type": "PartyRevSharingReportItem",
+                "partyRevSharingModelItem": {
+                  "@type": "PartyRevSharingModelItemRef",
+                  "itemId": "4812",
+                  "revenueSharingModelId": "4810",
+                  "revenueSharingModelName": "Revenue Sharing Model of MyFirstPartner",
+                  "@referredType": "PartyRevSharingModelItem"
+                },
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "revenueSharingModelOwner",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2779",
+                    "id": "2779",
+                    "name": "Mobi Service Providor",
+                    "@referredType": "Organization"
+                  }
+                },
+                "partyAccount": {
+                  "@type": "PartyAccountRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/PartyAccount/2789",
+                  "id": "2789",
+                  "name": "Mobi Service Providor Account",
+                  "@referredType": "PartyAccount",
+                  "description": "Mobi Service Providor Account for revenue share",
+                  "status": "active"
+                },
+                "billPeriod": {
+                  "startDateTime": "2023-02-01T23:59:59.52Z",
+                  "endDateTime": "2023-02-31T23:59:59.52Z"
+                },
+                "sharingReportItemIDetail": [
+                  {
+                    "@type": "PartyRevSharingReportItemDetail",
+                    "partyRevSharingModelInvolPrice": {
+                      "@type": "PartyRevSharingModelInvolPriceRef",
+                      "revenueSharingModelId": "4810",
+                      "revenueSharingModelItemId": "4811",
+                      "involPriceId": "4831",
+                      "id": "4831",
+                      "@referredType": "PartyRevSharingModelInvolPrice"
+                    },
+                    "product": [
+                      {
+                        "@type": "ProductRef",
+                        "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/Product/7810",
+                        "id": "7810",
+                        "name": "Mobile handset 2023 product of MyFirstPartner",
+                        "@referredType": "Product"
+                      }
+                    ],
+                    "productOffering": {
+                      "@type": "ProductOfferingRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOffering/6810",
+                      "id": "6810",
+                      "name": "Mobile handset 2023",
+                      "@referredType": "ProductOffering"
+                    },
+                    "productOfferingPrice": {
+                      "@type": "ProductOfferingPriceRef",
+                      "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOfferingPrice/6820",
+                      "id": "6820",
+                      "name": "Mobile handset 2023 distribution price",
+                      "@referredType": "ProductOfferingPrice"
+                    },
+                    "partyRevSharingAlgorithm": [
+                      {
+                        "@type": "PartyRevSharingAlgorithmRef",
+                        "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingAlgorithm/4841",
+                        "id": "4841",
+                        "name": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price of Mobi Service Providor",
+                        "@referredType": "PartyRevSharingAlgorithm"
+                      }
+                    ],
+                    "money": {
+                      "unit": "USD",
+                      "value": 60000
+                    },
+                    "status": "Created",
+                    "createDate": "2023-02-01T01:16:34.854Z",
+                    "lastUpdate": "2023-02-01T01:16:34.854Z"
+                  }
+                ],
+                "money": {
+                  "unit": "USD",
+                  "value": 60000
+                },
+                "bill": {
+                  "@type": "CustomerBillRef",
+                  "href": "https://mycsp.com:8080/tmf-api/CustomerManagement/v5/CustomerBill/2002",
+                  "id": "2002",
+                  "name": "Customer 202302 bill of Mobi Service Providor",
+                  "@referredType": "CustomerBill"
+                },
+                "status": "Created",
+                "createDate": "2023-03-01T01:16:34.854Z",
+                "lastUpdate": "2023-03-01T01:16:34.854Z"
+              }
+            ],
+            "money": {
+              "unit": "USD",
+              "value": 140000
+            },
+            "createDate": "2023-03-01T01:16:34.854Z",
+            "lastUpdate": "2023-03-10T01:16:34.854Z"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listPartyRevSharingReport",
+          "summary": "List or find PartyRevSharingReport objects",
+          "description": "List or find PartyRevSharingReport objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createPartyRevSharingReport",
+          "summary": "Creates a PartyRevSharingReport",
+          "description": "This operation creates a PartyRevSharingReport entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePartyRevSharingReport",
+          "summary": "Retrieves a PartyRevSharingReport by ID",
+          "description": "This operation retrieves a PartyRevSharingReport entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchPartyRevSharingReport",
+          "summary": "Updates partially a PartyRevSharingReport",
+          "description": "This operation updates partially a PartyRevSharingReport entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePartyRevSharingReport",
+          "summary": "Deletes a PartyRevSharingReport",
+          "description": "This operation deletes a PartyRevSharingReport entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/partyRevSharingReport",
+        "item": "/partyRevSharingReport/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "partyRevSharingReportAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PARTY_REV_SHARING_REPORT_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "partyRevSharingReportCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PARTY_REV_SHARING_REPORT_CREATE"
+        },
+        {
+          "eventName": "partyRevSharingReportDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PARTY_REV_SHARING_REPORT_DELETE"
+        },
+        {
+          "eventName": "partyRevSharingReportStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "PARTY_REV_SHARING_REPORT_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/partyRevSharingReportAttributeValueChangeEvent",
+      "eventName": "partyRevSharingReportAttributeValueChangeEvent",
+      "resource": "PartyRevSharingReport",
+      "eventKind": "AttributeValueChange",
+      "operationId": "partyRevSharingReportAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingReportCreateEvent",
+      "eventName": "partyRevSharingReportCreateEvent",
+      "resource": "PartyRevSharingReport",
+      "eventKind": "Create",
+      "operationId": "partyRevSharingReportCreateEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingReportDeleteEvent",
+      "eventName": "partyRevSharingReportDeleteEvent",
+      "resource": "PartyRevSharingReport",
+      "eventKind": "Delete",
+      "operationId": "partyRevSharingReportDeleteEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingReportStateChangeEvent",
+      "eventName": "partyRevSharingReportStateChangeEvent",
+      "resource": "PartyRevSharingReport",
+      "eventKind": "StateChange",
+      "operationId": "partyRevSharingReportStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No usable base path in the spec (servers[0].url = https://serverRoot); derived from info.title instead - verify it, or pass --base-path.",
+    "PartyRevSharingReport has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

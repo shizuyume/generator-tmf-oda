@@ -1,0 +1,1156 @@
+{
+  "meta": {
+    "tmfNumber": "738",
+    "specTitle": "Revenue Sharing Model Management",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/revenueSharingModelManagement/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF738_BASE_PATH",
+    "eventExchange": "revenueSharingModel.events",
+    "eventExchangeConstant": "TMF738_EVENT_EXCHANGE",
+    "eventTypeEnum": "RevenueSharingModelEventType",
+    "serviceNameSuggestion": "revenue-sharing-model-service",
+    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf738/5.0.0/openapi/TMF738-Revenue_Sharing_Model_Management-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "PartyRevSharingModel",
+      "camelName": "partyRevSharingModel",
+      "kebabName": "party-rev-sharing-model",
+      "tableName": "party_rev_sharing_model",
+      "pathSegment": "partyRevSharingModel",
+      "pathKey": "partyRevSharingModel",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "name",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The name of party revenue sharing model"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The description of PartyRevSharingModel"
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "PartyRevSharingModelRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "The PartyRevSharingModel associated party or partyRole",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "PartyRevSharingModelItem",
+          "tableName": "party_rev_sharing_model_item",
+          "nameCandidates": [
+            "PartyRevSharingModelItem",
+            "PartyRevSharingModelItem"
+          ],
+          "refLike": false,
+          "propertyName": "partyRevSharingModelItem",
+          "itemRef": "PartyRevSharingModelItem",
+          "description": "The PartyRevSharingModel includes revenue share item related to specified party role",
+          "minItems": 1,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The name of party revenue sharing model"
+            },
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The description of PartyRevSharingModelItem"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "relatedParty",
+              "targetRef": "RelatedPartyRefOrPartyRoleRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "relatedPartyType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartyBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartySchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "relatedPartyRole",
+                  "sourceProp": "role",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "partyAccount",
+              "targetRef": "PartyAccountRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "partyAccountType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "partyAccountStatus",
+                  "sourceProp": "status",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "PartyRevSharingModelItemInvolvement",
+              "tableName": "party_rev_sharing_model_item_involvement",
+              "nameCandidates": [
+                "PartyRevSharingModelItemInvolvement",
+                "PartyRevSharingModelItemSharingModelItemInvolvement"
+              ],
+              "refLike": false,
+              "propertyName": "sharingModelItemInvolvement",
+              "itemRef": "PartyRevSharingModelItemInvolvement",
+              "description": "The PartyRevSharingModelItem involvements revenue share item related to products, ProductOffings or productOffingPrices",
+              "minItems": 1,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The name of party revenue sharing model involvement"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "The description of party revenue sharing model involvement"
+                },
+                {
+                  "kind": "json",
+                  "name": "productOffering",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "offeringPrice",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "agreementItem",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "AgreementRef",
+              "tableName": "agreement_ref",
+              "nameCandidates": [
+                "AgreementRef",
+                "PartyRevSharingModelItemAgreementRef"
+              ],
+              "refLike": true,
+              "propertyName": "agreement",
+              "itemRef": "AgreementRef",
+              "description": "The PartyRevSharingModelItem associated agreements",
+              "minItems": null,
+              "requiredFields": [
+                "@type",
+                "id"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "ProductSpecificationRef",
+          "tableName": "product_specification_ref",
+          "nameCandidates": [
+            "ProductSpecificationRef",
+            "PartyRevSharingModelProductSpecificationRef"
+          ],
+          "refLike": true,
+          "propertyName": "productSpecification",
+          "itemRef": "ProductSpecificationRef",
+          "description": "The PartyRevSharingModel associated product specifications",
+          "minItems": null,
+          "requiredFields": [
+            "@type",
+            "id"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "version",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Version of the product specification"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "targetProductSchema",
+              "targetRef": "TargetProductSchema",
+              "description": "",
+              "columns": [
+                {
+                  "name": "targetProductSchemaType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "targetProductSchemaSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "PartyRevSharingModel_FVO",
+        "required": [
+          "@type",
+          "name",
+          "relatedParty",
+          "partyRevSharingModelItem"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "name",
+          "description",
+          "relatedParty",
+          "partyRevSharingModelItem",
+          "productSpecification"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "PartyRevSharingModel_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "name",
+          "description",
+          "relatedParty",
+          "partyRevSharingModelItem",
+          "productSpecification"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": true,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "PartyRevSharingModel_create_application_json_example",
+          "value": {
+            "@type": "PartyRevSharingModel",
+            "name": "Revenue Sharing Model of Mobile handset and smart speaker 2023 product specification",
+            "description": "Revenue Sharing Model of Mobile handset and smart speaker 2023 product specification",
+            "relatedParty": [
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "role": "distributor",
+                "partyOrPartyRole": {
+                  "@type": "PartyRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                  "id": "2777",
+                  "name": "MyFirstPartner",
+                  "@referredType": "Organization"
+                }
+              },
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "role": "aggregator",
+                "partyOrPartyRole": {
+                  "@type": "PartyRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2778",
+                  "id": "2778",
+                  "name": "TES Aggregator",
+                  "@referredType": "Organization"
+                }
+              },
+              {
+                "@type": "RelatedPartyRefOrPartyRoleRef",
+                "role": "revenueSharingModelOwner",
+                "partyOrPartyRole": {
+                  "@type": "PartyRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2779",
+                  "id": "2779",
+                  "name": "Mobi Service Providor",
+                  "@referredType": "Organization"
+                }
+              }
+            ],
+            "partyRevSharingModelItem": [
+              {
+                "@type": "PartyRevSharingModelItem",
+                "name": "Revenue Sharing Model of MyFirstPartner",
+                "description": "Revenue Sharing Model definition of partner myFirstPartner",
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "distributor",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2777",
+                    "id": "2777",
+                    "name": "MyFirstPartner",
+                    "@referredType": "Organization"
+                  }
+                },
+                "partyAccount": {
+                  "@type": "PartyAccountRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/PartyAccount/2788",
+                  "id": "2788",
+                  "name": "MyFirstPartner Account",
+                  "@referredType": "PartyAccount",
+                  "description": "MyFirstPartner Account for revenue share",
+                  "status": "active"
+                },
+                "sharingModelItemInvolvement": [
+                  {
+                    "@type": "PartyRevSharingModelInvolvement",
+                    "name": "Mobile handset 2023 distribution",
+                    "description": "Mobile handset 2023 distribution of MyFirstPartner ",
+                    "productOffering": [
+                      {
+                        "@type": "ProductOfferingRef",
+                        "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOffering/6810",
+                        "id": "6810",
+                        "name": "Mobile handset 2023",
+                        "@referredType": "ProductOffering"
+                      }
+                    ],
+                    "offeringPrice": [
+                      {
+                        "@type": "PartyRevSharingModelInvolPrice",
+                        "name": "Mobile handset 2023 distribution price of MyFirstPartner",
+                        "description": "Mobile handset 2023 distribution price of MyFirstPartner",
+                        "productOfferingPrice": {
+                          "@type": "ProductOfferingPriceRef",
+                          "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOfferingPrice/6820",
+                          "id": "6820",
+                          "name": "Mobile handset 2023 distribution price",
+                          "@referredType": "ProductOfferingPrice"
+                        },
+                        "partyRevSharingAlgorithm": [
+                          {
+                            "@type": "PartyRevSharingAlgorithmRef",
+                            "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingAlgorithm/4840",
+                            "id": "4840",
+                            "name": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price  of MyFirstPartner",
+                            "@referredType": "PartyRevSharingAlgorithm"
+                          }
+                        ]
+                      }
+                    ],
+                    "agreementItem": [
+                      {
+                        "@type": "AgreementItemRef",
+                        "agreementName": "Agreement of Mobile handset 2023 distribution with MyFirstPartner",
+                        "agreementHref": "https://mycsp.com:8080/tmf-api/AgreementManagement/v5/Agreement/8810",
+                        "@referredType": "AgreementItem",
+                        "agreementId": "8810",
+                        "agreementItemId": "88101"
+                      }
+                    ]
+                  },
+                  {
+                    "@type": "PartyRevSharingModelInvolvement",
+                    "name": "smart speakers 2023 distribution",
+                    "description": "smart speakers 2023 distribution of MyFirstPartner ",
+                    "productOffering": [
+                      {
+                        "@type": "ProductOfferingRef",
+                        "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOffering/6812",
+                        "id": "6812",
+                        "name": "smart speakers 2023",
+                        "@referredType": "ProductOffering"
+                      }
+                    ],
+                    "offeringPrice": [
+                      {
+                        "@type": "PartyRevSharingModelInvolPrice",
+                        "id": "4832",
+                        "name": "smart speakers 2023 distribution price",
+                        "description": "smart speakers 2023 distribution price",
+                        "productOfferingPrice": {
+                          "@type": "ProductOfferingPriceRef",
+                          "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOfferingPrice/6822",
+                          "id": "6822",
+                          "name": "smart speakers 2023 distribution price",
+                          "@referredType": "ProductOfferingPrice"
+                        },
+                        "partyRevSharingAlgorithm": [
+                          {
+                            "@type": "PartyRevSharingAlgorithmRef",
+                            "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingAlgorithm/4842",
+                            "id": "4842",
+                            "name": "distribute charge revenue share calculate policy for smart speakers 2023 distribution price",
+                            "@referredType": "PartyRevSharingAlgorithm"
+                          }
+                        ]
+                      }
+                    ],
+                    "agreementItem": [
+                      {
+                        "@type": "AgreementItemRef",
+                        "agreementName": "Agreement of smart speakers 2023 distribution with MyFirstPartner",
+                        "agreementHref": "https://mycsp.com:8080/tmf-api/AgreementManagement/v5/Agreement/8810",
+                        "@referredType": "AgreementItem",
+                        "agreementId": "8810",
+                        "agreementItemId": "88102"
+                      }
+                    ]
+                  }
+                ],
+                "agreement": [
+                  {
+                    "@type": "AgreementRef",
+                    "href": "https://mycsp.com:8080/tmf-api/AgreementManagement/v5/Agreement/8810",
+                    "id": "8810",
+                    "name": "Agreement of Mobile handset 2023 distribution with MyFirstPartner",
+                    "@referredType": "Agreement"
+                  }
+                ]
+              },
+              {
+                "@type": "PartyRevSharingModelItem",
+                "name": "Revenue Sharing Model of Mobi Service Providor(Owner)",
+                "description": "Revenue Sharing Model of Mobi Service Providor(Owner)",
+                "relatedParty": {
+                  "@type": "RelatedPartyRefOrPartyRoleRef",
+                  "role": "revenueSharingModelOwner",
+                  "partyOrPartyRole": {
+                    "@type": "PartyRef",
+                    "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/organization/2779",
+                    "id": "2779",
+                    "name": "Mobi Service Providor",
+                    "@referredType": "Organization"
+                  }
+                },
+                "partyAccount": {
+                  "@type": "PartyAccountRef",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/PartyAccount/2789",
+                  "id": "2789",
+                  "name": "Mobi Service Providor Account",
+                  "@referredType": "PartyAccount",
+                  "description": "Mobi Service Providor Account for revenue share",
+                  "status": "active"
+                },
+                "sharingModelItemInvolvement": [
+                  {
+                    "@type": "PartyRevSharingModelInvolvement",
+                    "name": "Mobile handset 2023 revenue share of Mobi Service Providor",
+                    "description": "Mobile handset 2023 revenue share of Mobi Service Providor",
+                    "productOffering": [
+                      {
+                        "@type": "ProductOfferingRef",
+                        "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOffering/6810",
+                        "id": "6810",
+                        "name": "Mobile handset 2023",
+                        "@referredType": "ProductOffering"
+                      }
+                    ],
+                    "offeringPrice": [
+                      {
+                        "@type": "PartyRevSharingModelInvolPrice",
+                        "name": "Mobile handset 2023 distribution price for revenue share of Mobi Service Providor",
+                        "description": "Mobile handset 2023 distribution price for revenue share of Mobi Service Providor",
+                        "productOfferingPrice": {
+                          "@type": "ProductOfferingPriceRef",
+                          "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductOfferingPrice/6820",
+                          "id": "6820",
+                          "name": "Mobile handset 2023 distribution price",
+                          "@referredType": "ProductOfferingPrice"
+                        },
+                        "partyRevSharingAlgorithm": [
+                          {
+                            "@type": "PartyRevSharingAlgorithmRef",
+                            "href": "https://mycsp.com:8080/tmf-api/PartyRevSharingModelManagement/v5/PartyRevSharingAlgorithm/4841",
+                            "id": "4841",
+                            "name": "distribute charge revenue share calculate policy for Mobile handset 2023 distribution price of Mobi Service Providor",
+                            "@referredType": "PartyRevSharingAlgorithm"
+                          }
+                        ]
+                      }
+                    ],
+                    "agreementItem": [
+                      {
+                        "@type": "AgreementItemRef",
+                        "agreementName": "Agreement of smart speakers 2023 distribution with MyFirstPartner",
+                        "agreementHref": "https://mycsp.com:8080/tmf-api/AgreementManagement/v5/Agreement/8811",
+                        "@referredType": "AgreementItem",
+                        "agreementId": "8811",
+                        "agreementItemId": "88111"
+                      }
+                    ]
+                  }
+                ],
+                "agreement": [
+                  {
+                    "@type": "AgreementRef",
+                    "href": "https://mycsp.com:8080/tmf-api/AgreementManagement/v5/Agreement/8811",
+                    "id": "8811",
+                    "name": "Agreement of Mobile handset 2023 distribution with Mobi Service Providor",
+                    "@referredType": "Agreement"
+                  }
+                ]
+              }
+            ],
+            "productSpecification": [
+              {
+                "@type": "ProductSpecificationRef",
+                "href": "https://mycsp.com:8080/tmf-api/ProductManagement/v5/ProductSpecification/6830",
+                "id": "6830",
+                "name": "Mobile handset 2023",
+                "@referredType": "ProductSpecification",
+                "version": "1.0",
+                "targetProductSchema": {
+                  "@type": "ProductSpecification",
+                  "@schemaLocation": "https://mycsp.com:8080/tmf-api/schemas/Product/ProductSpecification.schema.json"
+                }
+              },
+              {
+                "@type": "ProductSpecificationRef",
+                "id": "6831",
+                "name": "smart speakers 2023",
+                "@referredType": "ProductSpecification",
+                "version": "1.0",
+                "targetProductSchema": {
+                  "@type": "ProductSpecification",
+                  "@schemaLocation": "https://mycsp.com:8080/tmf-api/schemas/Product/ProductSpecification.schema.json"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listPartyRevSharingModel",
+          "summary": "List or find PartyRevSharingModel objects",
+          "description": "List or find PartyRevSharingModel objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createPartyRevSharingModel",
+          "summary": "Creates a PartyRevSharingModel",
+          "description": "This operation creates a PartyRevSharingModel entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrievePartyRevSharingModel",
+          "summary": "Retrieves a PartyRevSharingModel by ID",
+          "description": "This operation retrieves a PartyRevSharingModel entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchPartyRevSharingModel",
+          "summary": "Updates partially a PartyRevSharingModel",
+          "description": "This operation updates partially a PartyRevSharingModel entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deletePartyRevSharingModel",
+          "summary": "Deletes a PartyRevSharingModel",
+          "description": "This operation deletes a PartyRevSharingModel entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/partyRevSharingModel",
+        "item": "/partyRevSharingModel/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "partyRevSharingModelAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PARTY_REV_SHARING_MODEL_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "partyRevSharingModelCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PARTY_REV_SHARING_MODEL_CREATE"
+        },
+        {
+          "eventName": "partyRevSharingModelDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PARTY_REV_SHARING_MODEL_DELETE"
+        },
+        {
+          "eventName": "partyRevSharingModelStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "PARTY_REV_SHARING_MODEL_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/partyRevSharingModelAttributeValueChangeEvent",
+      "eventName": "partyRevSharingModelAttributeValueChangeEvent",
+      "resource": "PartyRevSharingModel",
+      "eventKind": "AttributeValueChange",
+      "operationId": "partyRevSharingModelAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingModelCreateEvent",
+      "eventName": "partyRevSharingModelCreateEvent",
+      "resource": "PartyRevSharingModel",
+      "eventKind": "Create",
+      "operationId": "partyRevSharingModelCreateEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingModelDeleteEvent",
+      "eventName": "partyRevSharingModelDeleteEvent",
+      "resource": "PartyRevSharingModel",
+      "eventKind": "Delete",
+      "operationId": "partyRevSharingModelDeleteEvent"
+    },
+    {
+      "path": "/listener/partyRevSharingModelStateChangeEvent",
+      "eventName": "partyRevSharingModelStateChangeEvent",
+      "resource": "PartyRevSharingModel",
+      "eventKind": "StateChange",
+      "operationId": "partyRevSharingModelStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No usable base path in the spec (servers[0].url = https://serverRoot); derived from info.title instead - verify it, or pass --base-path.",
+    "PartyRevSharingModel has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

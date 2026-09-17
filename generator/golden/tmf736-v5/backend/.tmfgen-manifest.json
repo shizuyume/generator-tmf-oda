@@ -1,0 +1,103 @@
+{
+  "generatorVersion": "0.1.0",
+  "components": {
+    "736": {
+      "tmfNumber": "736",
+      "specTitle": "Revenue Sharing Algorithm Management",
+      "specVersion": "5.0.0",
+      "slug": "revenue-sharing-algorithm",
+      "basePath": "tmf-api/revenueSharingAlgorithmManagement/v5",
+      "basePathConstant": "TMF736_BASE_PATH",
+      "eventExchange": "revenueSharingAlgorithm.events",
+      "eventExchangeConstant": "TMF736_EVENT_EXCHANGE",
+      "eventTypeEnum": "RevenueSharingAlgorithmEventType",
+      "resources": [
+        {
+          "resource": "PartyRevSharingAlgorithm",
+          "dir": "party-rev-sharing-algorithm",
+          "pathSegment": "partyRevSharingAlgorithm",
+          "moduleClass": "PartyRevSharingAlgorithmModule",
+          "moduleImportPath": "party-rev-sharing-algorithm/party-rev-sharing-algorithm.module",
+          "className": "PartyRevSharingAlgorithmModule",
+          "importPath": "party-rev-sharing-algorithm/party-rev-sharing-algorithm.module"
+        }
+      ],
+      "seeds": [
+        {
+          "resource": "PartyRevSharingAlgorithm",
+          "dir": "party-rev-sharing-algorithm",
+          "serviceClass": "PartyRevSharingAlgorithmService",
+          "seedConst": "partyRevSharingAlgorithmSeed",
+          "localSeedConst": "partyRevSharingAlgorithmLocalSeed",
+          "count": 1
+        }
+      ],
+      "entities": [
+        {
+          "className": "PartyRevSharingAlgorithm",
+          "importPath": "party-rev-sharing-algorithm/entities/party-rev-sharing-algorithm.entity"
+        },
+        {
+          "className": "PolicyRef",
+          "importPath": "party-rev-sharing-algorithm/entities/policy-ref.entity"
+        },
+        {
+          "className": "PolicyConditionRef",
+          "importPath": "party-rev-sharing-algorithm/entities/policy-condition-ref.entity"
+        },
+        {
+          "className": "PolicyVariableRef",
+          "importPath": "party-rev-sharing-algorithm/entities/policy-variable-ref.entity"
+        },
+        {
+          "className": "PartyRevSharingPolicyConditionVariable",
+          "importPath": "party-rev-sharing-algorithm/entities/party-rev-sharing-policy-condition-variable.entity"
+        },
+        {
+          "className": "PolicyActionRef",
+          "importPath": "party-rev-sharing-algorithm/entities/policy-action-ref.entity"
+        },
+        {
+          "className": "PartyRevSharingPolicyActionVariable",
+          "importPath": "party-rev-sharing-algorithm/entities/party-rev-sharing-policy-action-variable.entity"
+        }
+      ],
+      "events": [
+        {
+          "eventName": "partyRevSharingAlgorithmAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_CREATE"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_DELETE"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "PARTY_REV_SHARING_ALGORITHM_STATE_CHANGE"
+        }
+      ],
+      "listeners": [
+        {
+          "eventName": "partyRevSharingAlgorithmAttributeValueChangeEvent"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmCreateEvent"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmDeleteEvent"
+        },
+        {
+          "eventName": "partyRevSharingAlgorithmStateChangeEvent"
+        }
+      ]
+    }
+  }
+}

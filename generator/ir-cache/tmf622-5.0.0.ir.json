@@ -1,0 +1,5651 @@
+{
+  "meta": {
+    "tmfNumber": "622",
+    "specTitle": "ProductOrdering",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/productOrdering/v5",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF622_BASE_PATH",
+    "eventExchange": "productOrdering.events",
+    "eventExchangeConstant": "TMF622_EVENT_EXCHANGE",
+    "eventTypeEnum": "ProductOrderingEventType",
+    "serviceNameSuggestion": "product-ordering-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf622/5.0.0/openapi/TMF622-ProductOrdering-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0"
+  },
+  "resources": [
+    {
+      "name": "CancelProductOrder",
+      "camelName": "cancelProductOrder",
+      "kebabName": "cancel-product-order",
+      "tableName": "cancel_product_order",
+      "pathSegment": "cancelProductOrder",
+      "pathKey": "cancelProductOrder",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time when the CancelProductOrder was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "requestedCancellationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the submitter wants the order to be cancelled"
+        },
+        {
+          "kind": "scalar",
+          "name": "cancellationReason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Reason why the order is cancelled."
+        },
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "inProgress",
+            "cancelled",
+            "done",
+            "terminatedWithError"
+          ],
+          "enumRef": "TaskStateType",
+          "nullable": true,
+          "description": "Possible values for the state of a task"
+        },
+        {
+          "kind": "scalar",
+          "name": "effectiveCancellationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the order is cancelled."
+        }
+      ],
+      "flattenedRefs": [],
+      "resourceRefs": [
+        {
+          "name": "productOrder",
+          "targetResource": "ProductOrder",
+          "targetTable": "product_order",
+          "relation": "many-to-one",
+          "joinColumn": "product_order_id",
+          "required": false,
+          "description": "",
+          "projectedProps": [
+            "@type",
+            "@baseType",
+            "@schemaLocation",
+            "href",
+            "id",
+            "name",
+            "@referredType"
+          ]
+        }
+      ],
+      "subResources": [],
+      "createShape": {
+        "schemaName": "CancelProductOrder_FVO",
+        "required": [
+          "@type",
+          "productOrder"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "productOrder",
+          "requestedCancellationDate",
+          "cancellationReason"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "CancelProductOrder_MVO",
+        "required": [
+          "@type",
+          "state",
+          "productOrder"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "productOrder",
+          "creationDate",
+          "requestedCancellationDate",
+          "cancellationReason",
+          "state",
+          "effectiveCancellationDate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CreateCancelProductOrder",
+          "value": {
+            "cancellationReason": "Duplicate order",
+            "requestedCancellationDate": "2021-08-30T09:14:46.145Z",
+            "productOrder": {
+              "id": "45f-98f-ss45",
+              "@referredType": "ProductOrder",
+              "@type": "ProductOrderRef"
+            },
+            "@type": "CancelProductOrder"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listCancelProductOrder",
+          "summary": "List or find CancelProductOrder objects",
+          "description": "List or find CancelProductOrder objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createCancelProductOrder",
+          "summary": "Creates a CancelProductOrder",
+          "description": "This operation creates a CancelProductOrder entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveCancelProductOrder",
+          "summary": "Retrieves a CancelProductOrder by ID",
+          "description": "This operation retrieves a CancelProductOrder entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": null,
+        "delete": null
+      },
+      "paths": {
+        "collection": "/cancelProductOrder",
+        "item": "/cancelProductOrder/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "cancelProductOrderCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "CANCEL_PRODUCT_ORDER_CREATE"
+        },
+        {
+          "eventName": "cancelProductOrderInformationRequiredEvent",
+          "eventKind": "InformationRequired",
+          "enumMember": "CANCEL_PRODUCT_ORDER_INFORMATION_REQUIRED"
+        },
+        {
+          "eventName": "cancelProductOrderStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "CANCEL_PRODUCT_ORDER_STATE_CHANGE"
+        }
+      ]
+    },
+    {
+      "name": "ProductOrder",
+      "camelName": "productOrder",
+      "kebabName": "product-order",
+      "tableName": "product_order",
+      "pathSegment": "productOrder",
+      "pathKey": "productOrder",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "state",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "rejected",
+            "pending",
+            "held",
+            "inProgress",
+            "cancelled",
+            "completed",
+            "failed",
+            "partial",
+            "assessingCancellation",
+            "pendingCancellation",
+            "draft",
+            "inProgress.accepted"
+          ],
+          "enumRef": "ProductOrderStateType",
+          "nullable": true,
+          "description": "Possible values for the state of the order"
+        },
+        {
+          "kind": "scalar",
+          "name": "requestedInitialState",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 100
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": [
+            "acknowledged",
+            "draft"
+          ],
+          "enumRef": "InitialProductOrderStateType",
+          "nullable": true,
+          "description": "Possible values for the requested initial state of the order from client- by default acknowledged is considered"
+        },
+        {
+          "kind": "scalar",
+          "name": "cancellationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the order is cancelled. This is used when order is cancelled. "
+        },
+        {
+          "kind": "scalar",
+          "name": "cancellationReason",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Reason why the order is cancelled. This is used when order is cancelled. "
+        },
+        {
+          "kind": "scalar",
+          "name": "category",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Used to categorize the order from a business perspective that can be useful for the OM system (e.g. \"enterprise\", \"residential\", ...)"
+        },
+        {
+          "kind": "scalar",
+          "name": "description",
+          "tsType": "string",
+          "column": {
+            "type": "text"
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Description of the product order"
+        },
+        {
+          "kind": "scalar",
+          "name": "expectedCompletionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Expected delivery date amended by the provider"
+        },
+        {
+          "kind": "scalar",
+          "name": "notificationContact",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 255
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Contact attached to the order to send back information regarding this order"
+        },
+        {
+          "kind": "scalar",
+          "name": "priority",
+          "tsType": "string",
+          "column": {
+            "type": "varchar",
+            "length": 50
+          },
+          "validators": [
+            "IsString"
+          ],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "A way that can be used by consumers to prioritize orders in OM system (from 0 to 4 : 0 is the highest priority, and 4 the lowest)"
+        },
+        {
+          "kind": "scalar",
+          "name": "requestedCompletionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Requested delivery date from the requestor perspective"
+        },
+        {
+          "kind": "scalar",
+          "name": "requestedStartDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Order fulfillment start date wished by the requestor. This is used when, for any reason, requestor cannot allow seller to begin to operationally begin the fulfillment before a date. "
+        },
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date and time when the ProductOrder was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "completionDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "Date when the ProductOrder was completed"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "billingAccount",
+          "targetRef": "BillingAccountRef",
+          "description": "",
+          "columns": [
+            {
+              "name": "billingAccountType",
+              "sourceProp": "@type",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountBaseType",
+              "sourceProp": "@baseType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountSchemaLocation",
+              "sourceProp": "@schemaLocation",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountHref",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountName",
+              "sourceProp": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountReferredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            },
+            {
+              "name": "billingAccountRatingType",
+              "sourceProp": "ratingType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "AgreementRef",
+          "tableName": "agreement_ref",
+          "nameCandidates": [
+            "AgreementRef",
+            "ProductOrderAgreementRef"
+          ],
+          "refLike": true,
+          "propertyName": "agreement",
+          "itemRef": "AgreementRef",
+          "description": "A reference to an agreement defined in the context of the product order",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "RelatedChannel",
+          "tableName": "related_channel",
+          "nameCandidates": [
+            "RelatedChannel",
+            "ProductOrderChannel"
+          ],
+          "refLike": false,
+          "propertyName": "channel",
+          "itemRef": "RelatedChannel",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": ""
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "channel",
+              "targetRef": "ChannelRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "channelType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "channelReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "className": "ExternalIdentifier",
+          "tableName": "external_identifier",
+          "nameCandidates": [
+            "ExternalIdentifier",
+            "ProductOrderExternalId"
+          ],
+          "refLike": false,
+          "propertyName": "externalId",
+          "itemRef": "ExternalIdentifier",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "owner",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the external system that owns the entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "externalIdentifierType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of the identification, typically would be the type of the entity within the external system"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "Note",
+          "tableName": "note",
+          "nameCandidates": [
+            "Note",
+            "ProductOrderNote"
+          ],
+          "refLike": false,
+          "propertyName": "note",
+          "itemRef": "Note",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "author",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Author of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "date",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date of the note"
+            },
+            {
+              "kind": "scalar",
+              "name": "text",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Text of the note"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "OrderPrice",
+          "tableName": "order_price",
+          "nameCandidates": [
+            "OrderPrice",
+            "ProductOrderOrderTotalPrice"
+          ],
+          "refLike": false,
+          "propertyName": "orderTotalPrice",
+          "itemRef": "OrderPrice",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative that explains in detail the semantics of this order item price."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A short descriptive name such as \"Subscription price\"."
+            },
+            {
+              "kind": "scalar",
+              "name": "recurringChargePeriod",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Could be month, week..."
+            },
+            {
+              "kind": "scalar",
+              "name": "unitOfMeasure",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Could be minutes, GB..."
+            },
+            {
+              "kind": "scalar",
+              "name": "priceType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "indicate if the price is for recurrent or no-recurrent charge"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "productOfferingPrice",
+              "targetRef": "ProductOfferingPriceRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOfferingPriceType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "billingAccount",
+              "targetRef": "BillingAccountRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "billingAccountType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountRatingType",
+                  "sourceProp": "ratingType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "price",
+              "targetRef": "Price",
+              "description": "",
+              "columns": [
+                {
+                  "name": "priceType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "pricePercentage",
+                  "sourceProp": "percentage",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceTaxRate",
+                  "sourceProp": "taxRate",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "PriceAlteration",
+              "tableName": "price_alteration",
+              "nameCandidates": [
+                "PriceAlteration",
+                "OrderPricePriceAlteration"
+              ],
+              "refLike": false,
+              "propertyName": "priceAlteration",
+              "itemRef": "PriceAlteration",
+              "description": "a strucuture used to describe a price alteration",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "applicationDuration",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Duration during which the alteration applies on the order item price (for instance 2 months free of charge for the recurring charge)"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail the semantics of this order item price alteration"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the order item price alteration"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A category that describes the price such as recurring, one time and usage."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priority",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Priority level for applying this alteration among all the defined alterations on the order item price"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be month, week..."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be minutes, GB..."
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "price",
+                  "targetRef": "Price",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "priceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "pricePercentage",
+                      "sourceProp": "percentage",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxRate",
+                      "sourceProp": "taxRate",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "PaymentRef",
+          "tableName": "payment_ref",
+          "nameCandidates": [
+            "PaymentRef",
+            "ProductOrderPaymentRef"
+          ],
+          "refLike": true,
+          "propertyName": "payment",
+          "itemRef": "PaymentRef",
+          "description": "If an immediate payment has been done at the product order submission, the payment information are captured and stored (as a reference) in the order.",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "OrderRelationship",
+          "tableName": "order_relationship",
+          "nameCandidates": [
+            "OrderRelationship",
+            "ProductOrderOrderRelationship"
+          ],
+          "refLike": true,
+          "propertyName": "orderRelationship",
+          "itemRef": "OrderRelationship",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "Id of the related order"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "relationshipType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Relationship type as correlates, triggers, etc..."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ProductOfferingQualificationRef",
+          "tableName": "product_offering_qualification_ref",
+          "nameCandidates": [
+            "ProductOfferingQualificationRef",
+            "ProductOrderProductOfferingQualificationRef"
+          ],
+          "refLike": true,
+          "propertyName": "productOfferingQualification",
+          "itemRef": "ProductOfferingQualificationRef",
+          "description": "A productOfferingQualification that has been executed previously",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "QuoteRef",
+          "tableName": "quote_ref",
+          "nameCandidates": [
+            "QuoteRef",
+            "ProductOrderQuoteRef"
+          ],
+          "refLike": true,
+          "propertyName": "quote",
+          "itemRef": "QuoteRef",
+          "description": "Quote reference. It's a Quote that has been executed previously.",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "referredType",
+              "sourceProp": "@referredType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "nullable": true,
+              "description": "The actual type of the target instance when needed for disambiguation."
+            },
+            {
+              "kind": "scalar",
+              "name": "href",
+              "sourceProp": "href",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 1000
+              },
+              "nullable": true,
+              "description": "The URI of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "refId",
+              "sourceProp": "id",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 36
+              },
+              "nullable": true,
+              "description": "The identifier of the referred entity."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Name of the referred entity."
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        },
+        {
+          "className": "ProductOrderErrorMessage",
+          "tableName": "product_order_error_message",
+          "nameCandidates": [
+            "ProductOrderErrorMessage",
+            "ProductOrderErrorMessage"
+          ],
+          "refLike": false,
+          "propertyName": "productOrderErrorMessage",
+          "itemRef": "ProductOrderErrorMessage",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "code",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "error code"
+            },
+            {
+              "kind": "scalar",
+              "name": "reason",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Explanation of the reason for the error"
+            },
+            {
+              "kind": "scalar",
+              "name": "message",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "More details and corrective actions related to the error"
+            },
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "error code extension like sys-ABC-2001"
+            },
+            {
+              "kind": "scalar",
+              "name": "referenceError",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "URI of documentation describing the error"
+            },
+            {
+              "kind": "scalar",
+              "name": "timestamp",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Date when the error happened"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ProductOrderItemRef",
+              "tableName": "product_order_item_ref",
+              "nameCandidates": [
+                "ProductOrderItemRef",
+                "ProductOrderErrorMessageProductOrderItemRef"
+              ],
+              "refLike": false,
+              "propertyName": "productOrderItem",
+              "itemRef": "ProductOrderItemRef",
+              "description": "A list of order item references corresponded to this error",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "ProductOrderHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Reference of the related ProductOrder."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "productOrderId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of a refered product order."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "productOrderItemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Identifier of a product order item. "
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "ProductOrderJeopardyAlert",
+          "tableName": "product_order_jeopardy_alert",
+          "nameCandidates": [
+            "ProductOrderJeopardyAlert",
+            "ProductOrderJeopardyAlert"
+          ],
+          "refLike": false,
+          "propertyName": "productOrderJeopardyAlert",
+          "itemRef": "ProductOrderJeopardyAlert",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "alertDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A date time( DateTime). The date that the alert issued"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A string used to give a name to the jeopardy alert"
+            },
+            {
+              "kind": "scalar",
+              "name": "jeopardyType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A string represents the type of jeopardy/risk like Normal, Hazard, Critical, ..."
+            },
+            {
+              "kind": "scalar",
+              "name": "exception",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": " The exception associated with this jeopardy alert"
+            },
+            {
+              "kind": "scalar",
+              "name": "message",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A string represents the message of the alert"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ProductOrderItemRef",
+              "tableName": "product_order_item_ref",
+              "nameCandidates": [
+                "ProductOrderItemRef",
+                "ProductOrderJeopardyAlertProductOrderItemRef"
+              ],
+              "refLike": false,
+              "propertyName": "productOrderItem",
+              "itemRef": "ProductOrderItemRef",
+              "description": "A list of order item references corresponded to this alert",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "ProductOrderHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Reference of the related ProductOrder."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "productOrderId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of a refered product order."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "productOrderItemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Identifier of a product order item. "
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "ProductOrderMilestone",
+          "tableName": "product_order_milestone",
+          "nameCandidates": [
+            "ProductOrderMilestone",
+            "ProductOrderMilestone"
+          ],
+          "refLike": false,
+          "propertyName": "productOrderMilestone",
+          "itemRef": "ProductOrderMilestone",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "free-text description of the Milestone"
+            },
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "Yet-To-Reach",
+                "Completed",
+                "Violated"
+              ],
+              "enumRef": null,
+              "nullable": true,
+              "description": "The milestone status"
+            },
+            {
+              "kind": "scalar",
+              "name": "milestoneDate",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A date time( DateTime). The date that the milestone happens"
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A string used to give a name to the milestone"
+            },
+            {
+              "kind": "scalar",
+              "name": "message",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A string represents the message of the milestone"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [
+            {
+              "className": "ProductOrderItemRef",
+              "tableName": "product_order_item_ref",
+              "nameCandidates": [
+                "ProductOrderItemRef",
+                "ProductOrderMilestoneProductOrderItemRef"
+              ],
+              "refLike": false,
+              "propertyName": "productOrderItem",
+              "itemRef": "ProductOrderItemRef",
+              "description": "A list of order item references corresponded to this alert",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "ProductOrderHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Reference of the related ProductOrder."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "productOrderId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Unique identifier of a refered product order."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "productOrderItemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Identifier of a product order item. "
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "ProductOrderItem",
+          "tableName": "product_order_item",
+          "nameCandidates": [
+            "ProductOrderItem",
+            "ProductOrderItem"
+          ],
+          "refLike": false,
+          "propertyName": "productOrderItem",
+          "itemRef": "ProductOrderItem",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": 1,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "quantity",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Quantity ordered"
+            },
+            {
+              "kind": "scalar",
+              "name": "action",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "add",
+                "modify",
+                "delete",
+                "noChange"
+              ],
+              "enumRef": "ItemActionType",
+              "nullable": true,
+              "description": "action to be performed on the entity managed by the item"
+            },
+            {
+              "kind": "json",
+              "name": "product",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            },
+            {
+              "kind": "scalar",
+              "name": "state",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "acknowledged",
+                "rejected",
+                "pending",
+                "held",
+                "inProgress",
+                "cancelled",
+                "completed",
+                "failed",
+                "partial",
+                "assessingCancellation",
+                "pendingCancellation"
+              ],
+              "enumRef": "ProductOrderItemStateType",
+              "nullable": true,
+              "description": "Possible values for the state of the product order item"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "appointment",
+              "targetRef": "AppointmentRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "appointmentType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "appointmentDescription",
+                  "sourceProp": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "billingAccount",
+              "targetRef": "BillingAccountRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "billingAccountType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "billingAccountRatingType",
+                  "sourceProp": "ratingType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "productOffering",
+              "targetRef": "ProductOfferingRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOfferingType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "productOfferingQualificationItem",
+              "targetRef": "ProductOfferingQualificationItemRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOfferingQualificationItemType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemProductOfferingQualificationName",
+                  "sourceProp": "productOfferingQualificationName",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemProductOfferingQualificationHref",
+                  "sourceProp": "productOfferingQualificationHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemProductOfferingQualificationId",
+                  "sourceProp": "productOfferingQualificationId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingQualificationItemItemId",
+                  "sourceProp": "itemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "quoteItem",
+              "targetRef": "QuoteItemRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "quoteItemType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "quoteItemBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "quoteItemSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "quoteItemQuoteHref",
+                  "sourceProp": "quoteHref",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "quoteItemReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "quoteItemQuoteId",
+                  "sourceProp": "quoteId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "quoteItemQuoteItemId",
+                  "sourceProp": "quoteItemId",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "OrderPrice",
+              "tableName": "order_price",
+              "nameCandidates": [
+                "OrderPrice",
+                "ProductOrderItemItemPrice"
+              ],
+              "refLike": false,
+              "propertyName": "itemPrice",
+              "itemRef": "OrderPrice",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail the semantics of this order item price."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A short descriptive name such as \"Subscription price\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be month, week..."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be minutes, GB..."
+                },
+                {
+                  "kind": "json",
+                  "name": "priceAlteration",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "indicate if the price is for recurrent or no-recurrent charge"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "billingAccount",
+                  "targetRef": "BillingAccountRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "billingAccountType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountRatingType",
+                      "sourceProp": "ratingType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "price",
+                  "targetRef": "Price",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "priceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "pricePercentage",
+                      "sourceProp": "percentage",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxRate",
+                      "sourceProp": "taxRate",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "OrderTerm",
+              "tableName": "order_term",
+              "nameCandidates": [
+                "OrderTerm",
+                "ProductOrderItemItemTerm"
+              ],
+              "refLike": false,
+              "propertyName": "itemTerm",
+              "itemRef": "OrderTerm",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Description of the productOrderTerm"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the productOrderTerm"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "duration",
+                  "targetRef": "Duration",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "durationAmount",
+                      "sourceProp": "amount",
+                      "tsType": "number",
+                      "column": {
+                        "type": "int"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "durationUnits",
+                      "sourceProp": "units",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "OrderPrice",
+              "tableName": "order_price",
+              "nameCandidates": [
+                "OrderPrice",
+                "ProductOrderItemItemTotalPrice"
+              ],
+              "refLike": false,
+              "propertyName": "itemTotalPrice",
+              "itemRef": "OrderPrice",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail the semantics of this order item price."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A short descriptive name such as \"Subscription price\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be month, week..."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be minutes, GB..."
+                },
+                {
+                  "kind": "json",
+                  "name": "priceAlteration",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "indicate if the price is for recurrent or no-recurrent charge"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "billingAccount",
+                  "targetRef": "BillingAccountRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "billingAccountType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountRatingType",
+                      "sourceProp": "ratingType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "price",
+                  "targetRef": "Price",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "priceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "pricePercentage",
+                      "sourceProp": "percentage",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxRate",
+                      "sourceProp": "taxRate",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "Note",
+              "tableName": "note",
+              "nameCandidates": [
+                "Note",
+                "ProductOrderItemNote"
+              ],
+              "refLike": false,
+              "propertyName": "note",
+              "itemRef": "Note",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "author",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Author of the note"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "date",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date of the note"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "text",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Text of the note"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "PaymentRef",
+              "tableName": "payment_ref",
+              "nameCandidates": [
+                "PaymentRef",
+                "ProductOrderItemPaymentRef"
+              ],
+              "refLike": true,
+              "propertyName": "payment",
+              "itemRef": "PaymentRef",
+              "description": "If an immediate payment has been done at the product order submission, the payment information are captured and stored (as a reference) in the order.",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "ProductOrderItem",
+              "tableName": "product_order_item",
+              "nameCandidates": [
+                "ProductOrderItem",
+                "ProductOrderItem"
+              ],
+              "refLike": false,
+              "propertyName": "productOrderItem",
+              "itemRef": "ProductOrderItem",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "quantity",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Quantity ordered"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "action",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "add",
+                    "modify",
+                    "delete",
+                    "noChange"
+                  ],
+                  "enumRef": "ItemActionType",
+                  "nullable": true,
+                  "description": "action to be performed on the entity managed by the item"
+                },
+                {
+                  "kind": "json",
+                  "name": "itemPrice",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "itemTerm",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "itemTotalPrice",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "note",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "payment",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "product",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                },
+                {
+                  "kind": "json",
+                  "name": "productOrderItem",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "productOrderItemRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "state",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "acknowledged",
+                    "rejected",
+                    "pending",
+                    "held",
+                    "inProgress",
+                    "cancelled",
+                    "completed",
+                    "failed",
+                    "partial",
+                    "assessingCancellation",
+                    "pendingCancellation"
+                  ],
+                  "enumRef": "ProductOrderItemStateType",
+                  "nullable": true,
+                  "description": "Possible values for the state of the product order item"
+                },
+                {
+                  "kind": "json",
+                  "name": "qualification",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "appointment",
+                  "targetRef": "AppointmentRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "appointmentType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "appointmentDescription",
+                      "sourceProp": "description",
+                      "tsType": "string",
+                      "column": {
+                        "type": "text"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "billingAccount",
+                  "targetRef": "BillingAccountRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "billingAccountType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "billingAccountRatingType",
+                      "sourceProp": "ratingType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOffering",
+                  "targetRef": "ProductOfferingRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingQualificationItem",
+                  "targetRef": "ProductOfferingQualificationItemRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingQualificationItemType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemProductOfferingQualificationName",
+                      "sourceProp": "productOfferingQualificationName",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemProductOfferingQualificationHref",
+                      "sourceProp": "productOfferingQualificationHref",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemProductOfferingQualificationId",
+                      "sourceProp": "productOfferingQualificationId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingQualificationItemItemId",
+                      "sourceProp": "itemId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "quoteItem",
+                  "targetRef": "QuoteItemRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "quoteItemType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "quoteItemBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "quoteItemSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "quoteItemQuoteHref",
+                      "sourceProp": "quoteHref",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "quoteItemReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "quoteItemQuoteId",
+                      "sourceProp": "quoteId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "quoteItemQuoteItemId",
+                      "sourceProp": "quoteItemId",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 36
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "className": "OrderItemRelationship",
+              "tableName": "order_item_relationship",
+              "nameCandidates": [
+                "OrderItemRelationship",
+                "ProductOrderItemRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "productOrderItemRelationship",
+              "itemRef": "OrderItemRelationship",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Relationship type as relies on, bundles, etc..."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            },
+            {
+              "className": "ProductOfferingQualificationRef",
+              "tableName": "product_offering_qualification_ref",
+              "nameCandidates": [
+                "ProductOfferingQualificationRef",
+                "ProductOrderItemQualificationRef"
+              ],
+              "refLike": true,
+              "propertyName": "qualification",
+              "itemRef": "ProductOfferingQualificationRef",
+              "description": "A productOfferingQualification that has been executed previously",
+              "minItems": null,
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "referredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true,
+                  "description": "The actual type of the target instance when needed for disambiguation."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "href",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true,
+                  "description": "The URI of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "refId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 36
+                  },
+                  "nullable": true,
+                  "description": "The identifier of the referred entity."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the referred entity."
+                }
+              ],
+              "flattenedRefs": [],
+              "children": []
+            }
+          ]
+        },
+        {
+          "className": "RelatedPartyRefOrPartyRoleRef",
+          "tableName": "related_party_ref_or_party_role_ref",
+          "nameCandidates": [
+            "RelatedPartyRefOrPartyRoleRef",
+            "ProductOrderRelatedPartyRef"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyRefOrPartyRoleRef",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "ProductOrder_FVO",
+        "required": [
+          "@type",
+          "productOrderItem"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "agreement",
+          "billingAccount",
+          "requestedInitialState",
+          "category",
+          "channel",
+          "description",
+          "externalId",
+          "note",
+          "notificationContact",
+          "orderTotalPrice",
+          "payment",
+          "orderRelationship",
+          "priority",
+          "productOfferingQualification",
+          "quote",
+          "productOrderErrorMessage",
+          "productOrderJeopardyAlert",
+          "productOrderMilestone",
+          "productOrderItem",
+          "relatedParty",
+          "requestedCompletionDate",
+          "requestedStartDate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "ProductOrder_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "agreement",
+          "billingAccount",
+          "state",
+          "cancellationDate",
+          "cancellationReason",
+          "category",
+          "channel",
+          "description",
+          "expectedCompletionDate",
+          "externalId",
+          "note",
+          "notificationContact",
+          "orderTotalPrice",
+          "payment",
+          "orderRelationship",
+          "priority",
+          "productOfferingQualification",
+          "quote",
+          "productOrderErrorMessage",
+          "productOrderJeopardyAlert",
+          "productOrderMilestone",
+          "productOrderItem",
+          "relatedParty",
+          "requestedCompletionDate",
+          "requestedStartDate",
+          "completionDate"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": true,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "CreateProductOrder1",
+          "value": {
+            "category": "B2C product order",
+            "description": "Product Order illustration sample",
+            "externalId": [
+              {
+                "@type": "ExternalIdentifier",
+                "owner": "TMF",
+                "externalIdentifierType": "POnumber",
+                "id": "456"
+              }
+            ],
+            "priority": "1",
+            "requestedCompletionDate": "2019-05-02T08:13:59.506Z",
+            "requestedStartDate": "2019-05-03T08:13:59.506Z",
+            "channel": [
+              {
+                "role": "Used channel for order capture",
+                "@type": "RelatedChannel",
+                "channel": {
+                  "id": "1",
+                  "name": "Online channel",
+                  "@type": "ChannelRef"
+                }
+              }
+            ],
+            "note": [
+              {
+                "id": "1",
+                "author": "Jean Pontus",
+                "date": "2019-04-30T08:13:59.509Z",
+                "text": "This is a TMF product order illustration",
+                "@type": "Note"
+              }
+            ],
+            "productOrderItem": [
+              {
+                "id": "100",
+                "quantity": 1,
+                "action": "add",
+                "productOffering": {
+                  "id": "14277",
+                  "name": "TMF25",
+                  "@type": "ProductOfferingRef"
+                },
+                "productOrderItemRelationship": [
+                  {
+                    "id": "110",
+                    "relationshipType": "bundles",
+                    "@type": "OrderItemRelationship"
+                  },
+                  {
+                    "id": "120",
+                    "relationshipType": "bundles",
+                    "@type": "OrderItemRelationship"
+                  },
+                  {
+                    "id": "130",
+                    "relationshipType": "bundles",
+                    "@type": "OrderItemRelationship"
+                  }
+                ],
+                "@type": "ProductOrderItem"
+              },
+              {
+                "id": "110",
+                "quantity": 1,
+                "action": "add",
+                "itemPrice": [
+                  {
+                    "description": "Access Fee",
+                    "name": "Access Fee",
+                    "@type": "OrderPrice",
+                    "priceType": "nonRecurring",
+                    "price": {
+                      "taxRate": 0,
+                      "@type": "Price",
+                      "dutyFreeAmount": {
+                        "unit": "EUR",
+                        "value": 0.99
+                      },
+                      "taxIncludedAmount": {
+                        "unit": "EUR",
+                        "value": 0.99
+                      }
+                    }
+                  }
+                ],
+                "payment": [
+                  {
+                    "id": "2365",
+                    "href": "https://host:port/paymentManagement/v5/cashPayment/2365",
+                    "name": "Cash payment for access fee",
+                    "@type": "PaymentRef",
+                    "@referredType": "CashPayment"
+                  }
+                ],
+                "product": {
+                  "isBundle": false,
+                  "@type": "Product",
+                  "productCharacteristic": [
+                    {
+                      "name": "TEL_MSISDN",
+                      "id": "Char6",
+                      "@type": "StringCharacteristic",
+                      "value": "415 279 7439",
+                      "valueType": "string"
+                    }
+                  ],
+                  "productSpecification": {
+                    "id": "14307",
+                    "name": "Mobile Telephony",
+                    "version": "1",
+                    "@type": "ProductSpecificationRef"
+                  }
+                },
+                "productOffering": {
+                  "id": "14305",
+                  "name": "TMF Mobile Telephony",
+                  "@type": "ProductOfferingRef"
+                },
+                "@type": "ProductOrderItem"
+              },
+              {
+                "id": "120",
+                "quantity": 1,
+                "action": "add",
+                "billingAccount": {
+                  "id": "1513",
+                  "@type": "BillingAccountRef"
+                },
+                "itemPrice": [
+                  {
+                    "description": "Tariff plan monthly fee",
+                    "name": "MonthlyFee",
+                    "priceType": "recurring",
+                    "@type": "OrderPrice",
+                    "recurringChargePeriod": "month",
+                    "price": {
+                      "taxRate": 0,
+                      "@type": "Price",
+                      "dutyFreeAmount": {
+                        "unit": "EUR",
+                        "value": 20
+                      },
+                      "taxIncludedAmount": {
+                        "unit": "EUR",
+                        "value": 20
+                      }
+                    },
+                    "priceAlteration": [
+                      {
+                        "applicationDuration": 3,
+                        "description": "20% for first 3 months",
+                        "name": "WelcomeDiscount",
+                        "priceType": "recurring",
+                        "priority": 1,
+                        "recurringChargePeriod": "month",
+                        "@type": "PriceAlteration",
+                        "price": {
+                          "percentage": 20,
+                          "taxRate": 0,
+                          "@type": "Price"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "itemTerm": [
+                  {
+                    "description": "Tariff plan 12 Months commitment",
+                    "name": "12Months",
+                    "@type": "OrderTerm",
+                    "duration": {
+                      "amount": 12,
+                      "units": "month",
+                      "@type": "Duration"
+                    }
+                  }
+                ],
+                "product": {
+                  "isBundle": false,
+                  "@type": "Product",
+                  "productSpecification": {
+                    "id": "14395",
+                    "href": "https://host:port/productCatalogManagement/v5/productSpecification/14395",
+                    "name": "TMF Tariff plan",
+                    "version": "1",
+                    "@type": "ProductSpecificationRef"
+                  }
+                },
+                "productOffering": {
+                  "id": "14344",
+                  "href": "https://host:port/productCatalogManagement/v5/productOffering/14344",
+                  "name": "TMF Tariff Plan",
+                  "@type": "ProductOfferingRef"
+                },
+                "productOrderItemRelationship": [
+                  {
+                    "id": "110",
+                    "relationshipType": "reliesOn",
+                    "@type": "OrderItemRelationship"
+                  }
+                ],
+                "@type": "ProductOrderItem"
+              },
+              {
+                "id": "130",
+                "quantity": 1,
+                "action": "add",
+                "product": {
+                  "isBundle": false,
+                  "@type": "Product",
+                  "productCharacteristic": [
+                    {
+                      "name": "CoverageOptions",
+                      "id": "Char7",
+                      "@type": "StringCharacteristic",
+                      "value": "National",
+                      "valueType": "string"
+                    }
+                  ],
+                  "productSpecification": {
+                    "id": "14353",
+                    "href": "https://host:port/productCatalogManagement/v5/productSpecification/14353",
+                    "name": "Coverage",
+                    "version": "1",
+                    "@type": "ProductSpecificationRef"
+                  }
+                },
+                "productOffering": {
+                  "id": "14354",
+                  "href": "https://host:port/productCatalogManagement/v5/productOffering/14354",
+                  "name": "Coverage Options",
+                  "@type": "ProductOfferingRef"
+                },
+                "productOrderItemRelationship": [
+                  {
+                    "id": "110",
+                    "relationshipType": "reliesOn",
+                    "@type": "ProductOrderItemRelationship"
+                  }
+                ],
+                "@type": "ProductOrderItem"
+              }
+            ],
+            "relatedParty": [
+              {
+                "role": "Seller",
+                "partyOrPartyRole": {
+                  "id": "456-dd-df45",
+                  "href": "https://host:port/partyManagement/v5/individual/456-dd-df45",
+                  "name": "Joe Doe",
+                  "@type": "PartyRef",
+                  "@referredType": "Individual"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              },
+              {
+                "role": "Customer",
+                "partyOrPartyRole": {
+                  "id": "ff55-hjy4",
+                  "href": "https://host:port/partyRoleManagement/v5/customer/ff55-hjy4",
+                  "name": "Jean Pontus",
+                  "@type": "PartyRoleRef",
+                  "@referredType": "Customer"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              }
+            ],
+            "@type": "ProductOrder"
+          }
+        },
+        {
+          "label": "CreateProductOrder2",
+          "value": {
+            "category": "B2B product order",
+            "description": "Product Order illustration sample",
+            "externalId": [
+              {
+                "@type": "ExternalIdentifier",
+                "owner": "TMF",
+                "externalIdentifierType": "POnumber",
+                "id": "785"
+              }
+            ],
+            "priority": "1",
+            "requestedCompletionDate": "2019-05-02T08:13:59.506Z",
+            "requestedStartDate": "2019-05-03T08:13:59.506Z",
+            "productOrderItem": [
+              {
+                "id": "110",
+                "quantity": 1,
+                "action": "add",
+                "product": {
+                  "isBundle": false,
+                  "@type": "UNI",
+                  "productSpecification": {
+                    "id": "dfg-56d",
+                    "href": "https://api.com/productSpec/dfg-56d",
+                    "version": "v2",
+                    "name": "UNI specification",
+                    "@type": "ProductSpecificationRef"
+                  },
+                  "productCharacteristic": [
+                    {
+                      "@type": "ObjectCharacteristic",
+                      "id": "UNI_Characteristic",
+                      "name": "UNI order configuration",
+                      "valueType": "Slice5G JSON descriptor",
+                      "value": {
+                        "@valueSchemaLocation": "https://github.com/productSpec/UNISpec.json",
+                        "@type": "UNI_json_Specification",
+                        "physicalLayer": "10BASE-T",
+                        "synchronousModeEnabled": true,
+                        "numberOfLinks": 1,
+                        "tokenShareEnabled": true,
+                        "uniResiliency": "NONE",
+                        "maxServiceFrameSize": 1256
+                      }
+                    }
+                  ]
+                },
+                "@type": "ProductOrderItem"
+              }
+            ],
+            "relatedParty": [
+              {
+                "role": "Seller",
+                "partyOrPartyRole": {
+                  "id": "456-dd-df45",
+                  "href": "https://host:port/partyManagement/v5/individual/456-dd-df45",
+                  "name": "Joe Doe",
+                  "@type": "PartyRef",
+                  "@referredType": "Individual"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              },
+              {
+                "role": "Customer",
+                "partyOrPartyRole": {
+                  "id": "ff55-hjy4",
+                  "href": "https://host:port/partyRoleManagement/v5/customer/ff55-hjy4",
+                  "name": "Jean Pontus",
+                  "@type": "PartyRoleRef",
+                  "@referredType": "Customer"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              }
+            ],
+            "@type": "ProductOrder"
+          }
+        },
+        {
+          "label": "CreateProductOrder_with_intent_specification",
+          "value": {
+            "category": "B2C product order",
+            "description": "Product Order illustration sample",
+            "externalId": [
+              {
+                "@type": "ExternalIdentifier",
+                "owner": "TMF",
+                "externalIdentifierType": "POnumber",
+                "id": "456"
+              }
+            ],
+            "priority": "1",
+            "requestedCompletionDate": "2019-05-02T08:13:59.506Z",
+            "requestedStartDate": "2019-05-03T08:13:59.506Z",
+            "channel": [
+              {
+                "role": "Used channel for order capture",
+                "@type": "RelatedChannel",
+                "channel": {
+                  "id": "1",
+                  "name": "Online channel",
+                  "@type": "ChannelRef"
+                }
+              }
+            ],
+            "note": [
+              {
+                "id": "1",
+                "author": "Jean Pontus",
+                "date": "2019-04-30T08:13:59.509Z",
+                "text": "This is a TMF product order illustration",
+                "@type": "Note"
+              }
+            ],
+            "productOrderItem": [
+              {
+                "id": "100",
+                "quantity": 1,
+                "action": "add",
+                "productOffering": {
+                  "id": "14277",
+                  "name": "TMF25",
+                  "@type": "ProductOfferingRef"
+                },
+                "productOrderItemRelationship": [
+                  {
+                    "id": "110",
+                    "relationshipType": "bundles",
+                    "@type": "OrderItemRelationship"
+                  },
+                  {
+                    "id": "120",
+                    "relationshipType": "bundles",
+                    "@type": "OrderItemRelationship"
+                  },
+                  {
+                    "id": "130",
+                    "relationshipType": "bundles",
+                    "@type": "OrderItemRelationship"
+                  }
+                ],
+                "@type": "ProductOrderItem"
+              },
+              {
+                "id": "110",
+                "quantity": 1,
+                "action": "add",
+                "itemPrice": [
+                  {
+                    "description": "Access Fee",
+                    "name": "Access Fee",
+                    "@type": "OrderPrice",
+                    "priceType": "nonRecurring",
+                    "price": {
+                      "taxRate": 0,
+                      "@type": "Price",
+                      "dutyFreeAmount": {
+                        "unit": "EUR",
+                        "value": 0.99
+                      },
+                      "taxIncludedAmount": {
+                        "unit": "EUR",
+                        "value": 0.99
+                      }
+                    }
+                  }
+                ],
+                "payment": [
+                  {
+                    "id": "2365",
+                    "href": "https://host:port/paymentManagement/v5/cashPayment/2365",
+                    "name": "Cash payment for access fee",
+                    "@type": "PaymentRef",
+                    "@referredType": "CashPayment"
+                  }
+                ],
+                "product": {
+                  "isBundle": false,
+                  "@type": "Product",
+                  "productCharacteristic": [
+                    {
+                      "name": "TEL_MSISDN",
+                      "id": "Char6",
+                      "@type": "StringCharacteristic",
+                      "value": "415 279 7439",
+                      "valueType": "string"
+                    }
+                  ],
+                  "productSpecification": {
+                    "id": "14307",
+                    "name": "Mobile Telephony",
+                    "version": "1",
+                    "@type": "ProductSpecificationRef"
+                  }
+                },
+                "productOffering": {
+                  "id": "14305",
+                  "name": "TMF Mobile Telephony",
+                  "@type": "ProductOfferingRef"
+                },
+                "@type": "ProductOrderItem"
+              },
+              {
+                "id": "120",
+                "quantity": 1,
+                "action": "add",
+                "billingAccount": {
+                  "id": "1513",
+                  "@type": "BillingAccountRef"
+                },
+                "itemPrice": [
+                  {
+                    "description": "Tariff plan monthly fee",
+                    "name": "MonthlyFee",
+                    "priceType": "recurring",
+                    "@type": "OrderPrice",
+                    "recurringChargePeriod": "month",
+                    "price": {
+                      "taxRate": 0,
+                      "@type": "Price",
+                      "dutyFreeAmount": {
+                        "unit": "EUR",
+                        "value": 20
+                      },
+                      "taxIncludedAmount": {
+                        "unit": "EUR",
+                        "value": 20
+                      }
+                    },
+                    "priceAlteration": [
+                      {
+                        "applicationDuration": 3,
+                        "description": "20% for first 3 months",
+                        "name": "WelcomeDiscount",
+                        "priceType": "recurring",
+                        "priority": 1,
+                        "recurringChargePeriod": "month",
+                        "@type": "PriceAlteration",
+                        "price": {
+                          "percentage": 20,
+                          "taxRate": 0,
+                          "@type": "Price"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "itemTerm": [
+                  {
+                    "description": "Tariff plan 12 Months commitment",
+                    "name": "12Months",
+                    "@type": "OrderTerm",
+                    "duration": {
+                      "amount": 12,
+                      "units": "month",
+                      "@type": "Duration"
+                    }
+                  }
+                ],
+                "product": {
+                  "isBundle": false,
+                  "@type": "Product",
+                  "productSpecification": {
+                    "id": "14395",
+                    "href": "https://host:port/productCatalogManagement/v5/productSpecification/14395",
+                    "name": "TMF Tariff plan",
+                    "version": "1",
+                    "@type": "ProductSpecificationRef"
+                  },
+                  "intent": {
+                    "@type": "Intent",
+                    "id": "42",
+                    "description": "Intent for ordering live broadcast service for an event",
+                    "validFor": {
+                      "startDateTime": "2022-10-23T00:30:00.00Z",
+                      "endDateTime": "2022-10-19T23:30:00.00Z"
+                    },
+                    "isBundle": true,
+                    "version": "1.0.0",
+                    "intentSpecification": {
+                      "@type": "IntentSpecificationRef",
+                      "id": "EventLiveBroadcast_IntentSpec",
+                      "name": "EventLiveBroadcastIntentSpec",
+                      "@referredType": "IntentSpecification",
+                      "@href": "/intent/v5/IntentSpecification/EventLiveBroadcast_IntentSpec"
+                    },
+                    "name": "EventLiveBroadcast",
+                    "expression": {
+                      "@type": "JsonLdExpression",
+                      "expressionValue": {
+                        "@context": {
+                          "icm": "http://www.models.tmforum.org/tio/v1.0.0/IntentCommonModel#",
+                          "cat": "http://www.operator.com/Catalog#",
+                          "idan": "http://www.idan-tmforum-catalyst.org/IntentDrivenAutonomousNetworks#",
+                          "xsd": "http://www.w3.org/2001/XMLSchema#",
+                          "t": "http://www.w3.org/2006/time#",
+                          "elb": "http://www.operator.com/Catalog/EventWirelessAccess#",
+                          "app": "http://www.operator.com/Catalog/StreamingApplication#",
+                          "geo": "https://tmforum.org/2020/07/geographicPoint#"
+                        },
+                        "idan:EventLiveBroadcast000001": {
+                          "@type": "icm:Intent",
+                          "icm:intentOwner": "idan:Salesforce",
+                          "icm:hasExpectation": {
+                            "idan:Delivery_service": {
+                              "@type": "icm:DeliveryExpectation",
+                              "icm:target": "_:service",
+                              "icm:params": {
+                                "icm:targetDescription": "cat:EventWirelessAccess"
+                              }
+                            },
+                            "idan:Delivery_app": {
+                              "@type": "icm:DeliveryExpectation",
+                              "icm:target": "_:application",
+                              "icm:params": {
+                                "icm:targetDescription": "cat:StreamingApplication"
+                              }
+                            },
+                            "idan:Property_service": {
+                              "@type": "icm:PropertyExpectation",
+                              "icm:target": "_:service",
+                              "icm:params": {
+                                "elb:serviceQuality": [
+                                  {
+                                    "icm:value": "4KUHD"
+                                  }
+                                ],
+                                "elb:numberOfParticipants": [
+                                  {
+                                    "icm:atMost": "200"
+                                  }
+                                ],
+                                "elb:areaOfService": [
+                                  {
+                                    "geo:geographicPoints": [
+                                      {
+                                        "geo:longitude": 90,
+                                        "geo:latitude": 44,
+                                        "geo:altitude": 84
+                                      },
+                                      {
+                                        "geo:longitude": 84,
+                                        "geo:latitude": -12,
+                                        "geo:altitude": 24
+                                      },
+                                      {
+                                        "geo:longitude": 131,
+                                        "geo:latitude": -36,
+                                        "geo:altitude": 29
+                                      },
+                                      {
+                                        "geo:longitude": 7,
+                                        "geo:latitude": 81,
+                                        "geo:altitude": -42
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "idan:Property_app": {
+                              "@type": "icm:PropertyExpectation",
+                              "icm:target": "_:application",
+                              "icm:params": {
+                                "app:appType": [
+                                  {
+                                    "icm:value": "AWS MediaLive"
+                                  },
+                                  {
+                                    "icm:value": "Facebook Live"
+                                  },
+                                  {
+                                    "icm:value": "YouTube"
+                                  }
+                                ]
+                              }
+                            },
+                            "idan:Reporting": {
+                              "@type": "icm:ReportingExpectation",
+                              "icm:target": "idan:EventLiveBroadcast",
+                              "icm:params": {
+                                "icm:reportingInterval": [
+                                  {
+                                    "t:Duration": [
+                                      {
+                                        "t:numbericDuration": 10,
+                                        "t:temporalUnit": "unitMinute"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "icm:reportingEvent": [
+                                  "icm:StateComplies",
+                                  "icm:StateDegrades"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "lastUpdate": "2023-03-09T08:42:33.044Z"
+                  }
+                },
+                "productOffering": {
+                  "id": "14344",
+                  "href": "https://host:port/productCatalogManagement/v5/productOffering/14344",
+                  "name": "TMF Tariff Plan",
+                  "@type": "ProductOfferingRef"
+                },
+                "productOrderItemRelationship": [
+                  {
+                    "id": "110",
+                    "relationshipType": "reliesOn",
+                    "@type": "OrderItemRelationship"
+                  }
+                ],
+                "@type": "ProductOrderItem"
+              },
+              {
+                "id": "130",
+                "quantity": 1,
+                "action": "add",
+                "product": {
+                  "isBundle": false,
+                  "@type": "Product",
+                  "productCharacteristic": [
+                    {
+                      "name": "CoverageOptions",
+                      "id": "Char7",
+                      "@type": "StringCharacteristic",
+                      "value": "National",
+                      "valueType": "string"
+                    }
+                  ],
+                  "productSpecification": {
+                    "id": "14353",
+                    "href": "https://host:port/productCatalogManagement/v5/productSpecification/14353",
+                    "name": "Coverage",
+                    "version": "1",
+                    "@type": "ProductSpecificationRef"
+                  }
+                },
+                "productOffering": {
+                  "id": "14354",
+                  "href": "https://host:port/productCatalogManagement/v5/productOffering/14354",
+                  "name": "Coverage Options",
+                  "@type": "ProductOfferingRef"
+                },
+                "productOrderItemRelationship": [
+                  {
+                    "id": "110",
+                    "relationshipType": "reliesOn",
+                    "@type": "OrderItemRelationship"
+                  }
+                ],
+                "@type": "ProductOrderItem"
+              }
+            ],
+            "relatedParty": [
+              {
+                "role": "Seller",
+                "partyOrPartyRole": {
+                  "id": "456-dd-df45",
+                  "href": "https://host:port/partyManagement/v5/individual/456-dd-df45",
+                  "name": "Joe Doe",
+                  "@type": "PartyRef",
+                  "@referredType": "Individual"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              },
+              {
+                "role": "Customer",
+                "partyOrPartyRole": {
+                  "id": "ff55-hjy4",
+                  "href": "https://host:port/partyRoleManagement/v5/customer/ff55-hjy4",
+                  "name": "Jean Pontus",
+                  "@type": "PartyRoleRef",
+                  "@referredType": "Customer"
+                },
+                "@type": "RelatedPartyRefOrPartyRoleRef"
+              }
+            ],
+            "intentSpecification": {
+              "@type": "IntentSpecificationRef",
+              "id": "EventLiveBroadcast_IntentSpec",
+              "name": "EventLiveBroadcastIntentSpec",
+              "@referredType": "IntentSpecification",
+              "@href": "/intent/v5/IntentSpecification/EventLiveBroadcast_IntentSpec"
+            },
+            "@type": "ProductOrder"
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listProductOrder",
+          "summary": "List or find ProductOrder objects",
+          "description": "List or find ProductOrder objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createProductOrder",
+          "summary": "Creates a ProductOrder",
+          "description": "This operation creates a ProductOrder entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveProductOrder",
+          "summary": "Retrieves a ProductOrder by ID",
+          "description": "This operation retrieves a ProductOrder entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchProductOrder",
+          "summary": "Updates partially a ProductOrder",
+          "description": "This operation updates partially a ProductOrder entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteProductOrder",
+          "summary": "Deletes a ProductOrder",
+          "description": "This operation deletes a ProductOrder entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/productOrder",
+        "item": "/productOrder/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "productOrderAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "PRODUCT_ORDER_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "productOrderCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "PRODUCT_ORDER_CREATE"
+        },
+        {
+          "eventName": "productOrderDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "PRODUCT_ORDER_DELETE"
+        },
+        {
+          "eventName": "productOrderErrorMessageEvent",
+          "eventKind": "ErrorMessage",
+          "enumMember": "PRODUCT_ORDER_ERROR_MESSAGE"
+        },
+        {
+          "eventName": "productOrderInformationRequiredEvent",
+          "eventKind": "InformationRequired",
+          "enumMember": "PRODUCT_ORDER_INFORMATION_REQUIRED"
+        },
+        {
+          "eventName": "productOrderJeopardyAlertEvent",
+          "eventKind": "JeopardyAlert",
+          "enumMember": "PRODUCT_ORDER_JEOPARDY_ALERT"
+        },
+        {
+          "eventName": "productOrderMilestoneEvent",
+          "eventKind": "Milestone",
+          "enumMember": "PRODUCT_ORDER_MILESTONE"
+        },
+        {
+          "eventName": "productOrderStateChangeEvent",
+          "eventKind": "StateChange",
+          "enumMember": "PRODUCT_ORDER_STATE_CHANGE"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/cancelProductOrderCreateEvent",
+      "eventName": "cancelProductOrderCreateEvent",
+      "resource": "CancelProductOrder",
+      "eventKind": "Create",
+      "operationId": "cancelProductOrderCreateEvent"
+    },
+    {
+      "path": "/listener/cancelProductOrderInformationRequiredEvent",
+      "eventName": "cancelProductOrderInformationRequiredEvent",
+      "resource": "CancelProductOrder",
+      "eventKind": "InformationRequired",
+      "operationId": "cancelProductOrderInformationRequiredEvent"
+    },
+    {
+      "path": "/listener/cancelProductOrderStateChangeEvent",
+      "eventName": "cancelProductOrderStateChangeEvent",
+      "resource": "CancelProductOrder",
+      "eventKind": "StateChange",
+      "operationId": "cancelProductOrderStateChangeEvent"
+    },
+    {
+      "path": "/listener/productOrderAttributeValueChangeEvent",
+      "eventName": "productOrderAttributeValueChangeEvent",
+      "resource": "ProductOrder",
+      "eventKind": "AttributeValueChange",
+      "operationId": "productOrderAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/productOrderCreateEvent",
+      "eventName": "productOrderCreateEvent",
+      "resource": "ProductOrder",
+      "eventKind": "Create",
+      "operationId": "productOrderCreateEvent"
+    },
+    {
+      "path": "/listener/productOrderDeleteEvent",
+      "eventName": "productOrderDeleteEvent",
+      "resource": "ProductOrder",
+      "eventKind": "Delete",
+      "operationId": "productOrderDeleteEvent"
+    },
+    {
+      "path": "/listener/productOrderErrorMessageEvent",
+      "eventName": "productOrderErrorMessageEvent",
+      "resource": "ProductOrder",
+      "eventKind": "ErrorMessage",
+      "operationId": "productOrderErrorMessageEvent"
+    },
+    {
+      "path": "/listener/productOrderInformationRequiredEvent",
+      "eventName": "productOrderInformationRequiredEvent",
+      "resource": "ProductOrder",
+      "eventKind": "InformationRequired",
+      "operationId": "productOrderInformationRequiredEvent"
+    },
+    {
+      "path": "/listener/productOrderJeopardyAlertEvent",
+      "eventName": "productOrderJeopardyAlertEvent",
+      "resource": "ProductOrder",
+      "eventKind": "JeopardyAlert",
+      "operationId": "productOrderJeopardyAlertEvent"
+    },
+    {
+      "path": "/listener/productOrderMilestoneEvent",
+      "eventName": "productOrderMilestoneEvent",
+      "resource": "ProductOrder",
+      "eventKind": "Milestone",
+      "operationId": "productOrderMilestoneEvent"
+    },
+    {
+      "path": "/listener/productOrderStateChangeEvent",
+      "eventName": "productOrderStateChangeEvent",
+      "resource": "ProductOrder",
+      "eventKind": "StateChange",
+      "operationId": "productOrderStateChangeEvent"
+    }
+  ],
+  "warnings": [
+    "No usable base path in the spec (servers[0].url = https://serverRoot); derived from info.title instead - verify it, or pass --base-path.",
+    "CancelProductOrder has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose).",
+    "CancelProductOrder spec declares no update/delete operation; those routes are NOT emitted.",
+    "ProductOrder has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}
