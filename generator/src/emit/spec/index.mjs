@@ -13,9 +13,10 @@
  */
 import { emitHooksSpec } from './hooks.mjs';
 import { emitSeedLocalSpec } from './seed-local.mjs';
+import { emitSubscriptionSpec } from './subscription.mjs';
 
 /** Each entry returns { rel, text } to write, or null to emit nothing. */
-const EMITTERS = [emitHooksSpec, emitSeedLocalSpec];
+const EMITTERS = [emitHooksSpec, emitSeedLocalSpec, emitSubscriptionSpec];
 
 /**
  * @param {{ ir: object, plans: object[], seeds: object[] }} ctx
