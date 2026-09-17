@@ -69,3 +69,29 @@ export const EMPTY_TRAILER_VALUE = '';
 
 /** Owned rows come back ordered by sortOrder; a row without one sorts first. */
 export const SORT_ORDER_FALLBACK = 0;
+
+/**
+ * Newest-first ordering over the subscription store. Three places read it and
+ * must agree: the listener controller's "most recent subscription" fallback
+ * (emit/wiring.mjs), SubscriptionService.findAll (the static scaffold template
+ * templates/src/subscription/subscription.service.ts), and the emitted specs
+ * that assert both.
+ */
+export const LATEST_ORDER_COLUMN = 'createdDate';
+export const LATEST_ORDER_DIRECTION = 'DESC';
+
+/** How many rows that fallback asks for. */
+export const LATEST_TAKE = 1;
+
+/**
+ * What the listener controller synthesises when the store holds no
+ * subscription at all: never a real row, so the id is a sentinel and the
+ * callback is empty rather than an invented URL.
+ */
+export const PLACEHOLDER_SUBSCRIPTION = Object.freeze({
+  id: 'unknown',
+  callback: '',
+});
+
+/** Route segment the hub controller is mounted under, below the base path. */
+export const HUB_PATH_SEGMENT = 'hub';
