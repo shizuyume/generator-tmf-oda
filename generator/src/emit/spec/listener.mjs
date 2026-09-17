@@ -1,4 +1,4 @@
-import { pascal, kebab } from '../../ir/naming.mjs';
+import { pascal } from '../../ir/naming.mjs';
 import {
   LATEST_ORDER_COLUMN,
   LATEST_ORDER_DIRECTION,
@@ -13,20 +13,27 @@ const I2 = '      '; // 6
 const I3 = '        '; // 8
 
 /**
- * test/listener/listener.spec.ts - the component's listener controller.
+ * test/listener/listener.spec.ts - EVERY hosted component's listener controller.
  *
  * Every declared /listener/* path becomes a handle<EventName> stub that all
  * share the same subscription-lookup fallback chain (see emit/wiring.mjs's
  * listenerController): look up the subscription named in the body, fall back
  * to the most recent one, and finally synthesise a placeholder when there are
  * none at all. The per-component parts are only the class name, its file, and
- * the full list of handler names - derived the same way wiring.mjs derives
- * them: slug = kebab(ir.meta.eventExchange with the trailing '.events'
- * stripped), class = `${pascal(slug)}ListenerController`, handlers =
- * `handle${pascal(eventName)}` for each entry in ir.listeners.
+ * the full list of handler names - taken from the manifest entry, the same
+ * source wiring.mjs builds the controllers from: class =
+ * `${pascal(slug)}ListenerController`, handlers = `handle${pascal(eventName)}`
+ * for each entry in the component's `listeners`.
  *
- * A component that declares no events has no /listener/* paths at all, so
- * ir.listeners is empty and there is nothing to test - this returns null.
+ * wiring.mjs writes ONE listener controller per hosted component. Built from a
+ * single IR this suite described whichever component happened to be emitted
+ * last and left a stale file behind when that component declared no events -
+ * in the three-component geographic service it imported
+ * GeographicSiteListenerController while every other emitted spec targeted
+ * GeographicLocation. It is built from the manifest union instead.
+ *
+ * A component that declares no events has no /listener/* paths at all, so it
+ * contributes no suite; when NO component declares any, this returns null.
  *
  * Handler names are TMF-derived and vary widely in length (22 to 55+ chars in
  * the golden set), so several lines below only fit Prettier's 80-column print
@@ -90,21 +97,10 @@ function handlersArrayLines(handlers) {
   ];
 }
 
-export function emitListenerSpec({ ir }) {
-  const handlers = ir.listeners.map(l => `handle${pascal(l.eventName)}`);
-  if (!handlers.length) return null;
-
-  const slug = kebab(ir.meta.eventExchange.replace(/\.events$/, ''));
-  const cls = `${pascal(slug)}ListenerController`;
-  const file = `${slug}-listener.controller`;
+/** The listener-controller suite for one hosted component. */
+function controllerSuite(cls, handlers) {
   const first = handlers[0];
-
-  const lines = [
-    BANNER,
-    `import { ${cls} } from '../../src/listener/${file}';`,
-    '',
-    'type AnyRec = Record<string, any>;',
-    '',
+  return [
     `describe('${cls}', () => {`,
     '  let repo: AnyRec;',
     '  let ctrl: AnyRec;',
@@ -166,6 +162,26 @@ export function emitListenerSpec({ ir }) {
     '  });',
     '});',
     '',
+  ];
+}
+
+export function emitListenerSpec({ components }) {
+  const ctrls = components
+    .map(c => ({
+      cls: `${pascal(c.slug)}ListenerController`,
+      file: `${c.slug}-listener.controller`,
+      handlers: (c.listeners ?? []).map(l => `handle${pascal(l.eventName)}`),
+    }))
+    .filter(c => c.handlers.length);
+  if (!ctrls.length) return null;
+
+  const lines = [
+    BANNER,
+    ...ctrls.map(c => `import { ${c.cls} } from '../../src/listener/${c.file}';`),
+    '',
+    'type AnyRec = Record<string, any>;',
+    '',
+    ...ctrls.flatMap(c => controllerSuite(c.cls, c.handlers)),
   ];
   return { rel: 'test/listener/listener.spec.ts', text: lines.join('\n') };
 }

@@ -3,11 +3,19 @@
  * The seed lists are plain API payloads. They are allowed to be empty, but they
  * must stay arrays of objects - `seed.ts` spreads them straight into `create()`.
  */
+import { geographicAddressLocalSeed } from '../src/geographic-address/geographic-address.seed.local';
+import { geographicAddressValidationLocalSeed } from '../src/geographic-address-validation/geographic-address-validation.seed.local';
+import { geographicSubAddressLocalSeed } from '../src/geographic-sub-address/geographic-sub-address.seed.local';
+import { geographicSiteLocalSeed } from '../src/geographic-site/geographic-site.seed.local';
 import { geographicLocationLocalSeed } from '../src/geographic-location/geographic-location.seed.local';
 import { retrieveGeographicLocationLocalSeed } from '../src/retrieve-geographic-location/retrieve-geographic-location.seed.local';
 import { retrieveLocationRelationLocalSeed } from '../src/retrieve-location-relation/retrieve-location-relation.seed.local';
 
 const SEEDS: [string, Record<string, any>[]][] = [
+  ['geographicAddressLocalSeed', geographicAddressLocalSeed],
+  ['geographicAddressValidationLocalSeed', geographicAddressValidationLocalSeed],
+  ['geographicSubAddressLocalSeed', geographicSubAddressLocalSeed],
+  ['geographicSiteLocalSeed', geographicSiteLocalSeed],
   ['geographicLocationLocalSeed', geographicLocationLocalSeed],
   ['retrieveGeographicLocationLocalSeed', retrieveGeographicLocationLocalSeed],
   ['retrieveLocationRelationLocalSeed', retrieveLocationRelationLocalSeed],

@@ -67,8 +67,16 @@ export function componentEntry(ir, existing = {}) {
   };
 }
 
-const ordered = manifest =>
+/**
+ * Every component the service hosts, in a stable order. Exported because the
+ * spec emitters must see the same union these shared files are built from: a
+ * suite generated from one component's IR describes one component and silently
+ * ignores the rest of the service it is supposed to test.
+ */
+export const orderedComponents = manifest =>
   Object.values(manifest.components).sort((a, b) => a.tmfNumber.localeCompare(b.tmfNumber));
+
+const ordered = orderedComponents;
 
 /* ── shared files ────────────────────────────────────────────────────── */
 

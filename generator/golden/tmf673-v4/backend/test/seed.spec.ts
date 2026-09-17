@@ -4,7 +4,7 @@
  * the process argv and seed rows it needs. NestFactory and the app module are
  * mocked: seeding is exercised end to end without a database.
  *
- * This component seeds 3 resource(s), each resolved by class token.
+ * This service seeds 3 resource(s), each resolved by class token.
  */
 type AnyRec = Record<string, any>;
 

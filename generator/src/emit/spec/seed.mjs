@@ -43,6 +43,13 @@ function importLine(cls, path) {
  * test/seed.spec.ts - exercises `seed.ts` end to end with NestFactory and the
  * app module mocked, so seeding is covered without a database.
  *
+ * ctx.seeds is the manifest UNION - every resource every hosted component
+ * seeds, in the order renderSeedRunner lays them into src/seed.ts. Built from a
+ * single IR instead, this file mocked only that component's seed modules while
+ * src/seed.ts seeded them all; the unmocked services loaded for real and the
+ * first `await count()` - which sits outside seedResource's try/catch - killed
+ * main().
+ *
  * jest.mock paths are rebased to `../src/...` because the spec sits at
  * `test/seed.spec.ts` while `seed.ts` itself lives at `src/seed.ts` and mocks
  * its sibling modules with paths relative to itself (`./app.module`,
@@ -91,7 +98,7 @@ export function emitSeedSpec({ seeds }) {
     ' * the process argv and seed rows it needs. NestFactory and the app module are',
     ' * mocked: seeding is exercised end to end without a database.',
     ' *',
-    ` * This component seeds ${seeds.length} resource(s), each resolved by class token.`,
+    ` * This service seeds ${seeds.length} resource(s), each resolved by class token.`,
     ' */',
     'type AnyRec = Record<string, any>;',
     '',

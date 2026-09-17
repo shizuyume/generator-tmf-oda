@@ -4,7 +4,7 @@
  * the process argv and seed rows it needs. NestFactory and the app module are
  * mocked: seeding is exercised end to end without a database.
  *
- * This component seeds 3 resource(s), each resolved by class token.
+ * This service seeds 7 resource(s), each resolved by class token.
  */
 type AnyRec = Record<string, any>;
 
@@ -26,10 +26,44 @@ jest.mock('../src/app.module', () => ({ AppModule: class AppModule {} }));
 let rows0_1: AnyRec[] = [];
 let rows1_1: AnyRec[] = [];
 let rows2_1: AnyRec[] = [];
+let rows3_1: AnyRec[] = [];
+let rows4_1: AnyRec[] = [];
+let rows5_1: AnyRec[] = [];
+let rows6_1: AnyRec[] = [];
+
+jest.mock('../src/geographic-address/geographic-address.seed.local', () => ({
+  get geographicAddressLocalSeed() {
+    return rows0_1;
+  },
+}));
+
+jest.mock(
+  '../src/geographic-address-validation/geographic-address-validation.seed.local',
+  () => ({
+    get geographicAddressValidationLocalSeed() {
+      return rows1_1;
+    },
+  }),
+);
+
+jest.mock(
+  '../src/geographic-sub-address/geographic-sub-address.seed.local',
+  () => ({
+    get geographicSubAddressLocalSeed() {
+      return rows2_1;
+    },
+  }),
+);
+
+jest.mock('../src/geographic-site/geographic-site.seed.local', () => ({
+  get geographicSiteLocalSeed() {
+    return rows3_1;
+  },
+}));
 
 jest.mock('../src/geographic-location/geographic-location.seed.local', () => ({
   get geographicLocationLocalSeed() {
-    return rows0_1;
+    return rows4_1;
   },
 }));
 
@@ -37,7 +71,7 @@ jest.mock(
   '../src/retrieve-geographic-location/retrieve-geographic-location.seed.local',
   () => ({
     get retrieveGeographicLocationLocalSeed() {
-      return rows1_1;
+      return rows5_1;
     },
   }),
 );
@@ -46,7 +80,7 @@ jest.mock(
   '../src/retrieve-location-relation/retrieve-location-relation.seed.local',
   () => ({
     get retrieveLocationRelationLocalSeed() {
-      return rows2_1;
+      return rows6_1;
     },
   }),
 );
@@ -66,15 +100,27 @@ async function runSeed(argv: string[], services: AnyRec[]) {
   process.argv = ['node', 'seed', ...argv];
   jest.resetModules();
   await jest.isolateModulesAsync(async () => {
+    const { GeographicAddressService } =
+      await import('../src/geographic-address/geographic-address.service');
+    const { GeographicAddressValidationService } =
+      await import('../src/geographic-address-validation/geographic-address-validation.service');
+    const { GeographicSubAddressService } =
+      await import('../src/geographic-sub-address/geographic-sub-address.service');
+    const { GeographicSiteService } =
+      await import('../src/geographic-site/geographic-site.service');
     const { GeographicLocationService } =
       await import('../src/geographic-location/geographic-location.service');
     const { RetrieveGeographicLocationService } =
       await import('../src/retrieve-geographic-location/retrieve-geographic-location.service');
     const { RetrieveLocationRelationService } =
       await import('../src/retrieve-location-relation/retrieve-location-relation.service');
-    byToken.set(GeographicLocationService, services[0]);
-    byToken.set(RetrieveGeographicLocationService, services[1]);
-    byToken.set(RetrieveLocationRelationService, services[2]);
+    byToken.set(GeographicAddressService, services[0]);
+    byToken.set(GeographicAddressValidationService, services[1]);
+    byToken.set(GeographicSubAddressService, services[2]);
+    byToken.set(GeographicSiteService, services[3]);
+    byToken.set(GeographicLocationService, services[4]);
+    byToken.set(RetrieveGeographicLocationService, services[5]);
+    byToken.set(RetrieveLocationRelationService, services[6]);
     await import('../src/seed');
   });
   await new Promise((r) => setTimeout(r, 1100));
@@ -91,7 +137,7 @@ function svc(total: number, createImpl?: jest.Mock) {
 
 /** The resource under test first, then a quiet stand-in for each of the others. */
 function services(total: number, first: AnyRec) {
-  return [first, ...Array.from({ length: 2 }, () => svc(total))];
+  return [first, ...Array.from({ length: 6 }, () => svc(total))];
 }
 
 describe('seed', () => {
@@ -100,6 +146,10 @@ describe('seed', () => {
     rows0_1 = [];
     rows1_1 = [];
     rows2_1 = [];
+    rows3_1 = [];
+    rows4_1 = [];
+    rows5_1 = [];
+    rows6_1 = [];
   });
 
   it('skips a resource that already holds rows', async () => {

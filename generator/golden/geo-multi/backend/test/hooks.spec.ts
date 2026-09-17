@@ -5,13 +5,21 @@
  * server-side, so the contract under test is "returns undefined, or a payload
  * that still carries what the caller sent".
  */
+import * as geographicAddressValidationHooks from '../src/geographic-address-validation/geographic-address-validation.hooks';
+import * as geographicAddressHooks from '../src/geographic-address/geographic-address.hooks';
+import * as geographicSubAddressHooks from '../src/geographic-sub-address/geographic-sub-address.hooks';
+import * as geographicSiteHooks from '../src/geographic-site/geographic-site.hooks';
 import * as geographicLocationHooks from '../src/geographic-location/geographic-location.hooks';
 import * as retrieveGeographicLocationHooks from '../src/retrieve-geographic-location/retrieve-geographic-location.hooks';
 import * as retrieveLocationRelationHooks from '../src/retrieve-location-relation/retrieve-location-relation.hooks';
 
-type Hooks = typeof geographicLocationHooks;
+type Hooks = typeof geographicAddressValidationHooks;
 
 const MODULES: [string, Hooks][] = [
+  ['geographicAddressValidation', geographicAddressValidationHooks],
+  ['geographicAddress', geographicAddressHooks],
+  ['geographicSubAddress', geographicSubAddressHooks],
+  ['geographicSite', geographicSiteHooks],
   ['geographicLocation', geographicLocationHooks],
   ['retrieveGeographicLocation', retrieveGeographicLocationHooks],
   ['retrieveLocationRelation', retrieveLocationRelationHooks],

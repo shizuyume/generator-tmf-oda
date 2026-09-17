@@ -6,10 +6,12 @@
  * src/ without the suite measuring itself, and a service still carrying
  * hand-written specs under src/ does not run them as a second suite.
  *
- * Every module here is a pure function of the IR and the plan data
- * emit/index.mjs already computed. None re-derives anything, and none reads a
- * TMF-specific field - a TMF-shaped spec that is not a TM Forum component must
- * produce the same suite.
+ * Every module here is a pure function of the MANIFEST UNION - every component
+ * the service hosts - not of the single IR being emitted. The shared files
+ * (src/seed.ts, src/entities.ts, src/app.module.ts) are regenerated from that
+ * union, so a suite built from one IR tests a service that no longer exists.
+ * None re-derives anything, and none reads a TMF-specific field: a TMF-shaped
+ * spec that is not a TM Forum component must produce the same suite.
  */
 import { emitHooksSpec } from './hooks.mjs';
 import { emitSeedLocalSpec } from './seed-local.mjs';
@@ -27,7 +29,10 @@ const EMITTERS = [
 ];
 
 /**
- * @param {{ ir: object, plans: object[], seeds: object[] }} ctx
+ * @param {{ components: object[], resources: object[], seeds: object[] }} ctx
+ *   `components` is the manifest union (see wiring.mjs's orderedComponents);
+ *   `resources` and `seeds` are those components' entries flattened, in the
+ *   same order the shared files use.
  * @param {(rel: string, text: string) => void} writeFile
  * @returns {string[]} the relative paths written
  */
