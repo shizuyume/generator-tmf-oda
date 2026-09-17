@@ -111,9 +111,22 @@ that every entity class the resource maps is constructible.
 - Modify: `generator/src/emit/spec/index.mjs` (register)
 
 **Interfaces:**
-- Consumes: the manifest union `emitSpecs` already passes (`{ components,
-  resources, seeds }` — read `src/emit/spec/index.mjs` for the exact shape plan 2
-  settled on) plus, for each resource, its entity plan.
+- Consumes: **`ctx.plans`, NOT the manifest union.** `emitSpecs` today receives
+  `{ components, resources, seeds }` built from the manifest, and a manifest
+  resource entry carries only `className, dir, importPath, moduleClass,
+  moduleImportPath, pathSegment, resource` — no columns, no relations, no refs.
+  The per-resource fixture needs all three. Add `plans` to the object passed at
+  the `emitSpecs(...)` call site in `emit/index.mjs` (it is still in scope there)
+  and consume that.
+
+  This is correct, not a workaround, and it does NOT reopen the multi-component
+  Critical plan 2 fixed. That bug existed because `seed.spec.ts` is ONE file
+  describing EVERY resource, so a single IR gave it a partial view. A
+  per-resource spec describes exactly ONE resource: emitting component A writes
+  A's resources' spec files, and component B's spec files — written when B was
+  emitted — sit on disk untouched and still correct. Per-resource files are
+  inherently per-component and idempotent. The union stays for the whole-service
+  files that genuinely need it.
 - Produces: `emitResourceSpecs(ctx)` returning an ARRAY of `{ rel, text }` —
   one per resource — or `[]`. Note this differs from the other five emitters,
   which return a single object or `null`. Update `emitSpecs` to accept both:
