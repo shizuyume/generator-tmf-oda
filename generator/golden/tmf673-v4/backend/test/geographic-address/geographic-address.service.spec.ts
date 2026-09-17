@@ -11,6 +11,8 @@
  * Every literal below is derived from this resource, never hand-written: see
  * the mapping table in emit/spec/resource.mjs for where each one comes from.
  */
+import { PATH_METADATA } from '@nestjs/common/constants';
+import { Test } from '@nestjs/testing';
 import { GeographicAddressService } from '../../src/geographic-address/geographic-address.service';
 import { GeographicAddressController } from '../../src/geographic-address/geographic-address.controller';
 import { GeographicAddressEventType } from '../../src/event/event-types';
@@ -44,6 +46,14 @@ function makeQueryBuilder(rows: AnyRec[]): AnyRec {
 }
 
 const HREF = '/tmf-api/geographicAddressManagement/v4/geographicAddress/res-1';
+
+/** The route Nest registers from @Controller(`${BASE_PATH}/...`). */
+const ROUTE_PATH = 'tmf-api/geographicAddressManagement/v4/geographicAddress';
+
+/** The id every delegation asserts on, and the scalar the write paths move. */
+const ID = 'res-1';
+const FIELD = 'city';
+const LIST_QUERY = { limit: 5 };
 
 /** The owner-bound collections this resource maps. */
 const COLLECTIONS = ['geographicSubAddress'] as const;
@@ -100,5 +110,54 @@ describe('GeographicAddress entities', () => {
     ]) {
       expect(new (E as new () => object)()).toBeInstanceOf(E as never);
     }
+  });
+});
+
+describe('GeographicAddressController', () => {
+  let svc: AnyRec;
+  let ctrl: GeographicAddressController;
+
+  beforeEach(() => {
+    svc = {
+      findAll: jest.fn(async () => ({ data: [], total: 0 })),
+      findOne: jest.fn(async () => ({ id: ID })),
+    };
+    ctrl = new GeographicAddressController(svc as never);
+  });
+
+  it('passes the query through to findAll', async () => {
+    await ctrl.findAll(LIST_QUERY as never);
+    expect(svc.findAll).toHaveBeenCalledWith(LIST_QUERY);
+  });
+
+  it('forwards the id and the field selection to findOne', async () => {
+    await ctrl.findOne(ID, FIELD);
+    expect(svc.findOne).toHaveBeenCalledWith(ID, FIELD);
+  });
+
+  it('is constructible by Nest with its route metadata intact', async () => {
+    // A concrete controller carrying no decorator of its own emits no
+    // constructor `design:paramtypes`, so Nest builds it with zero arguments
+    // and every route 500s; losing only @Controller() keeps injection working
+    // but silently unmounts the routes. Both are checked separately.
+    const moduleRef = await Test.createTestingModule({
+      controllers: [GeographicAddressController],
+      providers: [{ provide: GeographicAddressService, useValue: svc }],
+    }).compile();
+
+    const resolved = moduleRef.get(
+      GeographicAddressController,
+    ) as unknown as AnyRec;
+    expect(resolved.service).toBe(svc);
+    const paramtypes = Reflect.getMetadata(
+      'design:paramtypes',
+      GeographicAddressController,
+    );
+    expect(paramtypes).toEqual([GeographicAddressService]);
+    const routePath = Reflect.getMetadata(
+      PATH_METADATA,
+      GeographicAddressController,
+    );
+    expect(routePath).toBe(ROUTE_PATH);
   });
 });

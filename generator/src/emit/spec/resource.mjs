@@ -63,6 +63,28 @@ const PRINT_WIDTH = 80;
  *       the root entity's non-housekeeping columns: the primary key as `res-1`
  *       (so it agrees with HREF), `atType` as the create path's default
  *       (defaultAtType(resource.name)), every other column as `res-<name>`.
+ *   ROUTE_PATH
+ *       renderController writes `@Controller(`${<BASE>_BASE_PATH}/<segment>`)`,
+ *       so PATH_METADATA holds `<meta.basePath>/<segment>` with segment =
+ *       nested.routeSegment (`topic/:topicId/event`) when --nested-routes applies
+ *       and resource.pathSegment otherwise. This is the ROUTE segment, not the
+ *       href segment HREF uses - the two differ for a nested resource.
+ *   ID / FIELD
+ *       the fixture root's primary key value (`res-1`, agreeing with HREF) and
+ *       the root's first non-housekeeping, non-primary, non-atType column - the
+ *       scalar the controller's write bodies and field selection move. A root
+ *       with no such column falls back to its own primary key name.
+ *   CREATE_BODY / UPDATE_BODY / LIST_QUERY
+ *       payloads over FIELD alone: the service is a double, so only the
+ *       pass-through is under test, not the DTO's shape.
+ *   PARENTS
+ *       nested.params, each as `<param>-1`. renderController takes them as
+ *       leading @Param()s and renderService receives them merged into the
+ *       create/list payload or as a trailing scope argument.
+ *   Create<R>Dto / Update<R>Dto import
+ *       the same `./dto` barrel renderController imports its @Body() types from,
+ *       rebased to `../../src/<dir>/dto`; imported only for the operations that
+ *       actually declare a write body.
  */
 
 /**
@@ -158,6 +180,62 @@ function forOfClasses(classNames, indent) {
   ];
 }
 
+/**
+ * `head(a, b)tail` on one line when it fits, otherwise one argument per line -
+ * which is how Prettier breaks a call whose arguments are all plain references.
+ */
+function callLines(indent, head, args, tail = ';') {
+  const inline = `${indent}${head}(${args.join(', ')})${tail}`;
+  if (inline.length <= PRINT_WIDTH) return [inline];
+  return [
+    `${indent}${head}(`,
+    ...args.map(a => `${indent}  ${a},`),
+    `${indent})${tail}`,
+  ];
+}
+
+/**
+ * `expect(x).toEqual([A]);`. The only argument is an array literal, so Prettier
+ * hugs it and breaks the ARRAY rather than the call.
+ */
+function expectEqualArray(indent, subject, items) {
+  const inline = `${indent}expect(${subject}).toEqual([${items.join(', ')}]);`;
+  if (inline.length <= PRINT_WIDTH) return [inline];
+  return [
+    `${indent}expect(${subject}).toEqual([`,
+    ...items.map(i => `${indent}  ${i},`),
+    `${indent}]);`,
+  ];
+}
+
+/**
+ * `name: jest.fn(async () => ({ a: 'b' })),` inside the service double. The
+ * returned object literal is the arrow's only expression, so Prettier hugs it
+ * and breaks the OBJECT.
+ */
+function jestFnEntry(indent, name, entries) {
+  const body = entries.map(([k, v]) => `${key(k)}: ${v}`).join(', ');
+  const inline = `${indent}${name}: jest.fn(async () => ({ ${body} })),`;
+  if (inline.length <= PRINT_WIDTH) return [inline];
+  return [
+    `${indent}${name}: jest.fn(async () => ({`,
+    ...entries.flatMap(([k, v]) => propLine(k, v, `${indent}  `)),
+    `${indent}})),`,
+  ];
+}
+
+/**
+ * `import { A, B } from 'x';`. Prettier breaks an import whose SPECIFIER LIST
+ * overflows - two long DTO class names from one `./dto` barrel reach that - but
+ * leaves a single-specifier import alone however long the module path is, which
+ * is why the entity imports above stay on one line.
+ */
+function importLine(names, from) {
+  const inline = `import { ${names.join(', ')} } from ${q(from)};`;
+  if (names.length < 2 || inline.length <= PRINT_WIDTH) return [inline];
+  return ['import {', ...names.map(n => `  ${n},`), `} from ${q(from)};`];
+}
+
 /** The repository / query-builder doubles every later describe drives. */
 const REPO_FIXTURE = [
   'function makeRepo(): AnyRec {',
@@ -184,6 +262,270 @@ const REPO_FIXTURE = [
   '}',
 ];
 
+/**
+ * The controller describe: route metadata, and the delegation from controller to
+ * service.
+ *
+ * Every `it()` is gated on the operation that backs it, because emit/controller.mjs
+ * emits a route ONLY for a declared operation - TMF673's GeographicAddress is
+ * list + retrieve and has no create/update/delete method to call at all. The
+ * Nest-constructibility `it()` is unconditional, which is what makes this describe
+ * non-empty for every resource that has any operation, and therefore what lets the
+ * file exist for a root-only resource that the entities describe alone could not
+ * fill.
+ *
+ * The call SHAPES are read off renderController, not off the reference:
+ *   flat     create(dto, res) / findAll(query) / findOne(id, fields)
+ *            / update(id, dto) / remove(id)
+ *   nested   every one of those takes the parent @Param()s FIRST, and the
+ *            service call carries them as `{ ...dto, p }` (create), `{ ...query, p }`
+ *            (findAll) or a trailing `{ p }` scope argument (findOne, update,
+ *            remove - remove's is the FOURTH argument, after two undefineds).
+ *
+ * ROUTE_PATH is `<meta.basePath>/<routeSegment>` because @Controller() is written
+ * as a template literal over the base-path constant; PATH_METADATA holds the
+ * evaluated string. The segment is nested.routeSegment (`topic/:topicId/event`),
+ * NOT the nested.hrefSegment HREF uses.
+ */
+function controllerBlock({ resource, root, nested, meta }) {
+  const ops = resource.operations ?? {};
+  const ctrlClass = `${resource.name}Controller`;
+  const svcClass = `${resource.name}Service`;
+  const parents = nested?.params ?? [];
+  const parentArgs = parents.map(p => q(`${p}-1`));
+  const scopeArg = parents.length ? 'PARENTS' : null;
+
+  const pkCol = root.columns.find(c => c.primary);
+  const pk = pkCol ? pkCol.name : 'id';
+  const scalar = root.columns.find(
+    c => !isHousekeeping(c) && !c.primary && c.name !== 'atType',
+  );
+  const field = scalar ? scalar.name : pk;
+
+  const routeSegment = nested ? nested.routeSegment : resource.pathSegment;
+
+  const consts = [
+    '/** The route Nest registers from @Controller(`${BASE_PATH}/...`). */',
+    ...stringConst('ROUTE_PATH', `${meta.basePath}/${routeSegment}`),
+    '',
+    "/** The id every delegation asserts on, and the scalar the write paths move. */",
+    ...stringConst('ID', 'res-1'),
+    ...stringConst('FIELD', field),
+  ];
+  if (ops.list) consts.push(...objectConst('LIST_QUERY', null, [['limit', '5']]));
+  if (ops.create) {
+    consts.push(...objectConst('CREATE_BODY', null, [[field, q(`res-${field}`)]]));
+  }
+  if (ops.update) {
+    consts.push(...objectConst('UPDATE_BODY', null, [[field, q('res-updated')]]));
+  }
+  if (parents.length) {
+    consts.push(
+      '',
+      '/** The parent keys the nested routes carry, as the service receives them. */',
+      ...objectConst(
+        'PARENTS',
+        'Record<string, string>',
+        parents.map(p => [p, q(`${p}-1`)]),
+      ),
+    );
+    if (ops.create) consts.push('const CREATE_EXPECTED = { ...CREATE_BODY, ...PARENTS };');
+    if (ops.list) consts.push('const LIST_EXPECTED = { ...LIST_QUERY, ...PARENTS };');
+  }
+  consts.push('');
+
+  const createExpected = parents.length ? 'CREATE_EXPECTED' : 'CREATE_BODY';
+  const listExpected = parents.length ? 'LIST_EXPECTED' : 'LIST_QUERY';
+
+  // The service double carries only the methods the controller can reach.
+  const double = [];
+  if (ops.create) {
+    double.push(...jestFnEntry('      ', 'create', [[pk, 'ID'], ['href', 'HREF']]));
+  }
+  if (ops.list) {
+    double.push(...jestFnEntry('      ', 'findAll', [['data', '[]'], ['total', '0']]));
+  }
+  if (ops.retrieve) double.push(...jestFnEntry('      ', 'findOne', [[pk, 'ID']]));
+  if (ops.update) {
+    const entries = field === pk ? [[pk, q('res-updated')]] : [[pk, 'ID'], [field, q('res-updated')]];
+    double.push(...jestFnEntry('      ', 'update', entries));
+  }
+  if (ops.delete) double.push('      remove: jest.fn(async () => undefined),');
+
+  const body = [];
+
+  if (ops.create) {
+    body.push(
+      "  it('sets the Location header from the created resource href', async () => {",
+      '    const res = { location: jest.fn() };',
+      ...callLines('    ', 'const out = await ctrl.create', [
+        ...parentArgs,
+        'CREATE_BODY as never',
+        'res as never',
+      ]),
+      `    expect(svc.create).toHaveBeenCalledWith(${createExpected});`,
+      '    expect(res.location).toHaveBeenCalledWith(HREF);',
+      `    expect(out${IDENT.test(pk) ? `.${pk}` : `[${q(pk)}]`}).toBe(ID);`,
+      '  });',
+      '',
+      "  it('omits the Location header when the created resource has no href', async () => {",
+      `    svc.create.mockResolvedValue({ ${key(pk)}: ID });`,
+      '    const res = { location: jest.fn() };',
+      ...callLines('    ', 'await ctrl.create', [...parentArgs, '{} as never', 'res as never']),
+      '    expect(res.location).not.toHaveBeenCalled();',
+      '  });',
+      '',
+    );
+  }
+
+  if (ops.list) {
+    body.push(
+      "  it('passes the query through to findAll', async () => {",
+      ...callLines('    ', 'await ctrl.findAll', [...parentArgs, 'LIST_QUERY as never']),
+      `    expect(svc.findAll).toHaveBeenCalledWith(${listExpected});`,
+      '  });',
+      '',
+    );
+  }
+
+  if (ops.retrieve) {
+    body.push(
+      "  it('forwards the id and the field selection to findOne', async () => {",
+      ...callLines('    ', 'await ctrl.findOne', [...parentArgs, 'ID', 'FIELD']),
+      ...callLines('    ', 'expect(svc.findOne).toHaveBeenCalledWith', [
+        'ID',
+        'FIELD',
+        ...(scopeArg ? [scopeArg] : []),
+      ]),
+      '  });',
+      '',
+    );
+  }
+
+  if (ops.update) {
+    body.push(
+      "  it('forwards the id and the payload to update', async () => {",
+      ...callLines('    ', 'const out = await ctrl.update', [
+        ...parentArgs,
+        'ID',
+        'UPDATE_BODY as never',
+      ]),
+      ...callLines('    ', 'expect(svc.update).toHaveBeenCalledWith', [
+        'ID',
+        'UPDATE_BODY',
+        ...(scopeArg ? [scopeArg] : []),
+      ]),
+      "    expect(out[FIELD]).toBe('res-updated');",
+      '  });',
+      '',
+    );
+  }
+
+  if (ops.delete) {
+    body.push(
+      "  it('delegates the delete route', async () => {",
+      ...callLines('    ', 'await ctrl.remove', [...parentArgs, 'ID']),
+      ...callLines('    ', 'expect(svc.remove).toHaveBeenCalledWith', [
+        'ID',
+        ...(scopeArg ? ['undefined', 'undefined', scopeArg] : []),
+      ]),
+      '  });',
+      '',
+    );
+  }
+
+  const providersInline = `      providers: [{ provide: ${svcClass}, useValue: svc }],`;
+  body.push(
+    "  it('is constructible by Nest with its route metadata intact', async () => {",
+    '    // A concrete controller carrying no decorator of its own emits no',
+    '    // constructor `design:paramtypes`, so Nest builds it with zero arguments',
+    '    // and every route 500s; losing only @Controller() keeps injection working',
+    '    // but silently unmounts the routes. Both are checked separately.',
+    '    const moduleRef = await Test.createTestingModule({',
+    `      controllers: [${ctrlClass}],`,
+    ...(providersInline.length <= PRINT_WIDTH
+      ? [providersInline]
+      : [
+          '      providers: [',
+          `        { provide: ${svcClass}, useValue: svc },`,
+          '      ],',
+        ]),
+    '    }).compile();',
+    '',
+    ...callLines('    ', 'const resolved = moduleRef.get', [ctrlClass], ' as unknown as AnyRec;'),
+    '    expect(resolved.service).toBe(svc);',
+    ...callLines('    ', 'const paramtypes = Reflect.getMetadata', [
+      q('design:paramtypes'),
+      ctrlClass,
+    ]),
+    ...expectEqualArray('    ', 'paramtypes', [svcClass]),
+    ...callLines('    ', 'const routePath = Reflect.getMetadata', ['PATH_METADATA', ctrlClass]),
+    '    expect(routePath).toBe(ROUTE_PATH);',
+    '  });',
+  );
+
+  const writeRoutes = [
+    ops.create ? ['create', `Create${resource.name}Dto`] : null,
+    ops.update ? ['update', `Update${resource.name}Dto`] : null,
+  ].filter(Boolean);
+
+  const helper = [];
+  if (writeRoutes.length) {
+    helper.push(
+      "/** The design:paramtype Nest hands ValidationPipe for a route's @Body(). */",
+      'function bodyParamType(route: string): unknown {',
+      ...callLines('  ', 'const args = Reflect.getMetadata', [
+        'ROUTE_ARGS_METADATA',
+        ctrlClass,
+        'route',
+      ], ' as AnyRec;'),
+      '  const prefix = `${RouteParamtypes.BODY}:`;',
+      '  const bodyKey = Object.keys(args).find((k) => k.startsWith(prefix));',
+      '  expect(bodyKey).toBeDefined();',
+      "  const index = Number((bodyKey as string).split(':')[1]);",
+      ...callLines('  ', 'const types = Reflect.getMetadata', [
+        q('design:paramtypes'),
+        `${ctrlClass}.prototype`,
+        'route',
+      ]),
+      '  return types[index];',
+      '}',
+      '',
+    );
+    body.push(
+      '',
+      "  it('types every write body as its DTO class, so ValidationPipe has a schema', () => {",
+      '    // ValidationPipe validates against the parameter\'s design:paramtype. A body',
+      '    // left as `any`/`unknown` erases to Object, which accepts every payload',
+      '    // unchecked and makes Swagger emit no request body schema.',
+      ...writeRoutes.map(([route, dto]) => `    expect(bodyParamType(${q(route)})).toBe(${dto});`),
+      '  });',
+    );
+  }
+
+  return {
+    consts,
+    dtoImports: writeRoutes.map(([, dto]) => dto),
+    lines: [
+      ...helper,
+      `describe(${q(ctrlClass)}, () => {`,
+      '  let svc: AnyRec;',
+      `  let ctrl: ${ctrlClass};`,
+      '',
+      '  beforeEach(() => {',
+      '    svc = {',
+      ...double,
+      '    };',
+      ...callLines('    ', `ctrl = new ${ctrlClass}`, ['svc as never']),
+      '  });',
+      '',
+      ...body,
+      '});',
+      '',
+    ],
+  };
+}
+
 /** The one file for one resource, or null when there is nothing worth asserting. */
 function specFor({ resource, plan, dir, nested }, deps) {
   const { resolve, entityDirOf, meta } = deps;
@@ -204,12 +546,12 @@ function specFor({ resource, plan, dir, nested }, deps) {
     if (self) byClass.set(self.className, e);
   }
 
-  // Constructibility of the root ALONE is already asserted by the shared
-  // test/entities.spec.ts barrel suite, so a resource that maps nothing else
-  // would leave this file with no test in it at all - which Jest fails outright
-  // ("Your test suite must contain at least one test"). Later describes give
-  // such a resource a file of its own.
-  if (byClass.size < 2) return null;
+  // Task 1 skipped a root-only resource here: with only the entities describe -
+  // whose one assertion the shared test/entities.spec.ts barrel already makes -
+  // the file would have carried no test at all, and Jest fails an empty suite
+  // outright ("Your test suite must contain at least one test"). The controller
+  // describe below always contributes at least the Nest-constructibility it(),
+  // so every resource with an operation now gets its file.
 
   const entityClasses = [...byClass.keys()].sort();
   const fileBase = kebab(resource.name);
@@ -243,6 +585,8 @@ function specFor({ resource, plan, dir, nested }, deps) {
     scalarLines.push(...propLine(c.name, q(value), '    '));
   }
 
+  const ctrl = controllerBlock({ resource, root, nested, meta });
+
   const lines = [
     BANNER,
     '/**',
@@ -257,9 +601,19 @@ function specFor({ resource, plan, dir, nested }, deps) {
     ' * Every literal below is derived from this resource, never hand-written: see',
     ' * the mapping table in emit/spec/resource.mjs for where each one comes from.',
     ' */',
+    ctrl.dtoImports.length
+      ? "import { PATH_METADATA, ROUTE_ARGS_METADATA } from '@nestjs/common/constants';"
+      : "import { PATH_METADATA } from '@nestjs/common/constants';",
+    ...(ctrl.dtoImports.length
+      ? ["import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';"]
+      : []),
+    "import { Test } from '@nestjs/testing';",
     `import { ${resource.name}Service } from '${src}/${fileBase}.service';`,
     `import { ${resource.name}Controller } from '${src}/${fileBase}.controller';`,
     `import { ${meta.eventTypeEnum} } from '../../src/event/event-types';`,
+    ...(ctrl.dtoImports.length
+      ? importLine(ctrl.dtoImports, `${src}/dto`)
+      : []),
     ...entityClasses.map(
       cn => `import { ${cn} } from '../../src/${entityDirOf(cn) ?? dir}/entities/${kebab(cn)}.entity';`,
     ),
@@ -270,6 +624,7 @@ function specFor({ resource, plan, dir, nested }, deps) {
     '',
     ...stringConst('HREF', href),
     '',
+    ...ctrl.consts,
   ];
 
   if (collections.length) {
@@ -312,6 +667,7 @@ function specFor({ resource, plan, dir, nested }, deps) {
     '  });',
     '});',
     '',
+    ...ctrl.lines,
   );
 
   return { rel: `test/${dir}/${fileBase}.service.spec.ts`, text: lines.join('\n') };

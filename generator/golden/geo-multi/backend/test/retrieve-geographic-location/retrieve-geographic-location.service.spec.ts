@@ -11,9 +11,13 @@
  * Every literal below is derived from this resource, never hand-written: see
  * the mapping table in emit/spec/resource.mjs for where each one comes from.
  */
+import { PATH_METADATA, ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
+import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
+import { Test } from '@nestjs/testing';
 import { RetrieveGeographicLocationService } from '../../src/retrieve-geographic-location/retrieve-geographic-location.service';
 import { RetrieveGeographicLocationController } from '../../src/retrieve-geographic-location/retrieve-geographic-location.controller';
 import { GeographicLocationEventType } from '../../src/event/event-types';
+import { CreateRetrieveGeographicLocationDto } from '../../src/retrieve-geographic-location/dto';
 import { GeographicLocationReferred } from '../../src/retrieve-geographic-location/entities/geographic-location-referred.entity';
 import { RetrieveGeographicLocation } from '../../src/retrieve-geographic-location/entities/retrieve-geographic-location.entity';
 import { RetrieveGeographicLocationThing } from '../../src/retrieve-geographic-location/entities/retrieve-geographic-location-thing.entity';
@@ -45,6 +49,15 @@ function makeQueryBuilder(rows: AnyRec[]): AnyRec {
 
 const HREF = '/tmf-api/geographicLocation/v1/retrieveGeographicLocation/res-1';
 
+/** The route Nest registers from @Controller(`${BASE_PATH}/...`). */
+const ROUTE_PATH = 'tmf-api/geographicLocation/v1/retrieveGeographicLocation';
+
+/** The id every delegation asserts on, and the scalar the write paths move. */
+const ID = 'res-1';
+const FIELD = 'status';
+const LIST_QUERY = { limit: 5 };
+const CREATE_BODY = { status: 'res-status' };
+
 function entity(over: AnyRec = {}): AnyRec {
   return {
     id: 'res-1',
@@ -67,5 +80,98 @@ describe('RetrieveGeographicLocation entities', () => {
     ]) {
       expect(new (E as new () => object)()).toBeInstanceOf(E as never);
     }
+  });
+});
+
+/** The design:paramtype Nest hands ValidationPipe for a route's @Body(). */
+function bodyParamType(route: string): unknown {
+  const args = Reflect.getMetadata(
+    ROUTE_ARGS_METADATA,
+    RetrieveGeographicLocationController,
+    route,
+  ) as AnyRec;
+  const prefix = `${RouteParamtypes.BODY}:`;
+  const bodyKey = Object.keys(args).find((k) => k.startsWith(prefix));
+  expect(bodyKey).toBeDefined();
+  const index = Number((bodyKey as string).split(':')[1]);
+  const types = Reflect.getMetadata(
+    'design:paramtypes',
+    RetrieveGeographicLocationController.prototype,
+    route,
+  );
+  return types[index];
+}
+
+describe('RetrieveGeographicLocationController', () => {
+  let svc: AnyRec;
+  let ctrl: RetrieveGeographicLocationController;
+
+  beforeEach(() => {
+    svc = {
+      create: jest.fn(async () => ({ id: ID, href: HREF })),
+      findAll: jest.fn(async () => ({ data: [], total: 0 })),
+      findOne: jest.fn(async () => ({ id: ID })),
+    };
+    ctrl = new RetrieveGeographicLocationController(svc as never);
+  });
+
+  it('sets the Location header from the created resource href', async () => {
+    const res = { location: jest.fn() };
+    const out = await ctrl.create(CREATE_BODY as never, res as never);
+    expect(svc.create).toHaveBeenCalledWith(CREATE_BODY);
+    expect(res.location).toHaveBeenCalledWith(HREF);
+    expect(out.id).toBe(ID);
+  });
+
+  it('omits the Location header when the created resource has no href', async () => {
+    svc.create.mockResolvedValue({ id: ID });
+    const res = { location: jest.fn() };
+    await ctrl.create({} as never, res as never);
+    expect(res.location).not.toHaveBeenCalled();
+  });
+
+  it('passes the query through to findAll', async () => {
+    await ctrl.findAll(LIST_QUERY as never);
+    expect(svc.findAll).toHaveBeenCalledWith(LIST_QUERY);
+  });
+
+  it('forwards the id and the field selection to findOne', async () => {
+    await ctrl.findOne(ID, FIELD);
+    expect(svc.findOne).toHaveBeenCalledWith(ID, FIELD);
+  });
+
+  it('is constructible by Nest with its route metadata intact', async () => {
+    // A concrete controller carrying no decorator of its own emits no
+    // constructor `design:paramtypes`, so Nest builds it with zero arguments
+    // and every route 500s; losing only @Controller() keeps injection working
+    // but silently unmounts the routes. Both are checked separately.
+    const moduleRef = await Test.createTestingModule({
+      controllers: [RetrieveGeographicLocationController],
+      providers: [
+        { provide: RetrieveGeographicLocationService, useValue: svc },
+      ],
+    }).compile();
+
+    const resolved = moduleRef.get(
+      RetrieveGeographicLocationController,
+    ) as unknown as AnyRec;
+    expect(resolved.service).toBe(svc);
+    const paramtypes = Reflect.getMetadata(
+      'design:paramtypes',
+      RetrieveGeographicLocationController,
+    );
+    expect(paramtypes).toEqual([RetrieveGeographicLocationService]);
+    const routePath = Reflect.getMetadata(
+      PATH_METADATA,
+      RetrieveGeographicLocationController,
+    );
+    expect(routePath).toBe(ROUTE_PATH);
+  });
+
+  it('types every write body as its DTO class, so ValidationPipe has a schema', () => {
+    // ValidationPipe validates against the parameter's design:paramtype. A body
+    // left as `any`/`unknown` erases to Object, which accepts every payload
+    // unchecked and makes Swagger emit no request body schema.
+    expect(bodyParamType('create')).toBe(CreateRetrieveGeographicLocationDto);
   });
 });
