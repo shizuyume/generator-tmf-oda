@@ -12,9 +12,10 @@
  * produce the same suite.
  */
 import { emitHooksSpec } from './hooks.mjs';
+import { emitSeedLocalSpec } from './seed-local.mjs';
 
 /** Each entry returns { rel, text } to write, or null to emit nothing. */
-const EMITTERS = [emitHooksSpec];
+const EMITTERS = [emitHooksSpec, emitSeedLocalSpec];
 
 /**
  * @param {{ ir: object, plans: object[], seeds: object[] }} ctx
