@@ -3,7 +3,12 @@ import { camel, pascal, kebab } from '../ir/naming.mjs';
 import {
   AUDIT_AND_SOFT_DELETE,
   SOFT_DELETE_COLUMNS,
+  SOFT_DELETE_TIMESTAMP_COLUMN,
+  SOFT_DELETE_ATTRIBUTION_COLUMNS,
+  SOFT_DELETE_DEFAULTS,
   ALWAYS_PRESENT_TRAILER,
+  EMPTY_TRAILER_VALUE,
+  defaultAtType,
   DEFAULT_OFFSET,
   DEFAULT_LIMIT,
   SORT_ORDER_FALLBACK,
@@ -157,7 +162,7 @@ function renderMapper(entity, self, children, resolve, hrefFor, siblings, ownHre
     // reference genuinely has no id, so it is left absent there.)
     let expr = `e.${c.name}`;
     if (isOwnedChild && c.sourceProp === 'id') expr = `e.${c.name} ?? e.id`;
-    else if (entity.kind === 'root' && ALWAYS_PRESENT_TRAILER.has(c.name)) expr = `e.${c.name} ?? ''`;
+    else if (entity.kind === 'root' && ALWAYS_PRESENT_TRAILER.has(c.name)) expr = `e.${c.name} ?? '${EMPTY_TRAILER_VALUE}'`;
     lines.push(`    ${prop} = ${expr};`);
   }
   if (hrefFor) {
@@ -538,7 +543,7 @@ export function renderService(resource, plan, ctx) {
     const pending: PendingRef[] = [];
     const entity = this.build${rootSelf.className}(input, pending);
     if (!entity.atType) {
-      entity.atType = '${resource.name}';
+      entity.atType = '${defaultAtType(resource.name)}';
     }
     // A create must produce something the client can then READ.
     //
@@ -549,9 +554,8 @@ export function renderService(resource, plan, ctx) {
     // while quietly overwriting a row nobody can reach. From the API's point of view
     // that id was free: GET on it already returned 404. So the row is resurrected
     // rather than left buried.
-    entity.deletedAt = null as unknown as Date;
-    entity.deletedBy = undefined;
-    entity.deletedReason = undefined;
+    entity.${SOFT_DELETE_TIMESTAMP_COLUMN} = null as unknown as Date;
+${SOFT_DELETE_ATTRIBUTION_COLUMNS.map((c) => `    entity.${c} = undefined;`).join('\n')}
     // normalised ref rows first, then the aggregate that points at them
     for (const ref of pending) {
       await this.dataSource.getRepository(ref.target).save(ref.entity);
@@ -725,12 +729,14 @@ ${emitCall(changeEvent, 'fresh.id', 'response')}` : ''}${stateEvent && stateFiel
 
   /* remove */
   if (ops.delete) {
-    body.push(`  async remove(id: string, deletedBy?: string, deletedReason?: string${parentsParam}): Promise<void> {
+    const attributionParams = SOFT_DELETE_ATTRIBUTION_COLUMNS
+      .map((c) => `, ${c}?: string`)
+      .join('');
+    body.push(`  async remove(id: string${attributionParams}${parentsParam}): Promise<void> {
     const entity = await this.findEntity(id${parentParams.length ? ', parents' : ''});
     // soft delete: the row stays, ${SOFT_DELETE_COLUMNS.join('/')} record who and why
-    entity.deletedAt = new Date();
-    entity.deletedBy = deletedBy ?? 'system';
-    entity.deletedReason = deletedReason ?? 'Deleted via API';
+    entity.${SOFT_DELETE_TIMESTAMP_COLUMN} = new Date();
+${SOFT_DELETE_ATTRIBUTION_COLUMNS.map((c) => `    entity.${c} = ${c} ?? '${SOFT_DELETE_DEFAULTS[c]}';`).join('\n')}
     await this.repository.save(entity);${deleteEvent ? `
 ${emitCall(deleteEvent, 'entity.id', `{ id: entity.id, href: \`/\${${basePathConstant}}/${nested ? nested.hrefSegment.replace(/\$\{e\./g, '${entity.') : resource.pathSegment}/\${entity.id}\` }`)}` : ''}
     this.logger.log(\`soft-deleted ${resource.camelName} \${id}\`);

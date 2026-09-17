@@ -33,6 +33,10 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
+    // Hand-written specs a service may still carry under src/ (the 35 GEN_REPO
+    // services do). testMatch already keeps them from RUNNING; without this
+    // they would still be MEASURED as uncovered source and sink the number.
+    '!src/**/*.spec.ts',
     '!src/main.ts',
     '!src/**/dto/**',
     '!src/**/*.module.ts',

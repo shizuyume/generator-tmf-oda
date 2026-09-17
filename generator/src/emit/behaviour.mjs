@@ -29,6 +29,33 @@ export const AUDIT_AND_SOFT_DELETE = new Set([
 export const SOFT_DELETE_COLUMNS = ['deletedAt', 'deletedBy', 'deletedReason'];
 
 /**
+ * The two halves of SOFT_DELETE_COLUMNS, because they are written differently:
+ * the timestamp carries the tombstone (a Date on delete, null on resurrection)
+ * while the attribution columns carry who and why (a string on delete,
+ * undefined on resurrection).
+ */
+export const SOFT_DELETE_TIMESTAMP_COLUMN = SOFT_DELETE_COLUMNS[0];
+export const SOFT_DELETE_ATTRIBUTION_COLUMNS = SOFT_DELETE_COLUMNS.slice(1);
+
+/**
+ * What remove() records when the caller names neither. The hand-written suites
+ * in GEN_REPO assert both values, so the spec emitter needs them too.
+ */
+export const SOFT_DELETE_DEFAULTS = Object.freeze({
+  deletedBy: 'system',
+  deletedReason: 'Deleted via API',
+});
+
+/**
+ * `@type` is what a TMF client dispatches polymorphic handling on, so a root
+ * response must always carry one. A create that does not set it defaults to
+ * the resource's own name.
+ */
+export function defaultAtType(resourceName) {
+  return resourceName;
+}
+
+/**
  * Trailer attributes emitted on every root response even when unset, as the
  * empty string. v5 conformance profiles schema-validate the response and v4
  * kits assert the attribute is present; an empty string satisfies both and
@@ -36,6 +63,9 @@ export const SOFT_DELETE_COLUMNS = ['deletedAt', 'deletedBy', 'deletedReason'];
  * this, against a POST body baked into its CTK image that sends neither.
  */
 export const ALWAYS_PRESENT_TRAILER = new Set(['atBaseType', 'atSchemaLocation']);
+
+/** The value an ALWAYS_PRESENT_TRAILER attribute takes when the row has none. */
+export const EMPTY_TRAILER_VALUE = '';
 
 /** Owned rows come back ordered by sortOrder; a row without one sorts first. */
 export const SORT_ORDER_FALLBACK = 0;

@@ -70,12 +70,17 @@ describe('entity relations', () => {
    * it when it builds metadata. Resolving them here asserts every relation points
    * at a real entity class — the failure mode when a circular import leaves one
    * side `undefined` at module-evaluation time.
+   *
+   * Having NO relations is legitimate and passes: a scaffold-only service
+   * carries just the event tables, and a spec whose resources are all flat -
+   * no owned collections, no normalised refs - emits none either. The
+   * assertion is about every relation that exists resolving, not about any
+   * existing.
    */
   it('resolves every relation target to an entity class', () => {
     const relations = getMetadataArgsStorage().relations.filter((r) =>
       ownedByAnEntity(r.target),
     );
-    expect(relations.length).toBeGreaterThan(0);
 
     for (const relation of relations) {
       const resolved = (relation.type as () => unknown)();
