@@ -33,16 +33,34 @@ function makeRepo(): AnyRec {
   };
 }
 
+/**
+ * The double REMEMBERS its window and applies it, which a double returning
+ * every row whatever was asked for cannot: findAll reads the total BEFORE it
+ * narrows the query, so `total` is the unpaged count while `data` is one page.
+ * With an unwindowed double the two are always equal and neither half of that
+ * sentence is under test - counting after the window, or reporting
+ * `data.length` as the total, both stay green.
+ */
 function makeQueryBuilder(rows: AnyRec[]): AnyRec {
+  let offset = 0;
+  let limit: number | undefined;
+  const windowed = () =>
+    limit === undefined ? rows : rows.slice(offset, offset + limit);
   const qb: AnyRec = {
     leftJoinAndSelect: jest.fn(() => qb),
     where: jest.fn(() => qb),
     andWhere: jest.fn(() => qb),
     addOrderBy: jest.fn(() => qb),
-    skip: jest.fn(() => qb),
-    take: jest.fn(() => qb),
-    getCount: jest.fn(async () => rows.length),
-    getMany: jest.fn(async () => rows),
+    skip: jest.fn((n: number) => {
+      offset = n;
+      return qb;
+    }),
+    take: jest.fn((n: number) => {
+      limit = n;
+      return qb;
+    }),
+    getCount: jest.fn(async () => windowed().length),
+    getMany: jest.fn(async () => windowed()),
   };
   return qb;
 }
@@ -215,12 +233,12 @@ describe('TopicService', () => {
   });
 
   describe('findAll', () => {
-    it('maps every row and reports the unpaged total', async () => {
-      repo.createQueryBuilder.mockReturnValue(
-        makeQueryBuilder([entity(), entity({ id: 'res-2' })]),
-      );
-      const { data, total } = await service.findAll({} as never);
-      expect(total).toBe(2);
+    it('maps the page it asked for and reports the unpaged total', async () => {
+      const rows = [entity(), entity({ id: 'res-2' }), entity({ id: 'res-3' })];
+      repo.createQueryBuilder.mockReturnValue(makeQueryBuilder(rows));
+      const { data, total } = await service.findAll({ limit: 2 } as never);
+      // the count is taken BEFORE the window narrows the query
+      expect(total).toBe(3);
       expect(data.map((d) => d.id)).toEqual([ID, 'res-2']);
       for (const w of Object.keys(SCALARS)) {
         expect(data[0][w]).toBe(`res-${SCALARS[w]}`);
@@ -324,6 +342,49 @@ describe('TopicService', () => {
         stored,
       );
       expect(res).toBe(DECORATED);
+    });
+  });
+
+  describe('remove', () => {
+    it('soft-deletes the row, recording who and why', async () => {
+      // the row STAYS: a hard delete would take the TMF audit trail with it
+      const e = entity();
+      repo.findOne.mockResolvedValue(e);
+      await service.remove(ID, 'by-deletedBy', 'by-deletedReason');
+      expect(e.deletedAt).toBeInstanceOf(Date);
+      expect(e.deletedBy).toBe('by-deletedBy');
+      expect(e.deletedReason).toBe('by-deletedReason');
+      expect(repo.save).toHaveBeenCalledWith(e);
+    });
+
+    it('defaults deletedBy and deletedReason when the caller names neither', async () => {
+      const e = entity();
+      repo.findOne.mockResolvedValue(e);
+      await service.remove(ID);
+      expect(e.deletedBy).toBe('system');
+      expect(e.deletedReason).toBe('Deleted via API');
+    });
+
+    it('emits a delete event carrying only the id and the href', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      await service.remove(ID);
+      // the row is gone from the API: a full payload would describe a
+      // resource the subscriber can no longer GET
+      expect(eventEmitter.emitEvent).toHaveBeenCalledWith(
+        EventEventType.TOPIC_DELETE,
+        ID,
+        'Topic',
+        { id: ID, href: HREF },
+      );
+    });
+
+    it('throws NotFoundException for a row that is already gone', async () => {
+      repo.findOne.mockResolvedValue(null);
+      await expect(service.remove('nope')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(repo.save).not.toHaveBeenCalled();
+      expect(eventEmitter.emitEvent).not.toHaveBeenCalled();
     });
   });
 });

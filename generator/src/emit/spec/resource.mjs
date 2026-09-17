@@ -8,6 +8,7 @@ import {
   DEFAULT_LIMIT,
   SOFT_DELETE_TIMESTAMP_COLUMN,
   SOFT_DELETE_ATTRIBUTION_COLUMNS,
+  SOFT_DELETE_DEFAULTS,
   SORT_ORDER_FALLBACK,
 } from '../behaviour.mjs';
 
@@ -220,6 +221,21 @@ function callLines(indent, head, args, tail = ';') {
 }
 
 /**
+ * `head(a, [b, c]);`. The LAST argument is an array literal, so Prettier HUGS
+ * it - it keeps the leading arguments on the call line and breaks the array,
+ * rather than giving every argument a line of its own the way callLines does.
+ */
+function callHuggingArray(indent, head, lead, items) {
+  const inline = `${indent}${head}(${[...lead, `[${items.join(', ')}]`].join(', ')});`;
+  if (inline.length <= PRINT_WIDTH) return [inline];
+  return [
+    `${indent}${head}(${lead.join(', ')}, [`,
+    ...items.map(i => `${indent}  ${i},`),
+    `${indent}]);`,
+  ];
+}
+
+/**
  * `expect(x).toEqual([A]);`. The only argument is an array literal, so Prettier
  * hugs it and breaks the ARRAY rather than the call.
  */
@@ -272,16 +288,34 @@ const REPO_FIXTURE = [
   '  };',
   '}',
   '',
+  '/**',
+  ' * The double REMEMBERS its window and applies it, which a double returning',
+  ' * every row whatever was asked for cannot: findAll reads the total BEFORE it',
+  ' * narrows the query, so `total` is the unpaged count while `data` is one page.',
+  ' * With an unwindowed double the two are always equal and neither half of that',
+  ' * sentence is under test - counting after the window, or reporting',
+  ' * `data.length` as the total, both stay green.',
+  ' */',
   'function makeQueryBuilder(rows: AnyRec[]): AnyRec {',
+  '  let offset = 0;',
+  '  let limit: number | undefined;',
+  '  const windowed = () =>',
+  '    limit === undefined ? rows : rows.slice(offset, offset + limit);',
   '  const qb: AnyRec = {',
   '    leftJoinAndSelect: jest.fn(() => qb),',
   '    where: jest.fn(() => qb),',
   '    andWhere: jest.fn(() => qb),',
   '    addOrderBy: jest.fn(() => qb),',
-  '    skip: jest.fn(() => qb),',
-  '    take: jest.fn(() => qb),',
-  '    getCount: jest.fn(async () => rows.length),',
-  '    getMany: jest.fn(async () => rows),',
+  '    skip: jest.fn((n: number) => {',
+  '      offset = n;',
+  '      return qb;',
+  '    }),',
+  '    take: jest.fn((n: number) => {',
+  '      limit = n;',
+  '      return qb;',
+  '    }),',
+  '    getCount: jest.fn(async () => windowed().length),',
+  '    getMany: jest.fn(async () => windowed()),',
   '  };',
   '  return qb;',
   '}',
@@ -337,8 +371,9 @@ const REPO_FIXTURE = [
  * asserting a regression as correct, which is the whole reason that module
  * exists.
  */
-function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase }) {
+function serviceBlock({ resource, plan, root, meta, host, nested, resolve, src, fileBase }) {
   const svcClass = `${resource.name}Service`;
+  const ops = resource.operations ?? {};
   const pkCol = root.columns.find(c => c.primary);
   const pk = pkCol ? pkCol.name : 'id';
   const pkKey = IDENT.test(pk) ? `.${pk}` : `[${q(pk)}]`;
@@ -393,10 +428,54 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
         refProp: inner.property,
         // the column the nested ref's OWN mapper reports as its `id`
         refIdCol: refIdColOf(entityByKey.get(inner.targetKey)),
+        // the class update() deletes the orphaned ref rows as
+        refClass: resolve(inner.targetKey).className,
       };
       break;
     }
   }
+
+  /* ── what update()'s transaction actually touches ──────────────────────
+   *
+   * UPDATABLE is NOT the SCALARS above. SCALARS is the CREATE path's set;
+   * renderService's `scalarAssignable` - the columns update() writes an
+   * `if (input[...] !== undefined)` for - additionally drops every IMMUTABLE
+   * column, which is `@type`, the two TMF trailers and each nested-route parent
+   * key. Asserting SCALARS here would demand an update that reassigns the parent
+   * a nested row hangs off, which the service deliberately refuses.
+   *
+   * Each collection is deleted by its OWNER key, and the owner property is
+   * usually `owner` but is renamed when the child's own spec declares a field
+   * literally named `owner` (entityPlan's ownerPropertyFor) - so it is read off
+   * the child's many-to-one-owner relation rather than assumed.
+   */
+  const updatable = root.columns
+    .filter(c => !c.primary && !isHousekeeping(c) && !c.immutable && !c.isVersion)
+    .map(c => [c.sourceProp || c.expose || c.name, c.name]);
+
+  const collInfo = collections
+    .map(r => {
+      const target = entityByKey.get(r.targetKey);
+      const ownerRel = (target?.relations ?? []).find(x => x.kind === 'many-to-one-owner');
+      return {
+        property: r.property,
+        className: resolve(r.targetKey)?.className ?? null,
+        ownerProp: ownerRel ? ownerRel.property : 'owner',
+      };
+    })
+    .filter(c => c.className);
+
+  const refClasses = refRels.map(r => [r.property, resolve(r.targetKey).className]);
+
+  /* ── the events update() and remove() emit ── */
+  const eventOf = kind => (resource.notificationEvents ?? []).find(e => e.eventKind === kind) ?? null;
+  const changeEvent = eventOf('AttributeValueChange') ?? eventOf('Change');
+  const stateEvent = eventOf('StateChange');
+  const deleteEvent = eventOf('Delete');
+  // the same field renderService gates the state-change emit on
+  const stateField = (resource.fields ?? []).find(f =>
+    /^(lifecycleStatus|state|status)$/.test(f.name),
+  );
 
   /**
    * Read-path shape of each collection, which the write path did not need.
@@ -431,13 +510,33 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
   );
   const trailerKeys = trailerCols.map(c => c.sourceProp || c.expose || c.name);
 
-  const createEvent = (resource.notificationEvents ?? []).find(e => e.eventKind === 'Create');
+  const createEvent = eventOf('Create');
   const emitMethod = host?.method ?? 'emitEvent';
-  const eventRef = createEvent
-    ? (host?.eventTypeStyle === 'literal'
-        ? q(createEvent.eventName)
-        : `${meta.eventTypeEnum}.${createEvent.enumMember}`)
-    : null;
+  const refFor = ev => (host?.eventTypeStyle === 'literal'
+    ? q(ev.eventName)
+    : `${meta.eventTypeEnum}.${ev.enumMember}`);
+  const eventRef = createEvent ? refFor(createEvent) : null;
+
+  /**
+   * `expect(eventEmitter.<method>).toHaveBeenCalledWith(...)`, in the dialect
+   * renderService's emitCall() writes for this host. The object branch is
+   * UNREACHABLE today (see the create-event it() below) and kept for the same
+   * reason it is kept there.
+   */
+  const emitExpect = (indent, ref, payload) => (host?.callStyle === 'object'
+    ? [
+        `${indent}expect(eventEmitter.${emitMethod}).toHaveBeenCalledWith(`,
+        `${indent}  expect.objectContaining({`,
+        `${indent}    eventType: ${ref},`,
+        `${indent}    resourceId: ID,`,
+        `${indent}    resourceType: ${q(resource.name)},`,
+        `${indent}    payload: ${payload},`,
+        `${indent}  }),`,
+        `${indent});`,
+      ]
+    : callLines(indent, `expect(eventEmitter.${emitMethod}).toHaveBeenCalledWith`, [
+        ref, 'ID', q(resource.name), payload,
+      ]));
 
   /* ── constants this describe adds to the file head ── */
   const consts = [
@@ -512,6 +611,68 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
         : []),
     );
   }
+  if (ops.update && updatable.length) {
+    consts.push(
+      '',
+      '/**',
+      ' * Root scalars an UPDATE may reassign: payload key -> column. Deliberately',
+      ' * narrower than SCALARS, which is the create path: `@type`, the two TMF',
+      ' * trailers and every nested-route parent key are immutable, so a create',
+      ' * sets them and an update leaves them alone.',
+      ' */',
+      ...objectConst(
+        'UPDATABLE',
+        'Record<string, string>',
+        updatable.map(([w, c]) => [w, q(c)]),
+      ),
+      '',
+      'function updatePayload(): AnyRec {',
+      '  const out: AnyRec = {};',
+      '  for (const w of Object.keys(UPDATABLE)) out[w] = `patched-${UPDATABLE[w]}`;',
+      '  return out;',
+      '}',
+    );
+  }
+  if (ops.update && collInfo.length) {
+    consts.push(
+      '',
+      '/** The entity class each collection\'s owned rows are deleted as. */',
+      ...objectConst(
+        'COLLECTION_ROW_ENTITY',
+        'Record<string, unknown>',
+        collInfo.map(c => [c.property, c.className]),
+      ),
+      '',
+      '/**',
+      " * The property that child's back-reference to this resource is exposed",
+      ' * under, which is what the wholesale delete is keyed on. Usually `owner`,',
+      " * renamed when the child's own spec declares a field by that name.",
+      ' */',
+      ...objectConst(
+        'COLLECTION_OWNER',
+        'Record<string, string>',
+        collInfo.map(c => [c.property, q(c.ownerProp)]),
+      ),
+    );
+  }
+  if (ops.update && refClasses.length) {
+    consts.push(
+      '',
+      '/** The class each single ref is written as - and deleted as when replaced. */',
+      ...objectConst(
+        'REF_ENTITY',
+        'Record<string, unknown>',
+        refClasses,
+      ),
+    );
+  }
+  if (ops.update && nestedCase) {
+    consts.push(
+      '',
+      '/** The class a ref nested inside a collection row normalises into. */',
+      `const NESTED_REF_ENTITY = ${nestedCase.refClass};`,
+    );
+  }
 
   /* ── the it()s, at their final indentation inside describe('create') ── */
   //
@@ -559,28 +720,13 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       "    it('emits a create event carrying the mapped response', async () => {",
       '      repo.findOne.mockResolvedValue(entity());',
       '      const res = await service.create({} as never);',
-      // UNREACHABLE TODAY, and kept deliberately. `host` is non-null only on
-      // the inject path, and emit/index.mjs returns before emitSpecs() on that
-      // path - an inject run emits no specs at all. This branch is what the
-      // assertion will need the day specs are emitted for a hand-written host,
-      // whose emitter takes an object rather than positional arguments.
-      ...(host?.callStyle === 'object'
-        ? [
-            `      expect(eventEmitter.${emitMethod}).toHaveBeenCalledWith(`,
-            '        expect.objectContaining({',
-            `          eventType: ${eventRef},`,
-            '          resourceId: ID,',
-            `          resourceType: ${q(resource.name)},`,
-            '          payload: res,',
-            '        }),',
-            '      );',
-          ]
-        : callLines('      ', `expect(eventEmitter.${emitMethod}).toHaveBeenCalledWith`, [
-            eventRef,
-            'ID',
-            q(resource.name),
-            'res',
-          ])),
+      // emitExpect's object branch is UNREACHABLE TODAY, and kept deliberately.
+      // `host` is non-null only on the inject path, and emit/index.mjs returns
+      // before emitSpecs() on that path - an inject run emits no specs at all.
+      // It is what the assertion will need the day specs are emitted for a
+      // hand-written host, whose emitter takes an object rather than positional
+      // arguments.
+      ...emitExpect('      ', eventRef, 'res'),
       '    });',
       '',
     );
@@ -767,13 +913,27 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
    * twenty" in prose, where raising DEFAULT_LIMIT would move the assertion and
    * leave the sentence describing a behaviour the service no longer has.
    */
+  // three rows behind a two-row window, so the unpaged total and the page size
+  // are DIFFERENT numbers. With the row set equal to the page the assertion
+  // below holds just as well for a findAll that counted its own page.
+  const listRowsInline = `const rows = [entity(), entity({ ${key(pk)}: 'res-2' }), entity({ ${key(pk)}: 'res-3' })];`;
+  const listRows = listRowsInline.length + 6 <= PRINT_WIDTH
+    ? [`      ${listRowsInline}`]
+    : [
+        '      const rows = [',
+        '        entity(),',
+        `        entity({ ${key(pk)}: 'res-2' }),`,
+        `        entity({ ${key(pk)}: 'res-3' }),`,
+        '      ];',
+      ];
+
   const findAll = [
-    "    it('maps every row and reports the unpaged total', async () => {",
-    ...callLines('      ', 'repo.createQueryBuilder.mockReturnValue', [
-      `makeQueryBuilder([entity(), entity({ ${key(pk)}: 'res-2' })])`,
-    ]),
-    '      const { data, total } = await service.findAll({} as never);',
-    '      expect(total).toBe(2);',
+    "    it('maps the page it asked for and reports the unpaged total', async () => {",
+    ...listRows,
+    '      repo.createQueryBuilder.mockReturnValue(makeQueryBuilder(rows));',
+    '      const { data, total } = await service.findAll({ limit: 2 } as never);',
+    '      // the count is taken BEFORE the window narrows the query',
+    '      expect(total).toBe(3);',
     ...expectEqualArray('      ', `data.map((d) => d${pkKey})`, ['ID', q('res-2')]),
     ...(scalars.length
       ? [
@@ -1100,6 +1260,403 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
   }
   while (findOne.length && findOne[findOne.length - 1] === '') findOne.pop();
 
+  /* ── describe('update') ───────────────────────────────────────────────
+   *
+   * GATED ON ops.update, which is also what emit/controller.mjs gates the PATCH
+   * route on. The reference's `ack-alarm` sibling is create-only and has no
+   * update describe at all; this emitter reproduces that rather than emitting a
+   * describe whose it()s call a method the service does not declare.
+   *
+   * WHAT EACH it() IS GATED ON:
+   *   NotFoundException    always. update() opens by re-reading inside the
+   *                        transaction and throwing when the row is gone or
+   *                        soft-deleted, whatever else the resource has.
+   *   scalars applied      UPDATABLE is non-empty - see the const's own note on
+   *                        why that is not SCALARS.
+   *   omissions untouched  TWO updatable columns: with one there is nothing left
+   *                        over to prove was not written.
+   *   collection replace   root one-to-many relations, i.e. renderService's
+   *                        `collectionRelations`, which is what emits the
+   *                        delete-then-rebuild block at all.
+   *   null like []         the same, since `(input.<c> ?? [])` is inside it.
+   *   orphaned ref rows    a collection whose TARGET carries a many-to-one-ref
+   *                        (`nestedCase`) - the only shape for which
+   *                        renderService emits the collect/purge pair. A
+   *                        collection that merely owns rows orphans nothing,
+   *                        because the wholesale delete already removed them.
+   *   single refs          the ROOT's many-to-one-ref relations, exactly as in
+   *                        create: a many-to-one-RESOURCE is a sibling with its
+   *                        own service and is never deleted from here.
+   *   change event         notificationEvents carries AttributeValueChange (or
+   *                        Change), the only thing that makes update emit.
+   *   state-change event   a StateChange event AND a field named
+   *                        lifecycleStatus/state/status, because the emit is
+   *                        wrapped in `if (input['<field>'] !== undefined)` and
+   *                        renderService finds that field the same way.
+   *   beforeUpdate         UPDATABLE is non-empty - the hook's payload has to
+   *                        land in a column for the assertion to see it.
+   *
+   * THE HOOK, A THIRD TIME. `hooks.beforeUpdate(id, dto)` is user-owned
+   * ("NOT managed by tmfgen. Created once if missing; never overwritten"), so
+   * every it() here would otherwise assume the shipped stub still returns
+   * undefined and go red the day its owner implements the normalisation the file
+   * invites. It is neutralised for the whole describe; the one it() that is
+   * about it re-spies inside its own body and asserts the CALL and what update
+   * then builds from, never what an implementation returns.
+   */
+  const update = [];
+  if (ops.update) {
+    update.push(
+      '    beforeEach(() => {',
+      '      // beforeUpdate is user-owned; only the it() below is about it',
+      "      jest.spyOn(hooks, 'beforeUpdate').mockResolvedValue(undefined);",
+      '      // the transaction commits, then update() re-READS through findEntity',
+      '      repo.findOne.mockImplementation(async () => entity());',
+      '    });',
+      '',
+      "    it('throws NotFoundException when the row is missing or soft-deleted', async () => {",
+      '      manager.findOne.mockResolvedValue(null);',
+      ...callLines(
+        '      ',
+        "await expect(service.update('nope', {} as never)).rejects.toBeInstanceOf",
+        ['NotFoundException'],
+      ),
+      '    });',
+      '',
+    );
+
+    if (updatable.length) {
+      update.push(
+        "    it('applies every scalar the payload carries', async () => {",
+        '      const existing = entity();',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      await service.update(ID, updatePayload() as never);',
+        '      for (const w of Object.keys(UPDATABLE)) {',
+        '        expect(existing[UPDATABLE[w]]).toBe(`patched-${UPDATABLE[w]}`);',
+        '      }',
+        '    });',
+        '',
+      );
+    }
+
+    if (updatable.length > 1) {
+      update.push(
+        "    it('leaves the columns the payload omits untouched', async () => {",
+        '      // PATCH semantics: an absent key is not the same as a null one',
+        '      const existing = entity();',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      const [sent, omitted] = Object.keys(UPDATABLE);',
+        '      const dto: AnyRec = {};',
+        '      dto[sent] = `patched-${UPDATABLE[sent]}`;',
+        '      await service.update(ID, dto as never);',
+        '      expect(existing[UPDATABLE[sent]]).toBe(`patched-${UPDATABLE[sent]}`);',
+        '      expect(existing[UPDATABLE[omitted]]).toBe(`res-${UPDATABLE[omitted]}`);',
+        '    });',
+        '',
+      );
+    }
+
+    if (collInfo.length) {
+      update.push(
+        "    it('replaces each collection wholesale, deleting the owned rows first', async () => {",
+        '      const existing = entity();',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      const dto: AnyRec = {};',
+        '      for (const c of COLLECTIONS) dto[c] = [{ id: `${c}-new` }];',
+        '      await service.update(ID, dto as never);',
+        '',
+        '      for (const c of COLLECTIONS) {',
+        '        expect(manager.delete).toHaveBeenCalledWith(COLLECTION_ROW_ENTITY[c], {',
+        '          [COLLECTION_OWNER[c]]: { id: ID },',
+        '        });',
+        '        expect(existing[c]).toHaveLength(1);',
+        ...(collRefIdCol
+          ? [`        expect(existing[c][0].${collRefIdCol}).toBe(\`\${c}-new\`);`]
+          : []),
+        '      }',
+        '      // the delete has to land BEFORE the aggregate save, or the rows it',
+        '      // removes are the replacements rather than the old ones',
+        '      const saves = manager.save.mock.invocationCallOrder;',
+        '      const aggregate = saves[saves.length - 1];',
+        '      for (const order of manager.delete.mock.invocationCallOrder) {',
+        '        expect(order).toBeLessThan(aggregate);',
+        '      }',
+        '    });',
+        '',
+        "    it('empties a collection sent as null just as one sent as []', async () => {",
+        '      for (const c of COLLECTIONS) {',
+        '        const viaNull = entity();',
+        '        manager.findOne.mockResolvedValue(viaNull);',
+        '        await service.update(ID, { [c]: null } as never);',
+        '        expect(viaNull[c]).toEqual([]);',
+        '',
+        '        const viaEmpty = entity();',
+        '        manager.findOne.mockResolvedValue(viaEmpty);',
+        '        await service.update(ID, { [c]: [] } as never);',
+        '        expect(viaEmpty[c]).toEqual([]);',
+        '      }',
+        '    });',
+        '',
+      );
+    }
+
+    if (nestedCase) {
+      update.push(
+        "    it('deletes the ref rows orphaned by replacing a collection row', async () => {",
+        '      // the wholesale delete removes the OWNED rows; the normalised rows they',
+        '      // pointed at are @ManyToOne, which has no orphanedRowAction to follow',
+        '      const orphan: AnyRec = { id: `${NESTED_COLLECTION}-old` };',
+        '      orphan[NESTED_REF] = { id: `${NESTED_REF}-old` };',
+        '      const over: AnyRec = {};',
+        '      over[NESTED_COLLECTION] = [orphan];',
+        '      manager.findOne.mockResolvedValue(entity(over));',
+        '      const dto: AnyRec = {};',
+        '      dto[NESTED_COLLECTION] = [{ id: `${NESTED_COLLECTION}-new` }];',
+        '      await service.update(ID, dto as never);',
+        ...callHuggingArray(
+          '      ',
+          'expect(manager.delete).toHaveBeenCalledWith',
+          ['NESTED_REF_ENTITY'],
+          ['`${NESTED_REF}-old`'],
+        ),
+        '    });',
+        '',
+        "    it('leaves that ref table alone when no collection row nested one', async () => {",
+        '      const over: AnyRec = {};',
+        '      over[NESTED_COLLECTION] = [{ id: `${NESTED_COLLECTION}-old` }];',
+        '      manager.findOne.mockResolvedValue(entity(over));',
+        '      const dto: AnyRec = {};',
+        '      dto[NESTED_COLLECTION] = [];',
+        '      await service.update(ID, dto as never);',
+        ...callLines('      ', 'expect(manager.delete).not.toHaveBeenCalledWith', [
+          'NESTED_REF_ENTITY',
+          'expect.anything()',
+        ]),
+        '    });',
+        '',
+      );
+    }
+
+    if (refRels.length) {
+      update.push(
+        "    it('replaces a single ref and removes the row it orphaned', async () => {",
+        '      const over: AnyRec = {};',
+        '      for (const p of REF_PROPS) over[p] = { id: `${p}-old` };',
+        '      const existing = entity(over);',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      const dto: AnyRec = {};',
+        '      for (const p of REF_PROPS) dto[p] = { id: `${p}-new` };',
+        '      await service.update(ID, dto as never);',
+        '',
+        '      for (const p of REF_PROPS) {',
+        '        expect(existing[p]).toBeDefined();',
+        ...(refIdCol
+          ? [`        expect(existing[p].${refIdCol}).toBe(\`\${p}-new\`);`]
+          : []),
+        ...callLines('        ', 'expect(manager.delete).toHaveBeenCalledWith', [
+          'REF_ENTITY[p]',
+          '{ id: `${p}-old` }',
+        ]),
+        '      }',
+        '    });',
+        '',
+        "    it('unsets a single ref sent as null and still removes the orphan', async () => {",
+        '      const over: AnyRec = {};',
+        '      for (const p of REF_PROPS) over[p] = { id: `${p}-old` };',
+        '      const existing = entity(over);',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      const dto: AnyRec = {};',
+        '      for (const p of REF_PROPS) dto[p] = null;',
+        '      await service.update(ID, dto as never);',
+        '',
+        '      for (const p of REF_PROPS) {',
+        '        expect(existing[p]).toBeUndefined();',
+        ...callLines('        ', 'expect(manager.delete).toHaveBeenCalledWith', [
+          'REF_ENTITY[p]',
+          '{ id: `${p}-old` }',
+        ]),
+        '      }',
+        '    });',
+        '',
+        "    it('keeps the single refs the payload does not mention', async () => {",
+        '      const over: AnyRec = {};',
+        '      for (const p of REF_PROPS) over[p] = { id: `${p}-old` };',
+        '      const existing = entity(over);',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      await service.update(ID, {} as never);',
+        '',
+        '      for (const p of REF_PROPS) {',
+        '        expect(existing[p].id).toBe(`${p}-old`);',
+        ...callLines('        ', 'expect(manager.delete).not.toHaveBeenCalledWith', [
+          'REF_ENTITY[p]',
+          'expect.anything()',
+        ]),
+        '      }',
+        '    });',
+        '',
+        "    it('writes the pending ref rows through the transaction manager', async () => {",
+        '      // a ref saved through the OUTER repository would survive a rollback',
+        '      // and leave a row nothing points at',
+        '      manager.findOne.mockResolvedValue(entity());',
+        '      const dto: AnyRec = {};',
+        '      for (const p of REF_PROPS) dto[p] = { id: `${p}-new` };',
+        '      await service.update(ID, dto as never);',
+        '',
+        '      expect(refSave).not.toHaveBeenCalled();',
+        '      for (const p of REF_PROPS) {',
+        ...callLines('        ', 'expect(manager.save).toHaveBeenCalledWith', [
+          'REF_ENTITY[p]',
+          'expect.anything()',
+        ]),
+        '      }',
+        '      // ... and the aggregate goes last, after every one of them',
+        '      const calls = manager.save.mock.calls;',
+        '      expect(calls[calls.length - 1]).toHaveLength(1);',
+        '    });',
+        '',
+      );
+    }
+
+    update.push(
+      changeEvent
+        ? "    it('answers with the re-read resource and emits a change event', async () => {"
+        : "    it('answers with the re-read resource, not with the saved aggregate', async () => {",
+      '      manager.findOne.mockResolvedValue(entity());',
+      '      const res = await service.update(ID, {} as never);',
+      '      // mapped from a FRESH findEntity, so the response carries the relations',
+      '      // the transaction just rewrote rather than the half-built aggregate',
+      '      expect(repo.findOne).toHaveBeenCalled();',
+      `      expect(res${pkKey}).toBe(ID);`,
+      '      expect(res.href).toBe(HREF);',
+      ...(changeEvent ? emitExpect('      ', refFor(changeEvent), 'res') : []),
+      '    });',
+      '',
+    );
+
+    if (stateEvent && stateField) {
+      const stateRef = refFor(stateEvent);
+      const seen = host?.callStyle === 'object'
+        ? '(c[0] as AnyRec).eventType'
+        : 'c[0]';
+      update.push(
+        `    it('emits a state-change event only when the payload carries ${stateField.name}', async () => {`,
+        '      const emitted = () =>',
+        `        eventEmitter.${emitMethod}.mock.calls.map((c: unknown[]) => ${seen});`,
+        '',
+        '      manager.findOne.mockResolvedValue(entity());',
+        '      await service.update(ID, {} as never);',
+        ...callLines('      ', 'expect(emitted()).not.toContain', [stateRef]),
+        '',
+        '      manager.findOne.mockResolvedValue(entity());',
+        ...callLines('      ', 'const res = await service.update', [
+          'ID',
+          `{ ${key(stateField.name)}: 'changed' } as never`,
+        ]),
+        ...emitExpect('      ', stateRef, 'res'),
+        '    });',
+        '',
+      );
+    }
+
+    if (updatable.length) {
+      update.push(
+        "    it('applies the payload the beforeUpdate hook returns, not the dto', async () => {",
+        '      // beforeUpdate lives in a file tmfgen does not manage. What it returns',
+        "      // is its owner's business, so it is SPIED here rather than asserted on:",
+        '      // what is under test is that update applies the value it got back.',
+        '      const [w] = Object.keys(UPDATABLE);',
+        '      const HOOK_PAYLOAD: AnyRec = {};',
+        '      HOOK_PAYLOAD[w] = `from-hook-${UPDATABLE[w]}`;',
+        ...callLines('      ', "jest.spyOn(hooks, 'beforeUpdate').mockResolvedValue", [
+          'HOOK_PAYLOAD',
+        ]),
+        '',
+        '      const existing = entity();',
+        '      manager.findOne.mockResolvedValue(existing);',
+        '      const dto: AnyRec = {};',
+        '      dto[w] = `ignored-${UPDATABLE[w]}`;',
+        '      await service.update(ID, dto as never);',
+        '      expect(hooks.beforeUpdate).toHaveBeenCalledWith(ID, dto);',
+        '      expect(existing[UPDATABLE[w]]).toBe(`from-hook-${UPDATABLE[w]}`);',
+        '    });',
+        '',
+      );
+    }
+  }
+  while (update.length && update[update.length - 1] === '') update.pop();
+
+  /* ── describe('remove') ───────────────────────────────────────────────
+   *
+   * GATED ON ops.delete. Every value it asserts comes from behaviour.mjs -
+   * SOFT_DELETE_TIMESTAMP_COLUMN, SOFT_DELETE_ATTRIBUTION_COLUMNS and
+   * SOFT_DELETE_DEFAULTS - which is what plan 1 extracted them for: the same
+   * module renderService reads when it writes the three assignments, so a change
+   * to the defaults moves the code and the assertion together instead of leaving
+   * the suite green over a regression.
+   *
+   *   soft-delete write    always, once the resource has a delete route.
+   *   default attribution  always, for the same reason.
+   *   delete event         notificationEvents carries Delete.
+   *   404                  always: remove() goes through findEntity first, so a
+   *                        row already gone must not be stamped a second time.
+   */
+  const remove = [];
+  if (ops.delete) {
+    const attributed = SOFT_DELETE_ATTRIBUTION_COLUMNS.map(c => `by-${c}`);
+    remove.push(
+      "    it('soft-deletes the row, recording who and why', async () => {",
+      '      // the row STAYS: a hard delete would take the TMF audit trail with it',
+      '      const e = entity();',
+      '      repo.findOne.mockResolvedValue(e);',
+      ...callLines('      ', 'await service.remove', ['ID', ...attributed.map(q)]),
+      `      expect(e.${SOFT_DELETE_TIMESTAMP_COLUMN}).toBeInstanceOf(Date);`,
+      ...SOFT_DELETE_ATTRIBUTION_COLUMNS.map(
+        (c, i) => `      expect(e.${c}).toBe(${q(attributed[i])});`,
+      ),
+      '      expect(repo.save).toHaveBeenCalledWith(e);',
+      '    });',
+      '',
+      `    it('defaults ${prose(SOFT_DELETE_ATTRIBUTION_COLUMNS)} when the caller names neither', async () => {`,
+      '      const e = entity();',
+      '      repo.findOne.mockResolvedValue(e);',
+      '      await service.remove(ID);',
+      ...SOFT_DELETE_ATTRIBUTION_COLUMNS.map(
+        c => `      expect(e.${c}).toBe(${q(SOFT_DELETE_DEFAULTS[c])});`,
+      ),
+      '    });',
+      '',
+    );
+
+    if (deleteEvent) {
+      remove.push(
+        "    it('emits a delete event carrying only the id and the href', async () => {",
+        '      repo.findOne.mockResolvedValue(entity());',
+        '      await service.remove(ID);',
+        '      // the row is gone from the API: a full payload would describe a',
+        '      // resource the subscriber can no longer GET',
+        ...emitExpect('      ', refFor(deleteEvent), '{ id: ID, href: HREF }'),
+        '    });',
+        '',
+      );
+    }
+
+    remove.push(
+      "    it('throws NotFoundException for a row that is already gone', async () => {",
+      '      repo.findOne.mockResolvedValue(null);',
+      ...callLines(
+        '      ',
+        "await expect(service.remove('nope')).rejects.toBeInstanceOf",
+        ['NotFoundException'],
+      ),
+      '      expect(repo.save).not.toHaveBeenCalled();',
+      ...(deleteEvent
+        ? [`      expect(eventEmitter.${emitMethod}).not.toHaveBeenCalled();`]
+        : []),
+      '    });',
+    );
+  }
+  while (remove.length && remove[remove.length - 1] === '') remove.pop();
+
   const ctorArgs = [
     'repo as never',
     ...Array.from({ length: Math.max(0, repoCount - 1) }, () => 'makeRepo() as never'),
@@ -1112,12 +1669,20 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
     // The enum is referenced by the create-event assertion alone. A host that
     // owns its own event types has no src/event/event-types module, so an
     // ungated import would fail to resolve in every emitted spec.
-    needsEventEnum: !!createEvent && host?.eventTypeStyle !== 'literal',
+    // create, update and remove can each reference it, so the import is needed
+    // when ANY of the events they emit is declared - gating on create alone left
+    // a delete-only resource asserting an enum member it had not imported.
+    needsEventEnum: host?.eventTypeStyle !== 'literal' && !!(
+      createEvent
+      || (ops.update && (changeEvent || (stateEvent && stateField)))
+      || (ops.delete && deleteEvent)
+    ),
     hooksImport: `import * as hooks from '${src}/${fileBase}.hooks';`,
     lines: [
       `describe(${q(svcClass)}, () => {`,
       '  let repo: AnyRec;',
       '  let refSave: jest.Mock;',
+      ...(ops.update ? ['  let manager: AnyRec;'] : []),
       '  let dataSource: AnyRec;',
       '  let eventEmitter: AnyRec;',
       `  let service: ${svcClass};`,
@@ -1125,12 +1690,27 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       '  beforeEach(() => {',
       '    repo = makeRepo();',
       '    refSave = jest.fn(async (e: AnyRec) => e);',
+      // update() does all of its work through the transaction manager, never
+      // through the injected repositories, so the double has to be a separate
+      // object - that is exactly what the "through the manager" it() asserts.
+      ...(ops.update
+        ? [
+            '    manager = {',
+            '      findOne: jest.fn(),',
+            '      delete: jest.fn(async () => ({ affected: 1 })),',
+            '      save: jest.fn(async (a: AnyRec, b?: AnyRec) => b ?? a),',
+            '    };',
+          ]
+        : []),
       '    dataSource = {',
       '      getRepository: jest.fn(() => ({',
       '        create: jest.fn((v: AnyRec) => v),',
       '        findOne: jest.fn(async () => null),',
       '        save: refSave,',
       '      })),',
+      ...(ops.update
+        ? ['      transaction: jest.fn(async (cb: (m: AnyRec) => unknown) => cb(manager)),']
+        : []),
       '    };',
       `    eventEmitter = { ${emitMethod}: jest.fn() };`,
       ...callLines('    ', `service = new ${svcClass}`, ctorArgs),
@@ -1151,6 +1731,14 @@ function serviceBlock({ resource, plan, root, meta, host, resolve, src, fileBase
       `  describe(${q(retrieveOp ? 'findEntity / findOne' : 'findEntity')}, () => {`,
       ...findOne,
       '  });',
+      // never an empty describe: a resource without the operation gets none at
+      // all, the way the reference's create-only sibling has neither.
+      ...(update.length
+        ? ['', "  describe('update', () => {", ...update, '  });']
+        : []),
+      ...(remove.length
+        ? ['', "  describe('remove', () => {", ...remove, '  });']
+        : []),
       '});',
       '',
     ],
@@ -1466,7 +2054,16 @@ function specFor({ resource, plan, dir, nested }, deps) {
     }
   }
 
-  const segment = nested ? nested.hrefSegment : resource.pathSegment;
+  // nested.hrefSegment is a TEMPLATE - `topic/${e.topicId}/event` - because the
+  // mapper interpolates it against the row. HREF is a plain string constant, so
+  // each parent key is substituted with the value entity() gives that column
+  // (parentKeyColumn() adds it to the root, and it is not housekeeping, so the
+  // fixture stamps it `res-<param>` like any other scalar). Left unsubstituted
+  // the constant carried the literal text `${e.topicId}` and every href
+  // assertion in a nested resource's spec failed.
+  const segment = nested
+    ? nested.hrefSegment.replace(/\$\{e\.(\w+)\}/g, (_, p) => `res-${p}`)
+    : resource.pathSegment;
   const href = `/${meta.basePath}/${segment}/res-1`;
 
   const scalarLines = [];
@@ -1482,7 +2079,7 @@ function specFor({ resource, plan, dir, nested }, deps) {
 
   const ctrl = controllerBlock({ resource, root, nested, meta });
   const svc = serviceBlock({
-    resource, plan, root, meta, host, resolve, src, fileBase,
+    resource, plan, root, meta, host, nested, resolve, src, fileBase,
   });
 
   const lines = [

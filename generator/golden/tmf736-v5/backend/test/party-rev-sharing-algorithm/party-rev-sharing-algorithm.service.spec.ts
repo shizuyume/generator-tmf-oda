@@ -42,16 +42,34 @@ function makeRepo(): AnyRec {
   };
 }
 
+/**
+ * The double REMEMBERS its window and applies it, which a double returning
+ * every row whatever was asked for cannot: findAll reads the total BEFORE it
+ * narrows the query, so `total` is the unpaged count while `data` is one page.
+ * With an unwindowed double the two are always equal and neither half of that
+ * sentence is under test - counting after the window, or reporting
+ * `data.length` as the total, both stay green.
+ */
 function makeQueryBuilder(rows: AnyRec[]): AnyRec {
+  let offset = 0;
+  let limit: number | undefined;
+  const windowed = () =>
+    limit === undefined ? rows : rows.slice(offset, offset + limit);
   const qb: AnyRec = {
     leftJoinAndSelect: jest.fn(() => qb),
     where: jest.fn(() => qb),
     andWhere: jest.fn(() => qb),
     addOrderBy: jest.fn(() => qb),
-    skip: jest.fn(() => qb),
-    take: jest.fn(() => qb),
-    getCount: jest.fn(async () => rows.length),
-    getMany: jest.fn(async () => rows),
+    skip: jest.fn((n: number) => {
+      offset = n;
+      return qb;
+    }),
+    take: jest.fn((n: number) => {
+      limit = n;
+      return qb;
+    }),
+    getCount: jest.fn(async () => windowed().length),
+    getMany: jest.fn(async () => windowed()),
   };
   return qb;
 }
@@ -148,6 +166,44 @@ const SELECTED = 'name';
 /** One the client did not ask for, which selection must then drop. */
 const NOT_SELECTED = 'description';
 
+/**
+ * Root scalars an UPDATE may reassign: payload key -> column. Deliberately
+ * narrower than SCALARS, which is the create path: `@type`, the two TMF
+ * trailers and every nested-route parent key are immutable, so a create
+ * sets them and an update leaves them alone.
+ */
+const UPDATABLE: Record<string, string> = {
+  name: 'name',
+  description: 'description',
+};
+
+function updatePayload(): AnyRec {
+  const out: AnyRec = {};
+  for (const w of Object.keys(UPDATABLE)) out[w] = `patched-${UPDATABLE[w]}`;
+  return out;
+}
+
+/** The entity class each collection's owned rows are deleted as. */
+const COLLECTION_ROW_ENTITY: Record<string, unknown> = {
+  policy: PolicyRef,
+  conditionVariable: PartyRevSharingPolicyConditionVariable,
+  actionVariable: PartyRevSharingPolicyActionVariable,
+};
+
+/**
+ * The property that child's back-reference to this resource is exposed
+ * under, which is what the wholesale delete is keyed on. Usually `owner`,
+ * renamed when the child's own spec declares a field by that name.
+ */
+const COLLECTION_OWNER: Record<string, string> = {
+  policy: 'owner',
+  conditionVariable: 'owner',
+  actionVariable: 'owner',
+};
+
+/** The class a ref nested inside a collection row normalises into. */
+const NESTED_REF_ENTITY = PolicyConditionRef;
+
 function entity(over: AnyRec = {}): AnyRec {
   return {
     id: 'res-1',
@@ -182,6 +238,7 @@ describe('PartyRevSharingAlgorithm entities', () => {
 describe('PartyRevSharingAlgorithmService', () => {
   let repo: AnyRec;
   let refSave: jest.Mock;
+  let manager: AnyRec;
   let dataSource: AnyRec;
   let eventEmitter: AnyRec;
   let service: PartyRevSharingAlgorithmService;
@@ -189,12 +246,18 @@ describe('PartyRevSharingAlgorithmService', () => {
   beforeEach(() => {
     repo = makeRepo();
     refSave = jest.fn(async (e: AnyRec) => e);
+    manager = {
+      findOne: jest.fn(),
+      delete: jest.fn(async () => ({ affected: 1 })),
+      save: jest.fn(async (a: AnyRec, b?: AnyRec) => b ?? a),
+    };
     dataSource = {
       getRepository: jest.fn(() => ({
         create: jest.fn((v: AnyRec) => v),
         findOne: jest.fn(async () => null),
         save: refSave,
       })),
+      transaction: jest.fn(async (cb: (m: AnyRec) => unknown) => cb(manager)),
     };
     eventEmitter = { emitEvent: jest.fn() };
     service = new PartyRevSharingAlgorithmService(
@@ -331,12 +394,12 @@ describe('PartyRevSharingAlgorithmService', () => {
   });
 
   describe('findAll', () => {
-    it('maps every row and reports the unpaged total', async () => {
-      repo.createQueryBuilder.mockReturnValue(
-        makeQueryBuilder([entity(), entity({ id: 'res-2' })]),
-      );
-      const { data, total } = await service.findAll({} as never);
-      expect(total).toBe(2);
+    it('maps the page it asked for and reports the unpaged total', async () => {
+      const rows = [entity(), entity({ id: 'res-2' }), entity({ id: 'res-3' })];
+      repo.createQueryBuilder.mockReturnValue(makeQueryBuilder(rows));
+      const { data, total } = await service.findAll({ limit: 2 } as never);
+      // the count is taken BEFORE the window narrows the query
+      expect(total).toBe(3);
       expect(data.map((d) => d.id)).toEqual([ID, 'res-2']);
       for (const w of Object.keys(SCALARS)) {
         expect(data[0][w]).toBe(`res-${SCALARS[w]}`);
@@ -508,6 +571,186 @@ describe('PartyRevSharingAlgorithmService', () => {
         stored,
       );
       expect(res).toBe(DECORATED);
+    });
+  });
+
+  describe('update', () => {
+    beforeEach(() => {
+      // beforeUpdate is user-owned; only the it() below is about it
+      jest.spyOn(hooks, 'beforeUpdate').mockResolvedValue(undefined);
+      // the transaction commits, then update() re-READS through findEntity
+      repo.findOne.mockImplementation(async () => entity());
+    });
+
+    it('throws NotFoundException when the row is missing or soft-deleted', async () => {
+      manager.findOne.mockResolvedValue(null);
+      await expect(service.update('nope', {} as never)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+    });
+
+    it('applies every scalar the payload carries', async () => {
+      const existing = entity();
+      manager.findOne.mockResolvedValue(existing);
+      await service.update(ID, updatePayload() as never);
+      for (const w of Object.keys(UPDATABLE)) {
+        expect(existing[UPDATABLE[w]]).toBe(`patched-${UPDATABLE[w]}`);
+      }
+    });
+
+    it('leaves the columns the payload omits untouched', async () => {
+      // PATCH semantics: an absent key is not the same as a null one
+      const existing = entity();
+      manager.findOne.mockResolvedValue(existing);
+      const [sent, omitted] = Object.keys(UPDATABLE);
+      const dto: AnyRec = {};
+      dto[sent] = `patched-${UPDATABLE[sent]}`;
+      await service.update(ID, dto as never);
+      expect(existing[UPDATABLE[sent]]).toBe(`patched-${UPDATABLE[sent]}`);
+      expect(existing[UPDATABLE[omitted]]).toBe(`res-${UPDATABLE[omitted]}`);
+    });
+
+    it('replaces each collection wholesale, deleting the owned rows first', async () => {
+      const existing = entity();
+      manager.findOne.mockResolvedValue(existing);
+      const dto: AnyRec = {};
+      for (const c of COLLECTIONS) dto[c] = [{ id: `${c}-new` }];
+      await service.update(ID, dto as never);
+
+      for (const c of COLLECTIONS) {
+        expect(manager.delete).toHaveBeenCalledWith(COLLECTION_ROW_ENTITY[c], {
+          [COLLECTION_OWNER[c]]: { id: ID },
+        });
+        expect(existing[c]).toHaveLength(1);
+        expect(existing[c][0].refId).toBe(`${c}-new`);
+      }
+      // the delete has to land BEFORE the aggregate save, or the rows it
+      // removes are the replacements rather than the old ones
+      const saves = manager.save.mock.invocationCallOrder;
+      const aggregate = saves[saves.length - 1];
+      for (const order of manager.delete.mock.invocationCallOrder) {
+        expect(order).toBeLessThan(aggregate);
+      }
+    });
+
+    it('empties a collection sent as null just as one sent as []', async () => {
+      for (const c of COLLECTIONS) {
+        const viaNull = entity();
+        manager.findOne.mockResolvedValue(viaNull);
+        await service.update(ID, { [c]: null } as never);
+        expect(viaNull[c]).toEqual([]);
+
+        const viaEmpty = entity();
+        manager.findOne.mockResolvedValue(viaEmpty);
+        await service.update(ID, { [c]: [] } as never);
+        expect(viaEmpty[c]).toEqual([]);
+      }
+    });
+
+    it('deletes the ref rows orphaned by replacing a collection row', async () => {
+      // the wholesale delete removes the OWNED rows; the normalised rows they
+      // pointed at are @ManyToOne, which has no orphanedRowAction to follow
+      const orphan: AnyRec = { id: `${NESTED_COLLECTION}-old` };
+      orphan[NESTED_REF] = { id: `${NESTED_REF}-old` };
+      const over: AnyRec = {};
+      over[NESTED_COLLECTION] = [orphan];
+      manager.findOne.mockResolvedValue(entity(over));
+      const dto: AnyRec = {};
+      dto[NESTED_COLLECTION] = [{ id: `${NESTED_COLLECTION}-new` }];
+      await service.update(ID, dto as never);
+      expect(manager.delete).toHaveBeenCalledWith(NESTED_REF_ENTITY, [
+        `${NESTED_REF}-old`,
+      ]);
+    });
+
+    it('leaves that ref table alone when no collection row nested one', async () => {
+      const over: AnyRec = {};
+      over[NESTED_COLLECTION] = [{ id: `${NESTED_COLLECTION}-old` }];
+      manager.findOne.mockResolvedValue(entity(over));
+      const dto: AnyRec = {};
+      dto[NESTED_COLLECTION] = [];
+      await service.update(ID, dto as never);
+      expect(manager.delete).not.toHaveBeenCalledWith(
+        NESTED_REF_ENTITY,
+        expect.anything(),
+      );
+    });
+
+    it('answers with the re-read resource and emits a change event', async () => {
+      manager.findOne.mockResolvedValue(entity());
+      const res = await service.update(ID, {} as never);
+      // mapped from a FRESH findEntity, so the response carries the relations
+      // the transaction just rewrote rather than the half-built aggregate
+      expect(repo.findOne).toHaveBeenCalled();
+      expect(res.id).toBe(ID);
+      expect(res.href).toBe(HREF);
+      expect(eventEmitter.emitEvent).toHaveBeenCalledWith(
+        RevenueSharingAlgorithmEventType.PARTY_REV_SHARING_ALGORITHM_ATTRIBUTE_VALUE_CHANGE,
+        ID,
+        'PartyRevSharingAlgorithm',
+        res,
+      );
+    });
+
+    it('applies the payload the beforeUpdate hook returns, not the dto', async () => {
+      // beforeUpdate lives in a file tmfgen does not manage. What it returns
+      // is its owner's business, so it is SPIED here rather than asserted on:
+      // what is under test is that update applies the value it got back.
+      const [w] = Object.keys(UPDATABLE);
+      const HOOK_PAYLOAD: AnyRec = {};
+      HOOK_PAYLOAD[w] = `from-hook-${UPDATABLE[w]}`;
+      jest.spyOn(hooks, 'beforeUpdate').mockResolvedValue(HOOK_PAYLOAD);
+
+      const existing = entity();
+      manager.findOne.mockResolvedValue(existing);
+      const dto: AnyRec = {};
+      dto[w] = `ignored-${UPDATABLE[w]}`;
+      await service.update(ID, dto as never);
+      expect(hooks.beforeUpdate).toHaveBeenCalledWith(ID, dto);
+      expect(existing[UPDATABLE[w]]).toBe(`from-hook-${UPDATABLE[w]}`);
+    });
+  });
+
+  describe('remove', () => {
+    it('soft-deletes the row, recording who and why', async () => {
+      // the row STAYS: a hard delete would take the TMF audit trail with it
+      const e = entity();
+      repo.findOne.mockResolvedValue(e);
+      await service.remove(ID, 'by-deletedBy', 'by-deletedReason');
+      expect(e.deletedAt).toBeInstanceOf(Date);
+      expect(e.deletedBy).toBe('by-deletedBy');
+      expect(e.deletedReason).toBe('by-deletedReason');
+      expect(repo.save).toHaveBeenCalledWith(e);
+    });
+
+    it('defaults deletedBy and deletedReason when the caller names neither', async () => {
+      const e = entity();
+      repo.findOne.mockResolvedValue(e);
+      await service.remove(ID);
+      expect(e.deletedBy).toBe('system');
+      expect(e.deletedReason).toBe('Deleted via API');
+    });
+
+    it('emits a delete event carrying only the id and the href', async () => {
+      repo.findOne.mockResolvedValue(entity());
+      await service.remove(ID);
+      // the row is gone from the API: a full payload would describe a
+      // resource the subscriber can no longer GET
+      expect(eventEmitter.emitEvent).toHaveBeenCalledWith(
+        RevenueSharingAlgorithmEventType.PARTY_REV_SHARING_ALGORITHM_DELETE,
+        ID,
+        'PartyRevSharingAlgorithm',
+        { id: ID, href: HREF },
+      );
+    });
+
+    it('throws NotFoundException for a row that is already gone', async () => {
+      repo.findOne.mockResolvedValue(null);
+      await expect(service.remove('nope')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(repo.save).not.toHaveBeenCalled();
+      expect(eventEmitter.emitEvent).not.toHaveBeenCalled();
     });
   });
 });
