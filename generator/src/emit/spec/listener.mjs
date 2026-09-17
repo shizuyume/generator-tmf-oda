@@ -38,8 +38,9 @@ const I3 = '        '; // 8
  * Handler names are TMF-derived and vary widely in length (22 to 55+ chars in
  * the golden set), so several lines below only fit Prettier's 80-column print
  * width unwrapped for short names. Each helper picks the same line breaks
- * Prettier itself would choose, verified against every golden case rather
- * than hand-guessed.
+ * Prettier itself would choose FOR THE GOLDEN CASES, verified against those
+ * five rather than hand-guessed - and against nothing else: the corpus emits
+ * Prettier-dirty specs (see spec/index.mjs's header).
  */
 
 function ctorLines(cls) {

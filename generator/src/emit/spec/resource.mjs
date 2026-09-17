@@ -148,7 +148,12 @@ function propLine(k, value, indent, pad = 0) {
  * `const NAME: TYPE = { a: 'b', ... };` on one line when it fits in Prettier's
  * print width, otherwise one entry per line with a trailing comma - which is
  * what `prettier --write` produces under the service's own .prettierrc
- * (singleQuote, trailingComma: all).
+ * (singleQuote, trailingComma: all) FOR THE GOLDEN CASES. This whole layer is a
+ * hand-emulation of Prettier checked against those five and no others: across
+ * the corpus the emitted specs do NOT survive `prettier --check` (7 of 7
+ * non-golden components checked came back dirty), exactly as the emitted src/
+ * tree already does not. See the design spec, "Formatting: what is and is not
+ * true", for the two real fixes.
  */
 function objectConst(name, type, entries, pad = 0) {
   const decl = `const ${name}${type ? `: ${type}` : ''} = `;

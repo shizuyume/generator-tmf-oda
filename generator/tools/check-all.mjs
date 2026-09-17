@@ -92,7 +92,7 @@ const gates = [
     cmd: ['tools/sweep-emit.mjs'],
     // the 3 over-limit table names are known and reported, not a regression
     ok: out => /emit crashes\s*:\s*0/.test(out) && /components emitted OK\s*:\s*130/.test(out),
-    summary: out => (out.match(/components emitted OK.*|entities rendered.*|table collisions.*|emit crashes.*/g) ?? []).join(' | '),
+    summary: out => (out.match(/components emitted OK.*|entities rendered.*|spec files emitted.*|table collisions.*|emit crashes.*/g) ?? []).join(' | '),
   },
   {
     name: 'golden snapshots + double-run determinism',
@@ -224,6 +224,15 @@ if (runtimeBackend) {
       ok: out => /(\d+)\/\1 checks passed/.test(out),
       summary: out => out.match(/\d+\/\d+ checks passed/)?.[0] ?? '',
     },
+    // BASELINE, so the next reader does not mistake it for a regression:
+    // the three gates below (CRUD round trip, event pipeline, DTO validators)
+    // hardcode the rev-sharing component's base path, resource and DTO. Against
+    // a rev-sharing service they pass; against ANY OTHER service all three fail
+    // because that service has no partyRevSharingAlgorithm resource - so
+    // `--runtime <some-other-backend>` ends at 5 failed gates, not 2, and 3 of
+    // those 5 say nothing about the service under test. Parameterising them
+    // from the backend's own manifest is a separate follow-up; do not "fix"
+    // these failures in the emitters.
     {
       name: 'CRUD round trip',
       cmd: ['tools/crud-smoke.mjs', runtimeBackend,

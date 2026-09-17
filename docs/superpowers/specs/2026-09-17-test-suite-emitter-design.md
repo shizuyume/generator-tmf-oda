@@ -215,14 +215,43 @@ module, not a runtime check.
 
 Three gates, in increasing strength.
 
-1. **Corpus sweep** (existing). All 130 components emit without crashing. The
-   spec emitters join it automatically, proving they survive every shape in the
-   corpus.
+1. **Corpus sweep** (existing, extended for the spec emitters). All 130
+   components emit without crashing. The spec emitters do NOT join it
+   automatically - `tools/sweep-emit.mjs` calls the renderers by hand, so it
+   was extended to call `emitSpecs` per component with a counting no-op
+   `writeFile`; a corpus shape that throws inside a spec emitter now fails that
+   component the way a crashing entity renderer already does. Current result:
+   130/130 components OK, 1032 spec files emitted, 0 crashes. What this proves
+   is that the emitters PRODUCE text for every corpus shape - not that the text
+   compiles or passes. Only gates 2 and 3 do that, and they cover five cases.
 2. **Golden snapshots + double-run determinism** (existing). The `test/` trees
    join the golden snapshot for all five cases. Two runs must be byte-identical.
 3. **Runtime coverage gate** (new, in `check-all.mjs --runtime`). On one golden
    case: `yarn install && yarn test:cov`, then assert the run exited 0 **and**
    that line coverage parsed from `coverage/lcov.info` is >= 90%.
+
+### Formatting: what is and is not true
+
+The emitters hand-emulate Prettier's line breaking (`spec/resource.mjs`'s
+`propLine`/`objectConst`/`callLines` layer, and the same idea in `hooks.mjs`,
+`listener.mjs` and `seed.mjs`). That emulation is verified against the FIVE
+GOLDEN CASES only, and it is correct there. It is NOT correct across the
+corpus: of seven non-golden components emitted and checked (tmf622, 637, 641,
+645, 653, 679, 700), all seven produced at least one Prettier-dirty spec file -
+e.g. tmf700's `test/hooks.spec.ts` keeps `MODULES` broken where Prettier
+inlines it, and its `shipping-order.service.spec.ts` breaks a `manager.delete`
+call Prettier hugs. So: "the emitted specs are Prettier-clean" holds for the
+golden cases and nowhere else.
+
+This is a generator-wide condition, not something the spec emitters introduced:
+the emitted `src/` tree is Prettier-dirty in every case INCLUDING golden (13
+files in tmf736-v5).
+
+Follow-up (out of scope here): either run the emitted text through Prettier at
+write time - one formatting authority, and the hand-emulation layers delete
+themselves - or drop the emulation and accept whatever line breaks the emitters
+produce, with `prettier --check` removed from the contract entirely. Making the
+hand-emulation correct across the corpus is the one option not worth taking.
 
 Gate 3 is the one that matters. Golden proves the output is stable; only
 running the suite proves it passes and reaches the coverage the emitter exists

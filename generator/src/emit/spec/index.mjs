@@ -18,6 +18,23 @@
  *
  * None re-derives anything, and none reads a TMF-specific field: a TMF-shaped
  * spec that is not a TM Forum component must produce the same suite.
+ *
+ * COVERAGE OF THESE EMITTERS, precisely:
+ *   - `tools/sweep-emit.mjs` calls emitSpecs for all 130 corpus components with
+ *     a counting no-op writeFile, so a shape that CRASHES an emitter fails the
+ *     sweep (130/130 OK, 1032 spec files, 0 crashes). It proves text is
+ *     produced - nothing about whether that text compiles or passes.
+ *   - The five golden cases are the only ones whose emitted suite is byte-
+ *     pinned, and one of them is the only one ever RUN (check-all --runtime).
+ *
+ * FORMATTING: several helpers here and in resource/hooks/listener/seed
+ * hand-emulate Prettier's line breaking. That emulation is verified against the
+ * five golden cases and is correct THERE ONLY; across the corpus the emitted
+ * specs are Prettier-dirty (7 of 7 non-golden components checked). The emitted
+ * src/ tree has the same condition in every case including golden, so this is a
+ * generator-wide state, not one these emitters introduced. The real fix is to
+ * run emitted text through Prettier at write time, or drop the emulation - see
+ * the design spec's "Formatting: what is and is not true".
  */
 import { emitHooksSpec } from './hooks.mjs';
 import { emitSeedLocalSpec } from './seed-local.mjs';
