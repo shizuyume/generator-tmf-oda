@@ -272,9 +272,9 @@ const RESOLVERS_VERSION = '^5.9.1';
 const ZOD_VERSION = '^3.25.0';
 const ROUTER_VERSION = '6.30.1';
 const LUCIDE_VERSION = '^1.38.0';
-const TAILWIND_VERSION = '^3.4.0';
-const POSTCSS_VERSION = '^8.4.0';
-const AUTOPREFIXER_VERSION = '^10.4.0';
+const TAILWIND_VERSION = '^4.1.0';
+const TAILWIND_POSTCSS_VERSION = '^4.1.0';
+const POSTCSS_VERSION = '^8.4.47';
 
 export function scaffoldDeps() {
   return {
@@ -286,8 +286,8 @@ export function scaffoldDeps() {
     zod: ZOD_VERSION,
     'lucide-react': LUCIDE_VERSION,
     tailwindcss: TAILWIND_VERSION,
+    '@tailwindcss/postcss': TAILWIND_POSTCSS_VERSION,
     postcss: POSTCSS_VERSION,
-    autoprefixer: AUTOPREFIXER_VERSION,
   };
 }
 

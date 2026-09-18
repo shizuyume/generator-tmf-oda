@@ -12,9 +12,10 @@
 // style.postcss.plugins: fe-default styles via Tailwind (utility classes) + src/gen/tokens.css
 // (CSS custom properties, ported 1:1 from example-component-in-dashboard.html) — tailwind.config.js
 // maps color/radius/shadow tokens to those CSS variables.
+// Tailwind v4: the JS config is bridged from app.css via `@config` during the
+// migration and is deleted once the semantic token layer lands.
 const { ModuleFederationPlugin } = require("webpack").container;
-const tailwindcss = require("tailwindcss");
-const autoprefixer = require("autoprefixer");
+const tailwindPostcss = require("@tailwindcss/postcss");
 
 module.exports = {
   style: {
@@ -29,10 +30,21 @@ module.exports = {
       // penuh: full replace object, tanpa lewat extendsPostcss) sbg gantinya.
       loaderOptions: (postcssLoaderOptions) => {
         const existing = postcssLoaderOptions.postcssOptions?.plugins;
-        const basePlugins = Array.isArray(existing) ? existing : [];
+        const rawBasePlugins = Array.isArray(existing) ? existing : [];
+        // react-scripts' own webpack.config.js auto-detects tailwind.config.js
+        // and — unconditionally — prepends the STRING 'tailwindcss' to this same
+        // plugins array, which postcss-loader then `require()`s itself. That name
+        // now resolves to the v4 package, whose main export throws ("trying to use
+        // `tailwindcss` directly as a PostCSS plugin") when called the old v3 way.
+        // We supply Tailwind explicitly via `@tailwindcss/postcss` below, so this
+        // legacy auto-injected entry must be dropped, not just appended after.
+        const basePlugins = rawBasePlugins.filter((p) => {
+          const name = Array.isArray(p) ? p[0] : p;
+          return name !== "tailwindcss";
+        });
         postcssLoaderOptions.postcssOptions = {
           ...postcssLoaderOptions.postcssOptions,
-          plugins: [...basePlugins, tailwindcss(), autoprefixer()],
+          plugins: [...basePlugins, tailwindPostcss()],
         };
         return postcssLoaderOptions;
       },
