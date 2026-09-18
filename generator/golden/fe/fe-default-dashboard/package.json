@@ -20,10 +20,10 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
+    "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^16.18.126",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@tailwindcss/postcss": "^4.1.0",
     "cross-env": "^7.0.3",
     "postcss": "^8.4.47",
     "react-scripts": "5.0.1",

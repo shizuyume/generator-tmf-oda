@@ -38,6 +38,11 @@ module.exports = {
         // `tailwindcss` directly as a PostCSS plugin") when called the old v3 way.
         // We supply Tailwind explicitly via `@tailwindcss/postcss` below, so this
         // legacy auto-injected entry must be dropped, not just appended after.
+        // Order note: this also moves Tailwind from FIRST in the plugin chain
+        // (where CRA's injected 'tailwindcss' entry ran) to LAST, after
+        // postcss-flexbugs-fixes and postcss-preset-env. Benign under v4 — those
+        // two don't touch Tailwind's output — but it is a real difference from
+        // CRA's default ordering, worth knowing if a future plugin cares about it.
         const basePlugins = rawBasePlugins.filter((p) => {
           const name = Array.isArray(p) ? p[0] : p;
           return name !== "tailwindcss";

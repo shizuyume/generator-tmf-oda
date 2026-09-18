@@ -8,8 +8,46 @@
 //   exposes   = {key -> target} DIBANGKITKAN satu per halaman routable + ./routes.
 // .mjs rule + optimization.sideEffects=false (template M3, wajib - lihat template craco).
 const { ModuleFederationPlugin } = require("webpack").container;
+const tailwindPostcss = require("@tailwindcss/postcss");
 
 module.exports = {
+  style: {
+    postcss: {
+      // JANGAN pakai `style.postcss.plugins` (array) di sini — craco@7.1.0's
+      // extendsPostcss() menaruh hasil gabungan plugin ke `postcssOptions.plugins`
+      // sbg SEBUAH FUNCTION, tapi postcss-loader@6.x (dibawa react-scripts 5.0.1)
+      // hanya menerima `postcssOptions.plugins` berbentuk ARRAY (function di level
+      // itu diperlakukan sbg SATU plugin, bukan dipanggil) — silent no-op, build
+      // TIDAK error, tapi @tailwind base/components/utilities lolos mentah tanpa
+      // diproses (empirically verified). Pakai `loaderOptions` (bentuk yg didukung
+      // penuh: full replace object, tanpa lewat extendsPostcss) sbg gantinya.
+      // (Sama fix dgn templates/fe-default/craco.config.js — MFE emitter ini
+      // MENGGANTIKAN craco.config.js hasil scaffold, jadi wiring PostCSS harus
+      // ditulis ulang di sini juga, bukan cukup di template. HANYA fe-default:
+      // adapter lain (mui/neudela) tidak punya @tailwindcss/postcss - lihat
+      // needsTailwindPostcss di cracoFile().)
+      loaderOptions: (postcssLoaderOptions) => {
+        const existing = postcssLoaderOptions.postcssOptions?.plugins;
+        const rawBasePlugins = Array.isArray(existing) ? existing : [];
+        // react-scripts' own webpack.config.js auto-detects tailwind.config.js
+        // and — unconditionally — prepends the STRING 'tailwindcss' to this same
+        // plugins array, which postcss-loader then `require()`s itself. That name
+        // now resolves to the v4 package, whose main export throws ("trying to use
+        // `tailwindcss` directly as a PostCSS plugin") when called the old v3 way.
+        // We supply Tailwind explicitly via `@tailwindcss/postcss` below, so this
+        // legacy auto-injected entry must be dropped, not just appended after.
+        const basePlugins = rawBasePlugins.filter((p) => {
+          const name = Array.isArray(p) ? p[0] : p;
+          return name !== "tailwindcss";
+        });
+        postcssLoaderOptions.postcssOptions = {
+          ...postcssLoaderOptions.postcssOptions,
+          plugins: [...basePlugins, tailwindPostcss()],
+        };
+        return postcssLoaderOptions;
+      },
+    },
+  },
   webpack: {
     configure: (webpackConfig) => {
       webpackConfig.output.publicPath = "auto";

@@ -113,6 +113,11 @@ function cracoFile(feir) {
   const exposesLiteral = exposes
     .map((e) => `            ${q1(e.key)}: ${q1(`./${String(e.target).replace(/^\.\//, '')}`)},`)
     .join('\n');
+  // This emitter is shared by every adapter's MFE mode (mui/neudela/fe-default) - only
+  // fe-default's toolchain is Tailwind. mui/neudela have no `@tailwindcss/postcss`
+  // dependency at all, so injecting this wiring unconditionally would `require()` a
+  // package they never installed. Gate it strictly on the ui adapter.
+  const needsTailwindPostcss = (feir.ui?.library ?? 'mui') === 'fe-default';
 
   const L = [];
   L.push(BANNER);
@@ -125,8 +130,50 @@ function cracoFile(feir) {
   L.push('//   exposes   = {key -> target} DIBANGKITKAN satu per halaman routable + ./routes.');
   L.push('// .mjs rule + optimization.sideEffects=false (template M3, wajib - lihat template craco).');
   L.push('const { ModuleFederationPlugin } = require("webpack").container;');
+  if (needsTailwindPostcss) {
+    L.push('const tailwindPostcss = require("@tailwindcss/postcss");');
+  }
   L.push('');
   L.push('module.exports = {');
+  if (needsTailwindPostcss) {
+    L.push('  style: {');
+    L.push('    postcss: {');
+    L.push('      // JANGAN pakai `style.postcss.plugins` (array) di sini — craco@7.1.0\'s');
+    L.push('      // extendsPostcss() menaruh hasil gabungan plugin ke `postcssOptions.plugins`');
+    L.push('      // sbg SEBUAH FUNCTION, tapi postcss-loader@6.x (dibawa react-scripts 5.0.1)');
+    L.push('      // hanya menerima `postcssOptions.plugins` berbentuk ARRAY (function di level');
+    L.push('      // itu diperlakukan sbg SATU plugin, bukan dipanggil) — silent no-op, build');
+    L.push('      // TIDAK error, tapi @tailwind base/components/utilities lolos mentah tanpa');
+    L.push('      // diproses (empirically verified). Pakai `loaderOptions` (bentuk yg didukung');
+    L.push('      // penuh: full replace object, tanpa lewat extendsPostcss) sbg gantinya.');
+    L.push('      // (Sama fix dgn templates/fe-default/craco.config.js — MFE emitter ini');
+    L.push('      // MENGGANTIKAN craco.config.js hasil scaffold, jadi wiring PostCSS harus');
+    L.push('      // ditulis ulang di sini juga, bukan cukup di template. HANYA fe-default:');
+    L.push('      // adapter lain (mui/neudela) tidak punya @tailwindcss/postcss - lihat');
+    L.push('      // needsTailwindPostcss di cracoFile().)');
+    L.push('      loaderOptions: (postcssLoaderOptions) => {');
+    L.push('        const existing = postcssLoaderOptions.postcssOptions?.plugins;');
+    L.push('        const rawBasePlugins = Array.isArray(existing) ? existing : [];');
+    L.push('        // react-scripts\' own webpack.config.js auto-detects tailwind.config.js');
+    L.push('        // and — unconditionally — prepends the STRING \'tailwindcss\' to this same');
+    L.push('        // plugins array, which postcss-loader then `require()`s itself. That name');
+    L.push('        // now resolves to the v4 package, whose main export throws ("trying to use');
+    L.push('        // `tailwindcss` directly as a PostCSS plugin") when called the old v3 way.');
+    L.push('        // We supply Tailwind explicitly via `@tailwindcss/postcss` below, so this');
+    L.push('        // legacy auto-injected entry must be dropped, not just appended after.');
+    L.push('        const basePlugins = rawBasePlugins.filter((p) => {');
+    L.push('          const name = Array.isArray(p) ? p[0] : p;');
+    L.push('          return name !== "tailwindcss";');
+    L.push('        });');
+    L.push('        postcssLoaderOptions.postcssOptions = {');
+    L.push('          ...postcssLoaderOptions.postcssOptions,');
+    L.push('          plugins: [...basePlugins, tailwindPostcss()],');
+    L.push('        };');
+    L.push('        return postcssLoaderOptions;');
+    L.push('      },');
+    L.push('    },');
+    L.push('  },');
+  }
   L.push('  webpack: {');
   L.push('    configure: (webpackConfig) => {');
   L.push('      webpackConfig.output.publicPath = "auto";');
