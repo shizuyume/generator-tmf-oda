@@ -8,3 +8,9 @@ neudela/
 documents
 documents.rar
 oh-my-tmf-agent-workspace.rar
+
+# FE golden matrix inputs. tools/fe-golden.mjs reads these from the workspace
+# root; without them four of seven cases cannot even be generated and the gate
+# fails for reasons unrelated to any code. They carry no secret - the only
+# credential-shaped line is the runtime binding x-api-key: {{config.TMF_API_KEY}}.
+!frontend-spec-*.yaml
