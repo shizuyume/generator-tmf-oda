@@ -167,95 +167,201 @@ function shade(hex, factor) {
   return `#${ch(0)}${ch(1)}${ch(2)}`;
 }
 
-// Ramp primitif statis — nilai persis example-component-in-dashboard.html :root.
-const STATIC_PRIMITIVES = {
-  '--color-primary-25': '#FFFCF7', '--color-primary-50': '#FDF7ED', '--color-primary-100': '#F8E8CD',
-  '--color-primary-200': '#F1CE96', '--color-primary-300': '#EAB05F', '--color-primary-400': '#E5963A',
-  '--color-primary-500': '#DF7E30', '--color-primary-600': '#C3571C', '--color-primary-700': '#A23C1B',
-  '--color-primary-800': '#84301C', '--color-primary-900': '#6D291A', '--color-primary-950': '#3E130A',
-  '--color-gray-25': '#FCFCFD', '--color-gray-50': '#F9FAFB', '--color-gray-100': '#F2F4F7',
-  '--color-gray-200': '#E4E7EC', '--color-gray-300': '#D0D5DD', '--color-gray-400': '#98A2B3',
-  '--color-gray-500': '#4F596E', '--color-gray-600': '#475467', '--color-gray-700': '#344054',
-  '--color-gray-800': '#182230', '--color-gray-900': '#101828', '--color-gray-950': '#0C111D',
-  '--success-50': '#ECFDF3', '--success-500': '#12B76A', '--success-700': '#027A48',
-  '--warning-50': '#FFFAEB', '--warning-500': '#F79009', '--warning-700': '#B54708',
-  '--danger-50': '#FEF3F2', '--danger-500': '#D92D20', '--danger-700': '#B42318',
-  '--info-50': '#EFF8FF', '--info-500': '#2E90FA', '--info-700': '#175CD3',
-  '--shadow-xs': '0 1px 2px rgba(16,24,40,.05)',
-  '--shadow-sm': '0 1px 3px rgba(16,24,40,.10),0 1px 2px rgba(16,24,40,.06)',
-  '--shadow-md': '0 4px 8px rgba(16,24,40,.10)',
-  '--shadow-lg': '0 12px 24px rgba(16,24,40,.12)',
+// Ramp brand, 11 stop. Preset dipilih lewat ui.theme.name di FE spec.
+//
+// `default` memakai HEX terracotta yang selama ini sudah dipakai fe-default, apa
+// adanya. Mengonversinya ke OKLCH akan berarti mengarang sebelas angka yang tidak
+// pernah diukur - presisi palsu yang mengubah warna yang hari ini sudah benar.
+// `crimson` OKLCH karena panduan sumbernya memang menuliskannya begitu, disalin
+// verbatim. Dua format dalam satu sistem tidak masalah; CSS menerima keduanya.
+//
+// PENAMAAN: tanpa awalan `--color-`. Awalan itu adalah namespace tema Tailwind v4,
+// dan ramp brand SENGAJA tidak dipetakan menjadi utility - tanpa `bg-brand-600`
+// yang bisa dipanggil, aturan "komponen tidak pernah menyentuh primitif brand"
+// ditegakkan oleh konstruksi, bukan sekadar oleh review.
+export const RAMPS = {
+  default: {
+    '--brand-50': '#FDF7ED',
+    '--brand-100': '#F8E8CD',
+    '--brand-200': '#F1CE96',
+    '--brand-300': '#EAB05F',
+    '--brand-400': '#E5963A',
+    '--brand-500': '#DF7E30',
+    '--brand-600': '#C3571C',
+    '--brand-700': '#A23C1B',
+    '--brand-800': '#84301C',
+    '--brand-900': '#6D291A',
+    '--brand-950': '#3E130A',
+  },
+  crimson: {
+    '--brand-50': 'oklch(0.971 0.013 17.38)',
+    '--brand-100': 'oklch(0.936 0.032 17.717)',
+    '--brand-200': 'oklch(0.885 0.062 18.334)',
+    '--brand-300': 'oklch(0.808 0.114 19.571)',
+    '--brand-400': 'oklch(0.704 0.191 22.216)',
+    '--brand-500': 'oklch(0.637 0.237 25.331)',
+    '--brand-600': 'oklch(0.577 0.245 27.325)',
+    '--brand-700': 'oklch(0.505 0.213 27.518)',
+    '--brand-800': 'oklch(0.444 0.177 26.899)',
+    '--brand-900': 'oklch(0.396 0.141 25.723)',
+    '--brand-950': 'oklch(0.258 0.092 26.042)',
+  },
 };
 
-function semanticAliasesLight(tokens) {
-  const primary = tokens.primary || '#DF7E30';
-  const surface = tokens.surface || '#FFFFFF';
-  const background = tokens.background || '#FCFCFD';
-  const text = tokens.text || '#101828';
-  const textMuted = tokens.textMuted || '#4F596E';
-  const radius = typeof tokens.radius === 'number' ? tokens.radius : Number(tokens.radius || 8);
+/**
+ * Pilih ramp dari ui.theme.name. Nama tak dikenal TIDAK fatal: ia jatuh ke `default`
+ * dan mengembalikan warning. Itu disengaja - ketujuh spec yang ada menulis
+ * `name: indigo`, dan menolaknya akan mematahkan semuanya sekaligus.
+ */
+export function rampFor(name) {
+  const key = String(name ?? 'default');
+  if (Object.prototype.hasOwnProperty.call(RAMPS, key)) return { ramp: RAMPS[key], warning: null };
   return {
-    '--bg-app': background,
-    '--bg-surface': surface,
-    '--bg-surface-secondary': shade(surface, 0.97),
-    '--bg-brand': primary,
-    '--bg-brand-subtle': `${primary}19`,
-    '--bg-brand-strong': shade(primary, 0.55),
-    '--text-primary': text,
-    '--text-secondary': textMuted,
-    '--text-disabled': shade(textMuted, 1.5),
-    '--text-brand': primary,
-    '--text-on-brand': '#FFFFFF',
-    '--border-default': shade(textMuted, 2.2),
-    '--border-strong': shade(textMuted, 1.8),
-    '--focus-ring': `color-mix(in srgb, ${primary} 40%, transparent)`,
-    '--radius-sm': `${Math.round(radius * 0.75)}px`,
-    '--radius-md': `${radius}px`,
-    '--radius-lg': `${Math.round(radius * 1.5)}px`,
-    '--radius-xl': `${radius * 2}px`,
-    '--radius-full': '9999px',
-    '--font-family': tokens.font || 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    ramp: RAMPS.default,
+    warning: `fe-default: ui.theme.name "${key}" bukan preset yang dikenal (${Object.keys(RAMPS).join(', ')}) - memakai "default"`,
+  };
+}
+
+// Ramp primitif statis — nilai persis example-component-in-dashboard.html :root.
+const STATIC_PRIMITIVES = {
+  '--neutral-50': 'oklch(0.984 0.003 247.858)',
+  '--neutral-100': 'oklch(0.968 0.007 247.896)',
+  '--neutral-200': 'oklch(0.929 0.013 255.508)',
+  '--neutral-300': 'oklch(0.869 0.022 252.894)',
+  '--neutral-400': 'oklch(0.704 0.04 256.788)',
+  '--neutral-500': 'oklch(0.554 0.046 257.417)',
+  '--neutral-600': 'oklch(0.446 0.043 257.281)',
+  '--neutral-700': 'oklch(0.372 0.044 257.287)',
+  '--neutral-800': 'oklch(0.279 0.041 260.031)',
+  '--neutral-900': 'oklch(0.208 0.042 265.755)',
+  '--neutral-950': 'oklch(0.129 0.042 264.695)',
+  '--success-50': 'oklch(0.982 0.018 155.826)',
+  '--success-100': 'oklch(0.962 0.044 156.743)',
+  '--success-500': 'oklch(0.627 0.194 149.214)',
+  '--success-700': 'oklch(0.527 0.154 150.069)',
+  '--warning-50': 'oklch(0.98 0.016 73.684)',
+  '--warning-100': 'oklch(0.962 0.059 95.617)',
+  '--warning-500': 'oklch(0.666 0.179 58.318)',
+  '--warning-700': 'oklch(0.555 0.163 48.998)',
+  '--info-50': 'oklch(0.977 0.013 236.62)',
+  '--info-100': 'oklch(0.951 0.026 236.824)',
+  '--info-500': 'oklch(0.546 0.245 262.881)',
+  '--info-700': 'oklch(0.488 0.243 264.376)',
+  '--elev-1': '0 1px 2px rgb(0 0 0 / 0.05)',
+  '--elev-2': '0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04)',
+  '--elev-3': '0 4px 8px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06)',
+  '--elev-4': '0 8px 16px rgb(0 0 0 / 0.1), 0 4px 8px rgb(0 0 0 / 0.06)',
+  '--elev-5': '0 16px 32px rgb(0 0 0 / 0.12), 0 8px 16px rgb(0 0 0 / 0.08)',
+  '--elev-6': '0 24px 48px rgb(0 0 0 / 0.16), 0 12px 24px rgb(0 0 0 / 0.1)',
+};
+
+/**
+ * Lapisan semantik: SATU-SATUNYA yang boleh disentuh komponen. Nilai di sini adalah
+ * var() polos di :root/.dark; app.css memetakannya ke utility lewat `@theme inline`.
+ * Pemetaan itu WAJIB memakai var(), bukan nilai literal - kalau literal masuk ke
+ * @theme, Tailwind meresolusinya saat build dan override .dark tidak pernah sampai
+ * ke utility: mode gelap gagal diam-diam, build tetap sukses.
+ *
+ * `tokens` (ui.theme.tokens) adalah OVERRIDE di atas preset, bukan sumber utama.
+ */
+function semanticAliasesLight(tokens) {
+  const radius = typeof tokens.radius === 'number' ? tokens.radius : Number(tokens.radius || 6);
+  return {
+    '--background': tokens.background || 'oklch(1 0 0)',
+    '--foreground': tokens.text || 'var(--neutral-900)',
+    '--card': tokens.surface || 'oklch(1 0 0)',
+    '--card-foreground': tokens.text || 'var(--neutral-900)',
+    '--popover': tokens.surface || 'oklch(1 0 0)',
+    '--popover-foreground': tokens.text || 'var(--neutral-900)',
+    '--primary': tokens.primary || 'var(--brand-600)',
+    '--primary-foreground': 'oklch(0.985 0 0)',
+    '--primary-hover': 'var(--brand-700)',
+    '--secondary': 'var(--neutral-100)',
+    '--secondary-foreground': tokens.text || 'var(--neutral-900)',
+    '--muted': 'var(--neutral-100)',
+    '--muted-foreground': tokens.textMuted || 'var(--neutral-500)',
+    '--accent': 'var(--neutral-100)',
+    '--accent-foreground': tokens.text || 'var(--neutral-900)',
+    '--destructive': 'var(--brand-700)',
+    '--destructive-foreground': 'oklch(0.985 0 0)',
+    '--success': 'var(--success-500)',
+    '--success-foreground': 'oklch(0.985 0 0)',
+    '--warning': 'var(--warning-500)',
+    '--warning-foreground': 'var(--neutral-900)',
+    '--info': 'var(--info-500)',
+    '--info-foreground': 'oklch(0.985 0 0)',
+    '--border': 'var(--neutral-200)',
+    '--input': 'var(--neutral-300)',
+    '--ring': 'var(--brand-500)',
+    '--focus': 'var(--brand-500)',
+    // NAMA RUNTIME sengaja `--r-*`, bukan `--radius-*`: `--radius-*` adalah
+    // namespace tema Tailwind v4, dan memetakan `--radius-md: var(--radius-md)`
+    // di @theme inline akan melingkar ke dirinya sendiri.
+    '--r-sm': `${Math.round(radius * 0.667)}px`,
+    '--r-md': `${radius}px`,
+    '--r-lg': `${Math.round(radius * 1.333)}px`,
+    '--r-xl': `${radius * 2}px`,
+    '--r-2xl': `${Math.round(radius * 2.667)}px`,
+    // Stack LENGKAP, bukan hanya nama keluarga: Task 7 memetakan
+    // `--font-sans: var(--font-family)`, jadi apa pun yang hilang di sini hilang
+    // dari fallback-nya juga.
+    '--font-family': `${tokens.font || 'Instrument Sans'}, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`,
   };
 }
 
 function semanticAliasesDark(tokens) {
-  const primary = tokens.primary || '#DF7E30';
-  const surface = tokens.surface || '#FFFFFF';
-  const background = tokens.background || '#FCFCFD';
-  const text = tokens.text || '#101828';
-  const textMuted = tokens.textMuted || '#4F596E';
-  const primaryLight = shade(primary, 1.15);
   return {
-    '--bg-app': shade(background, 0.08),
-    '--bg-surface': shade(surface, 0.15),
-    '--bg-surface-secondary': shade(surface, 0.25),
-    '--bg-brand': primaryLight,
-    '--bg-brand-subtle': `color-mix(in srgb, ${shade(primary, 0.5)} 40%, transparent)`,
-    '--bg-brand-strong': shade(primary, 0.55),
-    '--text-primary': shade(text, 3.5),
-    '--text-secondary': shade(textMuted, 1.8),
-    '--text-disabled': shade(textMuted, 1.1),
-    '--text-brand': primaryLight,
-    '--text-on-brand': '#FFFFFF',
-    '--border-default': shade(textMuted, 1.1),
-    '--border-strong': shade(textMuted, 0.9),
-    '--focus-ring': `color-mix(in srgb, ${primaryLight} 50%, transparent)`,
+    '--background': 'oklch(0.145 0.02 255)',
+    '--foreground': 'oklch(0.93 0.01 255)',
+    '--card': 'oklch(0.185 0.02 255)',
+    '--card-foreground': 'oklch(0.93 0.01 255)',
+    '--popover': 'oklch(0.22 0.02 255)',
+    '--popover-foreground': 'oklch(0.93 0.01 255)',
+    '--primary': tokens.primary || 'var(--brand-500)',
+    '--primary-foreground': 'oklch(0.985 0 0)',
+    '--primary-hover': 'var(--brand-400)',
+    '--secondary': 'oklch(0.22 0.02 255)',
+    '--secondary-foreground': 'oklch(0.93 0.01 255)',
+    '--muted': 'oklch(0.22 0.02 255)',
+    '--muted-foreground': 'oklch(0.65 0.02 255)',
+    '--accent': 'oklch(0.22 0.02 255)',
+    '--accent-foreground': 'oklch(0.93 0.01 255)',
+    '--destructive': 'var(--brand-500)',
+    '--destructive-foreground': 'oklch(0.985 0 0)',
+    '--border': 'oklch(0.28 0.02 255)',
+    '--input': 'oklch(0.32 0.02 255)',
+    '--ring': 'var(--brand-400)',
+    '--focus': 'var(--brand-400)',
+    // Elevasi rendah ditekan di mode gelap: bayangan tidak terbaca di atas slate
+    // gelap, jadi kedalaman dibawa tangga permukaan (card lebih terang dari page).
+    '--elev-1': 'none',
+    '--elev-2': 'none',
+    '--elev-3': 'none',
+    '--elev-4': '0 8px 16px rgb(0 0 0 / 0.35)',
+    '--elev-5': '0 16px 32px rgb(0 0 0 / 0.4)',
+    '--elev-6': '0 24px 48px rgb(0 0 0 / 0.45)',
   };
 }
 
-export function theme(tokens = {}, darkMode = false) {
-  const root = { ...STATIC_PRIMITIVES, ...semanticAliasesLight(tokens) };
+/**
+ * @param {object} tokens ui.theme.tokens (override).
+ * @param {boolean} darkMode emit blok .dark juga.
+ * @param {string} [presetName] ui.theme.name -> pilih ramp brand.
+ */
+export function theme(tokens = {}, darkMode = false, presetName = undefined) {
+  const { ramp } = rampFor(presetName);
+  const root = { ...STATIC_PRIMITIVES, ...ramp, ...semanticAliasesLight(tokens) };
   if (!darkMode) return { ':root': root };
-  return { ':root': root, '[data-theme="dark"]': semanticAliasesDark(tokens) };
+  return { ':root': root, '.dark': semanticAliasesDark(tokens) };
 }
 
 /**
- * renderTokensCss: objek theme() -> CSS text (`:root{...}\n[data-theme="dark"]{...}\n`).
+ * renderTokensCss: objek theme() -> CSS text (`:root{...}\n.dark{...}\n`).
  * Dipanggil scaffold-time (opsional — item 2 rencana: scaffoldApp.mjs bisa menulis
  * src/gen/tokens.css dari fungsi ini bila diwire; belum diwire di M-ini, hanya diexport).
  */
-export function renderTokensCss(tokens = {}, darkMode = false) {
-  const blocks = theme(tokens, darkMode);
+export function renderTokensCss(tokens = {}, darkMode = false, presetName = undefined) {
+  const blocks = theme(tokens, darkMode, presetName);
   return Object.entries(blocks)
     .map(([sel, vars]) => `${sel}{\n${Object.entries(vars).map(([k, v]) => `  ${k}:${v};`).join('\n')}\n}\n`)
     .join('');

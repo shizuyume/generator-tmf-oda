@@ -150,8 +150,15 @@ export function scaffoldApp(ir, { feTargetRoot, port = null, bePort = 3736, fePo
   // (verified) - src/gen/ tidak dipakai template ini sama sekali.
   if (!isMcsCommon) {
   const tokensData = ir.theme?.tokens ?? {};
-  const lightTheme = adapter.theme(tokensData, false);
-  const darkThemeObj = adapter.theme(tokensData, true);
+  // Arg ketiga = ui.theme.name (preset ramp). mui/neudela mengabaikannya (arity 2),
+  // jadi ini aman untuk ketiga adapter.
+  const presetName = ir.theme?.name;
+  if (typeof adapter.rampFor === 'function') {
+    const { warning } = adapter.rampFor(presetName);
+    if (warning) console.warn(`  warn  ${warning}`);
+  }
+  const lightTheme = adapter.theme(tokensData, false, presetName);
+  const darkThemeObj = adapter.theme(tokensData, true, presetName);
   writeFile(
     'src/gen/i18n.generated.ts',
     `${GENERATED_BANNER}
