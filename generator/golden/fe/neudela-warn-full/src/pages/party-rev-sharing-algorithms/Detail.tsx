@@ -143,27 +143,27 @@ function Tab1Body(props: { data: PartyRevSharingAlgorithm }): ReactElement {
           {(() => {
             const arr = (data as Record<string, unknown>)?.["policy"];
             if (!arr || !Array.isArray(arr) || arr.length === 0) {
-              return <UiTypography variant="body2">{'Belum ada policy'}</UiTypography>;
+              return <UiTypography variant="body2">{'Belum ada Policy'}</UiTypography>;
             }
             return (
               <UiTable size="small" sx={{ minWidth: 480 }}>
                 <UiTableHead>
                   <UiTableRow>
+                    <UiTableCell>{'@referredType'}</UiTableCell>
+                    <UiTableCell>{'href'}</UiTableCell>
                     <UiTableCell>{'id'}</UiTableCell>
                     <UiTableCell>{'name'}</UiTableCell>
-                    <UiTableCell>{'@referredType'}</UiTableCell>
                     <UiTableCell>{'version'}</UiTableCell>
-                    <UiTableCell>{'href'}</UiTableCell>
                   </UiTableRow>
                 </UiTableHead>
                 <UiTableBody>
                   {(arr as unknown[]).map((row, i) => (
                     <UiTableRow key={i}>
+                      <UiTableCell>{String((row as Record<string, unknown>)?.["@referredType"] ?? '')}</UiTableCell>
+                      <UiTableCell>{String((row as Record<string, unknown>)?.["href"] ?? '')}</UiTableCell>
                       <UiTableCell>{String((row as Record<string, unknown>)?.["id"] ?? '')}</UiTableCell>
                       <UiTableCell>{String((row as Record<string, unknown>)?.["name"] ?? '')}</UiTableCell>
-                      <UiTableCell>{String((row as Record<string, unknown>)?.["@referredType"] ?? '')}</UiTableCell>
                       <UiTableCell>{String((row as Record<string, unknown>)?.["version"] ?? '')}</UiTableCell>
-                      <UiTableCell>{String((row as Record<string, unknown>)?.["href"] ?? '')}</UiTableCell>
                     </UiTableRow>
                   ))}
                 </UiTableBody>
@@ -181,7 +181,7 @@ function Tab2Body(props: { data: PartyRevSharingAlgorithm }): ReactElement {
           {(() => {
             const arr = (data as Record<string, unknown>)?.["conditionVariable"];
             if (!arr || !Array.isArray(arr) || arr.length === 0) {
-              return <UiTypography variant="body2">{'Belum ada condition variable'}</UiTypography>;
+              return <UiTypography variant="body2">{'Belum ada Condition Variable'}</UiTypography>;
             }
             return (
               <UiTable size="small" sx={{ minWidth: 480 }}>
@@ -189,7 +189,7 @@ function Tab2Body(props: { data: PartyRevSharingAlgorithm }): ReactElement {
                   <UiTableRow>
                     <UiTableCell>{'value'}</UiTableCell>
                     <UiTableCell>{'Policy Condition'}</UiTableCell>
-                    <UiTableCell>{'Policy Variable'}</UiTableCell>
+                    <UiTableCell>{'Policy Condition Variable'}</UiTableCell>
                   </UiTableRow>
                 </UiTableHead>
                 <UiTableBody>
@@ -215,7 +215,7 @@ function Tab3Body(props: { data: PartyRevSharingAlgorithm }): ReactElement {
           {(() => {
             const arr = (data as Record<string, unknown>)?.["actionVariable"];
             if (!arr || !Array.isArray(arr) || arr.length === 0) {
-              return <UiTypography variant="body2">{'Belum ada action variable'}</UiTypography>;
+              return <UiTypography variant="body2">{'Belum ada Action Variable'}</UiTypography>;
             }
             return (
               <UiTable size="small" sx={{ minWidth: 480 }}>
@@ -223,7 +223,7 @@ function Tab3Body(props: { data: PartyRevSharingAlgorithm }): ReactElement {
                   <UiTableRow>
                     <UiTableCell>{'value'}</UiTableCell>
                     <UiTableCell>{'Policy Action'}</UiTableCell>
-                    <UiTableCell>{'Policy Variable'}</UiTableCell>
+                    <UiTableCell>{'Policy Action Variable'}</UiTableCell>
                   </UiTableRow>
                 </UiTableHead>
                 <UiTableBody>

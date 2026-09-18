@@ -21,8 +21,7 @@ export const addFields: FieldSpec[] = [
       type: "text",
       label: "Nama Algoritma",
       required: true,
-      placeholder: "cth: distribute charge revenue share policy 2023",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }, { rule: "minLength", value: 3, message: "Minimal 3 karakter" }]
+      zodRules: [{ rule: "required", message: "Wajib diisi" }]
     },
     {
       name: "description",
@@ -34,32 +33,15 @@ export const addFields: FieldSpec[] = [
       name: "policy",
       type: "repeatable",
       label: "Policy",
-      required: true,
       minItems: 1,
       itemLabel: "Policy #{{index}}",
       addButton: "+ Tambah Policy",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }, { rule: "minItems", value: 1, message: "Minimal 1 item" }],
+      zodRules: [{ rule: "minItems", value: 1, message: "Minimal 1 item" }],
       itemFields: [{
       name: "atType",
       type: "text",
       readOnly: true,
       defaultValue: "PolicyRef"
-    }, {
-      name: "id",
-      type: "text",
-      label: "Policy ID",
-      required: true,
-      zodRules: [{ rule: "required", message: "Wajib diisi" }]
-    }, {
-      name: "href",
-      type: "text",
-      label: "Policy Href",
-      readOnly: true,
-      computedFrom: "id"
-    }, {
-      name: "name",
-      type: "text",
-      label: "Nama Policy"
     }, {
       name: "referredType",
       type: "select",
@@ -67,17 +49,34 @@ export const addFields: FieldSpec[] = [
       defaultValue: "PolicySet",
       options: {"PolicySet":"PolicySet"}
     }, {
+      name: "href",
+      type: "text",
+      label: "Href",
+      readOnly: true,
+      computedFrom: "id"
+    }, {
+      name: "id",
+      type: "text",
+      label: "Policy ID",
+      required: true,
+      zodRules: [{ rule: "required", message: "Wajib diisi" }]
+    }, {
+      name: "name",
+      type: "text",
+      label: "Nama"
+    }, {
       name: "version",
       type: "text",
       label: "Version"
     }],
-      itemPayload: {"@type":"item.atType","id":"item.id","href":"item.href","name":"item.name","@referredType":"item.referredType","version":"item.version"}
+      itemPayload: {"@type":"item.atType","@referredType":"item.referredType","href":"item.href","id":"item.id","name":"item.name","version":"item.version"}
     },
     {
       name: "conditionVariable",
       type: "repeatable",
       label: "Condition Variable",
-      itemLabel: "Condition #{{index}}",
+      itemLabel: "Condition Variable #{{index}}",
+      addButton: "+ Tambah Condition Variable",
       itemFields: [{
       name: "atType",
       type: "text",
@@ -86,10 +85,7 @@ export const addFields: FieldSpec[] = [
     }, {
       name: "value",
       type: "text",
-      label: "Nilai Variable",
-      required: true,
-      placeholder: "cth: 300",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }]
+      label: "Value"
     }, {
       name: "policyConditionId",
       type: "text",
@@ -101,29 +97,32 @@ export const addFields: FieldSpec[] = [
     }, {
       name: "policyConditionReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyCondition",
       options: {"PolicyCondition":"PolicyCondition"}
     }, {
       name: "policyConditionVariableId",
       type: "text",
-      label: "Policy Variable ID"
+      label: "Policy Condition Variable ID"
     }, {
       name: "policyConditionVariableName",
       type: "text",
-      label: "Policy Variable"
+      label: "Policy Condition Variable"
     }, {
       name: "policyConditionVariableReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyVariable",
       options: {"PolicyVariable":"PolicyVariable"}
     }],
-      itemPayload: {"@type":"item.atType","value":"item.value","policyCondition":{"@type":"PolicyConditionRef","id":"item.policyConditionId","href":"item.policyConditionHref","name":"item.policyConditionName","@referredType":"item.policyConditionReferredType"},"policyConditionVariable":{"@type":"PolicyVariableRef","id":"item.policyConditionVariableId","name":"item.policyConditionVariableName","@referredType":"item.policyConditionVariableReferredType"}}
+      itemPayload: {"@type":"item.atType","value":"item.value","policyCondition":{"@type":"PolicyConditionRef","href":"item.policyConditionHref","id":"item.policyConditionId","name":"item.policyConditionName","@referredType":"item.policyConditionReferredType"},"policyConditionVariable":{"@type":"PolicyVariableRef","href":"item.policyConditionVariableHref","id":"item.policyConditionVariableId","name":"item.policyConditionVariableName","@referredType":"item.policyConditionVariableReferredType"}}
     },
     {
       name: "actionVariable",
       type: "repeatable",
       label: "Action Variable",
-      itemLabel: "Action #{{index}}",
+      itemLabel: "Action Variable #{{index}}",
+      addButton: "+ Tambah Action Variable",
       itemFields: [{
       name: "atType",
       type: "text",
@@ -132,10 +131,7 @@ export const addFields: FieldSpec[] = [
     }, {
       name: "value",
       type: "text",
-      label: "Nilai Variable",
-      required: true,
-      placeholder: "cth: 5%",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }]
+      label: "Value"
     }, {
       name: "policyActionId",
       type: "text",
@@ -147,23 +143,25 @@ export const addFields: FieldSpec[] = [
     }, {
       name: "policyActionReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyAction",
       options: {"PolicyAction":"PolicyAction"}
     }, {
       name: "policyActionVariableId",
       type: "text",
-      label: "Policy Variable ID"
+      label: "Policy Action Variable ID"
     }, {
       name: "policyActionVariableName",
       type: "text",
-      label: "Policy Variable"
+      label: "Policy Action Variable"
     }, {
       name: "policyActionVariableReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyVariable",
       options: {"PolicyVariable":"PolicyVariable"}
     }],
-      itemPayload: {"@type":"item.atType","value":"item.value","policyAction":{"@type":"PolicyActionRef","id":"item.policyActionId","href":"item.policyActionHref","name":"item.policyActionName","@referredType":"item.policyActionReferredType"},"policyActionVariable":{"@type":"PolicyVariableRef","id":"item.policyActionVariableId","name":"item.policyActionVariableName","@referredType":"item.policyActionVariableReferredType"}}
+      itemPayload: {"@type":"item.atType","value":"item.value","policyAction":{"@type":"PolicyActionRef","href":"item.policyActionHref","id":"item.policyActionId","name":"item.policyActionName","@referredType":"item.policyActionReferredType"},"policyActionVariable":{"@type":"PolicyVariableRef","href":"item.policyActionVariableHref","id":"item.policyActionVariableId","name":"item.policyActionVariableName","@referredType":"item.policyActionVariableReferredType"}}
     }
   ];
 
@@ -182,8 +180,7 @@ export const editFields: FieldSpec[] = [
       type: "text",
       label: "Nama Algoritma",
       required: true,
-      placeholder: "cth: distribute charge revenue share policy 2023",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }, { rule: "minLength", value: 3, message: "Minimal 3 karakter" }]
+      zodRules: [{ rule: "required", message: "Wajib diisi" }]
     },
     {
       name: "description",
@@ -195,32 +192,15 @@ export const editFields: FieldSpec[] = [
       name: "policy",
       type: "repeatable",
       label: "Policy",
-      required: true,
       minItems: 1,
       itemLabel: "Policy #{{index}}",
       addButton: "+ Tambah Policy",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }, { rule: "minItems", value: 1, message: "Minimal 1 item" }],
+      zodRules: [{ rule: "minItems", value: 1, message: "Minimal 1 item" }],
       itemFields: [{
       name: "atType",
       type: "text",
       readOnly: true,
       defaultValue: "PolicyRef"
-    }, {
-      name: "id",
-      type: "text",
-      label: "Policy ID",
-      required: true,
-      zodRules: [{ rule: "required", message: "Wajib diisi" }]
-    }, {
-      name: "href",
-      type: "text",
-      label: "Policy Href",
-      readOnly: true,
-      computedFrom: "id"
-    }, {
-      name: "name",
-      type: "text",
-      label: "Nama Policy"
     }, {
       name: "referredType",
       type: "select",
@@ -228,17 +208,34 @@ export const editFields: FieldSpec[] = [
       defaultValue: "PolicySet",
       options: {"PolicySet":"PolicySet"}
     }, {
+      name: "href",
+      type: "text",
+      label: "Href",
+      readOnly: true,
+      computedFrom: "id"
+    }, {
+      name: "id",
+      type: "text",
+      label: "Policy ID",
+      required: true,
+      zodRules: [{ rule: "required", message: "Wajib diisi" }]
+    }, {
+      name: "name",
+      type: "text",
+      label: "Nama"
+    }, {
       name: "version",
       type: "text",
       label: "Version"
     }],
-      itemPayload: {"@type":"item.atType","id":"item.id","href":"item.href","name":"item.name","@referredType":"item.referredType","version":"item.version"}
+      itemPayload: {"@type":"item.atType","@referredType":"item.referredType","href":"item.href","id":"item.id","name":"item.name","version":"item.version"}
     },
     {
       name: "conditionVariable",
       type: "repeatable",
       label: "Condition Variable",
-      itemLabel: "Condition #{{index}}",
+      itemLabel: "Condition Variable #{{index}}",
+      addButton: "+ Tambah Condition Variable",
       itemFields: [{
       name: "atType",
       type: "text",
@@ -247,10 +244,7 @@ export const editFields: FieldSpec[] = [
     }, {
       name: "value",
       type: "text",
-      label: "Nilai Variable",
-      required: true,
-      placeholder: "cth: 300",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }]
+      label: "Value"
     }, {
       name: "policyConditionId",
       type: "text",
@@ -262,29 +256,32 @@ export const editFields: FieldSpec[] = [
     }, {
       name: "policyConditionReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyCondition",
       options: {"PolicyCondition":"PolicyCondition"}
     }, {
       name: "policyConditionVariableId",
       type: "text",
-      label: "Policy Variable ID"
+      label: "Policy Condition Variable ID"
     }, {
       name: "policyConditionVariableName",
       type: "text",
-      label: "Policy Variable"
+      label: "Policy Condition Variable"
     }, {
       name: "policyConditionVariableReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyVariable",
       options: {"PolicyVariable":"PolicyVariable"}
     }],
-      itemPayload: {"@type":"item.atType","value":"item.value","policyCondition":{"@type":"PolicyConditionRef","id":"item.policyConditionId","href":"item.policyConditionHref","name":"item.policyConditionName","@referredType":"item.policyConditionReferredType"},"policyConditionVariable":{"@type":"PolicyVariableRef","id":"item.policyConditionVariableId","name":"item.policyConditionVariableName","@referredType":"item.policyConditionVariableReferredType"}}
+      itemPayload: {"@type":"item.atType","value":"item.value","policyCondition":{"@type":"PolicyConditionRef","href":"item.policyConditionHref","id":"item.policyConditionId","name":"item.policyConditionName","@referredType":"item.policyConditionReferredType"},"policyConditionVariable":{"@type":"PolicyVariableRef","href":"item.policyConditionVariableHref","id":"item.policyConditionVariableId","name":"item.policyConditionVariableName","@referredType":"item.policyConditionVariableReferredType"}}
     },
     {
       name: "actionVariable",
       type: "repeatable",
       label: "Action Variable",
-      itemLabel: "Action #{{index}}",
+      itemLabel: "Action Variable #{{index}}",
+      addButton: "+ Tambah Action Variable",
       itemFields: [{
       name: "atType",
       type: "text",
@@ -293,10 +290,7 @@ export const editFields: FieldSpec[] = [
     }, {
       name: "value",
       type: "text",
-      label: "Nilai Variable",
-      required: true,
-      placeholder: "cth: 5%",
-      zodRules: [{ rule: "required", message: "Wajib diisi" }]
+      label: "Value"
     }, {
       name: "policyActionId",
       type: "text",
@@ -308,23 +302,25 @@ export const editFields: FieldSpec[] = [
     }, {
       name: "policyActionReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyAction",
       options: {"PolicyAction":"PolicyAction"}
     }, {
       name: "policyActionVariableId",
       type: "text",
-      label: "Policy Variable ID"
+      label: "Policy Action Variable ID"
     }, {
       name: "policyActionVariableName",
       type: "text",
-      label: "Policy Variable"
+      label: "Policy Action Variable"
     }, {
       name: "policyActionVariableReferredType",
       type: "select",
+      label: "@referredType",
       defaultValue: "PolicyVariable",
       options: {"PolicyVariable":"PolicyVariable"}
     }],
-      itemPayload: {"@type":"item.atType","value":"item.value","policyAction":{"@type":"PolicyActionRef","id":"item.policyActionId","href":"item.policyActionHref","name":"item.policyActionName","@referredType":"item.policyActionReferredType"},"policyActionVariable":{"@type":"PolicyVariableRef","id":"item.policyActionVariableId","name":"item.policyActionVariableName","@referredType":"item.policyActionVariableReferredType"}}
+      itemPayload: {"@type":"item.atType","value":"item.value","policyAction":{"@type":"PolicyActionRef","href":"item.policyActionHref","id":"item.policyActionId","name":"item.policyActionName","@referredType":"item.policyActionReferredType"},"policyActionVariable":{"@type":"PolicyVariableRef","href":"item.policyActionVariableHref","id":"item.policyActionVariableId","name":"item.policyActionVariableName","@referredType":"item.policyActionVariableReferredType"}}
     }
   ];
 
@@ -334,8 +330,8 @@ export const editDefaultsBase: Record<string, unknown> = {"atType":"PartyRevShar
 export const addPayloadSpec: Record<string, unknown> = {"@type":"fields.atType","name":"fields.name","description":"fields.description","policy":"fields.policy","conditionVariable":"fields.conditionVariable","actionVariable":"fields.actionVariable"};
 export const editPayloadSpec: Record<string, unknown> = {"name":"fields.name","description":"fields.description","policy":"fields.policy","conditionVariable":"fields.conditionVariable","actionVariable":"fields.actionVariable"};
 
-export const addZodSchema = z.object({ 'atType': z.string().min(1, 'Wajib diisi'), 'name': z.string().min(1, 'Wajib diisi').min(3, 'Minimal 3 karakter'), 'description': z.string().optional(), 'policy': z.array(z.object({ 'atType': z.string().optional(), 'id': z.string().min(1, 'Wajib diisi'), 'href': z.string().optional(), 'name': z.string().optional(), 'referredType': z.string().optional(), 'version': z.string().optional() })).min(1, 'Minimal 1 item'), 'conditionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().min(1, 'Wajib diisi'), 'policyConditionId': z.string().optional(), 'policyConditionName': z.string().optional(), 'policyConditionReferredType': z.string().optional(), 'policyConditionVariableId': z.string().optional(), 'policyConditionVariableName': z.string().optional(), 'policyConditionVariableReferredType': z.string().optional() })), 'actionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().min(1, 'Wajib diisi'), 'policyActionId': z.string().optional(), 'policyActionName': z.string().optional(), 'policyActionReferredType': z.string().optional(), 'policyActionVariableId': z.string().optional(), 'policyActionVariableName': z.string().optional(), 'policyActionVariableReferredType': z.string().optional() })) });
-export const editZodSchema = z.object({ 'atType': z.string().min(1, 'Wajib diisi'), 'name': z.string().min(1, 'Wajib diisi').min(3, 'Minimal 3 karakter'), 'description': z.string().optional(), 'policy': z.array(z.object({ 'atType': z.string().optional(), 'id': z.string().min(1, 'Wajib diisi'), 'href': z.string().optional(), 'name': z.string().optional(), 'referredType': z.string().optional(), 'version': z.string().optional() })).min(1, 'Minimal 1 item'), 'conditionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().min(1, 'Wajib diisi'), 'policyConditionId': z.string().optional(), 'policyConditionName': z.string().optional(), 'policyConditionReferredType': z.string().optional(), 'policyConditionVariableId': z.string().optional(), 'policyConditionVariableName': z.string().optional(), 'policyConditionVariableReferredType': z.string().optional() })), 'actionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().min(1, 'Wajib diisi'), 'policyActionId': z.string().optional(), 'policyActionName': z.string().optional(), 'policyActionReferredType': z.string().optional(), 'policyActionVariableId': z.string().optional(), 'policyActionVariableName': z.string().optional(), 'policyActionVariableReferredType': z.string().optional() })) });
+export const addZodSchema = z.object({ 'atType': z.string().min(1, 'Wajib diisi'), 'name': z.string().min(1, 'Wajib diisi'), 'description': z.string().optional(), 'policy': z.array(z.object({ 'atType': z.string().optional(), 'referredType': z.string().optional(), 'href': z.string().optional(), 'id': z.string().min(1, 'Wajib diisi'), 'name': z.string().optional(), 'version': z.string().optional() })).min(1, 'Minimal 1 item'), 'conditionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().optional(), 'policyConditionId': z.string().optional(), 'policyConditionName': z.string().optional(), 'policyConditionReferredType': z.string().optional(), 'policyConditionVariableId': z.string().optional(), 'policyConditionVariableName': z.string().optional(), 'policyConditionVariableReferredType': z.string().optional() })), 'actionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().optional(), 'policyActionId': z.string().optional(), 'policyActionName': z.string().optional(), 'policyActionReferredType': z.string().optional(), 'policyActionVariableId': z.string().optional(), 'policyActionVariableName': z.string().optional(), 'policyActionVariableReferredType': z.string().optional() })) });
+export const editZodSchema = z.object({ 'atType': z.string().min(1, 'Wajib diisi'), 'name': z.string().min(1, 'Wajib diisi'), 'description': z.string().optional(), 'policy': z.array(z.object({ 'atType': z.string().optional(), 'referredType': z.string().optional(), 'href': z.string().optional(), 'id': z.string().min(1, 'Wajib diisi'), 'name': z.string().optional(), 'version': z.string().optional() })).min(1, 'Minimal 1 item'), 'conditionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().optional(), 'policyConditionId': z.string().optional(), 'policyConditionName': z.string().optional(), 'policyConditionReferredType': z.string().optional(), 'policyConditionVariableId': z.string().optional(), 'policyConditionVariableName': z.string().optional(), 'policyConditionVariableReferredType': z.string().optional() })), 'actionVariable': z.array(z.object({ 'atType': z.string().optional(), 'value': z.string().optional(), 'policyActionId': z.string().optional(), 'policyActionName': z.string().optional(), 'policyActionReferredType': z.string().optional(), 'policyActionVariableId': z.string().optional(), 'policyActionVariableName': z.string().optional(), 'policyActionVariableReferredType': z.string().optional() })) });
 
 export function mapDetailToDefaults(detail: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {
@@ -346,20 +342,21 @@ export function mapDetailToDefaults(detail: Record<string, unknown>): Record<str
   const policyArr = (detail["policy"] as Array<Record<string, unknown>> | undefined) ?? [];
   out["policy"] = policyArr.map((item: Record<string, unknown>) => ({
     "atType": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["@type"] ?? "PolicyRef",
-    "id": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
-    "href": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["href"] ?? undefined,
-    "name": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["name"] ?? undefined,
     "referredType": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["@referredType"] ?? "PolicySet",
+    "href": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["href"] ?? undefined,
+    "id": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
+    "name": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["name"] ?? undefined,
     "version": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["version"] ?? undefined
   }));
   const conditionVariableArr = (detail["conditionVariable"] as Array<Record<string, unknown>> | undefined) ?? [];
   out["conditionVariable"] = conditionVariableArr.map((item: Record<string, unknown>) => ({
     "atType": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["@type"] ?? "PartyRevSharingPolicyConditionVariable",
     "value": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["value"] ?? undefined,
-    "policyConditionId": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyCondition"]) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
     "policyConditionHref": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyCondition"]) as Record<string, unknown> | undefined)?.["href"] ?? "",
+    "policyConditionId": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyCondition"]) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
     "policyConditionName": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyCondition"]) as Record<string, unknown> | undefined)?.["name"] ?? undefined,
     "policyConditionReferredType": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyCondition"]) as Record<string, unknown> | undefined)?.["@referredType"] ?? "PolicyCondition",
+    "policyConditionVariableHref": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyConditionVariable"]) as Record<string, unknown> | undefined)?.["href"] ?? "",
     "policyConditionVariableId": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyConditionVariable"]) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
     "policyConditionVariableName": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyConditionVariable"]) as Record<string, unknown> | undefined)?.["name"] ?? undefined,
     "policyConditionVariableReferredType": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyConditionVariable"]) as Record<string, unknown> | undefined)?.["@referredType"] ?? "PolicyVariable"
@@ -368,10 +365,11 @@ export function mapDetailToDefaults(detail: Record<string, unknown>): Record<str
   out["actionVariable"] = actionVariableArr.map((item: Record<string, unknown>) => ({
     "atType": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["@type"] ?? "PartyRevSharingPolicyActionVariable",
     "value": (((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["value"] ?? undefined,
-    "policyActionId": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyAction"]) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
     "policyActionHref": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyAction"]) as Record<string, unknown> | undefined)?.["href"] ?? "",
+    "policyActionId": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyAction"]) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
     "policyActionName": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyAction"]) as Record<string, unknown> | undefined)?.["name"] ?? undefined,
     "policyActionReferredType": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyAction"]) as Record<string, unknown> | undefined)?.["@referredType"] ?? "PolicyAction",
+    "policyActionVariableHref": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyActionVariable"]) as Record<string, unknown> | undefined)?.["href"] ?? "",
     "policyActionVariableId": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyActionVariable"]) as Record<string, unknown> | undefined)?.["id"] ?? undefined,
     "policyActionVariableName": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyActionVariable"]) as Record<string, unknown> | undefined)?.["name"] ?? undefined,
     "policyActionVariableReferredType": (((((item as Record<string, unknown>)) as Record<string, unknown> | undefined)?.["policyActionVariable"]) as Record<string, unknown> | undefined)?.["@referredType"] ?? "PolicyVariable"

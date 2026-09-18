@@ -1,15 +1,15 @@
 {
   "manifestVersion": 1,
   "name": "revenue-sharing-portal",
-  "moduleName": "revenueSharingAlgorithms",
-  "remoteName": "revenue_sharing_algorithms_remote",
-  "entryFile": "revenueSharingAlgorithmsRemoteEntry.js",
+  "moduleName": "revenueSharingAlgorithmsRemote",
+  "remoteName": "revenue_sharing_algorithms_remote_remote",
+  "entryFile": "revenueSharingAlgorithmsRemoteRemoteEntry.js",
   "port": 5013,
   "files": [
     {
       "path": "craco.config.js",
       "status": "managed",
-      "hash": "23f161cb3a772d13707e13edb0df9de95e8b88ac"
+      "hash": "f4bc33f8811b7eff8f2451f589627524d6c52d17"
     },
     {
       "path": "src/exposes/PartyRevSharingAlgorithmPage.tsx",

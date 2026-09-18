@@ -123,7 +123,7 @@ export default function List(): ReactElement {
         loading={crud.loading}
         getRowId={(row) => row.id ?? row.href ?? ''}
         pageSizeOptions={[10, 25, 50]}
-        emptyText={'Belum ada algoritma'}
+        emptyText={'Belum ada Party Rev Sharing Algorithm'}
         emptyAction={{ label: 'Tambah Algoritma', onClick: () => setAddOpen(true) }}
         searchField={
           <UiTextField size="small" placeholder={'Cari nama / deskripsi...'} value={crud.searchQ} onChange={(e) => crud.setSearchQ(e.target.value)} sx={{ width: 260 }} />

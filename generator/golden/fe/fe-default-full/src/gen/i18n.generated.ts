@@ -4,6 +4,6 @@ export const labels: Record<string, string> = {
   "lang": "id",
   "appTitle": "Revenue Sharing Algorithm",
   "appName": "revenue-sharing-portal-fe-default",
-  "description": "Portal manajemen PartyRevSharingAlgorithm (TMF736) — fe-default (Tailwind) proof",
+  "description": "Portal manajemen PartyRevSharingAlgorithm (TMF736)",
   "page.party-rev-sharing-algorithms": "Party Rev Sharing Algorithms"
 };
