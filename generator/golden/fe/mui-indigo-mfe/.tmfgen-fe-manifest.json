@@ -9,12 +9,12 @@
     {
       "path": "craco.config.js",
       "status": "managed",
-      "hash": "f4bc33f8811b7eff8f2451f589627524d6c52d17"
+      "hash": "49a79fdd870d875caf0080a3004a9833b3015a3c"
     },
     {
-      "path": "src/exposes/PartyRevSharingAlgorithmPage.tsx",
+      "path": "src/exposes/PartyRevSharingAlgorithmsPage.tsx",
       "status": "managed",
-      "hash": "8597ecff5c2d0d636a540ae165fd08afa5c20a40"
+      "hash": "04adcb3e18c0d78946a88822d4140c7857a0d74d"
     },
     {
       "path": "src/exposes/routes.tsx",
@@ -29,8 +29,8 @@
   ],
   "exposes": [
     {
-      "key": "./PartyRevSharingAlgorithmPage",
-      "target": "src/exposes/PartyRevSharingAlgorithmPage.tsx"
+      "key": "./PartyRevSharingAlgorithmsPage",
+      "target": "src/exposes/PartyRevSharingAlgorithmsPage.tsx"
     },
     {
       "key": "./routes",

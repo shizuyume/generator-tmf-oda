@@ -73,13 +73,14 @@
         "mfe": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["hostApp", "moduleName", "craco", "exposes"],
+          "required": ["hostApp", "moduleName", "craco"],
           "properties": {
             "hostApp": { "type": "string" },
             "moduleName": { "type": "string" },
             "craco": { "type": "boolean" },
             "port": { "type": "integer", "minimum": 1024, "maximum": 65535 },
             "exposes": {
+              "description": "HANYA dibaca untuk federationTemplate 'common-remote' (emit/mcs-common/*). Untuk template default 'none', emit/mfe.mjs membangkitkan satu expose per halaman routable plus ./routes dari feir.pages - halaman adalah satu-satunya sumber yang tahu halaman apa yang benar-benar ditulis.",
               "type": "array",
               "minItems": 1,
               "items": {

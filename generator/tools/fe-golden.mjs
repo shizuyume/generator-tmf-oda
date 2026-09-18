@@ -59,7 +59,9 @@ const APP_CASES = [
   { name: 'fe-default-full',   spec: 'frontend-spec-tmf736-fe-default.yaml', port: 5015, library: 'fe-default' },
   { name: 'fe-default-dashboard', spec: 'frontend-spec-fe-default-dashboard-demo.yaml', port: 5016, library: 'fe-default' },
   { name: 'fe-default-mfe', spec: 'frontend-spec-fe-default-mfe-demo.yaml', port: 5017, library: 'fe-default' },
-  { name: 'mcs-common-tmf736', spec: 'frontend-spec-tmf736-mcs-common.yaml', port: 5018, library: 'mui' },
+  // mcs-common-tmf736 (port 5018) DIKELUARKAN: template federationTemplate=common-remote
+  // mengonsumsi shared remote milik host, dan jalur import microservice itu ditunda.
+  // Emitter emit/mcs-common/* tetap ada; kembalikan case ini bila jalur itu diaktifkan lagi.
 ];
 
 // artefacts that are not source and would make snapshots noisy (pattern golden.mjs)
@@ -118,11 +120,28 @@ function specAppName(specAbsPath) {
   return doc.meta.name;
 }
 
+/**
+ * Buang FEIR ter-cache untuk satu spec.
+ *
+ * scaffoldApp.mjs memakai `.feir/<basename>.feir.json` bila ada dan HANYA membangun
+ * ulang bila absen (lihat feirRoots di cli.mjs). Tanpa pembersihan ini, mengedit sebuah
+ * spec lalu menjalankan golden akan membandingkan keluaran dari spec LAMA: gate
+ * melaporkan LULUS untuk input yang sudah tidak ada lagi - persis kelas kegagalan yang
+ * dijaga check-all untuk dist/ backend ("a stale build silently tests old code").
+ */
+function clearFeirCache(specAbs) {
+  const base = path.basename(specAbs, path.extname(specAbs));
+  for (const dir of [path.join(ws, '.feir'), path.join(root, '.feir')]) {
+    fs.rmSync(path.join(dir, `${base}.feir.json`), { force: true });
+  }
+}
+
 /** scaffold + emit one app case into `into` (an feTargetRoot); returns app dir. */
 function generateAppCase(c, into) {
   fs.rmSync(into, { recursive: true, force: true, maxRetries: 10, retryDelay: 300 });
   fs.mkdirSync(into, { recursive: true });
   const specAbs = path.join(ws, c.spec);
+  clearFeirCache(specAbs);
   const run = args => execFileSync(process.execPath, [cli, ...args], { cwd: root, encoding: 'utf8', stdio: 'pipe' });
   run(['fe-gen', 'scaffold', '--spec', specAbs, '--out', into, '--port', String(c.port)]);
   const appDir = path.join(into, specAppName(specAbs));

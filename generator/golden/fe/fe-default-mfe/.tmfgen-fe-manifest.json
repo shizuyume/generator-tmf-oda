@@ -9,12 +9,12 @@
     {
       "path": "craco.config.js",
       "status": "managed",
-      "hash": "3775db7d3beb75cce969773719a810474407e653"
+      "hash": "92fb00ebc0e629efafeda8942fbf4cd3c13bf210"
     },
     {
       "path": "src/exposes/ItemsPage.tsx",
       "status": "managed",
-      "hash": "b6130790d8d48b31c5bf838e7e0d3f1be3c9ee28"
+      "hash": "1e17ccb45cced87b844562c055423955f4cd54f3"
     },
     {
       "path": "src/exposes/routes.tsx",

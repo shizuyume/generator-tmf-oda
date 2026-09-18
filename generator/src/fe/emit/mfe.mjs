@@ -3,15 +3,16 @@
 // Aktif HANYA saat feir.output.type === 'mfe'. Menulis app-level (sekali per emitAll):
 //   craco.config.js          - Module Federation (KONVENSI remote tim, capacity craco):
 //                              name `snake_remote`, filename `<camel>RemoteEntry.js`,
-//                              exposes {key -> target} dari feir.output.mfe.exposes
+//                              exposes {key -> target} DIBANGKITKAN dari feir.pages
 //                              (src/exposes/*), remotes {} KOSONG (self-contained —
 //                              MUI di-bundle; TIDAK pernah common_remote), shared react
 //                              trio { singleton:true, requiredVersion:false }, .mjs rule,
 //                              optimization.sideEffects=false.
-//   src/exposes/*.tsx        - wrapper federation boundary per exposes {key,target}.
-//                              key `./routes` -> re-export appRoutes/appMenu utk host;
-//                              expose lain -> render halaman list pertama (standalone /
-//                              host mount).
+//   src/exposes/*.tsx        - wrapper federation boundary, SATU per halaman routable
+//                              (view list/dashboard) + `./routes`. Tiap wrapper merender
+//                              halamannya sendiri; `./routes` re-export appRoutes/appMenu
+//                              utk host. Daftar expose DIBANGKITKAN dari feir.pages -
+//                              bukan dibaca dari spec (lihat deriveExposes).
 //   src/gen/auth.tsx         - token receipt STUB (host menyuntik window.__HOST_AUTH__).
 //                              Login TIDAK diimplementasi - host yang pegang sesi.
 //   .tmfgen-fe-manifest.json - manifest idempoten: daftar file managed/generated + hash
@@ -36,6 +37,49 @@ const snake = (s) => String(s).replace(/([a-z0-9])([A-Z])/g, '$1_$2').replace(/[
 // revenueSharingAlgorithms -> revenueSharingAlgorithms
 const camel = (s) => String(s).replace(/[-_]+([a-zA-Z])/g, (_, c) => c.toUpperCase());
 const q1 = (s) => `'${String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+
+// party-rev-sharing-algorithms -> PartyRevSharingAlgorithms (aturan identik dengan
+// emit/page.mjs, yang menamai komponen route dari page.id).
+const pascal = (w) => (w ? w[0].toUpperCase() + w.slice(1) : w);
+const pascalKebab = (s) => String(s).split('-').map(pascal).join('');
+
+/* ---------- derivasi exposes dari halaman ------------------------- */
+
+// Halaman yang punya route sendiri. HARUS himpunan yang sama dengan routablePages di
+// emit/page.mjs (routesFile): kalau berbeda, ada halaman yang bisa di-route tapi tidak
+// bisa di-mount host, atau sebuah expose menunjuk file halaman yang tidak pernah ditulis.
+const ROUTABLE_VIEWS = new Set(['list', 'dashboard']);
+
+/**
+ * Daftar expose MFE, dibangkitkan dari FEIR - satu per halaman routable, plus `./routes`.
+ *
+ * Sebelumnya daftar ini ditulis tangan di spec (`output.mfe.exposes`) dan SETIAP wrapper
+ * non-`./routes` merender halaman list pertama, apa pun namanya. Untuk spec 1-halaman itu
+ * tidak kelihatan; untuk app 24 halaman, 24 expose menampilkan halaman yang sama. Halaman
+ * adalah satu-satunya sumber yang tahu apa yang benar-benar ada, jadi daftar diturunkan
+ * dari sana dan `output.mfe.exposes` TIDAK lagi dibaca (federationTemplate 'none').
+ *
+ * @param {object} feir FEIR hasil buildFEIR.
+ * @returns {{key:string,target:string,page:object|null}[]} urut halaman, `./routes` terakhir.
+ */
+export function deriveExposes(feir) {
+  const pages = (feir.pages ?? []).filter((p) => ROUTABLE_VIEWS.has(p.view));
+  if (!pages.length) {
+    throw new Error('emit/mfe: FEIR tidak punya halaman routable (view list/dashboard) - MFE tanpa expose halaman tidak bermakna');
+  }
+  const out = [];
+  const seen = new Set();
+  for (const p of pages) {
+    const key = `./${pascalKebab(p.id)}Page`;
+    if (seen.has(key)) {
+      throw new Error(`emit/mfe: dua halaman menghasilkan expose yang sama (${key}) - page.id harus unik`);
+    }
+    seen.add(key);
+    out.push({ key, target: `src/exposes/${pascalKebab(p.id)}Page.tsx`, page: p });
+  }
+  out.push({ key: './routes', target: 'src/exposes/routes.tsx', page: null });
+  return out;
+}
 
 function readPortFromPkg(appDir) {
   const pkg = JSON.parse(fs.readFileSync(path.join(appDir, 'package.json'), 'utf8'));
@@ -65,12 +109,9 @@ function cracoFile(feir) {
   }
   const remoteName = `${snake(moduleName)}_remote`;        // revenue_sharing_algorithms_remote
   const entryFile = `${camel(moduleName)}RemoteEntry.js`;  // revenueSharingAlgorithmsRemoteEntry.js
-  const exposes = mfe.exposes ?? [];
-  if (!exposes.length) {
-    throw new Error('emit/mfe: output.mfe.exposes kosong - MFE tanpa exposes tidak bermakna');
-  }
+  const exposes = deriveExposes(feir);
   const exposesLiteral = exposes
-    .map((e) => `  ${q1(e.key)}: ${q1(`./${String(e.target).replace(/^\.\//, '')}`)},`)
+    .map((e) => `            ${q1(e.key)}: ${q1(`./${String(e.target).replace(/^\.\//, '')}`)},`)
     .join('\n');
 
   const L = [];
@@ -81,7 +122,7 @@ function cracoFile(feir) {
   L.push('//   shared    = react trio { singleton:true, requiredVersion:false } (konvensi REMOTE.');
   L.push('//               host business-service pakai eager+strictVersion - aman utk remote ini.)');
   L.push('//   remotes   = {} KOSONG (self-contained - MUI di-bundle, TIDAK remote bersama).');
-  L.push('//   exposes   = {key -> target} dari FEIR output.mfe.exposes (src/exposes/*).');
+  L.push('//   exposes   = {key -> target} DIBANGKITKAN satu per halaman routable + ./routes.');
   L.push('// .mjs rule + optimization.sideEffects=false (template M3, wajib - lihat template craco).');
   L.push('const { ModuleFederationPlugin } = require("webpack").container;');
   L.push('');
@@ -126,10 +167,8 @@ function cracoFile(feir) {
 
 /* ---------- src/exposes/*.tsx wrapper ---------------------------- */
 
-function exposeWrapperFile(feir, expose) {
-  const base = String(expose.key).replace(/^\.\//, '');
-  const listPage = (feir.pages ?? []).find((p) => p.view === 'list');
-  if (base === 'routes' || base === 'Routes') {
+function exposeWrapperFile(expose) {
+  if (!expose.page) {
     return [
       BANNER,
       '// Federation boundary `./routes` - re-export appRoutes + appMenu (dari src/gen/routes).',
@@ -138,17 +177,21 @@ function exposeWrapperFile(feir, expose) {
       '',
     ].join('\n');
   }
-  if (!listPage) {
-    throw new Error(`emit/mfe: expose "${expose.key}" butuh halaman list, tapi FEIR tidak punya page view:list`);
-  }
+  const p = expose.page;
+  // Nama file komponen per view dipilih dengan aturan yang sama seperti routesFile() di
+  // emit/page.mjs - dashboard menulis Dashboard.tsx, list menulis List.tsx.
+  const kind = p.view === 'dashboard' ? 'Dashboard' : 'List';
+  const name = `${pascalKebab(p.id)}Page`;
   return [
     BANNER,
     `// Federation boundary ${expose.key} -> ${expose.target}.`,
-    '// Render halaman list pertama (standalone utk verifikasi; host mount di router sendiri).',
-    `import List from '../pages/${listPage.id}/List';`,
+    `// Merender halamannya sendiri (view ${p.view}, page ${p.id}) - bukan halaman list pertama.`,
+    '// Rute detail tidak di-expose: komponennya membaca :id dari router, jadi hanya',
+    '// bermakna lewat ./routes yang dipasang host.',
+    `import Page from '../pages/${p.id}/${kind}';`,
     '',
-    `export default function ${base}() {`,
-    '  return <List />;',
+    `export default function ${name}() {`,
+    '  return <Page />;',
     '}',
     '',
   ].join('\n');
@@ -209,7 +252,7 @@ function manifestFile(feir, appDir, written, managed) {
       entryFile,
       port,
       files,
-      exposes: (mfe.exposes ?? []).map((e) => ({ key: e.key, target: e.target })),
+      exposes: deriveExposes(feir).map((e) => ({ key: e.key, target: e.target })),
     },
     null,
     2,
@@ -261,13 +304,10 @@ export function emitMfes(feir, appDir) {
   write('craco.config.js', cracoFile(feir));
   managedSet.add('craco.config.js');
 
-  // 2. exposes wrapper — tulis SEMUA target (webpack bangun hanya bila file ada)
-  const exposes = mfe.exposes ?? [];
+  // 2. exposes wrapper — satu per halaman routable + ./routes (dibangkitkan; lihat deriveExposes)
+  const exposes = deriveExposes(feir);
   for (const e of exposes) {
-    if (!String(e.target).startsWith('src/')) {
-      throw new Error(`emit/mfe: expose ${e.key} target "${e.target}" bukan di src/`);
-    }
-    write(e.target, exposeWrapperFile(feir, e));
+    write(e.target, exposeWrapperFile(e));
     managedSet.add(e.target);
   }
 

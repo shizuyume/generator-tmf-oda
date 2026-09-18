@@ -5,7 +5,7 @@
 //   shared    = react trio { singleton:true, requiredVersion:false } (konvensi REMOTE.
 //               host business-service pakai eager+strictVersion - aman utk remote ini.)
 //   remotes   = {} KOSONG (self-contained - MUI di-bundle, TIDAK remote bersama).
-//   exposes   = {key -> target} dari FEIR output.mfe.exposes (src/exposes/*).
+//   exposes   = {key -> target} DIBANGKITKAN satu per halaman routable + ./routes.
 // .mjs rule + optimization.sideEffects=false (template M3, wajib - lihat template craco).
 const { ModuleFederationPlugin } = require("webpack").container;
 
@@ -20,8 +20,8 @@ module.exports = {
           filename: 'revenueSharingAlgorithmsRemoteRemoteEntry.js',
           remotes: {}, // self-contained MFE - MUI di-bundle; TIDAK remote bersama (guardrail)
           exposes: {
-  './PartyRevSharingAlgorithmPage': './src/exposes/PartyRevSharingAlgorithmPage.tsx',
-  './routes': './src/exposes/routes.tsx',
+            './PartyRevSharingAlgorithmsPage': './src/exposes/PartyRevSharingAlgorithmsPage.tsx',
+            './routes': './src/exposes/routes.tsx',
           },
           shared: {
             react: { singleton: true, requiredVersion: false },

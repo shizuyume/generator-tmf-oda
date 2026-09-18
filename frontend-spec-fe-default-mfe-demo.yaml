@@ -1,0 +1,99 @@
+# ============================================================
+# fe-default MFE demo — input golden case `fe-default-mfe`.
+# ------------------------------------------------------------
+# Spec DEMO tulisan tangan, bukan keluaran fe-spec: resource `items`
+# tidak berasal dari komponen TMF mana pun. Tujuannya menguji satu
+# kombinasi yang tidak dicakup case lain: adapter fe-default + output
+# mfe + halaman list TANPA form/detail.
+#
+# Dipakai tools/fe-golden.mjs (case fe-default-mfe, port 5017).
+# ============================================================
+
+meta:
+  name: f8-mfe-demo
+  label: F8 MFE Demo
+  version: 0.1.0
+  lang: id
+  description: test
+
+api:
+  basePath: "/api/inventory"
+  headers:
+    x-api-key: "{{config.TMF_API_KEY}}"
+  endpoints:
+    list: GET   /items
+    create: POST  /items
+    retrieve: GET   /items/{id}
+    update: PATCH /items/{id}
+    delete: DELETE /items/{id}
+
+output:
+  type: mfe
+  mfe:
+    hostApp: portal-host
+    moduleName: inventoryItems
+    craco: true
+    # exposes TIDAK didaftar: fe-gen membangkitkan satu per halaman routable
+    # plus ./routes - lihat emit/mfe.mjs deriveExposes().
+
+ui:
+  library: fe-default
+  version: "^1.0.0"
+  theme:
+    name: indigo
+    darkMode: true
+    tokens:
+      primary: "#000"
+      surface: "#fff"
+      background: "#fff"
+      text: "#000"
+      textMuted: "#666"
+      radius: 4
+      font: Inter
+
+formEngine:
+  library: react-hook-form
+  version: "^7.0.0"
+  validator: zod
+  validatorVersion: "^3.0.0"
+  defaultMode: onChange
+  defaultReValidateMode: onChange
+  behaviour:
+    shouldUnregister: true
+    resetOnSubmit: false
+
+layout:
+  shell: sidebar-topbar
+  sidebar:
+    collapsible: true
+    itemsSource: from-pages
+  topbar:
+    search: false
+    themeToggle: true
+  footer: false
+
+auth:
+  enabled: false
+
+pages:
+  - id: items
+    path: "/items"
+    title: Items
+    icon: Percent
+    nav:
+      parent: top
+
+    view: list
+    list:
+      api: "{{api.basePath}}/items"
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+      columns:
+        - field: name
+          label: Name
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10]

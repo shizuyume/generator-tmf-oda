@@ -41,7 +41,10 @@ const SKIP_DIRS = new Set(['node_modules', '.yarn', 'dist', '.git', 'build']);
 // mcs-common golden case(s) DELIBERATELY contain common_remote (they federate it on
 // purpose, see emit/mcs-common/*) — excluded from the negative FE_FORBID walk below and
 // checked by the separate POSITIVE assertion gate instead (must contain it, not must not).
-const MCS_COMMON_GOLDEN_DIRS = new Set(['mcs-common-tmf736']);
+// CATATAN: case mcs-common-tmf736 sedang TIDAK ada di matriks (lihat komentar gate di
+// bawah); himpunan ini dipertahankan supaya pengecualian walk negatif langsung benar
+// kembali bila case itu dihidupkan lagi.
+const MCS_COMMON_GOLDEN_DIRS = new Set(["mcs-common-tmf736"]);
 
 function feWalk(dir, base = dir, out = [], skipDirNames = SKIP_DIRS) {
   if (!fs.existsSync(dir)) return out;
@@ -102,7 +105,7 @@ const gates = [
   },
   /* ---- FE section (todo 12, static — no install) ---- */
   {
-    name: 'FE fe-gen golden matrix + determinism (7 cases: mui full/mfe + neudela full + fe-default full/dashboard/mfe + mcs-common)',
+    name: 'FE fe-gen golden matrix + determinism (6 cases: mui full/mfe + neudela full + fe-default full/dashboard/mfe)',
     cmd: ['tools/fe-golden.mjs'],
     ok: out => /all fe golden checks passed/.test(out) && !/failure\(s\)$/.test(out),
     summary: out => (out.match(/^(PASS|FAIL).*$/gm) ?? []).length + ' checks',
@@ -113,7 +116,10 @@ const gates = [
       const checkDir = path.join(root, '.feir-check');
       fs.rmSync(checkDir, { recursive: true, force: true });
       const specs = [
-        path.join(ws, 'frontend-spec-tmf736.yaml'),
+        // frontend-spec-tmf736.yaml (tanpa sufiks) DIHAPUS dari daftar: file itu tidak
+        // pernah ada di git dan bukan input case golden mana pun, jadi entri ini membuat
+        // gate merah permanen - merah yang tidak bisa diperbaiki melatih orang
+        // mengabaikannya. Varian -full/-mfe/-neudela/-fe-default di bawah adalah yang nyata.
         path.join(ws, 'frontend-spec-tmf736-mfe.yaml'),
         path.join(ws, 'frontend-spec-tmf736-full.yaml'),
         path.join(ws, 'frontend-spec-tmf736-neudela.yaml'),
@@ -167,30 +173,11 @@ const gates = [
     ok: out => /no guardrail hits/.test(out),
     summary: out => /no guardrail hits/.test(out) ? '0 hits' : out.split('\n').length + ' hit(s)',
   },
-  {
-    name: 'FE mcs-common golden: common_remote federation REQUIRED (inverse guardrail)',
-    run: () => {
-      const missing = [];
-      for (const name of MCS_COMMON_GOLDEN_DIRS) {
-        const dir = path.join(root, 'golden', 'fe', name);
-        if (!fs.existsSync(dir)) { missing.push(`${name}: golden case not present yet`); continue; }
-        const cracoPath = path.join(dir, 'craco.config.js');
-        if (!fs.existsSync(cracoPath)) { missing.push(`${name}: craco.config.js not found`); continue; }
-        // Strip `//` comment lines first - the file's own explanatory comment mentions
-        // the OLD self-contained `remotes:{}` shape by name, which would otherwise
-        // false-positive both checks below.
-        const code = fs.readFileSync(cracoPath, 'utf8')
-          .split('\n')
-          .filter((line) => !line.trim().startsWith('//'))
-          .join('\n');
-        if (!/common_remote/.test(code)) missing.push(`${name}: craco.config.js has no common_remote reference (outside comments)`);
-        if (/remotes:\s*\{\s*\}/.test(code)) missing.push(`${name}: remotes is empty {} - not actually federated`);
-      }
-      return missing.length ? missing.join('\n') : 'common_remote present in all mcs-common golden cases';
-    },
-    ok: out => /^common_remote present/.test(out),
-    summary: out => /^common_remote present/.test(out) ? `${MCS_COMMON_GOLDEN_DIRS.size} case(s) OK` : out.split('\n').length + ' problem(s)',
-  },
+  // GATE DIHAPUS: 'FE mcs-common golden: common_remote federation REQUIRED'.
+  // Case golden mcs-common-tmf736 dikeluarkan dari matriks (jalur import microservice
+  // ditunda), jadi gate ini akan melakukan loop atas himpunan kosong dan melaporkan
+  // LULUS - hijau yang tidak mewakili apa pun. Kembalikan bersama case-nya, lihat
+  // tools/fe-golden.mjs APP_CASES dan emit/mcs-common/*.
 ];
 
 if (runtimeBackend) {

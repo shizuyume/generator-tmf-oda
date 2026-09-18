@@ -1,0 +1,193 @@
+# ============================================================
+# fe-default dashboard demo — input golden case `fe-default-dashboard`.
+# ------------------------------------------------------------
+# Spec DEMO tulisan tangan, bukan keluaran fe-spec: resource `items`
+# tidak berasal dari komponen TMF mana pun. Tujuannya menguji apa yang
+# tidak pernah muncul dari komponen TMF: halaman view `dashboard`
+# (stat-card + chart placeholder + tabel) dan registry `apis`/`models`
+# bertipe (F5) yang menyuplainya.
+#
+# Dipakai tools/fe-golden.mjs (case fe-default-dashboard, port 5016).
+# ============================================================
+
+meta:
+  name: f7-dashboard-demo
+  label: F7 Dashboard Demo
+  version: 0.1.0
+  lang: id
+  description: test
+
+api:
+  basePath: "/api/inventory"
+  headers:
+    x-api-key: "{{config.TMF_API_KEY}}"
+  endpoints:
+    list: GET   /items
+    create: POST  /items
+    retrieve: GET   /items/{id}
+    update: PATCH /items/{id}
+    delete: DELETE /items/{id}
+
+models:
+  Item:
+    kind: object
+    properties:
+      id: { kind: scalar, scalar: string, optional: true }
+      name: { kind: scalar, scalar: string }
+      status: { kind: scalar, scalar: string, optional: true }
+
+apis:
+  - name: listItems
+    method: GET
+    path: "{{api.basePath}}/items"
+    response:
+      shape:
+        kind: object
+        properties:
+          rows: { kind: array, items: { kind: ref, ref: Item } }
+          total: { kind: scalar, scalar: number }
+  - name: createItem
+    method: POST
+    path: "{{api.basePath}}/items"
+    request:
+      body:
+        name: fields.name
+    response:
+      shape: { kind: ref, ref: Item }
+  - name: statsSummary
+    method: GET
+    path: "{{api.basePath}}/stats/summary"
+    response:
+      shape:
+        kind: object
+        properties:
+          total: { kind: scalar, scalar: number }
+          totalValue: { kind: scalar, scalar: number }
+          trend: { kind: array, items: { kind: scalar, scalar: number } }
+
+output:
+  type: full-repo
+  fullRepo:
+    router: react-router
+    state: context
+    packageManager: npm
+
+ui:
+  library: fe-default
+  version: "^1.0.0"
+  theme:
+    name: indigo
+    darkMode: true
+    tokens:
+      primary: "#000"
+      surface: "#fff"
+      background: "#fff"
+      text: "#000"
+      textMuted: "#666"
+      radius: 4
+      font: Inter
+
+formEngine:
+  library: react-hook-form
+  version: "^7.0.0"
+  validator: zod
+  validatorVersion: "^3.0.0"
+  defaultMode: onChange
+  defaultReValidateMode: onChange
+  behaviour:
+    shouldUnregister: true
+    resetOnSubmit: false
+
+layout:
+  shell: sidebar-topbar
+  sidebar:
+    collapsible: true
+    itemsSource: from-pages
+  topbar:
+    search: false
+    themeToggle: true
+  footer: false
+
+auth:
+  enabled: false
+
+pages:
+  - id: items
+    path: "/items"
+    title: Items
+    icon: Percent
+    nav:
+      parent: top
+
+    actions:
+      - label: Tambah Item
+        variant: primary
+        position: top-right
+        action: open-form
+        form: add
+        icon: Plus
+
+    view: list
+    list:
+      api: "{{api.basePath}}/items"
+      method: GET
+      queryParams:
+        offset: "{{pagination.offset}}"
+        limit: "{{pagination.limit}}"
+      columns:
+        - field: name
+          label: Name
+      pagination:
+        mode: server-side
+        scheme: offset-limit
+        perPageOptions: [10]
+
+    forms:
+      add:
+        mode: modal
+        width: md
+        title: Tambah Item
+        api:
+          ref: createItem
+          method: POST
+          path: "{{api.basePath}}/items"
+          payload:
+            name: fields.name
+        fields:
+          - name: name
+            label: Name
+            type: text
+            required: true
+
+  - id: overview
+    path: "/overview"
+    title: Overview
+    icon: Percent
+    nav:
+      parent: top
+
+    view: dashboard
+    dashboard:
+      stats:
+        - title: Total Item
+          format: number
+          value:
+            source: statsSummary.total
+        - title: Nilai Total
+          format: currency
+          value:
+            source: statsSummary.totalValue
+      charts:
+        - type: line
+          title: Tren Item
+          source: statsSummary.trend
+      tables:
+        - title: Item Terbaru
+          source: listItems.rows
+          limit: 5
+          columns:
+            - field: name
+              label: Name
+            - field: status
+              label: Status
+              render: tag

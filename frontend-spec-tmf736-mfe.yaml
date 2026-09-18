@@ -34,11 +34,8 @@ output:
     hostApp: portal-host
     moduleName: revenueSharingAlgorithmsRemote
     craco: true
-    exposes:
-      - key: "./PartyRevSharingAlgorithmPage"
-        target: "src/exposes/PartyRevSharingAlgorithmPage.tsx"
-      - key: "./routes"
-        target: "src/exposes/routes.tsx"
+    # exposes TIDAK didaftar di spec: fe-gen membangkitkan satu per halaman routable
+    # (view list/dashboard) plus ./routes - lihat emit/mfe.mjs deriveExposes().
 
 ui:
   library: mui
