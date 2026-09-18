@@ -14,3 +14,7 @@ oh-my-tmf-agent-workspace.rar
 # fails for reasons unrelated to any code. They carry no secret - the only
 # credential-shaped line is the runtime binding x-api-key: {{config.TMF_API_KEY}}.
 !frontend-spec-*.yaml
+
+# Scratch harness subagent-driven-development (ledger, brief, review package).
+# Catatan kerja, bukan sumber: riwayat git yang jadi rekamannya.
+.superpowers/
