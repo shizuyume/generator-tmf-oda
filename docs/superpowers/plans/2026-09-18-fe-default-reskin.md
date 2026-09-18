@@ -387,7 +387,23 @@ default `neutral` palette, so `bg-neutral-100` resolves whether or not we define
 anything — to Tailwind's grey, not this slate. Leaving it unmapped would silently
 replace the whole neutral ladder with the wrong colours and never error.
 
-Keep `--shadow-*` as they are for now; Task 8 replaces them.
+Replace the four `--shadow-xs/sm/md/lg` entries with six tiers, named `--elev-*`
+for the same namespace-collision reason as `--r-*`:
+
+```js
+  '--elev-1': '0 1px 2px rgb(0 0 0 / 0.05)',
+  '--elev-2': '0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04)',
+  '--elev-3': '0 4px 8px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06)',
+  '--elev-4': '0 8px 16px rgb(0 0 0 / 0.1), 0 4px 8px rgb(0 0 0 / 0.06)',
+  '--elev-5': '0 16px 32px rgb(0 0 0 / 0.12), 0 8px 16px rgb(0 0 0 / 0.08)',
+  '--elev-6': '0 24px 48px rgb(0 0 0 / 0.16), 0 12px 24px rgb(0 0 0 / 0.1)',
+```
+
+They land here, not in the density task, because Task 4 remaps components onto
+`shadow-1`..`shadow-6` and those utilities must already exist by then. The
+`@config` bridge that serves the old `shadow-sm` is deleted in Task 6, before the
+density task runs — so deferring these would leave a window where every shadow
+silently resolves to nothing.
 
 - [ ] **Step 2: Rewrite the semantic aliases**
 
@@ -471,6 +487,14 @@ function semanticAliasesDark(tokens) {
     '--input': 'oklch(0.32 0.02 255)',
     '--ring': 'var(--brand-400)',
     '--focus': 'var(--brand-400)',
+    // Elevasi rendah ditekan di mode gelap: bayangan tidak terbaca di atas slate
+    // gelap, jadi kedalaman dibawa tangga permukaan (card lebih terang dari page).
+    '--elev-1': 'none',
+    '--elev-2': 'none',
+    '--elev-3': 'none',
+    '--elev-4': '0 8px 16px rgb(0 0 0 / 0.35)',
+    '--elev-5': '0 16px 32px rgb(0 0 0 / 0.4)',
+    '--elev-6': '0 24px 48px rgb(0 0 0 / 0.45)',
   };
 }
 ```
@@ -684,6 +708,13 @@ Insert after the `@config` line:
   --color-info-100: var(--info-100);
   --color-info-500: var(--info-500);
   --color-info-700: var(--info-700);
+
+  --shadow-1: var(--elev-1);
+  --shadow-2: var(--elev-2);
+  --shadow-3: var(--elev-3);
+  --shadow-4: var(--elev-4);
+  --shadow-5: var(--elev-5);
+  --shadow-6: var(--elev-6);
 
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
@@ -1327,57 +1358,22 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 8: Radius, density, shadows, motion
+### Task 8: Radius, density, motion
 
 **Files:**
 - Modify: `generator/templates/fe-default/src/gen/app.css`
-- Modify: `generator/libs/fe-default.adapter.js` (`STATIC_PRIMITIVES` shadows)
 - Modify: `generator/templates/fe-default/src/components/Button.tsx`, `TextInput.tsx`, `Select.tsx`, `Table.tsx`, `DataTable.tsx`, `Topbar.tsx`
 
 **Interfaces:**
-- Consumes: Task 2's `--radius-*` semantic values, Task 3's `@theme inline`.
-- Produces: `--control-h`, `--table-row-h`, `--header-h` with `[data-density]` variants; a six-tier shadow scale suppressed in dark mode.
+- Consumes: Task 2's `--r-*` values, Task 3's `@theme inline` radius mapping.
+- Produces: `--control-h`, `--table-row-h`, `--header-h` with `[data-density]` variants.
 
-- [ ] **Step 1: Replace the shadow primitives**
+The six shadow tiers already landed in Tasks 2 and 3 — Task 4 remaps components
+onto them, so they had to exist first. This task is radius, density and motion.
 
-In `generator/libs/fe-default.adapter.js`, replace the four `--shadow-xs/sm/md/lg` entries in `STATIC_PRIMITIVES` with six tiers:
+- [ ] **Step 1: Add density and reduced motion to `app.css`**
 
-```js
-  // `--elev-*`, bukan `--shadow-*`, dengan alasan yang sama seperti `--r-*`:
-  // `--shadow-*` adalah namespace tema Tailwind dan akan melingkar.
-  '--elev-1': '0 1px 2px rgb(0 0 0 / 0.05)',
-  '--elev-2': '0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04)',
-  '--elev-3': '0 4px 8px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06)',
-  '--elev-4': '0 8px 16px rgb(0 0 0 / 0.1), 0 4px 8px rgb(0 0 0 / 0.06)',
-  '--elev-5': '0 16px 32px rgb(0 0 0 / 0.12), 0 8px 16px rgb(0 0 0 / 0.08)',
-  '--elev-6': '0 24px 48px rgb(0 0 0 / 0.16), 0 12px 24px rgb(0 0 0 / 0.1)',
-```
-
-and add the dark-mode suppression to `semanticAliasesDark`:
-
-```js
-    '--elev-1': 'none',
-    '--elev-2': 'none',
-    '--elev-3': 'none',
-    '--elev-4': '0 8px 16px rgb(0 0 0 / 0.35)',
-    '--elev-5': '0 16px 32px rgb(0 0 0 / 0.4)',
-    '--elev-6': '0 24px 48px rgb(0 0 0 / 0.45)',
-```
-
-- [ ] **Step 2: Map the shadows and add density to `app.css`**
-
-Append inside `@theme inline`:
-
-```css
-  --shadow-1: var(--elev-1);
-  --shadow-2: var(--elev-2);
-  --shadow-3: var(--elev-3);
-  --shadow-4: var(--elev-4);
-  --shadow-5: var(--elev-5);
-  --shadow-6: var(--elev-6);
-```
-
-and after the `@theme inline` block, outside it:
+After the `@theme inline` block, outside it:
 
 ```css
 /* Densitas: tinggi kontrol/baris sebagai var, bukan kelas tinggi tetap, supaya
@@ -1391,7 +1387,7 @@ and after the `@theme inline` block, outside it:
 }
 ```
 
-- [ ] **Step 3: Consume the density vars in the six components**
+- [ ] **Step 2: Consume the density vars in the six components**
 
 In `Button.tsx`, replace the fixed heights:
 
@@ -1409,7 +1405,7 @@ Note the **parenthesis** form `h-(--control-h)`. The bracket form `h-[--control-
 
 Apply the same substitution to the input height in `TextInput.tsx` and `Select.tsx`, the row height in `Table.tsx` and `DataTable.tsx` (`h-(--table-row-h)`), and the bar height in `Topbar.tsx` (`h-(--header-h)`).
 
-- [ ] **Step 4: Verify radius moved as intended**
+- [ ] **Step 3: Verify radius moved as intended**
 
 ```bash
 cd /c/REPOSITORY/oh-my-tmf-agent-workspace/generator
@@ -1424,9 +1420,10 @@ console.log('OK');
 
 Expected: `4px 6px 8px 12px 16px` and `OK`. This is the visible change the spec flagged — buttons and inputs get 6px corners instead of 8px.
 
-- [ ] **Step 5: Build and gate**
+- [ ] **Step 4: Build and gate**
 
 ```bash
+cd /c/REPOSITORY/oh-my-tmf-agent-workspace/generator
 rm -rf ../.feir .feir "$SCRATCH/reskin"
 node src/cli.mjs fe-gen scaffold --spec ../frontend-spec-tmf736-fe-default.yaml --out "$SCRATCH/reskin" --port 5015
 cd "$SCRATCH/reskin/revenue-sharing-portal-fe-default"
@@ -1440,12 +1437,12 @@ node tools/check-all.mjs
 
 Expected: build succeeds, `--control-h` appears in the compiled CSS (which proves the parenthesis arbitrary-property form compiled), all gates pass.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 cd /c/REPOSITORY/oh-my-tmf-agent-workspace
-git add generator/templates/fe-default generator/libs/fe-default.adapter.js generator/golden/fe
-git commit -m "fe-default: radius, density, six shadow tiers, reduced motion
+git add generator/templates/fe-default generator/golden/fe
+git commit -m "fe-default: radius, density, and reduced motion
 
 Radius md moves 8px -> 6px, so buttons and inputs get visibly tighter
 corners. This is the change the design flagged as visible; it is not
@@ -1454,9 +1451,6 @@ shipped quietly.
 Control, table-row and header heights become CSS vars with compact and
 comfortable variants, so one attribute on <html> shifts the whole app
 without touching a component.
-
-Shadows go to six tiers, with 1-3 suppressed to none in dark mode —
-elevation there is carried by the surface ladder instead.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ```
@@ -1471,8 +1465,8 @@ The only task in this plan with a genuine test-first cycle: the guardrail is wri
 - Modify: `generator/tools/check-all.mjs:31-38` (`FE_FORBID`) and the gate list
 
 **Interfaces:**
-- Consumes: `FE_FORBID` (array of `{label, re}`) and `guardrailReport(roots, opts)`, both already in `check-all.mjs`.
-- Produces: two additional `FE_FORBID` entries plus a structural gate named `FE @theme inline: var() references only (dark-mode trap)`.
+- Consumes: `guardrailReport(roots, { forbid })` and the `FE_FORBID` / `SKIP_DIRS` pattern, all already in `check-all.mjs`.
+- Produces: `FE_DEFAULT_FORBID`, plus two gates: `FE fe-default guardrails: no arbitrary values, no brand primitives` and `FE @theme inline: var() references only (dark-mode trap)`.
 
 - [ ] **Step 1: Plant two violations**
 
@@ -1496,23 +1490,51 @@ Expected: **PASS, 0 hits.** That is the gap this task closes — the current rul
 
 - [ ] **Step 3: Add the two rules**
 
-In `generator/tools/check-all.mjs`, append to `FE_FORBID`:
+In `generator/tools/check-all.mjs`, add a **new constant** beside `FE_FORBID` — not entries inside it:
 
 ```js
-  // Panduan melarang keduanya secara eksplisit, dan sampai sekarang tidak ada yang
-  // menegakkannya. Nilai arbitrer memotong skala token; referensi primitif brand
-  // langsung memotong lapisan semantik, sehingga preset ramp berhenti bermakna.
+// Dua aturan ini HANYA berlaku untuk jalur fe-default. FE_FORBID juga di-walk di
+// pohon golden mui dan neudela, yang memakai sx/styled dan tidak pernah diuji
+// terhadap regex ini - menambahkannya ke sana berarti menaruh risiko false
+// positive pada gate yang hari ini hijau, demi aturan yang tidak berlaku bagi mereka.
+// Nilai arbitrer memotong skala token; referensi primitif brand langsung memotong
+// lapisan semantik, sehingga preset ramp berhenti bermakna.
+const FE_DEFAULT_FORBID = [
   { label: 'arbitrary Tailwind value', re: /\b[a-z-]+-\[[^\]]+\]/ },
   { label: 'direct brand primitive in a component', re: /\b(?:bg|text|border|ring)-brand-\d{2,3}\b/ },
+];
 ```
+
+and a gate that walks only the fe-default template and its three golden trees, reusing the existing `guardrailReport(roots, { forbid })` helper:
+
+```js
+  {
+    name: 'FE fe-default guardrails: no arbitrary values, no brand primitives',
+    run: () => {
+      const roots = [
+        path.join(root, 'templates', 'fe-default'),
+        ...['fe-default-full', 'fe-default-dashboard', 'fe-default-mfe']
+          .map((c) => path.join(root, 'golden', 'fe', c)),
+      ].filter((d) => fs.existsSync(d));
+      const hits = guardrailReport(roots, { forbid: FE_DEFAULT_FORBID });
+      return hits.length ? hits : 'no fe-default guardrail hits';
+    },
+    ok: out => /no fe-default guardrail hits/.test(out),
+    summary: out => /no fe-default guardrail hits/.test(out) ? '0 hits' : out.split('\n').length + ' hit(s)',
+  },
+```
+
+Read `guardrailReport` (around line 63) before writing `run()` — confirm whether it returns a string or an array, and match the existing guardrail gate's handling exactly rather than assuming the shape above.
 
 - [ ] **Step 4: Run the gate and watch it fail**
 
 ```bash
-node tools/check-all.mjs 2>&1 | grep -A 4 "FE guardrails grep"
+node tools/check-all.mjs 2>&1 | grep -A 4 "fe-default guardrails"
 ```
 
 Expected: **FAIL**, naming `Badge.tsx` for both `arbitrary Tailwind value` and `direct brand primitive in a component`.
+
+Also confirm the pre-existing `FE guardrails grep` gate still reports 0 hits: the new rules must not have leaked into the walk that covers the mui and neudela trees.
 
 If it still passes, the regex does not match what is on the line — fix the regex, not the test.
 
@@ -1521,7 +1543,7 @@ If it still passes, the regex does not match what is on the line — fix the reg
 ```bash
 cp /tmp/Badge.bak templates/fe-default/src/components/Badge.tsx
 grep -c "p-\[13px\]\|bg-brand-600" templates/fe-default/src/components/Badge.tsx || echo "0 (bersih)"
-node tools/check-all.mjs 2>&1 | grep -A 2 "FE guardrails grep"
+node tools/check-all.mjs 2>&1 | grep -A 2 "fe-default guardrails"
 ```
 
 Expected: PASS, 0 hits.
@@ -1593,7 +1615,13 @@ cd /c/REPOSITORY/oh-my-tmf-agent-workspace
 git add generator/tools/check-all.mjs
 git commit -m "check-all: forbid arbitrary values and brand primitives, catch the @theme trap
 
-Three rules the design named and nothing enforced:
+Three rules the design named and nothing enforced. They live in a
+fe-default-scoped gate rather than in FE_FORBID, which is also walked over
+the mui and neudela golden trees — those use sx and styled-components and
+have never been tested against these regexes, so widening the existing
+gate would risk a false positive in something currently green, for a rule
+that does not apply to them.
+
 
 - arbitrary Tailwind values (p-[13px], bg-[#DC2626]) cut across the token
   scale;
