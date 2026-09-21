@@ -107,6 +107,26 @@
   --text-2xl: 1.5rem;      --text-2xl--line-height: 1.333;
   --text-3xl: 2rem;        --text-3xl--line-height: 1.25;
   --text-4xl: 2.5rem;      --text-4xl--line-height: 1.2;
+  /* CATATAN: karena ini `@theme inline`, Tailwind MENYISIPKAN nilainya ke dalam
+     utility dan hanya memancarkan ke :root langkah yang benar-benar dirujuk CSS
+     tulisan tangan (hari ini: --text-base saja, dipakai aturan body di bawah).
+     Menulis var(--text-sm) di aturan tangan akan menghasilkan variabel yang tidak
+     terdefinisi - yang merender sebagai tidak apa-apa, tanpa error. Pakai kelas
+     text-sm, atau rujuk langkahnya dari sebuah aturan sehingga ia ikut dipancarkan. */
+}
+
+/* Utility kustom (@utility, bentuk v4 - BUKAN @layer components). Ada supaya
+   sidebar bisa menganimasikan HANYA width tanpa memakai nilai arbitrer. Sebelumnya ini
+   sebuah nilai arbitrer, yang memaksa guardrail memberi carve-out - dan carve-out bisa
+   dilebarkan orang berikutnya. Lima baris ini menghapus kebutuhan itu; aturannya kembali
+   mutlak. Bentuk arbitrer lamanya sengaja tidak ditulis di sini: guardrail-nya grep, dan
+   grep tidak bisa membedakan komentar dari kode.
+   `transition-all` bukan pengganti: ia ikut menganimasikan background-color, jadi
+   setiap pergantian tema memudar melintasi seluruh sidebar. */
+@utility transition-width {
+  transition-property: width;
+  transition-timing-function: var(--default-transition-timing-function);
+  transition-duration: var(--default-transition-duration);
 }
 
 *{box-sizing:border-box}

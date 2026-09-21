@@ -28,7 +28,7 @@ export function Pagination({
   const pages = Array.from({ length: Math.min(3, pageCount) }, (_, i) => windowStart + i);
 
   return (
-    <div className="flex h-15.5 items-center justify-between px-4.5 text-xs text-muted-foreground">
+    <div className="flex h-15.5 items-center justify-between px-4.5 text-xs tabular text-muted-foreground">
       <div className="flex items-center gap-3">
         <span>{infoLabel ?? `${rowCount} data`}</span>
         {pageSizeOptions && pageSizeOptions.length > 0 && onPageSizeChange && (

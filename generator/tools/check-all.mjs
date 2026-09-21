@@ -113,11 +113,9 @@ function feDefaultFiles() {
 /* Nilai arbitrer memotong skala token; referensi primitif brand memotong lapisan
  * semantik sehingga preset ramp berhenti bermakna.
  *
- * `transition-[...]` DIKECUALIKAN dengan sengaja: transition-property menerima NAMA
- * PROPERTI CSS, bukan token desain, jadi tidak ada langkah skala yang bisa
- * menggantikannya - aturan itu tidak berlaku. Penggantinya (`transition-all`) akan ikut
- * menganimasikan background-color, sehingga setiap pergantian tema memudar melintasi
- * seluruh sidebar. Lihat templates/fe-default/src/components/Sidebar.tsx.
+ * TIDAK ADA PENGECUALIAN. Satu-satunya kandidat dulu adalah `transition-[width]`, yang
+ * kini jadi utility kustom `transition-width` (@utility di src/gen/app.css) - sebuah
+ * carve-out di guardrail bisa dilebarkan orang berikutnya, lima baris CSS tidak bisa.
  */
 // [^\]\n] bukan [^\]]: tanpa mengecualikan newline, sebuah `-[` yang tidak ditutup di
 // baris yang sama akan menelan ratusan karakter sampai `]` berikutnya di mana pun, dan
@@ -136,7 +134,6 @@ function feDefaultGuardrails() {
     try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
     const rel = path.relative(root, f);
     for (const m of text.match(ARBITRARY_RE) ?? []) {
-      if (m.startsWith('transition-[')) continue;
       hits.push(`arbitrary Tailwind value : ${rel} : ${m}`);
     }
     for (const m of text.match(BRAND_PRIMITIVE_RE) ?? []) {

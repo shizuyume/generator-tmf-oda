@@ -27,7 +27,7 @@ export function StatCard({ label, value, icon, trend, meta }: StatCardProps) {
           </span>
         )}
       </div>
-      <div className="mt-2.5 text-2xl font-semibold leading-9 tracking-tight text-foreground">{value}</div>
+      <div className="mt-2.5 text-3xl font-semibold leading-9 tracking-tight tabular text-foreground">{value}</div>
       {(trend || meta) && (
         <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
           {trend && <span className={TREND_CLASS[trend.direction]}>{trend.label}</span>}
