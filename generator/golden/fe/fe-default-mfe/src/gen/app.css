@@ -49,9 +49,12 @@
   /* Primitif yang MEMANG perlu jadi utility. Tanpa baris-baris ini Tailwind v4
      tetap punya palet `neutral` bawaannya sendiri, jadi bg-neutral-100 akan
      resolve ke abu-abu Tailwind - bukan slate ini - tanpa satu pun error.
-     Ramp brand SENGAJA tidak ada di sini: tidak ada bg-brand-600 yang bisa
-     dipanggil, jadi aturan "komponen hanya menyentuh lapisan semantik"
-     ditegakkan oleh konstruksi. */
+     Ramp brand SENGAJA tidak ada di sini: tanpa pemetaan, tidak ada satu pun
+     utility brand yang bisa dipanggil komponen, jadi aturan "komponen hanya
+     menyentuh lapisan semantik" ditegakkan oleh konstruksi.
+     (Kalimat ini tidak menyebut contoh kelasnya secara harfiah dengan sengaja:
+     guardrail yang melarang referensi primitif brand adalah grep, dan grep tidak
+     bisa membedakan komentar dari kode.) */
   --color-neutral-50: var(--neutral-50);
   --color-neutral-100: var(--neutral-100);
   --color-neutral-200: var(--neutral-200);

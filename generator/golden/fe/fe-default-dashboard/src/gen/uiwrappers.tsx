@@ -258,7 +258,7 @@ export function UiTooltip({ title, children }: { title: ReactNode; children: Rea
 }
 
 const ALERT_TONE: Record<string, string> = {
-  error: 'bg-danger-50 text-danger-700',
+  error: 'bg-destructive/10 text-destructive',
   success: 'bg-success-50 text-success-700',
   warning: 'bg-warning-50 text-warning-700',
   info: 'bg-info-50 text-info-700',
@@ -298,7 +298,7 @@ export function UiSnackbar({
   if (!open) return null;
   return (
     <div
-      className="fixed bottom-6 left-6 z-[200] rounded-lg border border-border bg-app-surface shadow-lg"
+      className="fixed bottom-6 left-6 z-[200] rounded-lg border border-border bg-card shadow-4"
       role="alert"
     >
       {children}
@@ -326,7 +326,7 @@ export function UiTabs({ value, onChange, children, sx }: UiTabsProps): ReactEle
                 type="button"
                 onClick={() => onChange(null, i)}
                 className={`-mb-px border-b-2 px-3 py-2 text-[13px] font-medium ${
-                  active ? 'border-app-brand text-text-brand' : 'border-transparent text-text-secondary hover:text-text-primary'
+                  active ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {label}
@@ -368,11 +368,11 @@ export function UiTableBody({ children }: { children?: ReactNode }): ReactElemen
 }
 
 export function UiTableRow({ children }: { children?: ReactNode }): ReactElement {
-  return <tr className="border-b border-border last:border-b-0 hover:bg-app-brand-subtle">{children}</tr>;
+  return <tr className="border-b border-border last:border-b-0 hover:bg-primary/10">{children}</tr>;
 }
 
 export function UiTableCell({ children }: { children?: ReactNode }): ReactElement {
-  return <td className="px-4 py-2.5 text-xs text-text-primary">{children}</td>;
+  return <td className="px-4 py-2.5 text-xs text-foreground">{children}</td>;
 }
 
 // ---------------------------------------------------------------------------

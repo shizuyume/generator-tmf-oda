@@ -297,14 +297,14 @@ function RepeatableField({ field, control, setValue }: FieldRenderProps): ReactE
   const min = field.minItems ?? (field.required ? 1 : 0);
   return (
     <div className="col-span-full grid gap-3">
-      <div className="text-xs font-semibold text-text-primary">
+      <div className="text-xs font-semibold text-foreground">
         {field.label ?? field.name}
         {field.required ? ' *' : ''}
       </div>
       {fields.map((item, index) => (
         <div key={item.id} className="rounded-lg border border-border p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium text-text-secondary">
+            <span className="text-xs font-medium text-muted-foreground">
               {field.itemLabel ? field.itemLabel.replace(/\{\{\s*index\s*\}\}/g, String(index + 1)) : `Item ${index + 1}`}
             </span>
             <Button tone="tertiary" size="sm" iconOnly onClick={() => remove(index)} disabled={fields.length <= min} aria-label={`Hapus item ${index + 1}`}>

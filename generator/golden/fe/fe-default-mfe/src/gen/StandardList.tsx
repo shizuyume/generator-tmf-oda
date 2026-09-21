@@ -87,7 +87,7 @@ export function StandardList<T extends Record<string, unknown> = Record<string, 
   const visible = rowActions ? [...columns, { field: '__actions', headerName: '', width: 140 } as DefaultCol<T>] : columns;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-app-surface shadow-xs">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-1">
       {(searchField || toolbarActions || activeFilterCount > 0) && (
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-5 py-4.5">
           <div className="flex flex-wrap items-center gap-2">
@@ -96,7 +96,7 @@ export function StandardList<T extends Record<string, unknown> = Record<string, 
               <button
                 type="button"
                 onClick={() => onFilterModelChange({ items: [] })}
-                className="inline-flex items-center gap-1 rounded-full border border-border-strong px-2.5 py-1 text-[11px] text-text-secondary hover:text-text-primary"
+                className="inline-flex items-center gap-1 rounded-full border border-input px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground"
               >
                 {activeFilterCount} filter aktif
                 <X size={11} />

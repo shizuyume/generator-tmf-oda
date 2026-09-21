@@ -40,8 +40,8 @@ function Shell({ menu = DEFAULT_MENU, title, routes }: AppProps): ReactElement {
       sidebar={
         <Sidebar
           logo={
-            <div className="flex items-center gap-2 font-bold tracking-tight text-text-primary">
-              <span className="grid h-[30px] w-[30px] place-items-center rounded-md bg-app-brand-strong text-white">
+            <div className="flex items-center gap-2 font-bold tracking-tight text-foreground">
+              <span className="grid h-[30px] w-[30px] place-items-center rounded-md bg-primary-hover text-primary-foreground">
                 {appTitle.charAt(0).toUpperCase()}
               </span>
               <span className="text-[17px]">{appTitle}</span>
@@ -82,7 +82,7 @@ function ThemeToggle(): ReactElement {
       onClick={() => toggle()}
       aria-label="mode gelap"
       title="Theme"
-      className="grid h-[34px] w-[34px] place-items-center rounded-md text-text-secondary hover:bg-app-surface-secondary hover:text-text-primary"
+      className="grid h-[34px] w-[34px] place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
     >
       {darkMode ? <Sun size={18} strokeWidth={1.75} /> : <Moon size={18} strokeWidth={1.75} />}
     </button>
