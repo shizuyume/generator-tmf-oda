@@ -15,7 +15,7 @@ export function AppShell({ sidebar, topbar, children, collapsed }: AppShellProps
       {sidebar}
       <main className={`min-h-screen ${collapsed ? 'ml-16' : 'ml-60'}`}>
         {topbar}
-        <div className="mx-auto max-w-[1280px] p-6">{children}</div>
+        <div className="mx-auto max-w-320 p-6">{children}</div>
       </main>
     </div>
   );

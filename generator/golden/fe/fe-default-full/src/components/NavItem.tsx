@@ -14,7 +14,7 @@ export function NavItem({ to, icon, label, active, collapsed }: NavItemProps) {
   return (
     <Link
       to={to}
-      className={`flex h-10 items-center gap-2.5 rounded-md px-2.5 text-[13px] transition-colors ${
+      className={`flex h-10 items-center gap-2.5 rounded-md px-2.5 text-sm transition-colors ${
         collapsed ? 'justify-center px-0' : ''
       } ${active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
     >

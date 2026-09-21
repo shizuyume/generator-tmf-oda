@@ -11,7 +11,7 @@ export function DetailField({ label, value, mono }: DetailFieldProps) {
   if (value === undefined || value === null || value === '') return null;
   return (
     <div>
-      <div className="text-[0.7rem] font-bold uppercase tracking-wide text-primary">{label}</div>
+      <div className="text-xs font-bold uppercase tracking-wide text-primary">{label}</div>
       <div className={`mt-0.5 text-sm font-medium text-foreground ${mono ? 'font-mono' : ''}`}>{value}</div>
     </div>
   );

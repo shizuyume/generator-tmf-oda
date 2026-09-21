@@ -30,7 +30,7 @@ export function Button({
   children,
   ...rest
 }: ButtonProps) {
-  const h = size === 'sm' ? 'h-8 text-xs px-2.5' : 'h-9 text-[13px] px-3.5';
+  const h = size === 'sm' ? 'h-8 text-xs px-2.5' : 'h-9 text-sm px-3.5';
   const iconOnlyCls = iconOnly ? 'w-9 px-0 justify-center' : '';
   return (
     <button

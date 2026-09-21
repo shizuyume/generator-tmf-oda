@@ -18,7 +18,7 @@ export function RadioGroup({ name, value, options, onChange, layout = 'inline', 
   return (
     <div className={`flex gap-3 ${layout === 'stacked' ? 'flex-col' : 'flex-row flex-wrap items-center'}`}>
       {options.map((opt) => (
-        <label key={opt.value} className="inline-flex items-center gap-1.5 text-[13px] text-foreground">
+        <label key={opt.value} className="inline-flex items-center gap-1.5 text-sm text-foreground">
           <input
             type="radio"
             name={name}

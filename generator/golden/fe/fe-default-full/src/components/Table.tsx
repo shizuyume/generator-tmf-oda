@@ -8,7 +8,7 @@ export interface TableProps extends HTMLAttributes<HTMLTableElement> {
 export function Table({ className = '', children, ...rest }: TableProps) {
   return (
     <div className="overflow-auto">
-      <table className={`w-full min-w-[800px] border-collapse ${className}`} {...rest}>
+      <table className={`w-full min-w-200 border-collapse ${className}`} {...rest}>
         {children}
       </table>
     </div>
@@ -40,7 +40,7 @@ export function TableCell({
   if (header) {
     return (
       <th
-        className={`h-[42px] border-b border-border bg-muted px-4.5 text-left text-[11px] font-semibold text-muted-foreground ${className}`}
+        className={`h-10.5 border-b border-border bg-muted px-4.5 text-left text-xs font-semibold text-muted-foreground ${className}`}
         {...(rest as ThHTMLAttributes<HTMLTableCellElement>)}
       >
         {children}
@@ -48,7 +48,7 @@ export function TableCell({
     );
   }
   return (
-    <td className={`h-[58px] border-b border-border px-4.5 text-xs text-foreground ${className}`} {...(rest as TdHTMLAttributes<HTMLTableCellElement>)}>
+    <td className={`h-14.5 border-b border-border px-4.5 text-xs text-foreground ${className}`} {...(rest as TdHTMLAttributes<HTMLTableCellElement>)}>
       {children}
     </td>
   );

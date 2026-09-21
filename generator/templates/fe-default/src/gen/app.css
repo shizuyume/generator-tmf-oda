@@ -89,11 +89,30 @@
   --radius-xl: var(--r-xl);
   --radius-2xl: var(--r-2xl);
   --radius-full: 9999px;
+
+  /* Lewat var(), bukan literal, supaya ui.theme.tokens.font tetap bisa menimpa. */
+  --font-sans: var(--font-family);
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code",
+               Consolas, monospace;
+
+  /* Skala tipe 8 langkah, basis 14px. Literal di sini SAH: ukuran huruf tidak
+     berbeda antara terang dan gelap, jadi tidak ada override .dark yang bisa
+     gagal sampai - jebakan @theme inline hanya berlaku untuk nilai yang berubah
+     per mode. */
+  --text-xs: 0.75rem;      --text-xs--line-height: 1.333;
+  --text-sm: 0.8125rem;    --text-sm--line-height: 1.538;
+  --text-base: 0.875rem;   --text-base--line-height: 1.429;
+  --text-lg: 1rem;         --text-lg--line-height: 1.5;
+  --text-xl: 1.25rem;      --text-xl--line-height: 1.4;
+  --text-2xl: 1.5rem;      --text-2xl--line-height: 1.333;
+  --text-3xl: 2rem;        --text-3xl--line-height: 1.25;
+  --text-4xl: 2.5rem;      --text-4xl--line-height: 1.2;
 }
 
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:var(--font-family);background:var(--background);color:var(--foreground)}
-body{font-size:14px;line-height:20px}
+body{font-size:var(--text-base);line-height:var(--text-base--line-height)}
+.tabular{font-variant-numeric:tabular-nums}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 /* Fokus GLOBAL, bukan terikat empat selektor elemen: apa pun yang bisa difokus

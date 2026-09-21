@@ -20,9 +20,9 @@ export function FormField({ label, required, helper, error, full, children }: Fo
       )}
       {children}
       {error ? (
-        <span className="text-[11px] text-destructive">{error}</span>
+        <span className="text-xs text-destructive">{error}</span>
       ) : helper ? (
-        <span className="text-[11px] text-muted-foreground">{helper}</span>
+        <span className="text-xs text-muted-foreground">{helper}</span>
       ) : null}
     </div>
   );

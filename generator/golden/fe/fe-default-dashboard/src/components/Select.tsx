@@ -13,7 +13,7 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
 
 /** Ports .select from example-component-in-dashboard.html. */
 export function Select({ size = 'medium', options = [], placeholder, className = '', children, ...rest }: SelectProps) {
-  const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-[13px]';
+  const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-sm';
   return (
     <select
       className={`rounded-md border border-input bg-card px-2.5 text-muted-foreground ${h} ${className}`}

@@ -22,7 +22,7 @@ export function Avatar({ src, name, size = 'md' }: AvatarProps) {
     />
   ) : (
     <span
-      className={`grid place-items-center rounded-full border border-border bg-neutral-100 text-[10px] font-semibold text-muted-foreground ${SIZE_CLASS[size]}`}
+      className={`grid place-items-center rounded-full border border-border bg-neutral-100 text-xs font-semibold text-muted-foreground ${SIZE_CLASS[size]}`}
     >
       {initials}
     </span>

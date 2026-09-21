@@ -8,7 +8,15 @@ export interface SidebarProps {
   collapsed?: boolean;
 }
 
-/** Ports .sidebar / .logo-slot / .door-logo / .sidebar-section / .nav / .sidebar-bottom. */
+/** Ports .sidebar / .logo-slot / .door-logo / .sidebar-section / .nav / .sidebar-bottom.
+ *
+ *  `transition-[width]` adalah SATU-SATUNYA nilai arbitrer yang sengaja dipertahankan di
+ *  adapter ini, dan guardrail nilai-arbitrer mengecualikan `transition-[`. Alasannya:
+ *  transition-property menerima NAMA PROPERTI CSS, bukan token desain, jadi tidak ada
+ *  langkah skala yang bisa menggantikannya - aturan itu tidak berlaku di sini.
+ *  `transition-all` bukan penggantinya: ia ikut menganimasikan background-color, sehingga
+ *  setiap pergantian tema terang/gelap memudar melintasi seluruh sidebar. Menukar regresi
+ *  perilaku demi menyenangkan grep bukan pertukaran yang sepadan. */
 export function Sidebar({ logo, sectionLabel, children, bottom, collapsed }: SidebarProps) {
   return (
     <aside
@@ -18,7 +26,7 @@ export function Sidebar({ logo, sectionLabel, children, bottom, collapsed }: Sid
     >
       <div className="mb-6 flex h-10 items-center px-2.5">{logo}</div>
       {sectionLabel && !collapsed && (
-        <div className="mb-1.5 mt-2.5 px-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+        <div className="mb-1.5 mt-2.5 px-2 text-xs font-semibold uppercase tracking-wider text-neutral-400">
           {sectionLabel}
         </div>
       )}

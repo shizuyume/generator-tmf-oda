@@ -269,7 +269,7 @@ export function UiAlert({ severity, variant: _variant, children, onClose }: { se
   const s = severity ?? 'info';
   const icon = s === 'error' ? <XCircle size={16} /> : s === 'success' ? <CheckCircle2 size={16} /> : s === 'warning' ? <AlertTriangle size={16} /> : <Info size={16} />;
   return (
-    <div className={`flex items-center gap-2 rounded-md px-3 py-2 text-[13px] ${ALERT_TONE[s] ?? ALERT_TONE.info}`}>
+    <div className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm ${ALERT_TONE[s] ?? ALERT_TONE.info}`}>
       {icon}
       <span className="flex-1">{children}</span>
       {onClose && (
@@ -298,7 +298,7 @@ export function UiSnackbar({
   if (!open) return null;
   return (
     <div
-      className="fixed bottom-6 left-6 z-[200] rounded-lg border border-border bg-card shadow-4"
+      className="fixed bottom-6 left-6 z-200 rounded-lg border border-border bg-card shadow-4"
       role="alert"
     >
       {children}
@@ -325,7 +325,7 @@ export function UiTabs({ value, onChange, children, sx }: UiTabsProps): ReactEle
                 key={i}
                 type="button"
                 onClick={() => onChange(null, i)}
-                className={`-mb-px border-b-2 px-3 py-2 text-[13px] font-medium ${
+                className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${
                   active ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -354,7 +354,7 @@ export function UiTable({ size, sx, children }: { size?: string; sx?: Sx; childr
   void size;
   return (
     <div className="overflow-auto" style={sxToStyle(sx)}>
-      <table className="w-full min-w-[480px] border-collapse">{children}</table>
+      <table className="w-full min-w-120 border-collapse">{children}</table>
     </div>
   );
 }

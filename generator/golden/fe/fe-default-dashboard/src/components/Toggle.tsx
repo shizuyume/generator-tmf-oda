@@ -10,7 +10,7 @@ export interface ToggleProps {
  * consistent with the design tokens (radius-full, bg-brand). Used by the `toggle` semantic. */
 export function Toggle({ checked = false, onChange, disabled, label, name }: ToggleProps) {
   return (
-    <label className={`inline-flex items-center gap-2 text-[13px] text-foreground ${disabled ? 'opacity-50' : ''}`}>
+    <label className={`inline-flex items-center gap-2 text-sm text-foreground ${disabled ? 'opacity-50' : ''}`}>
       <span
         role="switch"
         aria-checked={checked}

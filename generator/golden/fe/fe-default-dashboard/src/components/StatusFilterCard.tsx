@@ -33,7 +33,7 @@ export function StatusFilterCard({ phases, activeFilter, onFilterChange }: Statu
           >
             {phase.label}
             {typeof phase.count === 'number' && (
-              <span className={`rounded-full px-1.5 text-[10px] ${active ? 'bg-primary/20' : 'bg-neutral-200'}`}>{phase.count}</span>
+              <span className={`rounded-full px-1.5 text-xs ${active ? 'bg-primary/20' : 'bg-neutral-200'}`}>{phase.count}</span>
             )}
           </button>
         );

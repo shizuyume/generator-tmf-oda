@@ -11,11 +11,11 @@ export interface ModalProps {
 }
 
 const WIDTH_CLASS: Record<string, string> = {
-  xs: 'max-w-[360px]',
-  sm: 'max-w-[480px]',
-  md: 'max-w-[600px]',
-  lg: 'max-w-[760px]',
-  xl: 'max-w-[960px]',
+  xs: 'max-w-90',
+  sm: 'max-w-120',
+  md: 'max-w-150',
+  lg: 'max-w-190',
+  xl: 'max-w-240',
 };
 
 /** Ports .modal-backdrop/.modal/.modal-header/.modal-body/.modal-footer. ESC + backdrop-click
@@ -34,7 +34,7 @@ export function Modal({ open, title, onClose, children, footer, width = 'md' }: 
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(16,24,40,0.42)] p-5 backdrop-blur-[3px]"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-neutral-950/40 p-5 backdrop-blur-xs"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

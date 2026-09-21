@@ -41,10 +41,10 @@ function Shell({ menu = DEFAULT_MENU, title, routes }: AppProps): ReactElement {
         <Sidebar
           logo={
             <div className="flex items-center gap-2 font-bold tracking-tight text-foreground">
-              <span className="grid h-[30px] w-[30px] place-items-center rounded-md bg-primary-strong text-primary-foreground">
+              <span className="grid h-7.5 w-7.5 place-items-center rounded-md bg-primary-strong text-primary-foreground">
                 {appTitle.charAt(0).toUpperCase()}
               </span>
-              <span className="text-[17px]">{appTitle}</span>
+              <span className="text-lg">{appTitle}</span>
             </div>
           }
           sectionLabel="Workspace"
@@ -82,7 +82,7 @@ function ThemeToggle(): ReactElement {
       onClick={() => toggle()}
       aria-label="mode gelap"
       title="Theme"
-      className="grid h-[34px] w-[34px] place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+      className="grid h-8.5 w-8.5 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
     >
       {darkMode ? <Sun size={18} strokeWidth={1.75} /> : <Moon size={18} strokeWidth={1.75} />}
     </button>

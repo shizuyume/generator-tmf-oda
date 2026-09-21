@@ -7,7 +7,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 /** Native checkbox, styled with token colors (no external dependency). */
 export function Checkbox({ label, className = '', id, ...rest }: CheckboxProps) {
   return (
-    <label htmlFor={id} className="inline-flex items-center gap-2 text-[13px] text-foreground">
+    <label htmlFor={id} className="inline-flex items-center gap-2 text-sm text-foreground">
       <input
         id={id}
         type="checkbox"

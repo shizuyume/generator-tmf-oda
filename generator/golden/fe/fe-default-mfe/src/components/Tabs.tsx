@@ -35,7 +35,7 @@ export function Tabs({ items, value, onChange }: TabsProps) {
             {item.icon}
             {item.label}
             {typeof item.count === 'number' && (
-              <span className={`rounded-full px-1.5 text-[10px] ${active ? 'bg-primary/10 text-primary' : 'bg-neutral-200 text-muted-foreground'}`}>
+              <span className={`rounded-full px-1.5 text-xs ${active ? 'bg-primary/10 text-primary' : 'bg-neutral-200 text-muted-foreground'}`}>
                 {item.count}
               </span>
             )}

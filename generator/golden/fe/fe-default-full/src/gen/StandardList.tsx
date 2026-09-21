@@ -96,7 +96,7 @@ export function StandardList<T extends Record<string, unknown> = Record<string, 
               <button
                 type="button"
                 onClick={() => onFilterModelChange({ items: [] })}
-                className="inline-flex items-center gap-1 rounded-full border border-input px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground"
+                className="inline-flex items-center gap-1 rounded-full border border-input px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground"
               >
                 {activeFilterCount} filter aktif
                 <X size={11} />

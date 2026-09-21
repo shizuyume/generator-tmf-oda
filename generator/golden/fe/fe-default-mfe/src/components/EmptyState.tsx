@@ -24,7 +24,7 @@ export function EmptyState({ title = 'Tidak ada data', colSpan = 1, action, chil
             <button
               type="button"
               onClick={action.onClick}
-              className="rounded-md border border-input px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-neutral-50"
+              className="rounded-md border border-input px-3 py-1.5 text-xs font-medium text-foreground hover:bg-neutral-50"
             >
               {action.label}
             </button>

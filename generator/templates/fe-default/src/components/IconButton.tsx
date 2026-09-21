@@ -8,7 +8,7 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
 
 /** Ports .icon-button / .row-actions button from example-component-in-dashboard.html. */
 export function IconButton({ size = 'medium', title, className = '', children, ...rest }: IconButtonProps) {
-  const dim = size === 'small' ? 'w-7 h-7' : 'w-[34px] h-[34px]';
+  const dim = size === 'small' ? 'w-7 h-7' : 'w-8.5 h-8.5';
   return (
     <button
       type="button"

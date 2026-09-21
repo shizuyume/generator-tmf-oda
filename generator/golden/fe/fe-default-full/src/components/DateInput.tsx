@@ -12,7 +12,7 @@ export interface DateInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
  * uses `datetime-local` (guardrail grep only forbids `datetime-local` on the PLAIN date
  * case, not on a field whose own type says datetime). */
 export function DateInput({ size = 'medium', error, datetime, className = '', ...rest }: DateInputProps) {
-  const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-[13px]';
+  const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-sm';
   const border = error ? 'border-destructive' : 'border-input';
   return (
     <input

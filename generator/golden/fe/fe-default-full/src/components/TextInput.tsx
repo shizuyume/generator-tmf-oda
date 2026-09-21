@@ -10,7 +10,7 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
 /** Ports .field input/select from example-component-in-dashboard.html (h-10, radius-md,
  * border-strong). `multiline` renders a <textarea> instead (adapter fe-default: textarea semantic). */
 export function TextInput({ size = 'medium', error, className = '', multiline, rows, ...rest }: TextInputProps) {
-  const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-[13px]';
+  const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-sm';
   const border = error ? 'border-destructive' : 'border-input';
   if (multiline) {
     const { value, onChange, ...textareaRest } = rest as unknown as TextareaHTMLAttributes<HTMLTextAreaElement>;

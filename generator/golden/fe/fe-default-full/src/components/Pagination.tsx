@@ -28,7 +28,7 @@ export function Pagination({
   const pages = Array.from({ length: Math.min(3, pageCount) }, (_, i) => windowStart + i);
 
   return (
-    <div className="flex h-[62px] items-center justify-between px-4.5 text-[11px] text-muted-foreground">
+    <div className="flex h-15.5 items-center justify-between px-4.5 text-xs text-muted-foreground">
       <div className="flex items-center gap-3">
         <span>{infoLabel ?? `${rowCount} data`}</span>
         {pageSizeOptions && pageSizeOptions.length > 0 && onPageSizeChange && (
@@ -37,7 +37,7 @@ export function Pagination({
             <select
               value={pageSize ?? pageSizeOptions[0]}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
-              className="rounded-md border border-input bg-card px-1.5 py-1 text-[11px] text-foreground"
+              className="rounded-md border border-input bg-card px-1.5 py-1 text-xs text-foreground"
             >
               {pageSizeOptions.map((n) => (
                 <option key={n} value={n}>{n}</option>
@@ -49,7 +49,7 @@ export function Pagination({
       <div className="flex gap-1">
         <button
           type="button"
-          className="grid h-[30px] w-[30px] place-items-center rounded-md border border-transparent text-muted-foreground hover:bg-neutral-100 disabled:opacity-40"
+          className="grid h-7.5 w-7.5 place-items-center rounded-md border border-transparent text-muted-foreground hover:bg-neutral-100 disabled:opacity-40"
           disabled={page <= 0}
           onClick={() => onPageChange(page - 1)}
           aria-label="Sebelumnya"
@@ -60,7 +60,7 @@ export function Pagination({
           <button
             key={p}
             type="button"
-            className={`grid h-[30px] w-[30px] place-items-center rounded-md border border-transparent text-[11px] ${
+            className={`grid h-7.5 w-7.5 place-items-center rounded-md border border-transparent text-xs ${
               p === page ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-neutral-100'
             }`}
             onClick={() => onPageChange(p)}
@@ -70,7 +70,7 @@ export function Pagination({
         ))}
         <button
           type="button"
-          className="grid h-[30px] w-[30px] place-items-center rounded-md border border-transparent text-muted-foreground hover:bg-neutral-100 disabled:opacity-40"
+          className="grid h-7.5 w-7.5 place-items-center rounded-md border border-transparent text-muted-foreground hover:bg-neutral-100 disabled:opacity-40"
           disabled={page >= pageCount - 1}
           onClick={() => onPageChange(page + 1)}
           aria-label="Berikutnya"
