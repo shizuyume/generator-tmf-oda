@@ -89,6 +89,125 @@ const COVERAGE_MIN = 90;
 const runtimeIdx = process.argv.indexOf('--runtime');
 const runtimeBackend = runtimeIdx > -1 ? process.argv[runtimeIdx + 1] : null;
 
+/* ── gate fe-default (Task 9 rencana re-skin) ──────────────────────────────
+ * Tiga aturan yang dinamai panduan dan tidak ditegakkan apa pun sebelumnya.
+ * Ketiganya ber-scope HANYA ke fe-default: FE_FORBID juga di-walk di pohon golden
+ * mui dan neudela, yang memakai sx/styled dan tidak pernah diuji terhadap regex ini -
+ * melebarkannya berarti menaruh risiko false positive di gate yang hari ini hijau,
+ * demi aturan yang tidak berlaku bagi mereka.
+ */
+const FE_DEFAULT_ROOTS = () =>
+  [
+    path.join(root, 'templates', 'fe-default'),
+    ...['fe-default-full', 'fe-default-dashboard', 'fe-default-mfe'].map((c) =>
+      path.join(root, 'golden', 'fe', c),
+    ),
+  ].filter((d) => fs.existsSync(d));
+
+function feDefaultFiles() {
+  const out = [];
+  for (const r of FE_DEFAULT_ROOTS()) out.push(...feWalk(r, r, [], SKIP_DIRS));
+  return out;
+}
+
+/* Nilai arbitrer memotong skala token; referensi primitif brand memotong lapisan
+ * semantik sehingga preset ramp berhenti bermakna.
+ *
+ * `transition-[...]` DIKECUALIKAN dengan sengaja: transition-property menerima NAMA
+ * PROPERTI CSS, bukan token desain, jadi tidak ada langkah skala yang bisa
+ * menggantikannya - aturan itu tidak berlaku. Penggantinya (`transition-all`) akan ikut
+ * menganimasikan background-color, sehingga setiap pergantian tema memudar melintasi
+ * seluruh sidebar. Lihat templates/fe-default/src/components/Sidebar.tsx.
+ */
+// [^\]\n] bukan [^\]]: tanpa mengecualikan newline, sebuah `-[` yang tidak ditutup di
+// baris yang sama akan menelan ratusan karakter sampai `]` berikutnya di mana pun, dan
+// nilai arbitrer asli di dalam rentang yang tertelan itu ikut tersembunyi. Terbukti:
+// satu komentar di Sidebar.tsx menghasilkan kecocokan sepanjang 681 karakter, dan
+// karena kecocokan itu kebetulan diawali `transition-[`, pengecualian di bawah
+// membuatnya lolos diam-diam.
+const ARBITRARY_RE = /\b[a-z-]+-\[[^\]\n]+\]/g;
+const BRAND_PRIMITIVE_RE = /\b(?:bg|text|border|ring)-brand-\d{2,3}\b/g;
+
+function feDefaultGuardrails() {
+  const hits = [];
+  for (const f of feDefaultFiles()) {
+    if (!/\.(tsx?|css|js)$/.test(f)) continue;
+    let text;
+    try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
+    const rel = path.relative(root, f);
+    for (const m of text.match(ARBITRARY_RE) ?? []) {
+      if (m.startsWith('transition-[')) continue;
+      hits.push(`arbitrary Tailwind value : ${rel} : ${m}`);
+    }
+    for (const m of text.match(BRAND_PRIMITIVE_RE) ?? []) {
+      hits.push(`direct brand primitive : ${rel} : ${m}`);
+    }
+  }
+  return hits.length ? hits.join('\n') : 'no fe-default guardrail hits';
+}
+
+/* Nilai literal di @theme inline diresolusi Tailwind saat BUILD, jadi override .dark
+ * tidak pernah sampai ke utility: mode gelap mati tanpa error, build hijau, semua kelas
+ * hadir. Tidak ada grep yang bisa melihat ini - gate ini mem-parse bloknya.
+ *
+ * Skala tipe, --font-mono dan --radius-full SAH berupa literal: ketiganya tidak berbeda
+ * antara terang dan gelap, jadi tidak ada override yang bisa gagal sampai.
+ */
+const THEME_LITERAL_OK = /--text-|--font-mono|--radius-full/;
+
+function themeInlineLiterals() {
+  const files = feDefaultFiles().filter((f) => f.endsWith(path.join('gen', 'app.css')));
+  if (!files.length) return 'no app.css found under fe-default roots';
+  const problems = [];
+  for (const f of files) {
+    const rel = path.relative(root, f);
+    const css = fs.readFileSync(f, 'utf8');
+    const m = css.match(/@theme inline\s*\{([\s\S]*?)\n\}/);
+    if (!m) { problems.push(`${rel}: no @theme inline block`); continue; }
+    for (const line of m[1].split('\n')) {
+      if (!/:\s*[^;]*;/.test(line)) continue;       // bukan deklarasi
+      if (/^\s*(?:\/\*|\*)/.test(line)) continue;   // komentar
+      if (THEME_LITERAL_OK.test(line)) continue;
+      if (!/var\(/.test(line)) problems.push(`${rel}: literal value -> ${line.trim()}`);
+    }
+  }
+  return problems.length ? problems.join('\n') : `@theme inline: ${files.length} file(s), every entry uses var()`;
+}
+
+/* Sebuah var(--x) yang menunjuk nama yang tidak didefinisikan siapa pun merender sebagai
+ * TIDAK APA-APA - tanpa error, tanpa build gagal. Golden pun buta: ia hanya membuktikan
+ * template == keluaran, bukan bahwa keluarannya benar. COLOR_MAP di uiwrappers.tsx
+ * sempat menunjuk tiga nama mati seperti ini dan hanya tertangkap dengan mata.
+ *
+ * Nama bawaan Tailwind (--tw-*, --spacing, --default-*) didefinisikan runtime-nya
+ * sendiri, bukan oleh kita.
+ */
+const TW_BUILTIN_VAR = /^--(?:tw-|spacing$|default-)/;
+
+function danglingVars() {
+  const defined = new Set();
+  const referenced = [];   // { name, rel }
+  for (const f of feDefaultFiles()) {
+    if (!/\.(tsx?|css)$/.test(f)) continue;
+    let text;
+    try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
+    const rel = path.relative(root, f);
+    // Definisi: `--x: value` di CSS, dan `"--x": "value"` / `'--x': '...'` di TS.
+    for (const m of text.matchAll(/(?:^|[\s{,;"'])(--[a-z0-9-]+)\s*"?'?\s*:/gi)) defined.add(m[1]);
+    for (const m of text.matchAll(/var\((--[a-z0-9-]+)/gi)) referenced.push({ name: m[1], rel });
+  }
+  const dangling = [];
+  const seen = new Set();
+  for (const { name, rel } of referenced) {
+    if (defined.has(name) || TW_BUILTIN_VAR.test(name)) continue;
+    const key = `${rel}|${name}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    dangling.push(`dangling var : ${rel} : var(${name})`);
+  }
+  return dangling.length ? dangling.join('\n') : `every var(--x) resolves (${defined.size} names defined)`;
+}
+
 const gates = [
   {
     name: 'corpus sweep (every component emits without crashing)',
@@ -172,6 +291,24 @@ const gates = [
     },
     ok: out => /no guardrail hits/.test(out),
     summary: out => /no guardrail hits/.test(out) ? '0 hits' : out.split('\n').length + ' hit(s)',
+  },
+  {
+    name: 'FE fe-default guardrails: no arbitrary values, no brand primitives',
+    run: () => feDefaultGuardrails(),
+    ok: out => /no fe-default guardrail hits/.test(out),
+    summary: out => /no fe-default guardrail hits/.test(out) ? '0 hits' : out.split('\n').length + ' hit(s)',
+  },
+  {
+    name: 'FE @theme inline: var() references only (dark-mode trap)',
+    run: () => themeInlineLiterals(),
+    ok: out => /^@theme inline: /.test(out),
+    summary: out => /^@theme inline: /.test(out) ? '4 file(s) OK' : out.split('\n').length + ' problem(s)',
+  },
+  {
+    name: 'FE fe-default: every var(--x) resolves to a defined token',
+    run: () => danglingVars(),
+    ok: out => /^every var\(--x\) resolves/.test(out),
+    summary: out => /^every var\(--x\) resolves/.test(out) ? '0 dangling' : out.split('\n').length + ' dangling',
   },
   // GATE DIHAPUS: 'FE mcs-common golden: common_remote federation REQUIRED'.
   // Case golden mcs-common-tmf736 dikeluarkan dari matriks (jalur import microservice
