@@ -566,8 +566,8 @@ node -e "
 const a = require('./libs/fe-default.adapter.js');
 " 2>/dev/null || node --input-type=module -e "
 import * as a from './libs/fe-default.adapter.js';
-const d = a.theme({}, true, 'default')[':root']['--color-brand-600'];
-const c = a.theme({}, true, 'crimson')[':root']['--color-brand-600'];
+const d = a.theme({}, true, 'default')[':root']['--brand-600'];
+const c = a.theme({}, true, 'crimson')[':root']['--brand-600'];
 const u = a.rampFor('indigo');
 console.log('default brand-600:', d);
 console.log('crimson brand-600:', c);
@@ -1699,7 +1699,7 @@ print('ok')
 cd generator
 rm -rf ../.feir .feir "$SCRATCH/reskin-crimson"
 node src/cli.mjs fe-gen scaffold --spec "$SCRATCH/crimson-spec.yaml" --out "$SCRATCH/reskin-crimson" --port 5019
-grep -m1 "color-brand-600" "$SCRATCH/reskin-crimson"/*/src/gen/theme.generated.ts
+grep -m1 "brand-600" "$SCRATCH/reskin-crimson"/*/src/gen/theme.generated.ts
 ```
 
 Expected: `oklch(0.577 0.245 27.325)`. Build and screenshot this one too; primary buttons must be red, not terracotta.
