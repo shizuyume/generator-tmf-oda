@@ -48,7 +48,7 @@ export function TableCell({
     );
   }
   return (
-    <td className={`h-14.5 border-b border-border px-4.5 text-xs text-foreground ${className}`} {...(rest as TdHTMLAttributes<HTMLTableCellElement>)}>
+    <td className={`h-(--table-row-h) border-b border-border px-4.5 text-xs text-foreground ${className}`} {...(rest as TdHTMLAttributes<HTMLTableCellElement>)}>
       {children}
     </td>
   );

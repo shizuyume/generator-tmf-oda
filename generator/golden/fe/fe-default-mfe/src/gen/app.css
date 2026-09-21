@@ -129,6 +129,20 @@
   transition-duration: var(--default-transition-duration);
 }
 
+/* Densitas: tinggi kontrol dan baris sebagai VARIABEL, bukan kelas tinggi tetap,
+   supaya satu atribut di <html> menggeser seluruh app tanpa menyentuh satu komponen
+   pun. Dikonsumsi lewat bentuk tanda kurung v4 - h-(--control-h) - bukan bentuk
+   kurung siku, yang adalah sintaks v3 dan dilarang guardrail nilai-arbitrer. */
+:root{--control-h:2.25rem;--table-row-h:2.5rem;--header-h:3.5rem}
+[data-density="compact"]{--control-h:2rem;--table-row-h:2rem}
+[data-density="comfortable"]{--control-h:2.75rem;--table-row-h:3rem}
+
+/* Saklar mati untuk gerak: satu aturan, bukan per-komponen, supaya tidak ada
+   transisi yang bisa lolos dari preferensi ini. */
+@media (prefers-reduced-motion: reduce){
+  *{transition-duration:0.01ms;animation-duration:0.01ms}
+}
+
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:var(--font-family);background:var(--background);color:var(--foreground)}
 body{font-size:var(--text-base);line-height:var(--text-base--line-height)}
