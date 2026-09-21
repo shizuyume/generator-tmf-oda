@@ -769,10 +769,11 @@ cd "$SCRATCH/reskin/revenue-sharing-portal-fe-default"
 sed -i '0,/className="/s||className="bg-neutral-100 |' src/pages/Home.tsx
 yarn build
 grep -o "\.bg-neutral-100{[^}]*}" build/static/css/*.css | head -1
-grep -o "\--color-neutral-100:[^;]*;" build/static/css/*.css | head -1
 ```
 
-Expected: the emitted rule reads `background-color: var(--color-neutral-100)` and `--color-neutral-100` resolves to `oklch(0.968 0.007 247.896)`. If instead it emits Tailwind's own `#f5f5f5`-family neutral, the `@theme inline` mapping is missing or misspelled — fix it here.
+Expected: `.bg-neutral-100{background-color:var(--neutral-100)}`.
+
+Read that carefully — **the discriminator is the `var()` reference, not a value.** An `@theme inline` entry that is a pure alias gets inlined at the point of use; it is not re-emitted as its own `--color-neutral-100` custom property, so grepping for that declaration finds nothing even when the mapping is perfectly correct. What the mapping changes is whether the utility points at `var(--neutral-100)` — ours, resolved at runtime from `theme.generated.ts` — or at a **literal** `#f5f5f5`-family hex, which is what Tailwind's own built-in `neutral` scale emits when nothing overrides it. A literal here means the mapping is missing or misspelled; fix it before moving on.
 
 The scaffolded app is disposable; the `sed` touches only the scratch copy, never the template.
 
@@ -785,8 +786,13 @@ const fs = require('fs');
 const css = fs.readFileSync('templates/fe-default/src/gen/app.css', 'utf8');
 const m = css.match(/@theme inline\s*\{([\s\S]*?)\n\}/);
 if (!m) { console.error('FAIL: tidak ada blok @theme inline'); process.exit(1); }
+// Pengecualian yang SAMA dengan gate Task 9: --radius-full, --font-mono dan skala
+// tipe adalah konstanta yang tidak berbeda antara terang dan gelap, jadi tidak ada
+// override .dark yang bisa gagal sampai. Melarangnya berarti mengarang variabel
+// runtime palsu semata demi menyenangkan checker.
 const bad = m[1].split('\n')
-  .filter(l => /:\s*[^;]*;/.test(l) && !/var\(/.test(l) && !/^\s*(\/\*|\*)/.test(l));
+  .filter(l => /:\s*[^;]*;/.test(l) && !/var\(/.test(l) && !/^\s*(\/\*|\*)/.test(l)
+               && !/--text-|--font-mono|--radius-full/.test(l));
 if (bad.length) { console.error('FAIL: nilai literal di @theme inline:\n' + bad.join('\n')); process.exit(1); }
 console.log('OK: semua entri @theme inline memakai var()');
 "
