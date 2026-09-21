@@ -153,6 +153,14 @@ const ARBITRARY_RE = /\b[a-z-]+-\[[^\]\n]+\]/g;
 //      `--my-gap` lolos.
 // Tanpa syarat kedua, delapan `[key: string]` di gen/config.ts dan gen/api/* langsung
 // menjadi false positive - terbukti, bukan diantisipasi.
+//
+// HARGA dari syarat kedua, dicatat supaya tidak disangka gate ini menutup seluruh kelas:
+// properti arbitrer SATU KATA tetap tak terlihat - [color:red], [display:grid],
+// [appearance:none] - begitu pula bentuk berawalan vendor [-webkit-line-clamp:3] dan
+// custom property camelCase [--myGap:4px]. Risikonya rendah (properti satu kata hampir
+// selalu punya utility kelas satu), dan tuas untuk memperketatnya adalah daftar-izin
+// properti CSS satu kata, BUKAN melonggarkan aturan tanda hubung - melonggarkannya
+// mengembalikan delapan false positive itu.
 const ARBITRARY_BRACKET_FIRST_RE = /(?:^|["'\s:])(\[(?:--[a-z0-9-]+|[a-z]+(?:-[a-z]+)+):[^\]\n\s]+\])/g;
 
 // Varian Tailwind, BUKAN nilai arbitrer: data-[state=open], aria-[expanded], has-[...].
@@ -194,6 +202,8 @@ function feDefaultGuardrails() {
 const THEME_LITERAL_OK = /--text-|--font-mono|--radius-full/;
 
 function themeInlineLiterals() {
+  const { problem } = feDefaultRootsOrProblem();
+  if (problem) return problem;
   const files = feDefaultFiles().filter((f) => f.endsWith(path.join('gen', 'app.css')));
   if (!files.length) return 'no app.css found under fe-default roots';
   const problems = [];

@@ -13,6 +13,7 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
 
 /** Ports .select from example-component-in-dashboard.html. */
 export function Select({ size = 'medium', options = [], placeholder, className = '', children, ...rest }: SelectProps) {
+  // `small` = tinggi TETAP di luar sistem densitas; rasionalisasinya di TextInput.tsx.
   const h = size === 'small' ? 'h-8 text-xs' : 'h-(--control-h) text-sm';
   return (
     <select

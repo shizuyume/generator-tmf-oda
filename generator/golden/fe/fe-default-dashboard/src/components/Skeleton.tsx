@@ -30,7 +30,7 @@ export function SkeletonRows({ rows = 5, columns = 4 }: SkeletonRowsProps) {
       {Array.from({ length: rows }, (_, r) => (
         <tr key={r}>
           {Array.from({ length: columns }, (_, c) => (
-            <td key={c} className="px-4 py-3">
+            <td key={c} className="h-(--table-row-h) px-4 py-3">
               <Skeleton height={12} width={c === 0 ? '60%' : '80%'} />
             </td>
           ))}

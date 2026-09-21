@@ -17,6 +17,8 @@ export interface EmptyStateProps {
 export function EmptyState({ title = 'Tidak ada data', colSpan = 1, action, children }: EmptyStateProps) {
   return (
     <tr>
+      {/* Sengaja TIDAK memakai --table-row-h: ini bukan baris data melainkan satu sel
+          membentang penuh, dan py-8 yang lebih lega memang disengaja. */}
       <td colSpan={colSpan} className="py-8 text-center text-xs text-muted-foreground">
         <div className="flex flex-col items-center gap-2">
           <span>{children ?? title}</span>
