@@ -390,8 +390,10 @@ export function theme(tokens = {}, darkMode = false, presetName = undefined) {
 
 /**
  * renderTokensCss: objek theme() -> CSS text (`:root{...}\n.dark{...}\n`).
- * Dipanggil scaffold-time (opsional — item 2 rencana: scaffoldApp.mjs bisa menulis
- * src/gen/tokens.css dari fungsi ini bila diwire; belum diwire di M-ini, hanya diexport).
+ * Dipanggil scaffold-time oleh scaffoldApp.mjs, yang menulis hasilnya ke
+ * src/gen/tokens.css. File itulah yang melukis halaman sebelum chunk bootstrap tiba —
+ * src/index.tsx memuat bootstrap lewat import() dinamis, jadi jendela sebelum theme.ts
+ * menyuntikkan <style> selebar fetch chunk, bukan satu frame.
  */
 export function renderTokensCss(tokens = {}, darkMode = false, presetName = undefined) {
   const blocks = theme(tokens, darkMode, presetName);

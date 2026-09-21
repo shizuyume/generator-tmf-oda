@@ -23,9 +23,9 @@ const COLOR_MAP: Record<string, string> = {
   'text.secondary': 'var(--muted-foreground)',
   divider: 'var(--border)',
   error: 'var(--destructive)',
-  success: 'var(--success-500)',
-  warning: 'var(--warning-500)',
-  info: 'var(--info-500)',
+  success: 'var(--success)',
+  warning: 'var(--warning)',
+  info: 'var(--info)',
 };
 
 function px(n: unknown): string {

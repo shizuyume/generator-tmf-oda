@@ -13,7 +13,9 @@ export interface BreadcrumbsProps {
 }
 
 /** frontend-pattern.md §7.2/§9: baris pertama tiap list/detail page. Item terakhir = current
- * page (tidak clickable, warna text-primary); item sebelumnya clickable (text-secondary). */
+ * page (tidak clickable, memakai warna foreground); item sebelumnya clickable dan memakai
+ * warna muted. Nama kelasnya sengaja tidak ditulis harfiah: Tailwind memindai komentar,
+ * jadi menyebut sebuah kelas di sini mengemit aturannya ke setiap bundle. */
 export function Breadcrumbs({ items, trailing }: BreadcrumbsProps) {
   return (
     <nav className="flex items-center justify-between text-xs text-muted-foreground" aria-label="Breadcrumb">

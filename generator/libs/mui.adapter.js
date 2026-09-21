@@ -215,9 +215,18 @@ export function theme(tokens = {}, darkMode = false) {
       dark: {
         palette: {
           mode: 'dark',
-          primary: { main: tokens.primary },
-          background: { default: shade(tokens.background, 0.2), paper: shade(tokens.surface, 0.25) },
-          text: { primary: shade(tokens.text, 3), secondary: shade(tokens.textMuted, 1.5) },
+          // Default DUPLIKAT dari cabang terang dengan sengaja: shade(undefined, f)
+          // mengembalikan undefined, jadi tanpa ini palette.primary tetap {} dan
+          // createTheme melempar saat modul dimuat - layar putih, bukan pesan.
+          primary: { main: tokens.primary || '#2563eb' },
+          background: {
+            default: shade(tokens.background || '#f8fafc', 0.2),
+            paper: shade(tokens.surface || '#ffffff', 0.25),
+          },
+          text: {
+            primary: shade(tokens.text || '#0f172a', 3),
+            secondary: shade(tokens.textMuted || '#64748b', 1.5),
+          },
         },
         shape: { borderRadius: radius },
         typography: { fontFamily: tokens.font || 'Inter, system-ui, sans-serif' },
