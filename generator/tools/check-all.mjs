@@ -104,6 +104,21 @@ const FE_DEFAULT_ROOTS = () =>
     ),
   ].filter((d) => fs.existsSync(d));
 
+// Jumlah root yang HARUS ada: template + tiga case golden. Di-assert, bukan diasumsikan.
+// Tanpa ini, root yang diganti nama atau dikeluarkan dari matriks membuat setiap gate di
+// bawah melakukan loop atas himpunan kosong dan melaporkan LULUS - hijau yang tidak
+// mewakili apa pun. Itu persis alasan sebuah gate lain dihapus dua belas baris di bawah,
+// dan alasan itu tidak berhenti berlaku hanya karena gate-nya baru.
+const FE_DEFAULT_ROOTS_EXPECTED = 4;
+
+function feDefaultRootsOrProblem() {
+  const roots = FE_DEFAULT_ROOTS();
+  if (roots.length !== FE_DEFAULT_ROOTS_EXPECTED) {
+    return { problem: `fe-default roots: ${roots.length} ada, ${FE_DEFAULT_ROOTS_EXPECTED} diharapkan - gate tidak bisa menguji apa pun` };
+  }
+  return { roots };
+}
+
 function feDefaultFiles() {
   const out = [];
   for (const r of FE_DEFAULT_ROOTS()) out.push(...feWalk(r, r, [], SKIP_DIRS));
@@ -121,12 +136,34 @@ function feDefaultFiles() {
 // baris yang sama akan menelan ratusan karakter sampai `]` berikutnya di mana pun, dan
 // nilai arbitrer asli di dalam rentang yang tertelan itu ikut tersembunyi. Terbukti:
 // satu komentar di Sidebar.tsx menghasilkan kecocokan sepanjang 681 karakter, dan
-// karena kecocokan itu kebetulan diawali `transition-[`, pengecualian di bawah
-// membuatnya lolos diam-diam.
+// karena kecocokan itu kebetulan diawali sebuah prefiks yang saat itu dikecualikan,
+// ia lolos diam-diam. Pengecualian itu sudah tidak ada (lihat paragraf di atas), jadi
+// batasan newline ini kini satu-satunya yang menahan kelas kegagalan tersebut.
 const ARBITRARY_RE = /\b[a-z-]+-\[[^\]\n]+\]/g;
+
+// Tailwind punya DUA bentuk arbitrer lain yang tidak berawalan utility, jadi ARBITRARY_RE
+// buta terhadap keduanya: properti arbitrer `[mask-type:luminance]` dan variabel arbitrer
+// `[--my-gap:4px]`. Yang kedua memotong skala token persis seperti p-[13px].
+//
+// DUA syarat memisahkannya dari TypeScript, yang menulis hal yang mirip:
+//   1. tanpa spasi di mana pun - Tailwind memakai `_` untuk spasi, sementara index
+//      signature TS ditulis `[key: string]` dengan spasi setelah titik dua;
+//   2. nama properti harus diawali `--` atau memuat tanda hubung - `[key:string]` tanpa
+//      spasi pun tersaring di sini, sedangkan `mask-type`, `grid-template-columns` dan
+//      `--my-gap` lolos.
+// Tanpa syarat kedua, delapan `[key: string]` di gen/config.ts dan gen/api/* langsung
+// menjadi false positive - terbukti, bukan diantisipasi.
+const ARBITRARY_BRACKET_FIRST_RE = /(?:^|["'\s:])(\[(?:--[a-z0-9-]+|[a-z]+(?:-[a-z]+)+):[^\]\n\s]+\])/g;
+
+// Varian Tailwind, BUKAN nilai arbitrer: data-[state=open], aria-[expanded], has-[...].
+// Tidak ada langkah skala yang bisa menggantikan sebuah selektor kondisional, jadi aturan
+// ini memang tidak berlaku bagi mereka - sama seperti transition-property dulu.
+const ARBITRARY_VARIANT_PREFIX = /^(?:data|aria|has|group-has|peer-has|supports)-\[/;
 const BRAND_PRIMITIVE_RE = /\b(?:bg|text|border|ring)-brand-\d{2,3}\b/g;
 
 function feDefaultGuardrails() {
+  const { problem } = feDefaultRootsOrProblem();
+  if (problem) return problem;
   const hits = [];
   for (const f of feDefaultFiles()) {
     if (!/\.(tsx?|css|js)$/.test(f)) continue;
@@ -134,7 +171,11 @@ function feDefaultGuardrails() {
     try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
     const rel = path.relative(root, f);
     for (const m of text.match(ARBITRARY_RE) ?? []) {
+      if (ARBITRARY_VARIANT_PREFIX.test(m)) continue;
       hits.push(`arbitrary Tailwind value : ${rel} : ${m}`);
+    }
+    for (const m of text.matchAll(ARBITRARY_BRACKET_FIRST_RE)) {
+      hits.push(`arbitrary Tailwind value : ${rel} : ${m[1]}`);
     }
     for (const m of text.match(BRAND_PRIMITIVE_RE) ?? []) {
       hits.push(`direct brand primitive : ${rel} : ${m}`);
@@ -161,11 +202,16 @@ function themeInlineLiterals() {
     const css = fs.readFileSync(f, 'utf8');
     const m = css.match(/@theme inline\s*\{([\s\S]*?)\n\}/);
     if (!m) { problems.push(`${rel}: no @theme inline block`); continue; }
-    for (const line of m[1].split('\n')) {
-      if (!/:\s*[^;]*;/.test(line)) continue;       // bukan deklarasi
-      if (/^\s*(?:\/\*|\*)/.test(line)) continue;   // komentar
-      if (THEME_LITERAL_OK.test(line)) continue;
-      if (!/var\(/.test(line)) problems.push(`${rel}: literal value -> ${line.trim()}`);
+    // Dipecah per DEKLARASI (';'), bukan per baris: blok ini sudah memuat baris dengan
+    // dua deklarasi sekaligus (delapan baris skala tipe), jadi pemeriksaan per baris akan
+    // meloloskan `--color-a: var(--a); --color-b: #fff;` - dan juga deklarasi yang nilainya
+    // melanjut ke baris berikutnya.
+    const body = m[1].replace(/\/\*[\s\S]*?\*\//g, ' ');
+    for (const decl of body.split(';')) {
+      const d = decl.trim();
+      if (!/^--[a-z0-9-]+\s*:/i.test(d)) continue;   // bukan deklarasi
+      if (THEME_LITERAL_OK.test(d.split(':')[0])) continue;
+      if (!/var\(/.test(d)) problems.push(`${rel}: literal value -> ${d.replace(/\s+/g, ' ')};`);
     }
   }
   return problems.length ? problems.join('\n') : `@theme inline: ${files.length} file(s), every entry uses var()`;
@@ -182,6 +228,8 @@ function themeInlineLiterals() {
 const TW_BUILTIN_VAR = /^--(?:tw-|spacing$|default-)/;
 
 function danglingVars() {
+  const { problem } = feDefaultRootsOrProblem();
+  if (problem) return problem;
   const defined = new Set();
   const referenced = [];   // { name, rel }
   for (const f of feDefaultFiles()) {
@@ -189,8 +237,12 @@ function danglingVars() {
     let text;
     try { text = fs.readFileSync(f, 'utf8'); } catch { continue; }
     const rel = path.relative(root, f);
-    // Definisi: `--x: value` di CSS, dan `"--x": "value"` / `'--x': '...'` di TS.
-    for (const m of text.matchAll(/(?:^|[\s{,;"'])(--[a-z0-9-]+)\s*"?'?\s*:/gi)) defined.add(m[1]);
+    // Definisi dicari pada teks TANPA komentar. Sebuah kalimat yang menyebut nama token
+    // bukan definisi, dan file-file ini penuh komentar panjang TENTANG token-nya sendiri -
+    // jadi menghapus `--elev-4` sambil meninggalkan kalimat yang menjelaskannya akan
+    // membuat gate ini tetap hijau sementara var(--elev-4) merender sebagai tidak apa-apa.
+    const code = text.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1');
+    for (const m of code.matchAll(/(?:^|[\s{,;"'])(--[a-z0-9-]+)\s*"?'?\s*:/gi)) defined.add(m[1]);
     for (const m of text.matchAll(/var\((--[a-z0-9-]+)/gi)) referenced.push({ name: m[1], rel });
   }
   const dangling = [];
@@ -299,7 +351,7 @@ const gates = [
     name: 'FE @theme inline: var() references only (dark-mode trap)',
     run: () => themeInlineLiterals(),
     ok: out => /^@theme inline: /.test(out),
-    summary: out => /^@theme inline: /.test(out) ? '4 file(s) OK' : out.split('\n').length + ' problem(s)',
+    summary: out => /^@theme inline: /.test(out) ? (out.match(/(\d+) file/)?.[1] ?? '?') + ' file(s) OK' : out.split('\n').length + ' problem(s)',
   },
   {
     name: 'FE fe-default: every var(--x) resolves to a defined token',
