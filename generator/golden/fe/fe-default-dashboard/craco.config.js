@@ -9,11 +9,10 @@
 // The .mjs webpack rule at the bottom MUST stay: it is the Webpack 4 + strict
 // ESM compatibility fix (reference: capacity-management craco.config.js:41-47).
 //
-// style.postcss.plugins: fe-default styles via Tailwind (utility classes) + src/gen/tokens.css
-// (CSS custom properties, ported 1:1 from example-component-in-dashboard.html) — tailwind.config.js
-// maps color/radius/shadow tokens to those CSS variables.
-// Tailwind v4: the JS config is bridged from app.css via `@config` during the
-// migration and is deleted once the semantic token layer lands.
+// style.postcss.plugins: fe-default styles via Tailwind v4. Tema = CSS custom properties
+// (:root / .dark) yang dipetakan ke utility lewat @theme inline di src/gen/app.css.
+// TIDAK ADA konfigurasi JavaScript — tailwind.config.js sudah dihapus, dan src/gen/tokens.css
+// tinggal fallback statis untuk frame sebelum <style> runtime terpasang.
 const { ModuleFederationPlugin } = require("webpack").container;
 const tailwindPostcss = require("@tailwindcss/postcss");
 

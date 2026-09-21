@@ -19,9 +19,9 @@ import { Select as SelectPrimitive } from '../components/Select';
 /* ── sx (CSS-in-JS) -> inline style (subset, sama dgn neudela.adapter uiwrappers) ────────── */
 
 const COLOR_MAP: Record<string, string> = {
-  'text.primary': 'var(--text-primary)',
-  'text.secondary': 'var(--text-secondary)',
-  divider: 'var(--border-default)',
+  'text.primary': 'var(--foreground)',
+  'text.secondary': 'var(--muted-foreground)',
+  divider: 'var(--border)',
   error: 'var(--danger-500)',
   success: 'var(--success-500)',
   warning: 'var(--warning-500)',
