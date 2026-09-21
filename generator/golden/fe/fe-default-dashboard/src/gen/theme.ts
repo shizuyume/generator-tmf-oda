@@ -4,9 +4,8 @@ import { genThemeDark, genThemeLight } from './theme.generated';
 /**
  * fe-default theme dari tokens FE spec (ui.theme.tokens) — CSS variables di-generate
  * scaffold-time oleh generator/libs/fe-default.adapter.js (theme.generated.ts).
- * Tema diterapkan sebagai <style> blok di document + toggle atribut `data-theme="dark"`
- * di <html> (pola example-component-in-dashboard.html toggleTheme()). Base variables +
- * [data-accent] tetap datang dari src/gen/tokens.css (committed, statis).
+ * Tema diterapkan sebagai <style> blok di document + kelas `dark` di <html>
+ * (dikonsumsi `@custom-variant dark` di app.css).
  */
 function cssText(blocks: Record<string, Record<string, string>>): string {
   return Object.entries(blocks)
@@ -22,7 +21,7 @@ export function buildTheme(darkMode: boolean): void {
     document.head.appendChild(style);
   }
   style.textContent = cssText(darkMode ? genThemeDark : genThemeLight);
-  document.documentElement.dataset.theme = darkMode ? 'dark' : '';
+  document.documentElement.classList.toggle('dark', darkMode);
 }
 
 export function useApplyTheme(darkMode: boolean): void {
