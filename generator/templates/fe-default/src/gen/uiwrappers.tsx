@@ -372,7 +372,7 @@ export function UiTableRow({ children }: { children?: ReactNode }): ReactElement
 }
 
 export function UiTableCell({ children }: { children?: ReactNode }): ReactElement {
-  return <td className="px-4 py-2.5 text-xs text-foreground">{children}</td>;
+  return <td className="h-(--table-row-h) px-4 py-2.5 text-xs text-foreground">{children}</td>;
 }
 
 // ---------------------------------------------------------------------------

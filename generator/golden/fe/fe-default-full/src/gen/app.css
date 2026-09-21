@@ -140,7 +140,7 @@
 /* Saklar mati untuk gerak: satu aturan, bukan per-komponen, supaya tidak ada
    transisi yang bisa lolos dari preferensi ini. */
 @media (prefers-reduced-motion: reduce){
-  *{transition-duration:0.01ms;animation-duration:0.01ms}
+  *{transition-duration:0.01ms;animation-duration:0.01ms;animation-iteration-count:1}
 }
 
 *{box-sizing:border-box}

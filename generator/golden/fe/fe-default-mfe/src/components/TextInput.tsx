@@ -7,8 +7,11 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   rows?: number;
 }
 
-/** Ports .field input/select from example-component-in-dashboard.html (h-10, radius-md,
- * border-strong). `multiline` renders a <textarea> instead (adapter fe-default: textarea semantic). */
+/** Field teks. Tinggi default mengikuti --control-h (densitas); `size="small"` adalah
+ *  escape hatch dengan tinggi TETAP h-8, sengaja di luar sistem densitas dan disetel sama
+ *  dengan `sm` milik Button supaya keduanya sejajar dalam satu toolbar. Konsekuensinya:
+ *  pada densitas comfortable kontrol default tumbuh ke 44px sementara `small` tetap 32px.
+ *  `multiline` merender <textarea> (adapter fe-default: semantic textarea). */
 export function TextInput({ size = 'medium', error, className = '', multiline, rows, ...rest }: TextInputProps) {
   const h = size === 'small' ? 'h-8 text-xs' : 'h-(--control-h) text-sm';
   const border = error ? 'border-destructive' : 'border-input';
