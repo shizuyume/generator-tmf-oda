@@ -147,7 +147,7 @@
         "theme": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["tokens"],
+          
           "properties": {
             "name": { "type": "string" },
             "darkMode": { "type": "boolean" },
@@ -155,7 +155,7 @@
               "type": "object",
               "additionalProperties": false,
               "description": "Token netral — DILARANG vocab MUI (variant/color/style).",
-              "required": ["primary", "surface", "background", "text", "textMuted", "radius", "font"],
+              "description": "OVERRIDE di atas preset ui.theme.name. tokens dan setiap anggotanya OPSIONAL dengan sengaja: override yang wajib membuat preset tidak pernah bisa menggerakkan --primary, karena tokens.primary selalu menang. Spec yang mengisi ketujuhnya tetap sah - tidak ada yang rusak oleh pelonggaran ini.",
               "properties": {
                 "primary": { "type": "string" },
                 "surface": { "type": "string" },
