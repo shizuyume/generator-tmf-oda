@@ -176,9 +176,11 @@ function shade(hex, factor) {
 // verbatim. Dua format dalam satu sistem tidak masalah; CSS menerima keduanya.
 //
 // PENAMAAN: tanpa awalan `--color-`. Awalan itu adalah namespace tema Tailwind v4,
-// dan ramp brand SENGAJA tidak dipetakan menjadi utility - tanpa `bg-brand-600`
-// yang bisa dipanggil, aturan "komponen tidak pernah menyentuh primitif brand"
-// ditegakkan oleh konstruksi, bukan sekadar oleh review.
+// dan ramp brand SENGAJA tidak dipetakan menjadi utility - tanpa pemetaan itu tidak
+// ada satu pun utility brand yang bisa dipanggil komponen, jadi aturan "komponen
+// tidak pernah menyentuh primitif brand" ditegakkan oleh konstruksi, bukan sekadar
+// oleh review. (Contoh kelasnya tidak ditulis harfiah: guardrail yang menegakkan
+// aturan ini adalah grep, dan grep tidak bisa membedakan komentar dari kode.)
 export const RAMPS = {
   default: {
     '--brand-50': '#FDF7ED',
@@ -284,6 +286,12 @@ function semanticAliasesLight(tokens) {
     '--primary': tokens.primary || 'var(--brand-600)',
     '--primary-foreground': 'oklch(0.985 0 0)',
     '--primary-hover': 'var(--brand-700)',
+    // Permukaan brand PEKAT untuk chrome statis (mis. petak logo). Sengaja GELAP di
+    // kedua mode - tidak ada override di .dark - karena teks di atasnya adalah
+    // --primary-foreground yang nyaris putih. Memakai --primary atau --primary-hover
+    // untuk ini gagal kontras di mode gelap: keduanya naik ke brand-400/500 yang
+    // terang, dan putih di atas terakota terang hanya sekitar 2,4:1.
+    '--primary-strong': 'var(--brand-900)',
     '--secondary': 'var(--neutral-100)',
     '--secondary-foreground': tokens.text || 'var(--neutral-900)',
     '--muted': 'var(--neutral-100)',
