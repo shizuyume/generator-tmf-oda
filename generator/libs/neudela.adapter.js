@@ -197,7 +197,10 @@ export function theme(tokens, darkMode = false) {
     '--color-primary': primary,
     '--color-primary-hover': shade(primary, 0.82),
     '--color-primary-active': shade(primary, 0.7),
-    '--color-primary-light': `${primary}22`,
+    // color-mix, BUKAN sufiks alpha hex (`${primary}22`): menempelkan dua digit hex hanya
+    // sah bila nilainya hex 6 digit, jadi sebuah spec dengan primary oklch()/rgb()
+    // menghasilkan string rusak - properti diabaikan browser, tanpa error.
+    '--color-primary-light': `color-mix(in oklab, ${primary} 13%, transparent)`,
     '--color-bg': bg,
     '--color-bg-canvas': bg,
     '--color-bg-surface': surface,
@@ -213,7 +216,7 @@ export function theme(tokens, darkMode = false) {
     '--color-primary': shade(primary, 1.3),
     '--color-primary-hover': shade(primary, 1.05),
     '--color-primary-active': shade(primary, 0.9),
-    '--color-primary-light': `${shade(primary, 1.3)}26`,
+    '--color-primary-light': `color-mix(in oklab, ${shade(primary, 1.3)} 15%, transparent)`,
     '--color-bg': shade(bg, 0.12),
     '--color-bg-canvas': shade(bg, 0.08),
     '--color-bg-surface': shade(surface, 0.22),

@@ -157,6 +157,13 @@ export function scaffoldApp(ir, { feTargetRoot, port = null, bePort = 3736, fePo
     const { warning } = adapter.rampFor(presetName);
     if (warning) console.warn(`  warn  ${warning}`);
   }
+  // Token yang tidak bisa dipakai adapter terpilih. Diperiksa DI SINI, saat generate,
+  // karena alternatifnya adalah app yang lolos validator lalu melempar saat modul dimuat -
+  // layar putih dengan pesan di konsol, bukan kegagalan yang bisa dibaca. `typeof` guard:
+  // hanya mui yang punya batas parser warna, jadi hanya mui yang mengekspor ini.
+  if (typeof adapter.tokenWarnings === 'function') {
+    for (const w of adapter.tokenWarnings(tokensData)) console.warn(`  warn  ${w}`);
+  }
   const lightTheme = adapter.theme(tokensData, false, presetName);
   const darkThemeObj = adapter.theme(tokensData, true, presetName);
   writeFile(

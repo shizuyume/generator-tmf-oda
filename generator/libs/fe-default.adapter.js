@@ -163,16 +163,41 @@ export function libraryWarnings() {
 // lewat renderTokensCss(), yang melukis sebelum chunk bootstrap tiba.
 // ---------------------------------------------------------------------------
 
-// help func: turunkan hex (gelapkan/cerahkan) — reuse pendekatan ringan mui/neudela.adapter.js.
-function shade(hex, factor) {
-  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex || ''));
-  if (!m) return hex;
-  let h = m[1];
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-  const num = parseInt(h, 16);
-  const ch = (i) => Math.max(0, Math.min(255, Math.round(((num >> (16 - 8 * i)) & 255) * factor)))
-    .toString(16).padStart(2, '0');
-  return `#${ch(0)}${ch(1)}${ch(2)}`;
+/**
+ * Gelapkan (factor < 1) atau cerahkan (factor > 1) sebuah warna.
+ *
+ * Hex diproses secara aritmetik seperti sebelumnya, supaya keluaran untuk spec yang sudah
+ * ada tidak bergerak satu byte pun. Untuk bentuk CSS lain - oklch(), rgb(), hsl(), nama
+ * warna - hasilnya sebuah color-mix().
+ *
+ * Kenapa ini perlu: sebelumnya fungsi ini mengembalikan MASUKANNYA APA ADANYA untuk
+ * non-hex. Karena keempat nada brand (--primary-hover, --primary-strong, --ring, --focus)
+ * diturunkan lewat sini, sebuah spec yang menulis `primary: "oklch(...)"` mendapat empat
+ * nilai yang identik dengan --primary: tombol tanpa umpan balik hover, cincin fokus yang
+ * tidak terlihat. Tidak ada error, tidak ada gate yang melihatnya.
+ *
+ * color-mix aman DI SINI karena keluaran fungsi ini menjadi nilai custom property yang
+ * berdiri sendiri. Ia TIDAK aman di mui.adapter.js (parser warna MUI tidak mengerti
+ * color-mix) maupun digabung dengan sufiks alpha hex - lihat neudela.adapter.js.
+ * Batas browser Tailwind v4 (Safari 16.4+) sudah menjamin color-mix.
+ */
+function shade(color, factor) {
+  const c = String(color ?? '');
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(c);
+  if (m) {
+    let h = m[1];
+    if (h.length === 3) h = h.split('').map((x) => x + x).join('');
+    const num = parseInt(h, 16);
+    const ch = (i) => Math.max(0, Math.min(255, Math.round(((num >> (16 - 8 * i)) & 255) * factor)))
+      .toString(16).padStart(2, '0');
+    return `#${ch(0)}${ch(1)}${ch(2)}`;
+  }
+  if (!c) return color;
+  if (factor === 1) return c;
+  // Persentase warna yang DIPERTAHANKAN; sisanya hitam (gelapkan) atau putih (cerahkan).
+  const pct = factor < 1 ? factor * 100 : 100 - (factor - 1) * 100;
+  const keep = Math.max(0, Math.min(100, Math.round(pct)));
+  return `color-mix(in oklab, ${c} ${keep}%, ${factor < 1 ? 'black' : 'white'})`;
 }
 
 // Ramp brand, 11 stop. Preset dipilih lewat ui.theme.name di FE spec.

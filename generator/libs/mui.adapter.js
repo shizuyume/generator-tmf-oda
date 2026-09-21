@@ -196,6 +196,34 @@ function shade(hex, factor) {
  *   dimuat - layar putih, bukan pesan yang bisa dibaca. Tidak ada gate yang melihatnya:
  *   kesepuluh spec di repo mengisi ketujuh token.
  */
+/**
+ * Token yang TIDAK BISA dipakai adapter ini, diperiksa saat generate.
+ *
+ * MUI menghitung varian terang/gelap lewat augmentColor(), yang mengurai warna dengan
+ * parsernya sendiri. Parser itu mengerti hex, rgb() dan hsl() - TIDAK oklch() atau nama
+ * warna CSS. Sebuah spec yang memakai keduanya lolos validator, lalu melempar saat modul
+ * dimuat: layar putih dengan pesan di konsol, bukan kegagalan yang bisa dibaca.
+ *
+ * Ini tidak bisa diperbaiki di shade(): batasnya ada di MUI, bukan di sini. Yang bisa
+ * dilakukan adalah gagal terang-terangan, di CLI, sebelum app dibangun.
+ *
+ * @returns {string[]} peringatan; kosong bila semua token bisa diurai MUI.
+ */
+export function tokenWarnings(tokens = {}) {
+  const PARSEABLE = /^(#[0-9a-f]{3,8}|rgba?\(|hsla?\()/i;
+  const out = [];
+  for (const key of ['primary', 'surface', 'background', 'text', 'textMuted']) {
+    const v = tokens[key];
+    if (typeof v !== 'string' || !v.trim()) continue;
+    if (PARSEABLE.test(v.trim())) continue;
+    out.push(
+      `mui: ui.theme.tokens.${key} = "${v}" tidak bisa diurai MUI (hanya hex, rgb() dan hsl()). ` +
+        `augmentColor() akan melempar saat app dimuat. Pakai hex, atau ganti ke library fe-default.`,
+    );
+  }
+  return out;
+}
+
 export function theme(tokens = {}, darkMode = false) {
   const radius = typeof tokens.radius === 'number' ? tokens.radius : Number(tokens.radius || 4);
   const base = {
