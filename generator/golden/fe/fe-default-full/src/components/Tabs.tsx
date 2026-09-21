@@ -18,7 +18,7 @@ export interface TabsProps {
  * (pola derivasi tab: tiap array-of-object di API = satu tab, label "Label (n)"). */
 export function Tabs({ items, value, onChange }: TabsProps) {
   return (
-    <div role="tablist" className="flex flex-wrap gap-1 rounded-lg border border-border bg-gray-50 p-1">
+    <div role="tablist" className="flex flex-wrap gap-1 rounded-lg border border-border bg-neutral-50 p-1">
       {items.map((item) => {
         const active = item.key === value;
         return (
@@ -29,13 +29,13 @@ export function Tabs({ items, value, onChange }: TabsProps) {
             aria-selected={active}
             onClick={() => onChange(item.key)}
             className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-              active ? 'bg-app-surface text-app-brand shadow-xs' : 'text-text-secondary hover:text-text-primary'
+              active ? 'bg-card text-primary shadow-1' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             {item.icon}
             {item.label}
             {typeof item.count === 'number' && (
-              <span className={`rounded-full px-1.5 text-[10px] ${active ? 'bg-app-brand-subtle text-app-brand' : 'bg-gray-200 text-text-secondary'}`}>
+              <span className={`rounded-full px-1.5 text-[10px] ${active ? 'bg-primary/10 text-primary' : 'bg-neutral-200 text-muted-foreground'}`}>
                 {item.count}
               </span>
             )}

@@ -16,7 +16,7 @@ export function Select({ size = 'medium', options = [], placeholder, className =
   const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-[13px]';
   return (
     <select
-      className={`rounded-md border border-border-strong bg-app-surface px-2.5 text-text-secondary ${h} ${className}`}
+      className={`rounded-md border border-input bg-card px-2.5 text-muted-foreground ${h} ${className}`}
       {...rest}
     >
       {placeholder !== undefined && <option value="">{placeholder}</option>}

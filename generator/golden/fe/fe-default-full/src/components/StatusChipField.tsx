@@ -21,7 +21,7 @@ export function StatusChipField({ label, status, colorMap }: StatusChipFieldProp
   const tone = (colorMap ?? DEFAULT_MAP)[key] ?? 'neutral';
   return (
     <div>
-      {label && <div className="text-[0.7rem] font-bold uppercase tracking-wide text-app-brand">{label}</div>}
+      {label && <div className="text-[0.7rem] font-bold uppercase tracking-wide text-primary">{label}</div>}
       <div className="mt-0.5">
         <Badge tone={tone}>{status}</Badge>
       </div>

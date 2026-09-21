@@ -40,18 +40,18 @@ export function Modal({ open, title, onClose, children, footer, width = 'md' }: 
       }}
     >
       <div
-        className={`w-full ${WIDTH_CLASS[width]} rounded-lg border border-border bg-app-surface shadow-md`}
+        className={`w-full ${WIDTH_CLASS[width]} rounded-lg border border-border bg-card shadow-3`}
         role="dialog"
         aria-modal="true"
         aria-label={typeof title === 'string' ? title : undefined}
       >
         <div className="flex items-center justify-between border-b border-border p-5">
-          <div className="text-xl font-semibold text-text-primary">{title}</div>
+          <div className="text-xl font-semibold text-foreground">{title}</div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup"
-            className="grid h-8 w-8 place-items-center rounded-md text-text-secondary hover:bg-gray-100"
+            className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-neutral-100"
           >
             <X size={18} />
           </button>

@@ -41,7 +41,7 @@ export function DataTable<T extends Record<string, unknown>>({
   const cols = rowActions ? [...columns, { field: '__actions', headerName: '' }] : columns;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-app-surface shadow-xs">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-1">
       {toolbar && <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-5 py-4.5">{toolbar}</div>}
       <Table>
         <TableHead>

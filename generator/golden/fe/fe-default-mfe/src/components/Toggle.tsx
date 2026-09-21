@@ -10,18 +10,18 @@ export interface ToggleProps {
  * consistent with the design tokens (radius-full, bg-brand). Used by the `toggle` semantic. */
 export function Toggle({ checked = false, onChange, disabled, label, name }: ToggleProps) {
   return (
-    <label className={`inline-flex items-center gap-2 text-[13px] text-text-primary ${disabled ? 'opacity-50' : ''}`}>
+    <label className={`inline-flex items-center gap-2 text-[13px] text-foreground ${disabled ? 'opacity-50' : ''}`}>
       <span
         role="switch"
         aria-checked={checked}
         aria-disabled={disabled}
         onClick={() => !disabled && onChange?.(!checked)}
         className={`relative inline-block h-5 w-9 cursor-pointer rounded-full transition-colors ${
-          checked ? 'bg-app-brand' : 'bg-gray-300'
+          checked ? 'bg-primary' : 'bg-neutral-300'
         }`}
       >
         <span
-          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+          className={`absolute top-0.5 h-4 w-4 rounded-full bg-card shadow-2 transition-transform ${
             checked ? 'translate-x-4' : 'translate-x-0.5'
           }`}
         />

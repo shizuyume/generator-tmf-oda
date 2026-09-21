@@ -16,15 +16,15 @@ export function RefEntityCard({ title, subtitle, meta, onClick }: RefEntityCardP
     <Comp
       type={onClick ? 'button' : undefined}
       onClick={onClick}
-      className={`flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-app-surface px-3 py-2.5 text-left text-xs ${
-        onClick ? 'hover:border-border-strong hover:bg-gray-50' : ''
+      className={`flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2.5 text-left text-xs ${
+        onClick ? 'hover:border-input hover:bg-neutral-50' : ''
       }`}
     >
       <div className="min-w-0">
-        <div className="truncate font-medium text-text-primary">{title}</div>
-        {subtitle && <div className="truncate text-text-secondary">{subtitle}</div>}
+        <div className="truncate font-medium text-foreground">{title}</div>
+        {subtitle && <div className="truncate text-muted-foreground">{subtitle}</div>}
       </div>
-      <div className="flex shrink-0 items-center gap-2 text-text-secondary">
+      <div className="flex shrink-0 items-center gap-2 text-muted-foreground">
         {meta}
         {onClick && <ChevronRight size={14} />}
       </div>

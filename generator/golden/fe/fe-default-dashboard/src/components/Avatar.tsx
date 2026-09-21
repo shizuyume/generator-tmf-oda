@@ -18,11 +18,11 @@ export function Avatar({ src, name, size = 'md' }: AvatarProps) {
     <img
       src={src}
       alt={name ?? 'avatar'}
-      className={`rounded-full border border-border bg-gray-100 object-cover ${SIZE_CLASS[size]}`}
+      className={`rounded-full border border-border bg-neutral-100 object-cover ${SIZE_CLASS[size]}`}
     />
   ) : (
     <span
-      className={`grid place-items-center rounded-full border border-border bg-gray-100 text-[10px] font-semibold text-text-secondary ${SIZE_CLASS[size]}`}
+      className={`grid place-items-center rounded-full border border-border bg-neutral-100 text-[10px] font-semibold text-muted-foreground ${SIZE_CLASS[size]}`}
     >
       {initials}
     </span>

@@ -11,7 +11,7 @@ export function Skeleton({ width = '100%', height = 16, variant = 'text', classN
   const radius = variant === 'circle' ? 'rounded-full' : variant === 'rect' ? 'rounded-md' : 'rounded';
   return (
     <span
-      className={`inline-block animate-pulse bg-gray-200 ${radius} ${className}`}
+      className={`inline-block animate-pulse bg-neutral-200 ${radius} ${className}`}
       style={{ width, height }}
       aria-hidden="true"
     />

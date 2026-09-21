@@ -15,8 +15,8 @@ export function PanelCard({ title, subtitle, toolbar, children, className = '' }
     <Card className={`p-5 ${className}`}>
       <div className="mb-3.5 flex items-start justify-between gap-3">
         <div>
-          <div className="text-base font-semibold leading-6 text-text-primary">{title}</div>
-          {subtitle && <div className="mt-0.5 text-xs text-text-secondary">{subtitle}</div>}
+          <div className="text-base font-semibold leading-6 text-foreground">{title}</div>
+          {subtitle && <div className="mt-0.5 text-xs text-muted-foreground">{subtitle}</div>}
         </div>
         {toolbar}
       </div>

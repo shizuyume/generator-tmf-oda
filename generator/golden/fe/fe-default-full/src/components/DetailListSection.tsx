@@ -14,9 +14,9 @@ export interface DetailListSectionProps<T> {
 export function DetailListSection<T>({ title, items, renderItem, emptyText }: DetailListSectionProps<T>) {
   return (
     <div>
-      {title && <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">{title}</h4>}
+      {title && <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h4>}
       {items.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border py-6 text-center text-xs text-text-secondary">
+        <div className="rounded-lg border border-dashed border-border py-6 text-center text-xs text-muted-foreground">
           {emptyText ?? 'Tidak ada data'}
         </div>
       ) : (

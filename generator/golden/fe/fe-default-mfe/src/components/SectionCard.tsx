@@ -13,7 +13,7 @@ export function SectionCard({ title, actions, children }: SectionCardProps) {
     <Card className="p-4">
       {(title || actions) && (
         <div className="mb-3 flex items-center justify-between">
-          {title && <h3 className="text-sm font-semibold text-text-primary">{title}</h3>}
+          {title && <h3 className="text-sm font-semibold text-foreground">{title}</h3>}
           {actions}
         </div>
       )}

@@ -13,7 +13,7 @@ export function IconButton({ size = 'medium', title, className = '', children, .
     <button
       type="button"
       title={title}
-      className={`inline-flex items-center justify-center rounded-md border border-transparent bg-transparent text-text-secondary hover:bg-app-surface-secondary hover:text-text-primary ${dim} ${className}`}
+      className={`inline-flex items-center justify-center rounded-md border border-transparent bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground ${dim} ${className}`}
       {...rest}
     >
       {children}

@@ -13,11 +13,11 @@ export interface DateInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
  * case, not on a field whose own type says datetime). */
 export function DateInput({ size = 'medium', error, datetime, className = '', ...rest }: DateInputProps) {
   const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-[13px]';
-  const border = error ? 'border-danger-500' : 'border-border-strong';
+  const border = error ? 'border-destructive' : 'border-input';
   return (
     <input
       type={datetime ? 'datetime-local' : 'date'}
-      className={`w-full rounded-md border bg-app-surface px-2.5 text-text-primary ${h} ${border} ${className}`}
+      className={`w-full rounded-md border bg-card px-2.5 text-foreground ${h} ${border} ${className}`}
       {...rest}
     />
   );

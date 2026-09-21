@@ -13,8 +13,8 @@ export interface BadgeProps {
 const TONE_CLASS: Record<BadgeTone, string> = {
   success: 'bg-success-50 text-success-700',
   warning: 'bg-warning-50 text-warning-700',
-  danger: 'bg-danger-50 text-danger-700',
-  neutral: 'bg-gray-100 text-text-secondary',
+  danger: 'bg-destructive/10 text-destructive',
+  neutral: 'bg-neutral-100 text-muted-foreground',
 };
 
 export function Badge({ tone = 'neutral', size = 'md', dot = false, children }: BadgeProps) {

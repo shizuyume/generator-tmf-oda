@@ -11,7 +11,7 @@ export interface AppShellProps {
  * example-component-in-dashboard.html. */
 export function AppShell({ sidebar, topbar, children, collapsed }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-app-bg">
+    <div className="min-h-screen bg-background">
       {sidebar}
       <main className={`min-h-screen ${collapsed ? 'ml-16' : 'ml-60'}`}>
         {topbar}

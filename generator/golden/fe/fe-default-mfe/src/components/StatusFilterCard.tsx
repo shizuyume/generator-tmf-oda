@@ -27,13 +27,13 @@ export function StatusFilterCard({ phases, activeFilter, onFilterChange }: Statu
             onClick={() => onFilterChange(active ? '' : phase.value)}
             className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               active
-                ? 'border-app-brand bg-app-brand-subtle text-app-brand'
-                : 'border-border text-text-secondary hover:border-border-strong hover:text-text-primary'
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-border text-muted-foreground hover:border-input hover:text-foreground'
             }`}
           >
             {phase.label}
             {typeof phase.count === 'number' && (
-              <span className={`rounded-full px-1.5 text-[10px] ${active ? 'bg-app-brand/20' : 'bg-gray-200'}`}>{phase.count}</span>
+              <span className={`rounded-full px-1.5 text-[10px] ${active ? 'bg-primary/20' : 'bg-neutral-200'}`}>{phase.count}</span>
             )}
           </button>
         );

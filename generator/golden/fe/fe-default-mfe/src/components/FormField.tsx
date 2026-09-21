@@ -14,15 +14,15 @@ export function FormField({ label, required, helper, error, full, children }: Fo
   return (
     <div className={`grid gap-1.5 ${full ? 'col-span-full' : ''}`}>
       {label && (
-        <label className="text-xs font-semibold text-text-primary">
-          {label} {required && <span className="text-danger-500">*</span>}
+        <label className="text-xs font-semibold text-foreground">
+          {label} {required && <span className="text-destructive">*</span>}
         </label>
       )}
       {children}
       {error ? (
-        <span className="text-[11px] text-danger-500">{error}</span>
+        <span className="text-[11px] text-destructive">{error}</span>
       ) : helper ? (
-        <span className="text-[11px] text-text-secondary">{helper}</span>
+        <span className="text-[11px] text-muted-foreground">{helper}</span>
       ) : null}
     </div>
   );

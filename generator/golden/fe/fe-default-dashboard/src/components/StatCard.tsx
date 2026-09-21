@@ -11,7 +11,7 @@ export interface StatCardProps {
 
 const TREND_CLASS: Record<string, string> = {
   up: 'text-success-700',
-  down: 'text-danger-700',
+  down: 'text-destructive',
   warn: 'text-warning-700',
 };
 
@@ -20,16 +20,16 @@ export function StatCard({ label, value, icon, trend, meta }: StatCardProps) {
   return (
     <Card className="p-[18px]">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] text-text-secondary">{label}</span>
+        <span className="text-[13px] text-muted-foreground">{label}</span>
         {icon && (
-          <span className="grid h-[34px] w-[34px] place-items-center rounded-md bg-app-brand-subtle text-text-brand">
+          <span className="grid h-[34px] w-[34px] place-items-center rounded-md bg-primary/10 text-primary">
             {icon}
           </span>
         )}
       </div>
-      <div className="mt-2.5 text-[28px] font-semibold leading-9 tracking-tight text-text-primary">{value}</div>
+      <div className="mt-2.5 text-[28px] font-semibold leading-9 tracking-tight text-foreground">{value}</div>
       {(trend || meta) && (
-        <div className="mt-1 flex items-center gap-1.5 text-xs text-text-secondary">
+        <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
           {trend && <span className={TREND_CLASS[trend.direction]}>{trend.label}</span>}
           {meta && <span>{meta}</span>}
         </div>

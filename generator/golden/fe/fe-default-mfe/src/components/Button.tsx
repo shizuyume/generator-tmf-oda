@@ -11,13 +11,13 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   children?: ReactNode;
 }
 
-// Ports .button / .button.primary / .button.tertiary / .button.danger from
-// example-component-in-dashboard.html (height 36px, radius-md, border-strong).
+// Ports .button / .button.primary / .button.tertiary / .button.danger onto the
+// semantic token layer (height 36px, radius-md, border-input).
 const TONE_CLASS: Record<ButtonTone, string> = {
-  default: 'bg-app-surface border border-border-strong text-text-primary hover:bg-app-surface-secondary',
-  primary: 'bg-app-brand border border-app-brand text-text-on-brand hover:bg-primary-700 hover:border-primary-700',
-  tertiary: 'border border-transparent bg-transparent text-text-secondary hover:bg-app-surface-secondary',
-  danger: 'bg-danger-500 border border-danger-500 text-white hover:brightness-95',
+  default: 'bg-card border border-input text-foreground hover:bg-muted',
+  primary: 'bg-primary border border-primary text-primary-foreground hover:bg-primary-hover hover:border-primary-hover',
+  tertiary: 'border border-transparent bg-transparent text-muted-foreground hover:bg-muted',
+  danger: 'bg-destructive border border-destructive text-destructive-foreground hover:bg-destructive/90',
 };
 
 export function Button({

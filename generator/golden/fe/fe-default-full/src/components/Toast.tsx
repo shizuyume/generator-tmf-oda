@@ -39,7 +39,7 @@ export function ToastProvider({ children }: { children?: ReactNode }) {
     <ToastContext.Provider value={{ show }}>
       {children}
       <div
-        className={`fixed bottom-6 right-6 z-[200] flex items-center gap-2.5 rounded-lg border border-border bg-app-surface px-3.5 py-3 shadow-lg transition-all ${
+        className={`fixed bottom-6 right-6 z-[200] flex items-center gap-2.5 rounded-lg border border-border bg-card px-3.5 py-3 shadow-4 transition-all ${
           toast ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-2.5 opacity-0'
         }`}
         role="alert"
@@ -49,8 +49,8 @@ export function ToastProvider({ children }: { children?: ReactNode }) {
             <span className="grid h-6 w-6 place-items-center rounded-full bg-success-50 text-success-700">
               {ICON[toast.severity]}
             </span>
-            <span className="text-[13px] text-text-primary">{toast.message}</span>
-            <button type="button" onClick={() => setToast(null)} aria-label="Tutup" className="text-text-secondary">
+            <span className="text-[13px] text-foreground">{toast.message}</span>
+            <button type="button" onClick={() => setToast(null)} aria-label="Tutup" className="text-muted-foreground">
               <X size={14} />
             </button>
           </>

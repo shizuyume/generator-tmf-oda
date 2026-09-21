@@ -16,7 +16,7 @@ export function NavItem({ to, icon, label, active, collapsed }: NavItemProps) {
       to={to}
       className={`flex h-10 items-center gap-2.5 rounded-md px-2.5 text-[13px] transition-colors ${
         collapsed ? 'justify-center px-0' : ''
-      } ${active ? 'bg-app-brand text-text-on-brand' : 'text-text-secondary hover:bg-app-surface-secondary hover:text-text-primary'}`}
+      } ${active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
     >
       {icon && <span className="w-5 text-center opacity-90">{icon}</span>}
       {!collapsed && <span>{label}</span>}

@@ -11,7 +11,7 @@ export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
  * border-strong). `multiline` renders a <textarea> instead (adapter fe-default: textarea semantic). */
 export function TextInput({ size = 'medium', error, className = '', multiline, rows, ...rest }: TextInputProps) {
   const h = size === 'small' ? 'h-9 text-xs' : 'h-10 text-[13px]';
-  const border = error ? 'border-danger-500' : 'border-border-strong';
+  const border = error ? 'border-destructive' : 'border-input';
   if (multiline) {
     const { value, onChange, ...textareaRest } = rest as unknown as TextareaHTMLAttributes<HTMLTextAreaElement>;
     return (
@@ -19,14 +19,14 @@ export function TextInput({ size = 'medium', error, className = '', multiline, r
         rows={rows ?? 4}
         value={value as string | undefined}
         onChange={onChange as never}
-        className={`w-full rounded-md border bg-app-surface px-2.5 py-2 text-text-primary placeholder:text-text-disabled ${border} ${className}`}
+        className={`w-full rounded-md border bg-card px-2.5 py-2 text-foreground placeholder:text-neutral-400 ${border} ${className}`}
         {...(textareaRest as object)}
       />
     );
   }
   return (
     <input
-      className={`w-full rounded-md border bg-app-surface px-2.5 text-text-primary placeholder:text-text-disabled ${h} ${border} ${className}`}
+      className={`w-full rounded-md border bg-card px-2.5 text-foreground placeholder:text-neutral-400 ${h} ${border} ${className}`}
       {...rest}
     />
   );

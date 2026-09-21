@@ -18,7 +18,7 @@ const ICON: Record<AlertSeverity, typeof Info> = {
 
 const TONE_CLASS: Record<AlertSeverity, string> = {
   success: 'bg-success-50 text-success-700 border-success-500/20',
-  error: 'bg-danger-50 text-danger-700 border-danger-500/20',
+  error: 'bg-destructive/10 text-destructive border-destructive/20',
   warning: 'bg-warning-50 text-warning-700 border-warning-500/20',
   info: 'bg-info-50 text-info-700 border-info-500/20',
 };

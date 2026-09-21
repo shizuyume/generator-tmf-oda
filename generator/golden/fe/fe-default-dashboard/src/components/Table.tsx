@@ -25,7 +25,7 @@ export function TableBody({ children }: { children?: ReactNode }) {
 
 export function TableRow({ children, className = '', ...rest }: HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr className={`border-b border-border last:border-b-0 hover:[&>td]:bg-app-brand-subtle ${className}`} {...rest}>
+    <tr className={`border-b border-border last:border-b-0 hover:[&>td]:bg-primary/10 ${className}`} {...rest}>
       {children}
     </tr>
   );
@@ -40,7 +40,7 @@ export function TableCell({
   if (header) {
     return (
       <th
-        className={`h-[42px] border-b border-border bg-app-surface-secondary px-4.5 text-left text-[11px] font-semibold text-text-secondary ${className}`}
+        className={`h-[42px] border-b border-border bg-muted px-4.5 text-left text-[11px] font-semibold text-muted-foreground ${className}`}
         {...(rest as ThHTMLAttributes<HTMLTableCellElement>)}
       >
         {children}
@@ -48,7 +48,7 @@ export function TableCell({
     );
   }
   return (
-    <td className={`h-[58px] border-b border-border px-4.5 text-xs text-text-primary ${className}`} {...(rest as TdHTMLAttributes<HTMLTableCellElement>)}>
+    <td className={`h-[58px] border-b border-border px-4.5 text-xs text-foreground ${className}`} {...(rest as TdHTMLAttributes<HTMLTableCellElement>)}>
       {children}
     </td>
   );
