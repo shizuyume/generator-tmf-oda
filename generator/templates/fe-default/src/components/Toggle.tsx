@@ -21,7 +21,7 @@ export function Toggle({ checked = false, onChange, disabled, label, name }: Tog
         }`}
       >
         <span
-          className={`absolute top-0.5 h-4 w-4 rounded-full bg-card shadow-2 transition-transform ${
+          className={`absolute top-0.5 h-4 w-4 rounded-full bg-primary-foreground shadow-2 transition-transform ${
             checked ? 'translate-x-4' : 'translate-x-0.5'
           }`}
         />

@@ -247,6 +247,14 @@ const STATIC_PRIMITIVES = {
   '--info-100': 'oklch(0.951 0.026 236.824)',
   '--info-500': 'oklch(0.546 0.245 262.881)',
   '--info-700': 'oklch(0.488 0.243 264.376)',
+  // Merah destruktif TIDAK ikut preset brand. Panduan sumbernya menyebut destructive
+  // sebagai nada brand yang lebih gelap karena di sana brand MEMANG merah; begitu ramp
+  // brand jadi preset (terracotta sebagai bawaan), aturan itu diam-diam membuat tombol
+  // Hapus berwarna cokelat. Bahaya harus terbaca merah terlepas dari warna brand.
+  '--danger-50': 'oklch(0.971 0.013 17.38)',
+  '--danger-100': 'oklch(0.936 0.032 17.717)',
+  '--danger-500': 'oklch(0.637 0.237 25.331)',
+  '--danger-700': 'oklch(0.505 0.213 27.518)',
   '--elev-1': '0 1px 2px rgb(0 0 0 / 0.05)',
   '--elev-2': '0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04)',
   '--elev-3': '0 4px 8px rgb(0 0 0 / 0.08), 0 2px 4px rgb(0 0 0 / 0.06)',
@@ -282,7 +290,7 @@ function semanticAliasesLight(tokens) {
     '--muted-foreground': tokens.textMuted || 'var(--neutral-500)',
     '--accent': 'var(--neutral-100)',
     '--accent-foreground': tokens.text || 'var(--neutral-900)',
-    '--destructive': 'var(--brand-700)',
+    '--destructive': 'var(--danger-700)',
     '--destructive-foreground': 'oklch(0.985 0 0)',
     '--success': 'var(--success-500)',
     '--success-foreground': 'oklch(0.985 0 0)',
@@ -326,7 +334,7 @@ function semanticAliasesDark(tokens) {
     '--muted-foreground': 'oklch(0.65 0.02 255)',
     '--accent': 'oklch(0.22 0.02 255)',
     '--accent-foreground': 'oklch(0.93 0.01 255)',
-    '--destructive': 'var(--brand-500)',
+    '--destructive': 'var(--danger-500)',
     '--destructive-foreground': 'oklch(0.985 0 0)',
     '--border': 'oklch(0.28 0.02 255)',
     '--input': 'oklch(0.32 0.02 255)',
