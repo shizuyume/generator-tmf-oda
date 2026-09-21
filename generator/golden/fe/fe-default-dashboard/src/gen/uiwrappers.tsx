@@ -2,7 +2,7 @@
 // `import { UiBox, ... } from '../../gen/ui'`; for library fe-default, src/gen/ui.tsx (emit)
 // only re-exports from here (same pattern as neudela — see emit/page.mjs UIWRAPPERS_LIBRARIES).
 // Wrapper maps the emitter's contract props (including MUI-style `sx`) onto local Tailwind
-// components (src/components/*) styled from example-component-in-dashboard.html tokens.
+// components (src/components/*) di-style dari lapisan token semantik (lihat app.css @theme inline).
 //
 // Documented gap (adapter fe-default): `sx` is a small subset, converted to inline style
 // (same subset as neudela.adapter's uiwrappers) — arbitrary CSS-in-JS beyond that is dropped.
@@ -22,7 +22,7 @@ const COLOR_MAP: Record<string, string> = {
   'text.primary': 'var(--foreground)',
   'text.secondary': 'var(--muted-foreground)',
   divider: 'var(--border)',
-  error: 'var(--danger-500)',
+  error: 'var(--destructive)',
   success: 'var(--success-500)',
   warning: 'var(--warning-500)',
   info: 'var(--info-500)',

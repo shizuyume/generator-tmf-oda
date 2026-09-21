@@ -145,14 +145,22 @@ export function libraryWarnings() {
 }
 
 // ---------------------------------------------------------------------------
-// theme: tokens IR netral -> CSS variable object, pola example-component-in-dashboard.html.
-// Primitif (--color-primary-25..950, --color-gray-25..950, --success/warning/danger/info-*,
-// --shadow-*) TETAP STATIS (nilai dari HTML) karena YAML tokens hanya bawa 1 warna/radius —
-// bukan ramp 11-step. HANYA lapisan alias semantik (--bg-*, --text-*, --border-*, --focus-ring,
-// --radius-*) yang mengikuti tokens IR (primary/surface/background/text/textMuted/radius/font).
-// Bentuk: { ':root': {...}, '[data-theme="dark"]': {...} } — scaffoldApp menulis ini ke
-// src/gen/theme.generated.ts (genThemeLight/genThemeDark); template committed src/gen/tokens.css
-// menyimpan salinan statis penuh (termasuk [data-accent=blue|green], TIDAK token-driven).
+// theme: tokens IR -> objek CSS variable, dua lapis.
+//
+// PRIMITIF (--brand-50..950 dari preset, --neutral-*, --success/warning/info/danger-*,
+// --elev-1..6) sengaja TIDAK dipetakan jadi utility Tailwind, kecuali yang memang perlu
+// (lihat @theme inline di templates/fe-default/src/gen/app.css). Ramp brand khususnya
+// tidak dipetakan sama sekali, sehingga aturan "komponen hanya menyentuh lapisan
+// semantik" ditegakkan oleh konstruksi.
+//
+// SEMANTIK (--background, --foreground, --card, --primary*, --destructive, --border,
+// --input, --ring, --focus, --r-*, --font-family) adalah lapisan yang dikonsumsi
+// komponen. Semua nada brand di dalamnya turun dari SATU sumber: tokens.primary bila
+// spec menyetelnya, ramp preset bila tidak - tidak pernah campuran.
+//
+// Bentuk: { ':root': {...}, '.dark': {...} }. scaffoldApp menulisnya ke
+// src/gen/theme.generated.ts (disuntikkan runtime oleh theme.ts) DAN ke src/gen/tokens.css
+// lewat renderTokensCss(), yang melukis sebelum chunk bootstrap tiba.
 // ---------------------------------------------------------------------------
 
 // help func: turunkan hex (gelapkan/cerahkan) — reuse pendekatan ringan mui/neudela.adapter.js.
@@ -283,15 +291,23 @@ function semanticAliasesLight(tokens) {
     '--card-foreground': tokens.text || 'var(--neutral-900)',
     '--popover': tokens.surface || 'oklch(1 0 0)',
     '--popover-foreground': tokens.text || 'var(--neutral-900)',
+    // SEMUA nada brand berasal dari SATU sumber. Kalau tokens.primary ada, derivatnya
+    // diturunkan DARI NILAI ITU; kalau tidak, seluruhnya dari ramp preset. Mencampur
+    // keduanya - yang sempat terjadi - membuat tombol primary hitam berubah cokelat saat
+    // hover dan app biru punya cincin fokus oranye, karena --primary mengikuti spec
+    // sementara --primary-hover/--ring mengikuti ramp. Golden tidak bisa melihatnya: ia
+    // merekam nilai, bukan kecocokan antar nilai.
     '--primary': tokens.primary || 'var(--brand-600)',
     '--primary-foreground': 'oklch(0.985 0 0)',
-    '--primary-hover': 'var(--brand-700)',
+    '--primary-hover': tokens.primary ? shade(tokens.primary, 0.82) : 'var(--brand-700)',
     // Permukaan brand PEKAT untuk chrome statis (mis. petak logo). Sengaja GELAP di
     // kedua mode - tidak ada override di .dark - karena teks di atasnya adalah
     // --primary-foreground yang nyaris putih. Memakai --primary atau --primary-hover
     // untuk ini gagal kontras di mode gelap: keduanya naik ke brand-400/500 yang
     // terang, dan putih di atas terakota terang hanya sekitar 2,4:1.
-    '--primary-strong': 'var(--brand-900)',
+    // Sengaja GELAP di kedua mode (tidak ada override .dark): teks di atasnya adalah
+    // --primary-foreground yang nyaris putih.
+    '--primary-strong': tokens.primary ? shade(tokens.primary, 0.5) : 'var(--brand-900)',
     '--secondary': 'var(--neutral-100)',
     '--secondary-foreground': tokens.text || 'var(--neutral-900)',
     '--muted': 'var(--neutral-100)',
@@ -308,8 +324,8 @@ function semanticAliasesLight(tokens) {
     '--info-foreground': 'oklch(0.985 0 0)',
     '--border': 'var(--neutral-200)',
     '--input': 'var(--neutral-300)',
-    '--ring': 'var(--brand-500)',
-    '--focus': 'var(--brand-500)',
+    '--ring': tokens.primary || 'var(--brand-500)',
+    '--focus': tokens.primary || 'var(--brand-500)',
     // NAMA RUNTIME sengaja `--r-*`, bukan `--radius-*`: `--radius-*` adalah
     // namespace tema Tailwind v4, dan memetakan `--radius-md: var(--radius-md)`
     // di @theme inline akan melingkar ke dirinya sendiri.
@@ -335,7 +351,8 @@ function semanticAliasesDark(tokens) {
     '--popover-foreground': 'oklch(0.93 0.01 255)',
     '--primary': tokens.primary || 'var(--brand-500)',
     '--primary-foreground': 'oklch(0.985 0 0)',
-    '--primary-hover': 'var(--brand-400)',
+    // Di gelap hover MENCERAHKAN, bukan menggelapkan - kebalikan dari mode terang.
+    '--primary-hover': tokens.primary ? shade(tokens.primary, 1.15) : 'var(--brand-400)',
     '--secondary': 'oklch(0.22 0.02 255)',
     '--secondary-foreground': 'oklch(0.93 0.01 255)',
     '--muted': 'oklch(0.22 0.02 255)',
@@ -346,8 +363,8 @@ function semanticAliasesDark(tokens) {
     '--destructive-foreground': 'oklch(0.985 0 0)',
     '--border': 'oklch(0.28 0.02 255)',
     '--input': 'oklch(0.32 0.02 255)',
-    '--ring': 'var(--brand-400)',
-    '--focus': 'var(--brand-400)',
+    '--ring': tokens.primary ? shade(tokens.primary, 1.15) : 'var(--brand-400)',
+    '--focus': tokens.primary ? shade(tokens.primary, 1.15) : 'var(--brand-400)',
     // Elevasi rendah ditekan di mode gelap: bayangan tidak terbaca di atas slate
     // gelap, jadi kedalaman dibawa tangga permukaan (card lebih terang dari page).
     '--elev-1': 'none',

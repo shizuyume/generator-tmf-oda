@@ -9,7 +9,11 @@
       rel="stylesheet"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#DF7E30" />
+    <!-- Chrome browser mobile. Dibiarkan NETRAL dengan sengaja: nilai di sini tidak bisa
+         membaca token CSS, jadi warna brand apa pun akan membeku dan tidak ikut preset
+         maupun ui.theme.tokens.primary - satu-satunya warna brand yang lolos dari
+         mekanisme tema, dan tidak terlihat guardrail karena ia bukan kelas. -->
+    <meta name="theme-color" content="#ffffff" />
     <title>{{APP_NAME}}</title>
   </head>
   <body>

@@ -7,7 +7,7 @@ export interface ToggleProps {
 }
 
 /** No dedicated primitive in example-component-in-dashboard.html — small track/thumb switch
- * consistent with the design tokens (radius-full, bg-brand). Used by the `toggle` semantic. */
+ * consistent with the design tokens (radius-full, permukaan brand). Used by the `toggle` semantic. */
 export function Toggle({ checked = false, onChange, disabled, label, name }: ToggleProps) {
   return (
     <label className={`inline-flex items-center gap-2 text-sm text-foreground ${disabled ? 'opacity-50' : ''}`}>

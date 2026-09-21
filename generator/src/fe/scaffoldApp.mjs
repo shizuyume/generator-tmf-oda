@@ -179,6 +179,27 @@ export const genThemeLight: Record<string, Record<string, string>> = ${JSON.stri
 export const genThemeDark: Record<string, Record<string, string>> = ${JSON.stringify(darkThemeObj, null, 2)};
 `,
     );
+    // src/gen/tokens.css DITULIS dari adapter, tidak lagi dipelihara tangan.
+    //
+    // File itu ada untuk menjaga halaman terbaca sebelum theme.ts menyuntikkan <style>,
+    // dan jendela itu BUKAN satu frame: src/index.tsx memuat bootstrap lewat import()
+    // dinamis, jadi rentangnya selebar fetch chunk + mount + effect. Versi tulisan tangan
+    // hanya mendefinisikan sebelas nama, sehingga setiap bg-primary, bg-neutral-*,
+    // rounded-* dan shadow-* di dalam jendela itu tidak valid dan dibuang - halaman
+    // melukis sebagai kotak tanpa gaya lalu menyentak.
+    //
+    // Membangkitkannya dari renderTokensCss() menutup itu DAN menghapus satu kelas cacat:
+    // sebuah fallback tulisan tangan hanya benar sampai seseorang mengubah adapter.
+    if (typeof adapter.renderTokensCss === 'function') {
+      writeFile(
+        'src/gen/tokens.css',
+        `/* ${GENERATED_BANNER.replace(/^\/\/ ?/, '')}\n` +
+          `   Potret diam dari tema, ditulis scaffold-time oleh adapter.renderTokensCss().\n` +
+          `   theme.ts tetap menyuntikkan nilai yang sama saat runtime; ini yang melukis\n` +
+          `   sebelum chunk bootstrap tiba. */\n` +
+          adapter.renderTokensCss(tokensData, ir.theme?.darkMode === true, presetName),
+      );
+    }
   } else {
     const darkTheme = darkThemeObj.colorSchemes?.dark ?? null;
     writeFile(

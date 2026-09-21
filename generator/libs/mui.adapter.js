@@ -188,17 +188,25 @@ function shade(hex, factor) {
   return `#${ch(0)}${ch(1)}${ch(2)}`;
 }
 
-export function theme(tokens, darkMode = false) {
+/**
+ * @param {object} [tokens] ui.theme.tokens. SETIAP anggotanya opsional sejak skema
+ *   dilonggarkan (tokens adalah override, bukan sumber tunggal), jadi setiap field WAJIB
+ *   punya default di sini. Tanpa itu `palette.primary` menjadi `{}` dan createTheme
+ *   melempar "The color (primary) provided to augmentColor(color) is invalid" saat modul
+ *   dimuat - layar putih, bukan pesan yang bisa dibaca. Tidak ada gate yang melihatnya:
+ *   kesepuluh spec di repo mengisi ketujuh token.
+ */
+export function theme(tokens = {}, darkMode = false) {
   const radius = typeof tokens.radius === 'number' ? tokens.radius : Number(tokens.radius || 4);
   const base = {
     palette: {
       mode: darkMode ? 'dark' : 'light',
-      primary: { main: tokens.primary },
-      background: { default: tokens.background, paper: tokens.surface },
-      text: { primary: tokens.text, secondary: tokens.textMuted },
+      primary: { main: tokens.primary || '#2563eb' },
+      background: { default: tokens.background || '#f8fafc', paper: tokens.surface || '#ffffff' },
+      text: { primary: tokens.text || '#0f172a', secondary: tokens.textMuted || '#64748b' },
     },
     shape: { borderRadius: radius },
-    typography: { fontFamily: tokens.font },
+    typography: { fontFamily: tokens.font || 'Inter, system-ui, sans-serif' },
   };
   if (!darkMode) return base;
   return {
@@ -212,7 +220,7 @@ export function theme(tokens, darkMode = false) {
           text: { primary: shade(tokens.text, 3), secondary: shade(tokens.textMuted, 1.5) },
         },
         shape: { borderRadius: radius },
-        typography: { fontFamily: tokens.font },
+        typography: { fontFamily: tokens.font || 'Inter, system-ui, sans-serif' },
       },
     },
   };
