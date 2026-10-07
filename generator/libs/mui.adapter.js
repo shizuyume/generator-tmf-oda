@@ -1,5 +1,5 @@
 // mui.adapter.js — kontrak adapter lib FE untuk semantic vocabulary M0 (M2 skeleton).
-// Kontrak lengkap: generator/libs/README.md. M6 akan menulis neudela.adapter.js dgn API yang SAMA.
+// Kontrak lengkap: generator/libs/README.md. fe-default.adapter.js memakai API yang SAMA.
 // Generator-side config murni: TIDAK meng-import @mui apa pun (objek theme dikembalikan,
 // createTheme di-instansiasi oleh consumer/emitter di runtime app).
 import { SCHEMA } from '../src/fe/validateFESpec.mjs';
@@ -159,8 +159,8 @@ export function coverage() {
 }
 
 // Semua gap terdokumentasi (fallback non-fatal + unsupported) — pola SAMA dengan
-// neudela/fe-default. Sebelumnya MUI tidak punya fungsi ini, jadi gate coverage tak
-// bisa menuntut "tiap gap dilaporkan tertulis" untuk ketiga adapter.
+// fe-default. Sebelumnya MUI tidak punya fungsi ini, jadi gate coverage tak
+// bisa menuntut "tiap gap dilaporkan tertulis" untuk setiap adapter.
 export function libraryWarnings() {
   const list = [];
   for (const [semantic, entry] of Object.entries(components)) {

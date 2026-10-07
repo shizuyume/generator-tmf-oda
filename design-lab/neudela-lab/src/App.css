@@ -1,0 +1,407 @@
+/* Lab layer over neudela/style.css. neudela ships no layout or typography
+   primitives, so shell, page and form layout live here as lab-* classes built
+   only from neudela tokens (--space-*, --fs-*, --color-*, --radius-*), which
+   keeps light and dark mode working through `.dark-theme` without extra rules. */
+
+/* ─── Shell ─────────────────────────────────────────────────────────────── */
+
+.lab-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 0 var(--space-6);
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lab-topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.lab-topbar__logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.lab-topbar__title {
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lab-topbar__caption {
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text-xs);
+  color: var(--color-text-secondary);
+}
+
+.lab-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.lab-sidebar {
+  position: sticky;
+  top: 60px;
+  width: 248px;
+  height: calc(100vh - 60px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-3);
+  background: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-border);
+}
+
+.lab-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.lab-nav-item:hover {
+  background: var(--color-bg-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.lab-nav-item.is-active {
+  background: var(--color-nav-active-bg);
+  color: var(--color-nav-active-text);
+}
+
+.lab-nav-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.lab-nav-item__icon {
+  display: inline-flex;
+}
+
+.lab-content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-8);
+}
+
+/* ─── Page ──────────────────────────────────────────────────────────────── */
+
+/* Fluid: the page always spans the content area edge to edge — no max-width cap, so a
+   zoomed-out (wide) viewport is filled instead of leaving empty gutters left and right. */
+.lab-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  min-width: 0;
+}
+
+.lab-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.lab-page__title {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-display-xs);
+  line-height: var(--lh-display-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.lab-page__subtitle {
+  margin: var(--space-1) 0 0;
+  max-width: 72ch;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text-sm);
+  color: var(--color-text-secondary);
+}
+
+.lab-section-title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-text-lg);
+  line-height: var(--lh-text-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lab-section-lead {
+  margin: calc(-1 * var(--space-2)) 0 var(--space-4);
+}
+
+.lab-muted {
+  color: var(--color-text-secondary);
+  font-size: var(--fs-text-sm);
+}
+
+.lab-mono {
+  font-family: var(--lab-font-mono);
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-secondary);
+  word-break: break-all;
+}
+
+.lab-mono--strong {
+  color: var(--color-text-primary);
+}
+
+.lab-break {
+  word-break: break-all;
+}
+
+.lab-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text-sm);
+  color: var(--color-text-secondary);
+}
+
+.lab-list code,
+.lab-section-lead code {
+  font-family: var(--lab-font-mono);
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-primary);
+}
+
+.lab-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* ─── Modal ─────────────────────────────────────────────────────────────── */
+
+.lab-modal-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* ─── Toast (NEUDELA GAP: no Snackbar) ──────────────────────────────────── */
+
+.lab-toast {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 1100; /* above .neuron-modal-backdrop (1000) */
+  width: min(400px, calc(100vw - 2 * var(--space-4)));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Overview ──────────────────────────────────────────────────────────── */
+
+.lab-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  padding: var(--space-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-hero-bg);
+}
+
+.lab-hero__eyebrow {
+  margin: 0;
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.lab-hero__title {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-display-sm);
+  line-height: var(--lh-display-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lab-hero__text {
+  margin: var(--space-3) 0 0;
+  max-width: 60ch;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text-md);
+  color: var(--color-text-secondary);
+}
+
+.lab-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.lab-hero__panel {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+}
+
+.lab-hero__panel-title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lab-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.lab-kpi__label {
+  margin: 0;
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.lab-kpi__value {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-display-xs);
+  line-height: var(--lh-display-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lab-kpi__note {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.lab-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+/* Hero "API" facts: label over value, stacked. */
+.lab-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.lab-facts dt {
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-secondary);
+}
+
+.lab-facts dd {
+  margin: 2px 0 0;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text-sm);
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* Badges inside a key/value row (right-aligned, wrapping). */
+.lab-pill-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.lab-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .lab-hero,
+  .lab-split {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .lab-topbar {
+    padding: 0 var(--space-4);
+  }
+
+  .lab-topbar__caption {
+    display: none;
+  }
+
+  .lab-body {
+    flex-direction: column;
+  }
+
+  .lab-sidebar {
+    position: static;
+    width: auto;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: var(--space-2) var(--space-4);
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .lab-nav-item {
+    white-space: nowrap;
+  }
+
+  .lab-content {
+    padding: var(--space-4);
+  }
+
+  .lab-hero {
+    padding: var(--space-5);
+  }
+
+  .lab-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

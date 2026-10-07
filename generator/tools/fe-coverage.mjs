@@ -20,7 +20,7 @@
 import { SCHEMA } from '../src/fe/validateFESpec.mjs';
 import { loadAdapter } from '../libs/adapter.mjs';
 
-const LIBRARIES = ['mui', 'neudela', 'fe-default'];
+const LIBRARIES = ['mui', 'fe-default'];
 const REQUIRED_EXPORTS = ['resolve', 'coverage', 'theme', 'scaffoldDeps', 'gateCommand', 'libraryWarnings'];
 const VOCAB = SCHEMA['x-semantic-vocabulary'];
 const vocabSet = new Set(VOCAB);

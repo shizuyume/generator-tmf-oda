@@ -11,4 +11,10 @@ export class CreateSubscriptionDto {
   @IsOptional()
   @IsString()
   query?: string;
+
+  /** Hub_FVO is Extensible: clients send "@type": "Hub". Accepted, not stored (always Hub). */
+  @ApiPropertyOptional({ name: '@type', example: 'Hub' })
+  @IsOptional()
+  @IsString()
+  '@type'?: string;
 }

@@ -10,6 +10,8 @@ import path from 'node:path';
 // cocok utk kedua bentuk skrip start: legacy cmd.exe "set PORT=5015" dan bentuk
 // cross-shell (cross-env) "cross-env PORT=5015" — g: matchAll butuh flag global (tanpa g -> throw)
 const PORT_SCRIPT_RE = /(?:set|cross-env)\s+PORT=(\d{2,5})/gi;
+// Vite apps (neudela adapter) pin the dev port in vite.config.ts: `server: { port: 4010, ... }`
+const VITE_PORT_RE = /\bport:\s*(\d{2,5})\b/g;
 
 export function scanFePorts(feTargetRoot) {
   const used = new Set();
@@ -24,6 +26,10 @@ export function scanFePorts(feTargetRoot) {
         for (const m of text.matchAll(PORT_SCRIPT_RE)) used.add(Number(m[1]));
       } catch {
         /* package.json yang korup tidak ikut mengunci port */
+      }
+      const vite = path.join(feTargetRoot, entry.name, sub, 'vite.config.ts');
+      if (fs.existsSync(vite)) {
+        for (const m of fs.readFileSync(vite, 'utf8').matchAll(VITE_PORT_RE)) used.add(Number(m[1]));
       }
     }
   }

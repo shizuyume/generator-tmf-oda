@@ -1,0 +1,363 @@
+/* Form dialog — Neudela Logistics Dashboard "Create shipment", on neudela tokens. */
+
+/* NeuronModal tops out at 448px and never scrolls: widen it, pin header/footer, scroll the body.
+   Same specificity as .neuron-modal--lg, loaded later → wins. */
+.fm-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2 * var(--space-6));
+  padding: 0;
+  overflow: hidden;
+}
+
+.fm-dialog--wide { max-width: 760px; }
+.fm-dialog--narrow { max-width: 520px; }
+
+/* no icon and no ✕ → the top bar is empty */
+.fm-dialog .neuron-modal__top-bar:empty {
+  display: none;
+}
+
+.fm-dialog .neuron-modal__top-bar {
+  margin: 0;
+  padding: 0;
+}
+
+.fm-dialog .neuron-modal__content {
+  margin: 0;
+  padding: 24px 24px 4px;
+}
+
+.fm-dialog .neuron-modal__title {
+  font-size: var(--fs-text-md);
+  line-height: 1.35;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.fm-dialog .neuron-modal__description {
+  font-size: var(--fs-text-xs);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.fm-dialog .neuron-modal__body {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 16px 24px 20px;
+  overflow-y: auto;
+  font-size: var(--fs-text-sm);
+  color: var(--color-text-primary);
+}
+
+.fm-dialog .neuron-modal__footer {
+  margin: 0;
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.fm-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.fm-actions > .neuron-btn {
+  flex: 1 1 0;
+  justify-content: center;
+}
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+
+.fm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fm-summary {
+  outline: none;
+  border-radius: var(--radius-md);
+}
+
+.fm-summary:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-danger-light);
+}
+
+.fm-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fm-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fm-section__title {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.fm-required {
+  color: var(--color-danger);
+}
+
+.fm-hint {
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-tertiary);
+}
+
+.fm-grid {
+  display: grid;
+  gap: 16px;
+  align-items: start;
+}
+
+.fm-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.fm-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.fm-span-2 { grid-column: span 2; }
+
+/* ─── Date field (NeuronDatePicker): label, width and height of the other fields ── */
+
+.fm-date .neuron-datepicker-popover-wrap {
+  display: flex;
+  width: 100%;
+}
+
+.fm-date .neuron-datepicker-label {
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+/* NeuronDatePicker has no required prop: the asterisk of .neuron-label__required */
+.fm-date--required .neuron-datepicker-label::after {
+  content: "*";
+  margin-left: var(--space-1);
+  color: var(--color-danger);
+  font-weight: var(--font-weight-bold);
+}
+
+.fm-date .neuron-datepicker-trigger-btn {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+}
+
+/* the picker's message sits 8px (wrap gap) + 2px below; the other fields use ~4px */
+.fm-date .neuron-datepicker-error-msg,
+.fm-date .neuron-datepicker-helper-msg {
+  margin-top: -4px;
+}
+
+/* ─── Checkbox group (yes/no attributes) ─────────────────────────────────────── */
+
+.fm-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+}
+
+/* ─── Repeatable item (design: "Stop 1", "Item 1") ───────────────────────── */
+
+.fm-item {
+  padding: 12px 14px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+}
+
+.fm-item__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.fm-item__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+  font-size: var(--fs-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.fm-item__title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.fm-item__remove.neuron-btn {
+  width: 28px;
+  height: 28px;
+  color: var(--color-text-tertiary);
+}
+
+.fm-item__remove.neuron-btn:hover:not(:disabled) {
+  color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+/* smaller labels inside an item, as in the design */
+.fm-item .neuron-label {
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-secondary);
+}
+
+.fm-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-nav-active-text);
+  font: inherit;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.fm-add:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.fm-add:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.fm-empty {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  color: var(--color-text-tertiary);
+}
+
+/* JSON attribute: monospace text, checked on entry */
+.fm-json textarea {
+  font-family: var(--lab-font-mono);
+  font-size: var(--fs-text-xs);
+  line-height: 1.5;
+}
+
+/* A list inside a list item (e.g. a characteristic's values) */
+.fm-sublist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-border);
+}
+
+.fm-sublist__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.fm-sublist__title {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.fm-sublist .fm-item {
+  background: var(--color-bg-surface);
+}
+
+/* LookupPicker: an async-search relation picker in NeuronDropdown's look */
+.lp-trigger {
+  cursor: text;
+}
+
+.lp-input {
+  height: 100%;
+  cursor: text;
+}
+
+.lp-spinner {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+  animation: lp-spin 0.9s linear infinite;
+}
+
+@keyframes lp-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-spinner { animation: none; }
+}
+
+.lp-clear {
+  all: unset;
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.lp-clear:hover {
+  color: var(--color-text-primary);
+}
+
+.lp-clear:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.lp-status--error {
+  color: var(--color-danger);
+}
+
+.lp-more {
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 640px) {
+  .fm-grid--2,
+  .fm-grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .fm-span-2 { grid-column: auto; }
+
+  .fm-dialog .neuron-modal__content,
+  .fm-dialog .neuron-modal__body,
+  .fm-dialog .neuron-modal__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

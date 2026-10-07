@@ -5,7 +5,8 @@ import { DataSource, IsNull, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { TMF673_BASE_PATH } from '../common/constants/tmf.constants';
 import { projectFields } from '../common/utils/tmf-resource.util';
-import { applyBaseFilters } from '../common/utils/query-helper.util';
+import { applyQueryFilters } from '../common/filter/filter-typeorm';
+import { GEOGRAPHIC_ADDRESS_FILTER } from './geographic-address.filter';
 import { EventEmitterService } from '../event/event-emitter.service';
 import { GeographicAddressEventType } from '../event/event-types';
 import { GeographicAddress } from './entities/geographic-address.entity';
@@ -77,16 +78,13 @@ export class GeographicAddressService {
   }
 
   async findAll(query: QueryGeographicAddressDto): Promise<{ data: Record<string, any>[]; total: number }> {
-    // house filters available for this resource: name, q, sort
+    // TMF630 filters (attribute style + JSONPath filter=), sort, q / name: GEOGRAPHIC_ADDRESS_FILTER
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.geographicLocation', 'geographicLocation')
       .leftJoinAndSelect('e.geographicSubAddress', 'geographicSubAddress')
       .where('e.deletedAt IS NULL');
 
-    applyBaseFilters(qb, query, 'e');
-    if (query.id) {
-      qb.andWhere('e.id = :id', { id: query.id });
-    }
+    applyQueryFilters(qb, query as Record<string, unknown>, GEOGRAPHIC_ADDRESS_FILTER, 'e');
 
     const total = await qb.getCount();
     qb.skip(query.offset ?? 0).take(query.limit ?? 20);

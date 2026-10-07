@@ -1,11 +1,12 @@
 // libs/adapter.mjs — loader adapter lib FE oleh nama (ui.library dari FE spec).
-// Daftar adapter: mui (M2-M5), neudela (M6). Emitter/scaffold TIDAK boleh hardcode
+// Daftar adapter: mui (M2-M5), fe-default. Emitter/scaffold TIDAK boleh hardcode
 // adapter — selalu loadAdapter(ui.library) lalu pakai resolve/coverage/theme/deps/gate.
 import * as mui from './mui.adapter.js';
-import * as neudela from './neudela.adapter.js';
 import * as feDefault from './fe-default.adapter.js';
 
-const REGISTRY = { mui, neudela, 'fe-default': feDefault };
+// neudela TIDAK lagi di sini: adapter neudela (Vite) membaca spec neudela-fe/v1 sendiri
+// lewat src/fe/neudela/ — bukan fe-spec v1 / FEIR, jadi tidak lewat registry ini.
+const REGISTRY = { mui, 'fe-default': feDefault };
 
 export function adapterNames() {
   return Object.keys(REGISTRY);

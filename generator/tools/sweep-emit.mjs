@@ -6,6 +6,7 @@ import { buildEntityPlan, resolveEntityNames } from '../src/emit/entityPlan.mjs'
 import { renderEntity, entityFileName } from '../src/emit/entity.mjs';
 import { renderPayloadDto, renderQueryDto } from '../src/emit/dto.mjs';
 import { renderService } from '../src/emit/service.mjs';
+import { renderFilterSchema } from '../src/emit/filterSchema.mjs';
 import { renderController, renderModule, renderHooks } from '../src/emit/controller.mjs';
 import { renderSeedData, renderLocalSeedStub, orderSeedsByReference } from '../src/emit/seed.mjs';
 import { componentEntry } from '../src/emit/wiring.mjs';
@@ -58,8 +59,13 @@ for (const c of fs.readdirSync(base)) {
         renderPayloadDto(x.r, 'create');
         renderPayloadDto(x.r, 'update');
         renderQueryDto(x.r);
+        const filter = renderFilterSchema(x.r, x.p, {
+          resolve,
+          importPathFor: cn => `./entities/${kebab(cn)}.entity`,
+        });
         const svc = renderService(x.r, x.p, {
           resolve,
+          filter,
           basePathConstant: ir.meta.basePathConstant,
           eventTypeEnum: ir.meta.eventTypeEnum,
           notificationEvents: x.r.notificationEvents ?? [],

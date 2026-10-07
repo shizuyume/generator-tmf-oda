@@ -17,6 +17,12 @@ import { emitFESpec } from './fe/emitFESpec.mjs';
 import { buildFEIR, FEIRError } from './fe/buildFEIR.mjs';
 import { formatErrors } from './fe/validateFESpec.mjs';
 import { resolveFEIR, scaffoldApp } from './fe/scaffoldApp.mjs';
+import { isNeudelaSpecFile, loadSpecFile as loadNeudelaSpec } from './fe/neudela/loadSpec.mjs';
+import { validateSpec as validateNeudelaSpec, formatValidation as formatNeudelaValidation } from './fe/neudela/validate.mjs';
+import { emitNeudela, scaffoldNeudela, withPort as withNeudelaPort } from './fe/neudela/scaffold.mjs';
+import { emitNeudelaSpec } from './fe/neudela/emitSpec.mjs';
+import { loadSpecText as loadNeudelaSpecText } from './fe/neudela/loadSpec.mjs';
+import yamlLib from 'js-yaml';
 
 const here = path.dirname(url.fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -430,6 +436,9 @@ specOptions(program
   .command('fe-spec')
   .description('Emit a baseline frontend-spec-*.yaml (CRUD per resource, M1). Reads the IR cache from `ir` when present.'))
   .option('-o, --out <path>', 'output path for the frontend-spec yaml (default: ./frontend-spec-tmfNNN-generated.yaml)')
+  .option('--ui <library>', 'neudela = emit a neudela-fe/v1 spec (Vite adapter) instead of the fe-spec v1 baseline')
+  .option('--overrides <yaml>', 'neudela only: overrides deep-merged on top of the generated app block')
+  .option('--field-policy <yaml>', 'neudela only: which ids without a *Ref may be typed by hand (default: libs/neudela/field-policy.yaml)')
   .action(async (target, opts) => {
     applyTarget(target, opts);
     const config = loadConfig();
@@ -452,6 +461,57 @@ specOptions(program
       const built = await buildIrFrom(opts, config);
       ir = built.ir;
       origin = built.specPath + (built.specPath !== built.mdPath && built.mdPath ? ` (+ ${built.mdPath})` : '');
+    }
+
+    if (opts.ui === 'neudela') {
+      let overrides;
+      if (opts.overrides) {
+        try {
+          overrides = yamlLib.load(fs.readFileSync(path.resolve(opts.overrides), 'utf8'));
+        } catch (err) {
+          console.error(`error: --overrides ${opts.overrides}: ${err.message}`);
+          process.exit(2);
+        }
+      }
+      let fieldPolicy;
+      if (opts.fieldPolicy) {
+        try {
+          fieldPolicy = yamlLib.load(fs.readFileSync(path.resolve(opts.fieldPolicy), 'utf8'));
+        } catch (err) {
+          console.error(`error: --field-policy ${opts.fieldPolicy}: ${err.message}`);
+          process.exit(2);
+        }
+      }
+      let out;
+      try {
+        out = emitNeudelaSpec(ir, { overrides, fieldPolicy });
+      } catch (err) {
+        console.error(`error: neudela spec emission failed (${err.message})`);
+        process.exit(10);
+      }
+      const check = validateNeudelaSpec(loadNeudelaSpecText(out.text));
+      if (!check.ok) {
+        console.error(formatNeudelaValidation('generated spec', check));
+        process.exit(10);
+      }
+      const outPath = path.resolve(opts.out || path.join(process.cwd(), `neudela-spec-tmf${ir.meta.tmfNumber}.yaml`));
+      fs.mkdirSync(path.dirname(outPath), { recursive: true });
+      fs.writeFileSync(outPath, out.text, 'utf8');
+      const pages = Object.values(out.spec.app.pages).filter((pg) => pg.kind === 'resource').length;
+      console.log(`TMF${ir.meta.tmfNumber}  ${ir.meta.specTitle}  (neudela-fe/v1)`);
+      console.log(`  IR from       ${origin}`);
+      console.log(`  overrides     ${opts.overrides ? toPosix(path.relative(process.cwd(), path.resolve(opts.overrides))) : '-'}`);
+      console.log(`  field policy  ${opts.fieldPolicy ? toPosix(path.relative(process.cwd(), path.resolve(opts.fieldPolicy))) : 'libs/neudela/field-policy.yaml'}`);
+      console.log(`  output        ${toPosix(path.relative(process.cwd(), outPath))}`);
+      console.log(`  pages         ${pages} resource page(s) + overview`);
+      console.log(`  validation    OK (neudela-fe.schema.json + LOV/icon/reference gates)`);
+      for (const w of out.warnings) console.log(`  ! ${w}`);
+      console.log(`  next: tmfgen fe-gen scaffold --spec ${toPosix(path.relative(process.cwd(), outPath))}`);
+      return;
+    }
+    if (opts.ui && opts.ui !== 'mui') {
+      console.error(`error: --ui ${opts.ui}: supported values are neudela (neudela-fe/v1) or mui (fe-spec v1 baseline)`);
+      process.exit(2);
     }
 
     let text;
@@ -523,7 +583,28 @@ function resolvedBindingBreakdown(bindings) {
 
 const feGen = program
   .command('fe-gen')
-  .description('Frontend generators (M3+): scaffold CRA5+Craco MUI apps dari frontend-spec YAML.');
+  .description('Frontend generators: scaffold CRA5+Craco apps dari frontend-spec YAML (mui, fe-default, mcs-common), atau Vite apps dari spec neudela-fe/v1 (adapter neudela).');
+
+/** neudela adapter (Vite): load + validate a neudela-fe/v1 spec, exit 2 on any error. */
+function loadNeudelaOrExit(specPath) {
+  let spec;
+  try {
+    spec = loadNeudelaSpec(specPath);
+  } catch (err) {
+    console.error(`error: ${err.message}`);
+    process.exit(2);
+  }
+  const result = validateNeudelaSpec(spec);
+  if (!result.ok) {
+    console.error(formatNeudelaValidation(path.basename(specPath), result));
+    process.exit(2);
+  }
+  return spec;
+}
+
+function neudelaUnresolvedLookups(spec) {
+  return Object.entries(spec.app.lookups.apis).filter(([, a]) => a.unresolved).map(([k, a]) => `${k} (${a.service})`);
+}
 
 specOptions(feGen
   .command('scaffold')
@@ -541,6 +622,30 @@ specOptions(feGen
     const envOut = process.env.FE_TARGET_ROOT_OVERRIDE;
     const feTargetRoot = path.resolve(opts.out || envOut || config.feTargetRoot || config.targetRoot || '.');
     const bePort = opts.bePort ?? config.bePort ?? 3736;
+
+    if (isNeudelaSpecFile(path.resolve(opts.spec))) {
+      const spec = withNeudelaPort(loadNeudelaOrExit(path.resolve(opts.spec)), opts.port);
+      const appDir = path.join(feTargetRoot, spec.app.meta.name);
+      let result;
+      try {
+        result = scaffoldNeudela(spec, appDir);
+      } catch (err) {
+        if (err?.code === 'E_EXISTS') {
+          console.error(`error: ${err.message}`);
+          console.error('  hapus direktori itu dulu, atau pindahkan --out ke tempat lain');
+          process.exit(5);
+        }
+        throw err;
+      }
+      console.log(`FE app  ${spec.app.meta.title}  (neudela, Vite, ${spec.app.meta.uiLang})`);
+      console.log(`  target        ${toPosix(result.appDir)}`);
+      console.log(`  port          ${result.port}   (app.environment.port${opts.port ? ', --port' : ''})`);
+      console.log(`  api           ${spec.app.api.basePath} -> ${spec.app.environment.apiProxyTargetDefault} (API_PROXY_TARGET)`);
+      for (const u of neudelaUnresolvedLookups(spec)) console.log(`  ! lookup api ${u} is unresolved — its pickers explain the outage until the base URL is set`);
+      console.log(`  wrote ${result.written.length} files (template + per-app)`);
+      console.log(`  next: cd ${toPosix(result.appDir)} && npm install && npm run dev:mock`);
+      return;
+    }
 
     let feir;
     try {
@@ -597,6 +702,28 @@ specOptions(feGen
     const config = loadConfig();
     const envOut = process.env.FE_TARGET_ROOT_OVERRIDE;
     const feTargetRoot = path.resolve(envOut || config.feTargetRoot || config.targetRoot || '.');
+
+    if (isNeudelaSpecFile(path.resolve(opts.spec))) {
+      const spec = loadNeudelaOrExit(path.resolve(opts.spec));
+      const appDir = opts.out ? path.resolve(opts.out) : path.join(feTargetRoot, spec.app.meta.name);
+      let result;
+      try {
+        result = emitNeudela(spec, appDir);
+      } catch (err) {
+        if (err?.code === 'E_NOT_APP') {
+          console.error(`error: ${err.message}`);
+          console.error('  jalankan `fe-gen scaffold` dulu (atau beri --out ke direktori app yang ada)');
+          process.exit(6);
+        }
+        throw err;
+      }
+      console.log(`FE emit  ${spec.app.meta.title}  (neudela, Vite)`);
+      console.log(`  target        ${toPosix(appDir)}`);
+      console.log(`  wrote ${result.written.length} per-app files:`);
+      for (const f of result.written) console.log(`    + ${f}`);
+      console.log(`  next: cd ${toPosix(appDir)} && npm run build`);
+      return;
+    }
 
     let feir;
     try {

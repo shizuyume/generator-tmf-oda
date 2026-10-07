@@ -477,7 +477,8 @@ export function renderService(resource, plan, ctx) {
     "import { v4 as uuidv4 } from 'uuid';",
     `import { ${basePathConstant} } from '../common/constants/tmf.constants';`,
     `import { projectFields${hasVersionField ? ', applyVersionBump' : ''} } from '../common/utils/tmf-resource.util';`,
-    "import { applyBaseFilters } from '../common/utils/query-helper.util';",
+    "import { applyQueryFilters } from '../common/filter/filter-typeorm';",
+    `import { ${ctx.filter.constName} } from './${ctx.filter.fileName.replace(/[.]ts$/, '')}';`,
     `import { ${host.emitterClass} } from '${host.emitterImport}';`,
     ...(host.eventTypeStyle === 'enum' ? [`import { ${eventTypeEnum} } from '../event/event-types';`] : []),
     ...uniqueClasses.map(([cn]) => `import { ${cn} } from '${ctx.importPathFor ? ctx.importPathFor(cn) : `./entities/${kebab(cn)}.entity`}';`),
@@ -508,9 +509,6 @@ export function renderService(resource, plan, ctx) {
       entityOf);
   });
   const builders = uniqueClasses.map(([cn, entity]) => renderBuilder(entity, { className: cn }, resolve, entityOf));
-
-  const houseFilterNote = Object.entries(resource.houseFilters)
-    .filter(([, v]) => v).map(([k]) => k).join(', ') || 'none';
 
   const ops = resource.operations;
 
@@ -579,19 +577,16 @@ ${emitCall(createEvent, 'saved.id', 'response')}` : ''}
   // is unchanged.
   {
     body.push(`  async findAll(query: Query${resource.name}Dto): Promise<{ data: Record<string, any>[]; total: number }> {
-    // house filters available for this resource: ${houseFilterNote}
+    // TMF630 filters (attribute style + JSONPath filter=), sort, q / name: ${ctx.filter.constName}
     const qb = this.repository.createQueryBuilder('e')
 ${joins.map(j => `      .leftJoinAndSelect('${j.path}', '${j.alias}')`).join('\n')}
       .where('e.deletedAt IS NULL');
 
-    applyBaseFilters(qb, query, 'e');
+    applyQueryFilters(qb, query as Record<string, unknown>, ${ctx.filter.constName}, 'e');
 ${parentParams.map(pp => `    // nested resource: the collection is scoped to its parent
     if (query.${pp}) {
       qb.andWhere('e.${pp} = :${pp}', { ${pp}: query.${pp} });
-    }`).join('\n')}${parentParams.length ? '\n' : ''}    if (query.id) {
-      qb.andWhere('e.id = :id', { id: query.id });
-    }
-
+    }`).join('\n')}${parentParams.length ? '\n' : ''}
     const total = await qb.getCount();
     qb.skip(query.offset ?? ${DEFAULT_OFFSET}).take(query.limit ?? ${DEFAULT_LIMIT});
     const rows = await qb.getMany();

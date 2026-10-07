@@ -1,0 +1,73 @@
+# Ref registry of the neudela adapter: which TMF API owns the entity behind a *Ref, so the
+# relation picker (LOV) of a generated form can call it directly. Read by
+# src/fe/neudela/emitSpec.mjs (`tmfgen fe-spec --ui neudela`); the result lands in the spec's
+# app.lookups, where it can be overridden per app. No database: this file is the mapping.
+#
+# A Ref missing here is still generated, with `unresolved: true` on its API: the app builds,
+# and its picker explains that the service is not connected until the base URL / path are
+# confirmed in the spec. `verified: false` = the base path follows the TMF naming pattern but
+# was not checked against a running service.
+
+defaults:
+  queryParam: name      # TMF630 attribute filter
+  limit: 20
+  labelField: name
+  valueField: id
+
+apis:
+  policyManagement:
+    service: Policy Management
+    baseUrlEnv: VITE_POLICY_API_BASE_URL
+    basePath: /tmf-api/policyManagement/v5
+    verified: false
+  productCatalogManagement:
+    service: Product Catalog Management
+    baseUrlEnv: VITE_PRODUCT_CATALOG_API_BASE_URL
+    basePath: /tmf-api/productCatalogManagement/v5
+    verified: false
+  serviceCatalogManagement:
+    service: Service Catalog Management
+    baseUrlEnv: VITE_SERVICE_CATALOG_API_BASE_URL
+    basePath: /tmf-api/serviceCatalogManagement/v5
+    verified: false
+  resourceCatalogManagement:
+    service: Resource Catalog Management
+    baseUrlEnv: VITE_RESOURCE_CATALOG_API_BASE_URL
+    basePath: /tmf-api/resourceCatalogManagement/v5
+    verified: false
+  partyManagement:
+    service: Party Management
+    baseUrlEnv: VITE_PARTY_API_BASE_URL
+    basePath: /tmf-api/partyManagement/v5
+    verified: false
+  agreementManagement:
+    service: Agreement Management
+    baseUrlEnv: VITE_AGREEMENT_API_BASE_URL
+    basePath: /tmf-api/agreementManagement/v4
+    verified: false
+  geographicAddressManagement:
+    service: Geographic Address Management
+    baseUrlEnv: VITE_GEOGRAPHIC_ADDRESS_API_BASE_URL
+    basePath: /tmf-api/geographicAddressManagement/v4
+    verified: false
+
+refs:
+  # TMF736 (design-lab/neudela-lab)
+  PolicyRef: { api: policyManagement, path: /policy }
+  PolicyConditionRef: { api: policyManagement, path: /policyCondition }
+  PolicyActionRef: { api: policyManagement, path: /policyAction }
+  PolicyVariableRef: { api: policyManagement, path: /policyVariable }
+  # TMF620
+  CategoryRef: { api: productCatalogManagement, path: /category }
+  ProductOfferingRef: { api: productCatalogManagement, path: /productOffering }
+  ProductOfferingPriceRef: { api: productCatalogManagement, path: /productOfferingPrice }
+  ProductSpecificationRef: { api: productCatalogManagement, path: /productSpecification }
+  # TMF633 / TMF634
+  ServiceSpecificationRef: { api: serviceCatalogManagement, path: /serviceSpecification }
+  ResourceSpecificationRef: { api: resourceCatalogManagement, path: /resourceSpecification }
+  # TMF632 / TMF651 / TMF673
+  PartyRef: { api: partyManagement, path: /individual }
+  OrganizationRef: { api: partyManagement, path: /organization }
+  IndividualRef: { api: partyManagement, path: /individual }
+  AgreementRef: { api: agreementManagement, path: /agreement }
+  GeographicAddressRef: { api: geographicAddressManagement, path: /geographicAddress }

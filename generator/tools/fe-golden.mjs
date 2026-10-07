@@ -49,13 +49,11 @@ const CASES = [
 /**
  * fe-gen app golden matrix (explicit, M6): mode = deployment full|mfe.
  * Port PINNED per case; darkMode is a runtime toggle, not a case.
- * neudela spec is produced by todo 11 — when absent we report BLOCKED (a
- * prerequisite gate, not a false pass) instead of failing determinism.
+ * The neudela adapter (Vite, neudela-fe/v1 spec) has its own gate: tools/fe-neudela-golden.mjs.
  */
 const APP_CASES = [
   { name: 'mui-indigo-full',   spec: 'frontend-spec-tmf736-full.yaml',       port: 5012, library: 'mui' },
   { name: 'mui-indigo-mfe',    spec: 'frontend-spec-tmf736-mfe.yaml',        port: 5013, library: 'mui' },
-  { name: 'neudela-warn-full', spec: 'frontend-spec-tmf736-neudela.yaml',    port: 5014, library: 'neudela' },
   { name: 'fe-default-full',   spec: 'frontend-spec-tmf736-fe-default.yaml', port: 5015, library: 'fe-default' },
   { name: 'fe-default-dashboard', spec: 'frontend-spec-fe-default-dashboard-demo.yaml', port: 5016, library: 'fe-default' },
   { name: 'fe-default-mfe', spec: 'frontend-spec-fe-default-mfe-demo.yaml', port: 5017, library: 'fe-default' },

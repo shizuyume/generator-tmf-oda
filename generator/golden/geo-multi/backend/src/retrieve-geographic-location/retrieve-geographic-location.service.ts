@@ -5,7 +5,8 @@ import { DataSource, IsNull, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { TMF675_BASE_PATH } from '../common/constants/tmf.constants';
 import { projectFields } from '../common/utils/tmf-resource.util';
-import { applyBaseFilters } from '../common/utils/query-helper.util';
+import { applyQueryFilters } from '../common/filter/filter-typeorm';
+import { RETRIEVE_GEOGRAPHIC_LOCATION_FILTER } from './retrieve-geographic-location.filter';
 import { EventEmitterService } from '../event/event-emitter.service';
 import { GeographicLocationEventType } from '../event/event-types';
 import { RetrieveGeographicLocation } from './entities/retrieve-geographic-location.entity';
@@ -77,16 +78,13 @@ export class RetrieveGeographicLocationService {
   }
 
   async findAll(query: QueryRetrieveGeographicLocationDto): Promise<{ data: Record<string, any>[]; total: number }> {
-    // house filters available for this resource: sort
+    // TMF630 filters (attribute style + JSONPath filter=), sort, q / name: RETRIEVE_GEOGRAPHIC_LOCATION_FILTER
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.geographicLocation', 'geographicLocation')
       .leftJoinAndSelect('e.thing', 'thing')
       .where('e.deletedAt IS NULL');
 
-    applyBaseFilters(qb, query, 'e');
-    if (query.id) {
-      qb.andWhere('e.id = :id', { id: query.id });
-    }
+    applyQueryFilters(qb, query as Record<string, unknown>, RETRIEVE_GEOGRAPHIC_LOCATION_FILTER, 'e');
 
     const total = await qb.getCount();
     qb.skip(query.offset ?? 0).take(query.limit ?? 20);

@@ -112,6 +112,16 @@ try {
       Array.isArray(listed) ? `count=${listed.length}` : `status=${list.status}`);
 
     if (sub?.id) {
+      // GET /hub/{id}: a client sees what it registered, in the spec's Hub shape
+      const one = await get(`${BASE}${hubPath}/${sub.id}`);
+      let hub = null;
+      try { hub = JSON.parse(one.text); } catch { /* handled below */ }
+      record('GET hub/:id -> the Hub (id, href, callback, @type)', one.status === 200 && hub?.id === sub.id
+        && hub?.callback === 'http://example.test/cb' && hub?.['@type'] === 'Hub' && /^\/.+\/hub\//.test(hub?.href ?? '') && !('createdDate' in (hub ?? {})),
+        `status=${one.status} ${one.text.slice(0, 160)}`);
+      const filtered = await get(`${BASE}${hubPath}?callback=${encodeURIComponent('http://example.test/cb')}`);
+      record('GET hub?callback= -> TMF630 filter', filtered.status === 200 && JSON.parse(filtered.text).some(h => h.id === sub.id),
+        `status=${filtered.status}`);
       const del = await fetch(`${BASE}${hubPath}/${sub.id}`, { method: 'DELETE' })
         .then(r => r.status).catch(() => 0);
       record('DELETE hub/:id -> 204', del === 204, `status=${del}`);

@@ -25,7 +25,7 @@ const ws = path.resolve(root, '..');
  *   - @mui/x-data-grid-pro  (community only, no paid)
  *   - @mui/x-charts         (no page consumer in v1)
  *   - zustand               (state: context|none only)
- *   - extension .tsx import (CRA5 convention = extensionless, not neudela's .tsx)
+ *   - extension .tsx import (CRA5 convention = extensionless)
  *   - secret value in REACT_APP_ (secrets only via runtime gen.config, never build-env)
  */
 const FE_FORBID = [
@@ -102,7 +102,7 @@ const gates = [
   },
   /* ---- FE section (todo 12, static — no install) ---- */
   {
-    name: 'FE fe-gen golden matrix + determinism (7 cases: mui full/mfe + neudela full + fe-default full/dashboard/mfe + mcs-common)',
+    name: 'FE fe-gen golden matrix + determinism (6 cases: mui full/mfe + fe-default full/dashboard/mfe + mcs-common)',
     cmd: ['tools/fe-golden.mjs'],
     ok: out => /all fe golden checks passed/.test(out) && !/failure\(s\)$/.test(out),
     summary: out => (out.match(/^(PASS|FAIL).*$/gm) ?? []).length + ' checks',
@@ -116,7 +116,6 @@ const gates = [
         path.join(ws, 'frontend-spec-tmf736.yaml'),
         path.join(ws, 'frontend-spec-tmf736-mfe.yaml'),
         path.join(ws, 'frontend-spec-tmf736-full.yaml'),
-        path.join(ws, 'frontend-spec-tmf736-neudela.yaml'),
         path.join(ws, 'frontend-spec-tmf736-fe-default.yaml'),
         path.join(ws, 'frontend-spec-fe-default-dashboard-demo.yaml'),
         path.join(ws, 'frontend-spec-fe-default-mfe-demo.yaml'),
@@ -191,7 +190,31 @@ const gates = [
     ok: out => /^common_remote present/.test(out),
     summary: out => /^common_remote present/.test(out) ? `${MCS_COMMON_GOLDEN_DIRS.size} case(s) OK` : out.split('\n').length + ' problem(s)',
   },
+  /* ---- FE neudela adapter (Vite, neudela-fe/v1 spec) ---- */
+  {
+    name: 'FE neudela template ⇄ design-lab/neudela-lab (styles, tokens, template package, emitApp)',
+    cmd: ['tools/neudela-yaml-sync.mjs'],
+    ok: out => /OK {2}neudela-fe template in sync with the lab/.test(out),
+    summary: out => (out.match(/^template:.*$/m)?.[0] ?? '') + ' | ' + (out.match(/^styles:.*$/m)?.[0] ?? (out.match(/^FAIL.*$/gm) ?? []).length + ' failure(s)'),
+  },
+  {
+    name: 'FE neudela golden (fe-spec --ui neudela + fe-gen scaffold determinism, golden == design-lab)',
+    cmd: ['tools/fe-neudela-golden.mjs'],
+    ok: out => /all neudela golden checks passed/.test(out),
+    summary: out => (out.match(/^(PASS|FAIL).*$/gm) ?? []).length + ' checks',
+  },
 ];
+
+// opt-in: generated neudela apps build (tsc + vite) for TMF736 + a sweep, and the TMF736 one
+// passes the lab's E2E pixel-identical. Needs design-lab/neudela-lab/node_modules installed.
+if (process.argv.includes('--neudela-build')) {
+  gates.push({
+    name: 'FE neudela build + E2E (tmf736 golden + tmf673/620/642 sweep, screenshots == lab)',
+    cmd: ['tools/fe-neudela-build.mjs', '--e2e'],
+    ok: out => /all neudela build checks passed/.test(out),
+    summary: out => (out.match(/^(PASS|FAIL).*$/gm) ?? []).length + ' checks',
+  });
+}
 
 if (runtimeBackend) {
   gates.push(
@@ -225,22 +248,29 @@ if (runtimeBackend) {
       summary: out => out.match(/\d+\/\d+ checks passed/)?.[0] ?? '',
     },
     // BASELINE, so the next reader does not mistake it for a regression:
-    // the three gates below (CRUD round trip, event pipeline, DTO validators)
+    // the four gates below (CRUD round trip, list filters, event pipeline, DTO validators)
     // hardcode the rev-sharing component's base path, resource and DTO. Against
-    // a rev-sharing service they pass; against ANY OTHER service all three fail
+    // a rev-sharing service they pass; against ANY OTHER service all four fail
     // because that service has no partyRevSharingAlgorithm resource - so
-    // `--runtime <some-other-backend>` ends at AT LEAST 5 failed gates, not 2,
-    // and 3 of those say nothing about the service under test.
+    // `--runtime <some-other-backend>` ends at AT LEAST 6 failed gates, not 2,
+    // and 4 of those say nothing about the service under test.
     // ('boot + hub smoke' above is not resource-specific, but it gives the boot
     // 20s (40 x 500ms in tools/smoke.mjs) and a large component - TMF642, ~80
     // entities - can still be running TypeORM synchronize when that runs out,
-    // which is a 6th failure and equally not a regression.)
-    // Parameterising these three from the backend's own manifest is a separate
+    // which is a 7th failure and equally not a regression.)
+    // Parameterising these four from the backend's own manifest is a separate
     // follow-up; do not "fix" these failures in the emitters.
     {
       name: 'CRUD round trip',
       cmd: ['tools/crud-smoke.mjs', runtimeBackend,
         'tmf-api/revenueSharingAlgorithmManagement/v5', 'partyRevSharingAlgorithm', '--port', '3942'],
+      ok: out => /(\d+)\/\1 checks passed/.test(out),
+      summary: out => out.match(/\d+\/\d+ checks passed/)?.[0] ?? '',
+    },
+    {
+      // same rev-sharing baseline as the three gates around it (see above)
+      name: 'TMF630 list filters (attribute + JSONPath, same-element arrays, 400s, injection)',
+      cmd: ['tools/filter-smoke.mjs', runtimeBackend, '--port', '3944'],
       ok: out => /(\d+)\/\1 checks passed/.test(out),
       summary: out => out.match(/\d+\/\d+ checks passed/)?.[0] ?? '',
     },

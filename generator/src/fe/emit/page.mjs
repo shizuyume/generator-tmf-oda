@@ -79,16 +79,16 @@ const UI_IMPORT_SLOT = '/*__UI_IMPORT_SLOT__*/';
 
 const ASSEMBLY_SET = new Set(['Box', 'Alert', 'Snackbar', 'Tooltip', 'Typography', 'Tab', 'TableHead', 'TableBody', 'TableRow', 'TableCell']);
 
-// Library non-MUI (neudela, fe-default, ...) merutekan barrel lewat src/gen/uiwrappers.tsx
+// Library non-MUI (fe-default, ...) merutekan barrel lewat src/gen/uiwrappers.tsx
 // (hand-rolled Ui* contract) - hanya 'mui' yang pakai per-semantic adapter.resolve() langsung.
-const UIWRAPPERS_LIBRARIES = new Set(['neudela', 'fe-default']);
+const UIWRAPPERS_LIBRARIES = new Set(['fe-default']);
 
 // F7: UiStatCard HANYA ditambahkan ke barrel fe-default, dan HANYA bila FEIR punya
-// halaman dashboard - menjaga 3 golden lama (tanpa dashboard) byte-identik. MUI/neudela
-// TIDAK PERNAH menambahkan UiStatCard: keduanya 'fallback' (bukan 'covered'), dan
+// halaman dashboard - menjaga golden lama (tanpa dashboard) byte-identik. MUI
+// TIDAK PERNAH menambahkan UiStatCard: statusnya 'fallback' (bukan 'covered'), dan
 // adapter.resolve('stat-card') untuk mui hanya mengembalikan Card MENTAH (bukan komponen
 // berprop label/value/trend) - dashboard.mjs merakit stat card dari UiCard+UiTypography
-// yang SUDAH ada di barrel untuk mui/neudela, bukan lewat simbol UiStatCard.
+// yang SUDAH ada di barrel untuk mui, bukan lewat simbol UiStatCard.
 function barrelMembersFor(feir, library) {
   const hasDashboard = (feir.pages ?? []).some((p) => p.view === 'dashboard');
   if (hasDashboard && library === 'fe-default') {
@@ -394,7 +394,7 @@ function pageFile(ir, page, res, adapter) {
   const mui = (ir.ui?.library ?? 'mui') === 'mui';
   if (list.filters?.length) {
     // F6: UiSelect BUKAN bagian BARREL_MEMBERS/x-semantic-vocabulary (filter list, bukan
-    // form field) - fe-default/neudela sudah mengekspornya langsung dari uiwrappers.tsx,
+    // form field) - fe-default sudah mengekspornya langsung dari uiwrappers.tsx,
     // tapi barrel ui.tsx generik (BARREL_MEMBERS) tidak meneruskannya. Import langsung dari
     // uiwrappers, bukan lewat ui.tsx, supaya BARREL_MEMBERS/mui tidak perlu tahu soal filter.
     if (mui) {
@@ -513,7 +513,7 @@ function pageFile(ir, page, res, adapter) {
     // list.filters (F6): tiap entry {field,label,type:select,options} -> satu Select yang
     // menulis ke useCrudPage.extra[field] (house filter - sudah lama ada di query params,
     // sebelum F6 tak pernah ada UI yang mengisinya). Ganti filter -> reset ke halaman 0.
-    // UiSelect (fe-default/neudela lewat uiwrappers) dan MUI Select+MenuItem (import
+    // UiSelect (fe-default lewat uiwrappers) dan MUI Select+MenuItem (import
     // langsung, DI LUAR barrel semantic - filter list bukan bagian x-semantic-vocabulary,
     // dan MUI Select mentah butuh children MenuItem, kontrak berbeda dari UiSelect) dipisah
     // di sini karena kontraknya genuinely berbeda, bukan sekadar variasi styling.

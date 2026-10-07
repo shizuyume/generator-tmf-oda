@@ -137,7 +137,7 @@ function dashboardFile(ir, page, adapter) {
       if (statCardCovered) {
         L.push(`        <UiStatCard label={${q1(stat.title)}} value={${formatted}} />`);
       } else {
-        // Fallback (mui/neudela: status 'fallback') - rakit dari UiCard+UiTypography yang
+        // Fallback (mui: status 'fallback') - rakit dari UiCard+UiTypography yang
         // SUDAH ada di barrel, bukan simbol UiStatCard (lihat catatan barrelMembersFor).
         L.push('        <UiCard sx={{ p: 2 }}>');
         L.push(`          <UiTypography variant="body2" sx={{ color: 'text.secondary' }}>{${q1(stat.title)}}</UiTypography>`);

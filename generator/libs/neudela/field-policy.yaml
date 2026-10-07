@@ -1,0 +1,20 @@
+# Field policy of the neudela adapter (`tmfgen fe-spec --ui neudela`), override per run with
+# --field-policy <yaml>. Decides which attributes the generated create form may let the user TYPE.
+#
+# Relations (*Ref schemas) are always picked from a LOV and are not covered here. This policy is
+# about string attributes that hold an identifier of something with no *Ref schema behind it
+# (e.g. TMF642 Alarm.sourceSystemId = the id of the reporting system): no lookup can back them,
+# so the only way to fill them is by hand. A field typed by hand is marked `manualId: true` in
+# the spec; the validator rejects any other typed id. The resource's own `id`, `uuid` and
+# `href` are never typed, whatever this file says.
+
+externalIds:
+  # required → typed when the OAS requires it on create (otherwise left out, with a warning)
+  # all      → always typed
+  # none     → never typed (a required one then makes create fail — reported as a warning)
+  default: required
+  # Resource.attribute — always typed / never typed, whatever `default` says
+  allow: []
+  deny: []
+  # helper text under a typed id; {label} = the attribute label
+  helperText: "Identifier in the source system — type it as it appears there."

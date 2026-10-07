@@ -1,0 +1,70 @@
+/* neudela/style.css only styles .neuron-* classes and never touches bare elements,
+   so the page base (font, canvas, text colour) is set here from its tokens.
+   Dark mode = `.dark-theme` on <body>, which re-defines the same tokens. */
+:root {
+  /* neudela has no mono token; ids and codes use this (font loaded in index.html). */
+  --lab-font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  /* scrollbars, form controls and the canvas follow the theme */
+  color-scheme: light;
+}
+
+:root.dark-theme {
+  color-scheme: dark;
+}
+
+/* Set for one frame while the theme switches (App.tsx applyTheme): every token-driven
+   colour changes at once instead of neudela's transitions trailing behind the shell. */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+/* the cross-fade of a theme switch (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease;
+}
+
+/* Thin scrollbars on neudela tokens (inherited by every scroller, incl. modal bodies). */
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-color: var(--color-border-hover);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

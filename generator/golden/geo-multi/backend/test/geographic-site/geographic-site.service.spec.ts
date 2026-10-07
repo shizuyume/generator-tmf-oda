@@ -11,7 +11,7 @@
  * Every literal below is derived from this resource, never hand-written: see
  * the mapping table in emit/spec/resource.mjs for where each one comes from.
  */
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { PATH_METADATA, ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
 import { RouteParamtypes } from '@nestjs/common/enums/route-paramtypes.enum';
 import { Test } from '@nestjs/testing';
@@ -70,6 +70,25 @@ function makeQueryBuilder(rows: AnyRec[]): AnyRec {
     }),
     getCount: jest.fn(async () => windowed().length),
     getMany: jest.fn(async () => windowed()),
+    // common/filter: every filter scope is `e.id IN <subquery>`; this double
+    // renders a subquery as just its WHERE, so a test can read the condition
+    subQuery: jest.fn(() => {
+      let where = '';
+      const sub: AnyRec = {
+        from: jest.fn(() => sub),
+        select: jest.fn(() => sub),
+        innerJoin: jest.fn(() => sub),
+        leftJoin: jest.fn(() => sub),
+        where: jest.fn((sql: string) => {
+          where = sql;
+          return sub;
+        }),
+        getQuery: jest.fn(() => `(${where})`),
+      };
+      return sub;
+    }),
+    getParameters: jest.fn(() => ({})),
+    setParameters: jest.fn(() => qb),
   };
   return qb;
 }
@@ -170,12 +189,13 @@ const REF_ID_FALLBACK = [
 ] as const;
 
 /**
- * A sort key and a selected attribute. They are named differently on
- * purpose: applyBaseFilters turns `sort` straight into `e.<key>` SQL, so
- * that one is the COLUMN name, while projectFields matches `fields`
- * against the keys of the MAPPED row, which are the response keys.
+ * A sort attribute and a selected attribute, both by response key: `sort`
+ * is checked against the filter schema and ordered by the COLUMN it maps
+ * to (SORT_COLUMN), while projectFields matches `fields` against the keys
+ * of the MAPPED row.
  */
-const SORT_KEY = 'code';
+const SORT_ATTR = 'code';
+const SORT_COLUMN = 'code';
 const SELECTED = 'code';
 /** One the client did not ask for, which selection must then drop. */
 const NOT_SELECTED = 'description';
@@ -432,7 +452,8 @@ describe('GeographicSiteService', () => {
       repo.createQueryBuilder.mockReturnValue(qb);
       await service.findAll({ id: ID } as never);
       expect(qb.where).toHaveBeenCalledWith('e.deletedAt IS NULL');
-      expect(qb.andWhere).toHaveBeenCalledWith('e.id = :id', { id: ID });
+      expect(qb.andWhere).toHaveBeenCalledWith('e.id IN (fs0.id = :flt1)');
+      expect(qb.setParameters).toHaveBeenCalledWith({ flt1: ID });
     });
 
     it('pages with the supplied window', async () => {
@@ -452,11 +473,18 @@ describe('GeographicSiteService', () => {
       expect(qb.take).toHaveBeenCalledWith(20);
     });
 
-    it('orders by the requested sort key', async () => {
+    it('orders by the column of the requested sort attribute', async () => {
       const qb = makeQueryBuilder([entity()]);
       repo.createQueryBuilder.mockReturnValue(qb);
-      await service.findAll({ sort: `-${SORT_KEY}` } as never);
-      expect(qb.addOrderBy).toHaveBeenCalledWith(`e.${SORT_KEY}`, 'DESC');
+      await service.findAll({ sort: `-${SORT_ATTR}` } as never);
+      expect(qb.addOrderBy).toHaveBeenCalledWith(`e.${SORT_COLUMN}`, 'DESC');
+    });
+
+    it('refuses to sort by anything but a known attribute', async () => {
+      repo.createQueryBuilder.mockReturnValue(makeQueryBuilder([]));
+      await expect(
+        service.findAll({ sort: 'id;DROP TABLE x' } as never),
+      ).rejects.toBeInstanceOf(BadRequestException);
     });
 
     it('projects only the requested fields, keeping id and href', async () => {

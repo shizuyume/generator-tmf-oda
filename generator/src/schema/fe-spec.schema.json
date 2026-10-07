@@ -139,7 +139,7 @@
       "additionalProperties": false,
       "required": ["library", "version", "theme"],
       "properties": {
-        "library": { "enum": ["mui", "neudela", "fe-default"] },
+        "library": { "enum": ["mui", "fe-default"] },
         "version": { "type": "string" },
         "useTokens": { "type": "boolean" },
         "darkMode": { "type": "boolean" },

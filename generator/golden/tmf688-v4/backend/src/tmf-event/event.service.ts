@@ -5,7 +5,8 @@ import { DataSource, IsNull, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { TMF688_BASE_PATH } from '../common/constants/tmf.constants';
 import { projectFields } from '../common/utils/tmf-resource.util';
-import { applyBaseFilters } from '../common/utils/query-helper.util';
+import { applyQueryFilters } from '../common/filter/filter-typeorm';
+import { EVENT_FILTER } from './event.filter';
 import { EventEmitterService } from '../event/event-emitter.service';
 import { EventEventType } from '../event/event-types';
 import { Event } from './entities/event.entity';
@@ -86,7 +87,7 @@ export class EventService {
   }
 
   async findAll(query: QueryEventDto): Promise<{ data: Record<string, any>[]; total: number }> {
-    // house filters available for this resource: q, sort
+    // TMF630 filters (attribute style + JSONPath filter=), sort, q / name: EVENT_FILTER
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.analyticCharacteristic', 'analyticCharacteristic')
       .leftJoinAndSelect('e.relatedParty', 'relatedParty')
@@ -95,10 +96,7 @@ export class EventService {
       .leftJoinAndSelect('analyticCharacteristic.characteristicRelationship', 'analyticCharacteristicCharacteristicRelationship')
       .where('e.deletedAt IS NULL');
 
-    applyBaseFilters(qb, query, 'e');
-    if (query.id) {
-      qb.andWhere('e.id = :id', { id: query.id });
-    }
+    applyQueryFilters(qb, query as Record<string, unknown>, EVENT_FILTER, 'e');
 
     const total = await qb.getCount();
     qb.skip(query.offset ?? 0).take(query.limit ?? 20);

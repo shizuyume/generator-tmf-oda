@@ -20,8 +20,10 @@ import { PaginationInterceptor } from '../common/interceptors/pagination.interce
 import { TMF675_BASE_PATH } from '../common/constants/tmf.constants';
 import { SubscriptionService } from './subscription.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { EventSubscription } from './entities/event-subscription.entity';
 
-// GET /hub is a house convention: the spec declares only POST and DELETE.
+// GET /hub and GET /hub/{id} are house conventions: the spec declares only POST and DELETE,
+// but a client must be able to see what it registered. Responses follow the spec's Hub schema.
 @ApiTags('hub')
 @UseGuards(ApiKeyGuard)
 @UseInterceptors(PaginationInterceptor)
@@ -29,15 +31,31 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 export class GeographicLocationSubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
+  /** The spec's Hub: id, href, callback, query (when set), @type. */
+  private toHub(s: EventSubscription) {
+    return {
+      id: s.id,
+      href: `/${TMF675_BASE_PATH}/hub/${s.id}`,
+      callback: s.callback,
+      ...(s.query ? { query: s.query } : {}),
+      '@type': 'Hub',
+    };
+  }
+
+  /** TMF630 paging, filters (callback, query, id; JSONPath filter=) and sort. */
   @Get()
-  async findAll(
-    @Query('offset') offset?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.subscriptionService.findAll(
-      Number(offset) || 0,
-      Number(limit) || 20,
+  async findAll(@Query() query: Record<string, string> = {}) {
+    const { data, total } = await this.subscriptionService.findAll(
+      query,
+      Number(query.offset) || 0,
+      Number(query.limit) || 20,
     );
+    return { data: data.map((s) => this.toHub(s)), total };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.toHub(await this.subscriptionService.findOne(id));
   }
 
   @Post()
@@ -46,10 +64,9 @@ export class GeographicLocationSubscriptionController {
     @Body() dto: CreateSubscriptionDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.subscriptionService.create(dto);
-    const href = `${TMF675_BASE_PATH}/hub/${result.id}`;
-    res.location(href);
-    return { ...result, href };
+    const hub = this.toHub(await this.subscriptionService.create(dto));
+    res.location(hub.href);
+    return hub;
   }
 
   @Delete(':id')

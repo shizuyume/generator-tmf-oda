@@ -434,7 +434,7 @@ export function emitForms(feir, appDir) {
   }
   // F3: form.mjs sebelumnya TIDAK PERNAH konsultasi adapter - field type apa pun lolos
   // ke StandardFormModal.tsx (dispatch statis), termasuk semantic yang UNSUPPORTED untuk
-  // library aktif (mis. typeahead di fe-default/neudela). Beda dengan emit/page.mjs yang
+  // library aktif (mis. typeahead di fe-default). Beda dengan emit/page.mjs yang
   // sudah resolve() setiap kolom/tombol. Preflight ini menyamakan perlakuannya: field yang
   // adapter-nya throw UNSUPPORTED gagal SEKARANG (pesan jelas), bukan diam-diam jadi text
   // input generik saat runtime.

@@ -1,13 +1,13 @@
 // fe-default.adapter.js — adapter lib FE ketiga: Tailwind + komponen lokal (src/components/*),
 // desain 1:1 port dari example-component-in-dashboard.html (DOOR HRIS dashboard, CSS variables).
-// Kontrak lengkap: generator/libs/README.md. API SAMA dengan mui.adapter.js / neudela.adapter.js
-// (resolve/coverage/theme/scaffoldDeps/gateCommand) + libraryWarnings() (pola neudela).
+// Kontrak lengkap: generator/libs/README.md. API SAMA dengan mui.adapter.js
+// (resolve/coverage/theme/scaffoldDeps/gateCommand) + libraryWarnings().
 //
 // fe-default BUKAN paket npm — komponen adalah file lokal di template app
 // (generator/templates/fe-default/src/components/*.tsx). module di bawah adalah PATH SIMBOLIK
 // (dipakai coverage()/resolve() sesuai kontrak) — TIDAK dipakai literal sebagai import path oleh
-// emitter, karena emit/page.mjs merutekan fe-default lewat barrel src/gen/uiwrappers.tsx (pola
-// yang SAMA dengan neudela: lihat generalisasi barrelSource() di emit/page.mjs).
+// emitter, karena emit/page.mjs merutekan fe-default lewat barrel src/gen/uiwrappers.tsx
+// (lihat barrelSource() di emit/page.mjs).
 import { SCHEMA } from '../src/fe/validateFESpec.mjs';
 
 export const ADAPTER_NAME = 'fe-default';
@@ -155,7 +155,7 @@ export function libraryWarnings() {
 // menyimpan salinan statis penuh (termasuk [data-accent=blue|green], TIDAK token-driven).
 // ---------------------------------------------------------------------------
 
-// help func: turunkan hex (gelapkan/cerahkan) — reuse pendekatan ringan mui/neudela.adapter.js.
+// help func: turunkan hex (gelapkan/cerahkan) — reuse pendekatan ringan mui.adapter.js.
 function shade(hex, factor) {
   const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex || ''));
   if (!m) return hex;
@@ -263,7 +263,7 @@ export function renderTokensCss(tokens = {}, darkMode = false) {
 
 // ---------------------------------------------------------------------------
 // scaffoldDeps: deps app hasil generate. fe-default = Tailwind + local components — TIDAK ada
-// paket UI eksternal (bukan @mui/*, bukan neudela). react/lucide/rhf/zod pins sama konvensi tim.
+// paket UI eksternal (bukan @mui/*). react/lucide/rhf/zod pins sama konvensi tim.
 // ---------------------------------------------------------------------------
 const REACT_VERSION = '19.2.5';
 const REACT_DOM_VERSION = '19.2.5';

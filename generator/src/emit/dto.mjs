@@ -285,15 +285,12 @@ export function renderQueryDto(resource, nested = null) {
     '  @IsString()',
     `  ${pp}?: string;`,
   ]);
-  const applied = Object.entries(resource.houseFilters)
-    .filter(([, v]) => v).map(([k]) => k).join(', ');
-
   return {
     fileName: `query-${kebab(resource.name)}.dto.ts`,
     className,
     text: [
       BANNER,
-      `// filters applied by the service: ${applied || 'none'}`,
+      `// list filters: TMF630 attribute style + JSONPath filter= on ./${kebab(resource.name)}.filter.ts (common/filter)`,
       "import { IsOptional, IsString } from 'class-validator';",
       "import { ApiPropertyOptional } from '@nestjs/swagger';",
       "import { QueryBaseDto } from '../../common/dto/query-base.dto';",

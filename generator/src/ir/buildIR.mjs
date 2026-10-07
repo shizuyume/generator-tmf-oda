@@ -246,11 +246,13 @@ function discoverHub(doc) {
   const paths = doc.paths || {};
   return {
     present: Object.keys(paths).some(p => p === '/hub' || p.startsWith('/hub/')),
-    // The reference exposes GET /hub as a house convention even though specs omit it.
+    // The generated backend serves GET /hub and GET /hub/{id} as a house convention even
+    // though most specs omit them (a client must be able to see what it registered).
     specMethods: {
       post: !!paths['/hub']?.post,
       delete: !!(paths['/hub/{id}']?.delete || paths['/hub']?.delete),
       get: !!paths['/hub']?.get,
+      retrieve: !!paths['/hub/{id}']?.get,
     },
   };
 }

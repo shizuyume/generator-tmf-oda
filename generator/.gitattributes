@@ -1,0 +1,4 @@
+# neudela adapter: template + goldens are byte-compared, keep LF on every checkout
+templates/fe-neudela/** text eol=lf
+golden/fe/neudela-*/** text eol=lf
+golden/fe-spec/neudela-*.yaml text eol=lf

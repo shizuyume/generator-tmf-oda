@@ -41,4 +41,12 @@ export class QueryBaseDto {
   @IsOptional()
   @IsString()
   sort?: string;
+
+  /**
+   * TMF630 JSONPath filter(s), e.g. $[?(@.state=='raised')] or policy[?(@.name=='Roaming')];
+   * repeat the parameter to AND several. Parsed and checked by common/filter.
+   */
+  @ApiPropertyOptional({ type: String, isArray: true })
+  @IsOptional()
+  filter?: string | string[];
 }

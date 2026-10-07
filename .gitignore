@@ -4,7 +4,8 @@
 node_modules/
 /*.md
 /*.yaml
-neudela/
+/neudela/
 documents
 documents.rar
 oh-my-tmf-agent-workspace.rar
+dont-look-at-this

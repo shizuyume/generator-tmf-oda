@@ -6,18 +6,20 @@
     "versionMajor": "5",
     "dialect": "oas3",
     "basePath": "tmf-api/revenueSharingAlgorithmManagement/v5",
+    "databaseType": "sqlite",
     "basePathSource": "derived from info.title",
     "basePathConstant": "TMF736_BASE_PATH",
     "eventExchange": "revenueSharingAlgorithm.events",
     "eventExchangeConstant": "TMF736_EVENT_EXCHANGE",
     "eventTypeEnum": "RevenueSharingAlgorithmEventType",
     "serviceNameSuggestion": "revenue-sharing-algorithm-service",
-    "sourceSpec": "C:/REPOSITORY/oh-my-tmf-agent-workspace/documents/tmf736/5.0.0/openapi/TMF736-Revenue_Sharing_Algorithm_Management-v5.0.0.oas.yaml",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf736/5.0.0/openapi/TMF736-Revenue_Sharing_Algorithm_Management-v5.0.0.oas.yaml",
     "generatorVersion": "0.1.0"
   },
   "resources": [
     {
       "name": "PartyRevSharingAlgorithm",
+      "specName": "PartyRevSharingAlgorithm",
       "camelName": "partyRevSharingAlgorithm",
       "kebabName": "party-rev-sharing-algorithm",
       "tableName": "party_rev_sharing_algorithm",
@@ -254,7 +256,7 @@
                   "tsType": "string",
                   "column": {
                     "type": "varchar",
-                    "length": 36
+                    "length": 100
                   },
                   "nullable": true
                 },
@@ -332,7 +334,7 @@
                   "tsType": "string",
                   "column": {
                     "type": "varchar",
-                    "length": 36
+                    "length": 100
                   },
                   "nullable": true
                 },
@@ -448,7 +450,7 @@
                   "tsType": "string",
                   "column": {
                     "type": "varchar",
-                    "length": 36
+                    "length": 100
                   },
                   "nullable": true
                 },
@@ -526,7 +528,7 @@
                   "tsType": "string",
                   "column": {
                     "type": "varchar",
-                    "length": 36
+                    "length": 100
                   },
                   "nullable": true
                 },
@@ -845,7 +847,8 @@
     "specMethods": {
       "post": true,
       "delete": true,
-      "get": false
+      "get": false,
+      "retrieve": false
     }
   },
   "listeners": [

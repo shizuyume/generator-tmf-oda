@@ -5,6 +5,7 @@ import { buildEntityPlan, resolveEntityNames } from './entityPlan.mjs';
 import { renderEntity, entityFileName } from './entity.mjs';
 import { renderPayloadDto, renderQueryDto, renderDtoBarrel } from './dto.mjs';
 import { renderService } from './service.mjs';
+import { renderFilterSchema } from './filterSchema.mjs';
 import { renderController, renderModule, renderHooks, extraControllerFor } from './controller.mjs';
 import { renderSeedData, renderLocalSeedStub, orderSeedsByReference } from './seed.mjs';
 import { moduleNaming, SCAFFOLD_OWNED_ROUTES } from './moduleNaming.mjs';
@@ -200,12 +201,15 @@ export function emitResources(ir, options) {
       r.name,
       { constant: ir.meta.basePathConstant, segment: r.pathSegment },
     ]));
+    const importPathFor = cn => importByClass.get(cn) ?? `./entities/${kebab(cn)}.entity`;
+    const filter = renderFilterSchema(resource, plan, { resolve, importPathFor, parentParams: nested?.params ?? [] });
     const svc = renderService(resource, plan, {
+      filter,
       resolve,
       basePathConstant: ir.meta.basePathConstant,
       eventTypeEnum: ir.meta.eventTypeEnum,
       notificationEvents: resource.notificationEvents ?? [],
-      importPathFor: cn => importByClass.get(cn) ?? `./entities/${kebab(cn)}.entity`,
+      importPathFor,
       siblings,
       host,
       nested,
@@ -219,6 +223,7 @@ export function emitResources(ir, options) {
     }
     const mod = renderModule(resource, entityClasses, naming, extraController);
     writeFile(`src/${dir}/${svc.fileName}`, svc.text);
+    writeFile(`src/${dir}/${filter.fileName}`, filter.text);
     writeFile(`src/${dir}/${ctrl.fileName}`, ctrl.text);
     writeFile(`src/${dir}/${mod.fileName}`, mod.text);
 

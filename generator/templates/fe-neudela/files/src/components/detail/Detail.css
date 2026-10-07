@@ -1,0 +1,534 @@
+/* Record page — Neudela Logistics Dashboard shipment detail, on neudela tokens
+   (same hex → token mapping as list-table/ListTable.css). */
+
+.dt-page {
+  gap: 20px;
+}
+
+.dt-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.dt-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dt-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dt-header__main {
+  flex: 1 1 360px;
+  min-width: 0;
+}
+
+.dt-header__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-width: 0;
+}
+
+.dt-header__title {
+  margin: 0;
+  font-size: var(--fs-display-xs);
+  line-height: 32px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  text-wrap: balance;
+}
+
+.dt-header__id {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dt-header__id-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--lab-font-mono);
+  font-size: 13px;
+  line-height: 24px;
+  color: var(--color-text-secondary);
+}
+
+.dt-copy {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.dt-copy:hover {
+  background: var(--color-bg-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.dt-copy:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.dt-header__desc {
+  margin: 4px 0 0;
+  max-width: 80ch;
+  font-size: var(--fs-text-sm);
+  line-height: var(--lh-text-sm);
+  color: var(--color-text-secondary);
+  text-wrap: pretty;
+}
+
+.dt-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────────────────── */
+
+.dt-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--color-border);
+  scrollbar-width: thin;
+}
+
+.dt-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 12px;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.dt-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.dt-tab.is-active {
+  border-bottom-color: var(--color-primary-hover);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dt-tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 6px 6px 0 0;
+}
+
+.dt-tab__icon {
+  display: inline-flex;
+}
+
+.dt-tab__count {
+  padding: 0 7px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-surface-hover);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-text-xs);
+  line-height: 18px;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.dt-tab.is-active .dt-tab__count {
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+}
+
+.dt-panel {
+  min-width: 0;
+}
+
+.dt-panel:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-lg);
+}
+
+/* ─── Overview grid ──────────────────────────────────────────────────────── */
+
+.dt-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.dt-overview__main {
+  flex: 2 1 560px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dt-overview__aside {
+  flex: 1 1 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* only side cards: they sit side by side across the full width */
+.dt-overview--aside-only .dt-overview__aside {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
+}
+
+/* ─── Card ───────────────────────────────────────────────────────────────── */
+
+.dt-card {
+  min-width: 0;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.dt-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dt-card__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.dt-card__title {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.dt-card__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.dt-card__body {
+  padding: 16px 20px;
+}
+
+/* Flush body (tables): clip the square cell backgrounds to the card's inner corners.
+   Safe for the rows-per-page popover — it only appears past 10 rows, inside the body. */
+.dt-card__body--flush {
+  padding: 0;
+  overflow: hidden;
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
+}
+
+/* tables run edge to edge inside the card: drop NeuronTable's own frame */
+.dt-card__body--flush .neuron-table-container {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.dt-link {
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--color-nav-active-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.dt-link:hover {
+  text-decoration: underline;
+}
+
+.dt-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.dt-search {
+  width: 260px;
+  max-width: 100%;
+  flex: 0 1 260px;
+}
+
+.dt-empty {
+  margin: 0;
+  padding: 28px 20px;
+  font-size: var(--fs-text-sm);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+/* ─── Key / value list ───────────────────────────────────────────────────── */
+
+.dt-kv {
+  margin: 0;
+  padding: 6px 20px 10px;
+}
+
+.dt-card__body:has(> .dt-kv) {
+  padding: 0;
+}
+
+.dt-kv__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
+.dt-kv__row:last-child {
+  border-bottom: 0;
+}
+
+.dt-kv dt {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.dt-kv dd {
+  margin: 0;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.dt-kv dd.is-mono {
+  font-family: var(--lab-font-mono);
+  font-size: var(--fs-text-xs);
+  color: var(--color-primary-hover);
+}
+
+.dt-kv dd a {
+  color: inherit;
+}
+
+.dt-kv__sub {
+  display: block;
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-secondary);
+}
+
+/* ─── Entity cards (referenced records) ──────────────────────────────────── */
+
+.dt-entity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.dt-entity {
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+}
+
+.dt-entity__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dt-entity__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-light);
+  color: var(--color-primary-hover);
+}
+
+.dt-entity__heading {
+  min-width: 0;
+}
+
+.dt-entity__title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.dt-entity__sub {
+  margin: 2px 0 0;
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-secondary);
+}
+
+.dt-entity__fields {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 0;
+}
+
+.dt-entity__field {
+  display: contents;
+}
+
+.dt-entity__field dt {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.dt-entity__field dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.dt-entity__field dd.is-mono {
+  font-family: var(--lab-font-mono);
+  font-size: var(--fs-text-xs);
+  line-height: 20px;
+}
+
+/* ─── View toggle (NeuronButtonGroup) — active item on nav-active tokens ─── */
+
+.dt-view-toggle .neuron-btn-group-item.is-active {
+  background: var(--color-nav-active-bg);
+  color: var(--color-nav-active-text);
+  border-color: var(--color-primary-border);
+  box-shadow: none;
+}
+
+/* ─── Loading skeleton ───────────────────────────────────────────────────── */
+
+.dt-skel {
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-border) 45%, transparent) 25%,
+    color-mix(in srgb, var(--color-border) 20%, transparent) 37%,
+    color-mix(in srgb, var(--color-border) 45%, transparent) 63%
+  );
+  background-size: 400% 100%;
+  animation: dt-shimmer 1.4s ease infinite;
+}
+
+.dt-skel--crumb { width: 220px; height: 14px; }
+.dt-skel--title { width: 360px; max-width: 100%; height: 28px; }
+.dt-skel--text { width: 520px; max-width: 100%; height: 14px; }
+.dt-skel--tabs { width: 100%; height: 40px; }
+.dt-skel--card { height: 220px; border-radius: var(--radius-lg); }
+
+@keyframes dt-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-skel { animation: none; }
+}
+
+/* ─── Narrow screens ─────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .dt-header__actions {
+    width: 100%;
+  }
+
+  .dt-card__head {
+    padding: 12px 16px;
+  }
+
+  /* search takes its own line; "View all" / the view toggle stay inline on the right */
+  .dt-card__actions {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  }
+
+  .dt-search {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .dt-kv {
+    padding: 4px 16px 8px;
+  }
+
+  .dt-card__body {
+    padding: 14px 16px;
+  }
+
+  .dt-card__body--flush {
+    padding: 0;
+  }
+}

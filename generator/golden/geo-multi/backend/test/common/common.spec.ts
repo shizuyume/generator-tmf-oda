@@ -8,7 +8,6 @@ import { of } from 'rxjs';
 import { ApiKeyGuard } from '../../src/common/guards/api-key.guard';
 import { HttpExceptionFilter } from '../../src/common/filters/http-exception.filter';
 import { PaginationInterceptor } from '../../src/common/interceptors/pagination.interceptor';
-import { applyBaseFilters } from '../../src/common/utils/query-helper.util';
 import { mapBaseRefResponse } from '../../src/common/utils/response-mapper.util';
 import {
   toEntityPayload,
@@ -151,40 +150,6 @@ describe('PaginationInterceptor', () => {
         expect(v).toBeNull();
         done();
       });
-  });
-});
-
-describe('applyBaseFilters', () => {
-  function qb() {
-    return { andWhere: jest.fn(), addOrderBy: jest.fn() };
-  }
-
-  it('adds nothing for an empty query', () => {
-    const q = qb();
-    applyBaseFilters(q, {}, 'e');
-    expect(q.andWhere).not.toHaveBeenCalled();
-    expect(q.addOrderBy).not.toHaveBeenCalled();
-  });
-
-  it('filters by name, lifecycleStatus and free text', () => {
-    const q = qb();
-    applyBaseFilters(
-      q,
-      { name: 'a', lifecycleStatus: 'Active', q: 'term' },
-      'e',
-    );
-    expect(q.andWhere).toHaveBeenCalledTimes(3);
-    expect(q.andWhere.mock.calls[0][1]).toEqual({ name: '%a%' });
-    expect(q.andWhere.mock.calls[2][1]).toEqual({ q: '%term%' });
-  });
-
-  it('sorts ascending and descending, honouring the column map', () => {
-    const q = qb();
-    applyBaseFilters(q, { sort: 'name,-created' }, 'e', {
-      created: 'e.createdDate',
-    });
-    expect(q.addOrderBy).toHaveBeenNthCalledWith(1, 'e.name', 'ASC');
-    expect(q.addOrderBy).toHaveBeenNthCalledWith(2, 'e.createdDate', 'DESC');
   });
 });
 

@@ -2,7 +2,7 @@
 
 Adapter = satu file `generator/libs/<name>.adapter.js` yang menerjemahkan **semantic vocabulary netral** (schema `generator/src/schema/fe-spec.schema.json` — `x-semantic-vocabulary`) dan **theme tokens IR** ke komponen spesifik satu library FE. Emitter TIDAK boleh hardcode komponen library apa pun — selalu lewat `resolve()`.
 
-Saat ini: `mui.adapter.js` (M2 skeleton). M6 akan membuktikan extensibility dengan `neudela.adapter.js` memakai kontrak yang SAMA.
+Saat ini: `mui.adapter.js` dan `fe-default.adapter.js` (plus `mcs-common.adapter.js`, khusus scaffold common_remote). Adapter **neudela** tidak lagi memakai kontrak ini: ia membaca spec `neudela-fe/v1` sendiri (`generator/src/fe/neudela/`, template `generator/templates/fe-neudela/`) — lihat README generator.
 
 ---
 
@@ -61,12 +61,7 @@ Bentuk entry:
 
 `autocomplete` (field type YAML) memetakan ke semantic **`typeahead` yang sudah ada** — bukan
 entri baru. fe-default: `date-input`/`datetime-input`/`checkbox` = primitif native HTML nyata
-(`covered`); `radio-group` juga primitif nyata (`RadioGroup.tsx`). neudela: `date-input`/
-`datetime-input` = `NeuronInput` fallback (`type="date"`, bukan date-picker khusus); `checkbox`
-= `NeuronCheckbox` nyata (`covered`); `radio-group` = **UNSUPPORTED** — `NeuronRadioGroup`
-butuh children `NeuronRadio` terkomposisi, bukan `options` array datar seperti kontrak
-`FieldSpec`; assembly itu belum ditulis, jadi diam-diam menurunkan kualitas ditolak, bukan
-dipaksakan setengah jadi.
+(`covered`); `radio-group` juga primitif nyata (`RadioGroup.tsx`).
 
 ## 2. `theme(tokens, darkMode)` → objek tema
 
@@ -91,31 +86,31 @@ Konvensi tim CRA5+Craco: `'craco build'`.
 - `resolve(semantic, props)` → `{module, export, propsMap?, companions?, status?, note?}`.
   - Tipe **fallback** (`status:'fallback'`) → **JANGAN throw** — fallback sah, resolver mengembalikan Box + note.
   - Tipe **tak terdaftar / unsupported** → `throw new Error('adapter <name>: UNSUPPORTED semantic "<X>"')`.
-- `coverage()` → array `{semantic, status: 'covered'|'fallback'|'unsupported'}` — **iterate `SCHEMA['x-semantic-vocabulary']`** (import dari `generator/src/fe/validateFESpec.mjs`, jangan hardcode duplikat). Semua tipe dilaporkan; 0 `'unlisted'`. Dipakai gate M6 (neudela harus laporkan gap tertulis).
+- `coverage()` → array `{semantic, status: 'covered'|'fallback'|'unsupported'}` — **iterate `SCHEMA['x-semantic-vocabulary']`** (import dari `generator/src/fe/validateFESpec.mjs`, jangan hardcode duplikat). Semua tipe dilaporkan; 0 `'unlisted'`. Dipakai gate `tools/fe-coverage.mjs` (setiap gap wajib tertulis).
 
 ---
 
 ### F7 — 2 semantic baru (24 -> 26 total): `stat-card`, `chart`
 
-| semantic | mui | neudela | fe-default |
-|---|---|---|---|
-| stat-card | fallback (`Card` — emitter merakit label/value/trend via `UiCard`+`UiTypography`, BUKAN simbol `UiStatCard`) | fallback (`NeuronCard`, rakitan sama) | **covered** (`StatCard.tsx`, sudah ada sejak template awal) |
-| chart | **unsupported** (v1, sengaja — `@mui/x-charts` dilarang guardrail) | **unsupported** (v1, sengaja) | **unsupported** (v1, sengaja) |
+| semantic | mui | fe-default |
+|---|---|---|
+| stat-card | fallback (`Card` — emitter merakit label/value/trend via `UiCard`+`UiTypography`, BUKAN simbol `UiStatCard`) | **covered** (`StatCard.tsx`, sudah ada sejak template awal) |
+| chart | **unsupported** (v1, sengaja — `@mui/x-charts` dilarang guardrail) | **unsupported** (v1, sengaja) |
 
-`chart` UNSUPPORTED di **ketiga** adapter secara sengaja (keputusan user: tanpa dependency
+`chart` UNSUPPORTED di **setiap** adapter secara sengaja (keputusan user: tanpa dependency
 chart baru). `emit/dashboard.mjs` TIDAK PERNAH memanggil `resolve('chart')` (yang akan
 throw sesuai kontrak) — ia membaca `coverage()` sekali dan menulis placeholder + satu
 warning per chart. `UiStatCard` (barrel symbol) HANYA ditambahkan untuk fe-default, dan
-HANYA saat FEIR punya halaman dashboard (`barrelMembersFor()` di `emit/page.mjs`) — mui/
-neudela tidak pernah mendapat simbol ini karena keduanya `fallback`, bukan `covered`;
+HANYA saat FEIR punya halaman dashboard (`barrelMembersFor()` di `emit/page.mjs`) — mui
+tidak pernah mendapat simbol ini karena statusnya `fallback`, bukan `covered`;
 `adapter.resolve('stat-card')` untuk mui hanya mengembalikan `Card` MENTAH, bukan komponen
 berprop `label`/`value`/`trend`.
 
-## Cara register lib baru (mis. neudela di M6)
+## Cara register lib baru
 
 1. Buat `generator/libs/<name>.adapter.js` — ikuti 5 bagian kontrak di atas:
    - `components`: map semantic → komponen lib; tipe tak punya → `UNSUPPORTED` + gap di `coverage()` (wajib lapor, jangan diam).
-   - `theme(tokens, darkMode)`: tokens IR → objek tema lib (neudela: CSS var, pola `tokens.css` / `.dark-theme`).
+   - `theme(tokens, darkMode)`: tokens IR → objek tema lib (fe-default: CSS var, pola `tokens.css` / `.dark-theme`).
    - `scaffoldDeps()`: daftar dep app hasil generate (versi di konstanta).
    - `gateCommand()`: perintah build.
    - `resolve()` + `coverage()` + `UNSUPPORTED` throw — API sama persis.

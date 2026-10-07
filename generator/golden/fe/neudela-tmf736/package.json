@@ -1,0 +1,31 @@
+{
+  "name": "@mcs/neudela-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "design-lab prototype: TMF736 Revenue Sharing Algorithm UI rebuilt on the neudela design system (Vite, full app, MFE-ready structure). Mirrors design-lab/revenue-sharing-algorithm and feeds the fe-gen neudela adapter.",
+  "scripts": {
+    "dev": "vite",
+    "dev:mock": "vite --mode mock",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^1.49.0",
+    "neudela": "0.2.0",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "react-hook-form": "^7.89.0",
+    "react-router-dom": "^6.30.6"
+  },
+  "devDependencies": {
+    "@module-federation/vite": "^1.23.0",
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.1"
+  }
+}

@@ -393,6 +393,49 @@ entity yang dituju. Schema v5 menandai `@type` required di setiap schema Ref
 Kalau spec meng-inline entity penuh alih-alih Ref, nama schema itulah yang
 dipakai; fallback-nya konvensi TMF `<Entity>Ref`.
 
+### Filter list (TMF630): attribute style + JSONPath `filter=`
+
+`GET /<resource>` bisa difilter pada **semua atribut resource**, tidak terbatas pada `name`, `q`
+dan `id`. Ada dua gaya, dan keduanya bisa dipakai bersamaan (di-AND).
+
+```
+?filter=$[?(@.name=='Premium split')]                                  atribut resource
+?filter=$[?(@.name=~/split/i && (@.description==null || @.@type!='X'))]
+?filter=policy[?(@.name=='Roaming Settlement' && @.id=='pol-3')]       satu elemen list
+?filter=conditionVariable[?(@.policyCondition.id=='pcond-002' && @.value=='100')]
+?name=premium   ?q=gold   ?description=Gold partners   ?id=a,b   ?lastUpdate.gte=2026-09-01T00:00:00Z
+?policy.name=Content&policy.id=pol-4                                   satu elemen list
+?sort=-lastUpdate,name   (juga name:DESC)
+```
+
+**Grammar**
+- Operator: `&& || ! ( )` dan `== (atau =) != < <= > >= =~`.
+- Nilai: `'teks'`, `"teks"`, angka, `true`, `false`, `null`.
+- `=~ /teks/` dan `/teks/i` berarti *contains*. Teksnya literal: karakter pola harus di-escape (`/1\.5/`), dan tidak ada mesin regex yang dijalankan.
+- Semua kondisi di dalam satu `list[?( … )]` harus cocok untuk **elemen yang sama**.
+- Beberapa `filter=` di-AND.
+- Gaya atribut: `attr=v`, di mana koma berarti salah satu nilai; operator `.eq .ne .gt .gte .lt .lte`; `list.attr=v` berlaku per elemen.
+- `name=` dan `q=` tetap berarti *contains*, tanpa membedakan huruf besar/kecil.
+
+**Whitelist dari IR.** Tiap resource mendapat `src/<dir>/<dir>.filter.ts` (`emit/filterSchema.mjs`) yang berisi:
+- atribut wire root dan tipenya;
+- ref many-to-one;
+- list one-to-many (satu tingkat), masing-masing dengan atribut dan ref-nya sendiri;
+- `timestamps`: `createdDate`/`lastUpdate` milik generator, bisa difilter di `$` dan bisa di-sort;
+- `reserved`: param parent pada nested route.
+
+Atribut di luar whitelist, sintaks salah, atau tipe nilai salah dijawab **400** dengan body TMF Error yang menyebutkan atribut yang bisa difilter.
+
+**Runtime: `common/filter`**
+- Parser dan AST berada di `filter-parser.ts`.
+- `filter-typeorm.ts` menerjemahkan setiap scope menjadi `e.id IN (subquery)` dengan parameter terikat. Akibatnya, baris join di response tetap utuh: filter pada `policy[]` tidak membuang policy lain milik hasil yang cocok.
+- Pada SQLite, `LIKE` di-escape dan contains yang case-sensitive memakai `instr`; Postgres memakai `strpos`.
+- `!=` ikut mencocokkan atribut yang kosong.
+- Batas: 2000 karakter, 10 `filter=`, 30 kondisi, kedalaman 10.
+- `sort` juga di-whitelist. Dulu nilainya masuk ke SQL tanpa dicek.
+
+**Gate:** `tools/filter-smoke.mjs` (live TMF736, ikut di `check-all --runtime`) dan unit test `test/common/filter.spec.ts` di setiap servis. FE neudela dan mock `dev:mock` memakai grammar yang sama.
+
 ## 10. Troubleshooting
 
 - **`error: cannot load spec` / `$ref` tidak bisa diresolusi** — spec vendor-nya
@@ -532,41 +575,42 @@ fitur berubah-ubah antar spec.
 ### Kontrak adapter library (`libs/README.md`)
 
 5 bagian: `components`/`resolve(semantic, props)`, `coverage()`, `theme(tokens,
-darkMode)`, `scaffoldDeps()`, `gateCommand()`, plus `libraryWarnings()`. Tiga adapter
-live, **ketiganya wajib berbentuk sama** (dijaga gate coverage):
+darkMode)`, `scaffoldDeps()`, `gateCommand()`, plus `libraryWarnings()`. Dua adapter
+fe-spec live, **keduanya wajib berbentuk sama** (dijaga gate coverage). Adapter neudela
+(Vite) punya pipeline sendiri — lihat "Adapter neudela" di bawah.
 
-| | mui | neudela | **fe-default** |
-|---|---|---|---|
-| Paket | `@mui/material` v9 | `neudela` (sub-repo) | **tidak ada** — komponen lokal `src/components/*`, Tailwind + CSS var token |
-| `stat-card` | fallback (rakit Card+Typography) | fallback (rakit NeuronCard) | **covered** (`StatCard.tsx`) |
-| `chart` | unsupported (sengaja, v1) | unsupported (sengaja, v1) | unsupported (sengaja, v1) |
-| `radio-group` | covered | **unsupported** (`NeuronRadioGroup` butuh children ter-komposisi, bukan `options` datar) | covered |
-| `typeahead`/`autocomplete` | covered (`Autocomplete`) | unsupported | unsupported (kombobox sungguhan di luar scope v1) |
+| | mui | **fe-default** |
+|---|---|---|
+| Paket | `@mui/material` v9 | **tidak ada** — komponen lokal `src/components/*`, Tailwind + CSS var token |
+| `stat-card` | fallback (rakit Card+Typography) | **covered** (`StatCard.tsx`) |
+| `chart` | unsupported (sengaja, v1) | unsupported (sengaja, v1) |
+| `radio-group` | covered | covered |
+| `typeahead`/`autocomplete` | covered (`Autocomplete`) | unsupported (kombobox sungguhan di luar scope v1) |
 
 Cara register lib baru: bagian "Cara register lib baru" di `libs/README.md`. Setiap
 semantic WAJIB punya entri `covered`/`fallback`/`unsupported` **bernote** — gap diam
 (tanpa note, tanpa masuk `libraryWarnings()`) digagalkan gate coverage.
 
-### Template (`templates/fe-{mui,neudela,fe-default}/`)
+### Template (`templates/fe-{mui,fe-default}/`)
 
 `fe-default` adalah target pengembangan utama saat ini: CRA5+Craco+Tailwind, nol
 dependency UI eksternal, ~35 komponen lokal (`src/components/*`) + runtime `src/gen/*`
 (`useCrudPage`, `StandardList`, `StandardFormModal`, `uiwrappers.tsx`). Server-mode murni
 (pagination/sort/search/filter semua lewat query param, tidak ada re-slice/re-sort
-client-side). `fe-mui`/`fe-neudela` distabilkan lebih dulu (M0-M6 lama) dan saat ini
+client-side). `fe-mui` distabilkan lebih dulu (M0-M6 lama) dan saat ini
 **tidak dikembangkan lebih lanjut** kecuali perubahan yang genuinely dibagi lewat emitter
-bersama (`page.mjs`/`form.mjs`/`detail.mjs`) — keduanya diketahui gagal `npm install`
+bersama (`page.mjs`/`form.mjs`/`detail.mjs`) — diketahui gagal `npm install`
 bersih (`typescript ^5.9.0` vs peer `react-scripts@5` yang minta `^3.2.1 || ^4`; belum
 diperbaiki, di luar scope saat ini).
 
 ### Gates
 
-- **`tools/fe-coverage.mjs`** — 3 adapter × `x-semantic-vocabulary`: coverage lengkap, 0
+- **`tools/fe-coverage.mjs`** — 2 adapter × `x-semantic-vocabulary`: coverage lengkap, 0
   gap diam, `resolve()` fail-closed untuk semantic tak dikenal, setiap adapter
   mengekspor kontrak lengkap (termasuk `libraryWarnings`).
 - **`tools/fe-golden.mjs`** — determinism (generate 2x, byte-identik) + golden match.
   Matrix `golden/fe/` (6 app case, port dipin supaya byte-stable):
-  `mui-indigo-full` (5012), `mui-indigo-mfe` (5013), `neudela-warn-full` (5014),
+  `mui-indigo-full` (5012), `mui-indigo-mfe` (5013),
   `fe-default-full` (5015), `fe-default-dashboard` (5016), `fe-default-mfe` (5017).
   Spec hilang = **FAIL** (bukan `BLOCKED` yang tetap lolos — pernah membuat gate hijau
   padahal separuh matrix tidak menguji apa pun, lihat §21). `--update` untuk rekam ulang,
@@ -596,3 +640,79 @@ Referensi implementasi: `src/fe/buildFEIR.mjs`, `src/fe/scaffoldApp.mjs`,
 (jalur IR-TMF -> `frontend-spec.yaml`, opsional). Retrospektif lengkap tiap milestone
 (F0-F8, keputusan desain, bug yang ditemukan, known limitations): `TMFGEN-PLAN.md` §21
 dan seterusnya.
+
+### Adapter neudela (Vite, spec `neudela-fe/v1`)
+
+Pipeline terpisah dari fe-spec v1/FEIR. Sumber kebenarannya
+`design-lab/neudela-lab/neudela-fe-template.yaml`: blok `template` (tetap: stack, tema,
+layout, komponen, styles) dan blok `app` (per-aplikasi). App hasil generate adalah lab itu
+sendiri. Golden TMF736 sama per byte dengan lab, dan lab sama per piksel dengan dirinya
+sebelum refactor ke runtime generik.
+
+```bash
+# 1. spec dari IR (TMF mana pun); copy domain + seed lewat --overrides (opsional)
+node src/cli.mjs fe-spec --component ../documents/tmf736/5.0.0 --ui neudela   --overrides golden/fe-spec/neudela-tmf736.overrides.yaml --out neudela-spec-tmf736.yaml
+# 2. app Vite (file tetap + per-app), lalu jalankan
+node src/cli.mjs fe-gen scaffold --spec neudela-spec-tmf736.yaml --out ../result
+cd ../result/<meta.name> && npm install && npm run dev:mock
+# re-generate bagian per-app setelah spec berubah
+node src/cli.mjs fe-gen emit --spec neudela-spec-tmf736.yaml --out ../result/<meta.name>
+```
+
+- **Runtime generik** (`templates/fe-neudela/files/src/resource/`): halaman list, form,
+  detail, dan hub digerakkan oleh `ResourceConfig` berbentuk data. Nilai dibaca lewat
+  ekspresi `expr.ts` (`path`, `pick`, `count`, `join`, `plural`, `format`, ...).
+  Generator hanya menulis data: `src/pages/<dir>/config.ts`, `src/app/*`
+  (services, lookups, shell, summary Overview, icons, env, theme.css),
+  `src/types/*`, dan `mock/seed.ts`.
+- **Emitter**:
+  - `src/fe/neudela/emitSpec.mjs` (IR → spec, plus override deep-merge/diff).
+  - `emitApp.mjs` (spec → file per-app), `scaffold.mjs`, `validate.mjs` + `src/schema/neudela-fe.schema.json`.
+  - Printer deterministik `tsLiteral.mjs` / `yamlLiteral.mjs`.
+- **Relasi = LOV ke API TMF pemiliknya.** Ketentuannya ada di `libs/neudela/ref-registry.yaml`
+  (tanpa database). Ref yang tidak terdaftar tetap di-generate dengan `unresolved: true`.
+  Bila service mati atau belum dikonfigurasi, picker menampilkan pesan ramah dan form tetap terbuka.
+- **Kontrol form** (create dan edit):
+  - teks / textarea / url; tanggal (`NeuronDatePicker`, dikirim ISO 8601); enum (`NeuronDropdown`, nilai OAS); boolean (`NeuronCheckbox` dalam satu grup, bukan toggle);
+  - number (`as: number`, integer bila `column.type` int) dan JSON (`as: json`, object/list, divalidasi);
+  - relasi = **LOV async** (`LookupPicker`): ketikan dicari ke API pemilik entity, jadi entity di luar halaman pertama tetap bisa dipilih. Berlaku untuk list ref maupun ref tunggal di level atas (`*Ref` / `*RefOrValue`, mis. `Category.parent`);
+  - value object kecil (≤ 6 atribut skalar: TimePeriod `validFor`, Money, Quantity) menjadi satu **group**;
+  - list entri, dengan **satu level list di dalam item** (mis. characteristic → characteristicValueSpecification). String tunggal sebuah entri wajib diisi; bila ada beberapa, hanya yang diwajibkan OAS.
+
+  Field pendek tampil dua kolom. Detail menampilkan label enum, tanggal terformat, dan Yes/No.
+- **Edit (PATCH)**: tombol Edit di header record dan menu baris membuka dialog yang sama.
+  - Isinya field `_MVO` saja (`form.edit`), diisi otomatis dari record dengan membalik payload.
+  - PATCH hanya mengirim atribut yang berubah: yang dikosongkan menjadi `null`, list dikirim utuh, dan `@type` tidak pernah dikirim.
+  - Simpan tanpa perubahan tidak mengirim request.
+- **Resource nested** (`/parent/{id}/child`, mis. TMF673 GeographicSubAddress):
+  - Muncul sebagai tab di halaman record parent: list lengkap (`ResourceListPage embedded`) yang live dari path nested-nya.
+  - Bila parent meng-embed list yang sama, tab ini menggantikannya.
+  - Baris membuka halaman record nested, dengan breadcrumb melewati parent.
+  - Service-nya `nestedResourceService(path)`, terikat per parent.
+- **Event Hub**: payload membawa `@type: Hub`, dan baris membuka record (`GET /hub/{id}`) yang dilayani backend hasil generate.
+- **Module Federation**: setiap app adalah remote `@module-federation/vite` (nama = `meta.name` sebagai identifier).
+  - Build menghasilkan `remoteEntry.js` + `mf-manifest.json`, dengan setiap halaman `src/exposes` sebagai expose.
+  - react / react-dom / neudela dibagi sebagai singleton.
+  - `design-lab/neudela-lab/e2e/mfe-host.mjs` me-mount semua expose di host Vite terpisah.
+- **Id tanpa `*Ref` (mis. `sourceSystemId` TMF642)** tidak bisa dibuatkan LOV. Yang boleh
+  diketik manual ditentukan oleh `libs/neudela/field-policy.yaml`, bukan di-hardcode:
+  - `default: required | all | none`, plus daftar `allow`/`deny` per `Resource.atribut`;
+  - bisa diganti per run dengan `fe-spec --field-policy <yaml>`.
+  Field yang lolos ditandai `manualId: true` dan diberi helper text. Validator menolak input
+  id tanpa tanda itu. `id`/`uuid`/`href` milik resource sendiri tidak pernah diketik.
+- **Batas desain (disengaja).** Generator tidak membuatkan input untuk hal-hal berikut, dan memberi peringatan saat `fe-spec`:
+  - list yang bersarang lebih dari satu level;
+  - objek tunggal yang besar (bukan ref dan bukan value object kecil, mis. `targetProductSchema`);
+  - id yang tidak diizinkan field policy.
+
+  Field ini tetap tampil di list dan detail. Resource read-only (tanpa create/delete) mendapat halaman tanpa tombol create/delete.
+- **Gates**:
+  - `tools/neudela-yaml-sync.mjs` (`--write`: styles ⇄ CSS lab, token ⇄ neudela, paket template ⇄ lab, `emitApp` ⇄ lab).
+  - `tools/fe-neudela-golden.mjs` (determinism, golden, golden == lab).
+  - Keduanya masuk `check-all`.
+  - `tools/fe-neudela-build.mjs [--e2e]` hanya lewat `check-all --neudela-build`. Isinya build TMF736 + sweep tmf673/620/642; tiap build juga dicek sebagai remote federation (`remoteEntry.js`, exposes, shared).
+  - Pada app TMF736 hasil generate dijalankan E2E lab, dengan screenshot dibandingkan per byte terhadap baseline lab: `lab-full`, `overview-lookups`, `mfe-host`, `lookup-search`, `hub-detail`, `edit-form`.
+  - E2E per app sweep:
+    - `tools/neudela-controls-e2e.mjs` di TMF642: tanggal / enum / boolean / ref tunggal wajib;
+    - `tools/neudela-controls2-e2e.mjs` di TMF620: number / JSON / ref tunggal / value object / list bertingkat + edit;
+    - `tools/neudela-nested-e2e.mjs` di TMF673: resource nested.

@@ -79,8 +79,9 @@ function compare(goldPath, freshPath) {
   const changed = [];
 
   for (const f of [...gold].filter(x => fresh.has(x)).sort()) {
-    const a = fs.readFileSync(path.join(goldPath, f), 'utf8');
-    const b = fs.readFileSync(path.join(freshPath, f), 'utf8');
+    // line endings are a checkout artifact (core.autocrlf), not generator output: compare as LF
+    const a = fs.readFileSync(path.join(goldPath, f), 'utf8').replace(/\r\n/g, '\n');
+    const b = fs.readFileSync(path.join(freshPath, f), 'utf8').replace(/\r\n/g, '\n');
     if (a === b) continue;
     const al = a.split('\n');
     const bl = b.split('\n');

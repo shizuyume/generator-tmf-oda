@@ -1,0 +1,1018 @@
+# Overrides of the TMF736 neudela spec: what design-lab/neudela-lab sets by hand on top of
+# `tmfgen fe-spec --ui neudela` (domain copy, the When/Then rule block, request/response docs,
+# fixed mock seed). Deep-merged: objects key by key, arrays and scalars replace, null deletes.
+#   tmfgen fe-spec --component documents/tmf736/5.0.0 --ui neudela --overrides golden/fe-spec/neudela-tmf736.overrides.yaml
+app:
+  meta:
+    name: neudela-lab
+    packageName: "@mcs/neudela-lab"
+    title: Neudela Lab
+    description: Neudela Lab - TMF736 Revenue Sharing Algorithm UI on the neudela design system
+    packageDescription: "design-lab prototype: TMF736 Revenue Sharing Algorithm UI rebuilt on the neudela design system (Vite, full app, MFE-ready structure). Mirrors design-lab/revenue-sharing-algorithm and feeds the fe-gen neudela adapter."
+  tmf:
+    oas: documents/tmf736/5.0.0/openapi/TMF736-Revenue_Sharing_Algorithm_Management-v5.0.0.oas.yaml
+    description: Revenue Sharing Algorithm Management API goal is to provide the Algorithm to calculate a revenue share.
+  brand: { logoLetter: "N", title: Neudela Lab }
+  environment:
+    port: 4010
+    lookupMockBase: /mock-policy-api
+    mock: [{ name: VITE_POLICY_API_BASE_URL, value: /mock-policy-api }]
+  navigation:
+    - { path: /, label: Overview, icon: LayoutDashboard, page: home }
+    - path: /party-rev-sharing-algorithm
+      label: Revenue Sharing Algorithms
+      icon: Percent
+      page: partyRevSharingAlgorithm
+    - { path: /hub, label: Event Hub, icon: BellRing, page: hub }
+  schemas:
+    PolicyRef: { tmf: { "@type": PolicyRef, "@referredType": Policy } }
+    PolicyConditionRef: { tmf: { "@type": PolicyConditionRef, "@referredType": PolicyCondition } }
+    PolicyActionRef: { tmf: { "@type": PolicyActionRef, "@referredType": PolicyAction } }
+    PolicyVariableRef: { tmf: { "@type": PolicyVariableRef, "@referredType": PolicyVariable } }
+    PartyRevSharingPolicyConditionVariable: { tmf: { "@type": PartyRevSharingPolicyConditionVariable } }
+    PartyRevSharingPolicyActionVariable: { tmf: { "@type": PartyRevSharingPolicyActionVariable } }
+    PartyRevSharingAlgorithm:
+      tmf: { "@type": PartyRevSharingAlgorithm }
+      label: { one: algorithm, many: algorithms, entity: revenue sharing algorithm }
+  errorResponses:
+    "400": { description: Bad Request, body: Error }
+    "401": { description: Unauthorized, body: Error }
+    "403": { description: Forbidden, body: Error }
+    "404": { description: Not Found, body: Error }
+    "405": { description: Method Not allowed, body: Error }
+    "409": { description: Conflict, body: Error }
+    "500": { description: Internal Server Error, body: Error }
+    "501": { description: Not Implemented, body: Error }
+    "503": { description: Service Unavailable, body: Error }
+  operations:
+    listPartyRevSharingAlgorithm:
+      service: { file: src/service/partyRevSharingAlgorithmService.ts, fn: listPartyRevSharingAlgorithms }
+      request:
+        method: GET
+        path: /partyRevSharingAlgorithm
+        headers: { Content-Type: application/json, X-API-Key: "{VITE_API_KEY} (bila di-set)" }
+        query:
+          offset: { type: integer, from: page × pageSize }
+          limit: { type: integer, from: pageSize, default: 10 }
+          filter: { type: string, repeatable: true, from: "search (trim, debounce 300ms) + filter panel → TMF630 JSONPath (apiClient.filters)", omitWhenEmpty: true }
+          sort: { type: string, from: sort, format: "{columnKey} | -{columnKey}", omitWhenEmpty: true }
+          fields: { type: string, sent: false }
+        example: "GET /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm?offset=0&limit=10&filter=$[?(@.name=~/video/i && @.lastUpdate>='2026-09-01T00:00:00.000Z')]&filter=policy[?(@.name=~/Roaming/i)]&sort=name  (URL-encoded on the wire)"
+      responses:
+        "200":
+          headers: { X-Total-Count: "integer → total (count chip, pagination)", X-Result-Count: integer → resultCount }
+          body: { array: PartyRevSharingAlgorithm }
+          ui: rows = map(app.pages.partyRevSharingAlgorithm.list.rowFrom); loading off; error dibersihkan
+          example:
+            headers: { X-Total-Count: "12", X-Result-Count: "1" }
+            body:
+              - id: "6f1c2a0e-1b7a-4d3e-9a51-0c8e5d2b7f10"
+                href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/6f1c2a0e-1b7a-4d3e-9a51-0c8e5d2b7f10
+                name: Standard 70/30 Split
+                description: Default split between operator and content partner.
+                createdDate: "2026-09-01T08:00:00.000Z"
+                lastUpdate: "2026-09-01T13:00:00.000Z"
+                policy:
+                  - id: pol-001
+                    name: Standard Partner Split
+                    href: /tmf-api/policyManagement/v5/policy/pol-001
+                    "@type": PolicyRef
+                    "@referredType": Policy
+                    version: "1.0"
+                conditionVariable:
+                  - id: cv-1-1
+                    value: "300"
+                    policyCondition:
+                      id: pcond-001
+                      name: "Sold price of single handset > 300$"
+                      href: /tmf-api/policyManagement/v5/policyCondition/pcond-001
+                      "@type": PolicyConditionRef
+                      "@referredType": PolicyCondition
+                    policyConditionVariable:
+                      id: pvar-003
+                      name: revenueThreshold
+                      href: /tmf-api/policyManagement/v5/policyVariable/pvar-003
+                      "@type": PolicyVariableRef
+                      "@referredType": PolicyVariable
+                    "@type": PartyRevSharingPolicyConditionVariable
+                actionVariable:
+                  - id: av-1-1
+                    value: "30"
+                    policyAction:
+                      id: pact-001
+                      name: Apply percentage share
+                      href: /tmf-api/policyManagement/v5/policyAction/pact-001
+                      "@type": PolicyActionRef
+                      "@referredType": PolicyAction
+                    policyActionVariable:
+                      id: pvar-001
+                      name: sharePercentage
+                      href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                      "@type": PolicyVariableRef
+                      "@referredType": PolicyVariable
+                    "@type": PartyRevSharingPolicyActionVariable
+                "@type": PartyRevSharingAlgorithm
+        errors:
+          statuses:
+            "400": { description: Bad Request, body: Error }
+            "401": { description: Unauthorized, body: Error }
+            "403": { description: Forbidden, body: Error }
+            "404": { description: Not Found, body: Error }
+            "405": { description: Method Not allowed, body: Error }
+            "409": { description: Conflict, body: Error }
+            "500": { description: Internal Server Error, body: Error }
+            "501": { description: Not Implemented, body: Error }
+            "503": { description: Service Unavailable, body: Error }
+          ui: belum ada rows → listTable.states.loadError; ada rows → listTable.states.refreshError (rows lama tetap)
+    retrievePartyRevSharingAlgorithm:
+      service: { file: src/service/partyRevSharingAlgorithmService.ts, fn: getPartyRevSharingAlgorithm }
+      request:
+        method: GET
+        path: "/partyRevSharingAlgorithm/{id}"
+        pathParams: { id: { from: row.id (klik baris / View details / id link) } }
+        query: { fields: { type: string, sent: false } }
+      responses:
+        "200": { body: PartyRevSharingAlgorithm, ui: render detail page }
+        errors:
+          statuses:
+            "400": { description: Bad Request, body: Error }
+            "401": { description: Unauthorized, body: Error }
+            "403": { description: Forbidden, body: Error }
+            "404": { description: Not Found, body: Error }
+            "405": { description: Method Not allowed, body: Error }
+            "409": { description: Conflict, body: Error }
+            "500": { description: Internal Server Error, body: Error }
+            "501": { description: Not Implemented, body: Error }
+            "503": { description: Service Unavailable, body: Error }
+          ui: toast error + detailPage.notFound (status apa pun)
+    createPartyRevSharingAlgorithm:
+      service: { file: src/service/partyRevSharingAlgorithmService.ts, fn: createPartyRevSharingAlgorithm }
+      request:
+        method: POST
+        path: /partyRevSharingAlgorithm
+        headers: { Content-Type: application/json }
+        body: { shape: PartyRevSharingAlgorithm.FVO, builtBy: app.pages.partyRevSharingAlgorithm.form.payload }
+        example:
+          "@type": PartyRevSharingAlgorithm
+          name: Form Redesign Split
+          policy: [{ id: pol-004, name: Roaming Settlement, "@type": PolicyRef, "@referredType": Policy }]
+          description: "Roaming partners, monthly settlement."
+          conditionVariable:
+            - "@type": PartyRevSharingPolicyConditionVariable
+              value: "500"
+              policyCondition:
+                id: pcond-002
+                name: Monthly revenue above threshold
+                "@type": PolicyConditionRef
+                "@referredType": PolicyCondition
+              policyConditionVariable:
+                id: pvar-003
+                name: revenueThreshold
+                "@type": PolicyVariableRef
+                "@referredType": PolicyVariable
+          actionVariable:
+            - "@type": PartyRevSharingPolicyActionVariable
+              value: "30"
+              policyAction:
+                id: pact-001
+                name: Apply percentage share
+                "@type": PolicyActionRef
+                "@referredType": PolicyAction
+              policyActionVariable:
+                id: pvar-001
+                name: sharePercentage
+                "@type": PolicyVariableRef
+                "@referredType": PolicyVariable
+        never: [id, href, createdDate, lastUpdate, "@baseType", "@schemaLocation", ref.href]
+      responses:
+        "201":
+          body: PartyRevSharingAlgorithm
+          ui: "toast success 'Revenue sharing algorithm created successfully' → tutup dialog → reload list (halaman tetap)"
+        "202": { body: none, ui: sama dengan 201 (tidak dibedakan) }
+        errors:
+          statuses:
+            "400": { description: Bad Request, body: Error }
+            "401": { description: Unauthorized, body: Error }
+            "403": { description: Forbidden, body: Error }
+            "404": { description: Not Found, body: Error }
+            "405": { description: Method Not allowed, body: Error }
+            "409": { description: Conflict, body: Error }
+            "500": { description: Internal Server Error, body: Error }
+            "501": { description: Not Implemented, body: Error }
+            "503": { description: Service Unavailable, body: Error }
+          ui: "toast error (title 'Something went wrong', description = message); dialog tetap terbuka; nilai form tetap"
+    patchPartyRevSharingAlgorithm:
+      service: { file: src/service/partyRevSharingAlgorithmService.ts, fn: patchPartyRevSharingAlgorithm }
+      request: { method: PATCH, path: "/partyRevSharingAlgorithm/{id}", body: { shape: PartyRevSharingAlgorithm.MVO, sent: "only the attributes that changed (cleared → null, cleared list → [])" } }
+      responses:
+        "200": { body: PartyRevSharingAlgorithm, ui: "Edit dialog (prefilled from the record) → toast 'Revenue sharing algorithm updated successfully' → close → reload the record / list" }
+        "202": { body: none }
+        errors:
+          statuses:
+            "400": { description: Bad Request, body: Error }
+            "401": { description: Unauthorized, body: Error }
+            "403": { description: Forbidden, body: Error }
+            "404": { description: Not Found, body: Error }
+            "405": { description: Method Not allowed, body: Error }
+            "409": { description: Conflict, body: Error }
+            "500": { description: Internal Server Error, body: Error }
+            "501": { description: Not Implemented, body: Error }
+            "503": { description: Service Unavailable, body: Error }
+      ui: none
+    deletePartyRevSharingAlgorithm:
+      service: { file: src/service/partyRevSharingAlgorithmService.ts, fn: deletePartyRevSharingAlgorithm }
+      request: { method: DELETE, path: "/partyRevSharingAlgorithm/{id}", pathParams: { id: { from: deleteTarget.id } } }
+      responses:
+        "202": { body: none, ui: sama dengan 204 }
+        "204":
+          body: none
+          ui: "toast 'Deleted successfully' → tutup konfirmasi → bila baris terakhir di halaman > 1: mundur satu halaman, selain itu reload"
+        errors:
+          statuses:
+            "400": { description: Bad Request, body: Error }
+            "401": { description: Unauthorized, body: Error }
+            "403": { description: Forbidden, body: Error }
+            "404": { description: Not Found, body: Error }
+            "405": { description: Method Not allowed, body: Error }
+            "409": { description: Conflict, body: Error }
+            "500": { description: Internal Server Error, body: Error }
+            "501": { description: Not Implemented, body: Error }
+            "503": { description: Service Unavailable, body: Error }
+          ui: toast error; dialog konfirmasi tetap terbuka
+    listHub:
+      service: { file: src/service/hubService.ts, fn: listHubs }
+      inOAS: false
+      request:
+        method: GET
+        path: /hub
+        query:
+          offset: { from: page × pageSize }
+          limit: { from: pageSize, default: 10 }
+          filter: { repeatable: true, from: "search on callback + filter panel → TMF630 JSONPath (apiClient.filters)", omitWhenEmpty: true }
+          sort: { format: "{columnKey} | -{columnKey}", omitWhenEmpty: true }
+      responses:
+        "200":
+          headers: { X-Total-Count: total, X-Result-Count: resultCount }
+          body: { array: Hub }
+          example:
+            body:
+              - id: "2b9e6f4c-8d1a-4f0e-b3c7-5a6d9e1f2c33"
+                href: /tmf-api/revenueSharingAlgorithmManagement/v5/hub/2b9e6f4c-8d1a-4f0e-b3c7-5a6d9e1f2c33
+                callback: "https://billing.example.com/listener/rev-sharing"
+                query: eventType=PartyRevSharingAlgorithmCreateEvent
+                "@type": Hub
+        errors: { ui: listTable.states.loadError / refreshError }
+    createHub:
+      service: { file: src/service/hubService.ts, fn: createHub }
+      request:
+        method: POST
+        path: /hub
+        body: { shape: Hub.FVO, builtBy: app.pages.hub.form.payload }
+        example: { callback: "https://your-server.com/webhook", query: eventType=PartyRevSharingAlgorithmCreateEvent }
+      responses:
+        "201": { body: Hub, ui: "toast 'Subscription created' → tutup dialog → reload list" }
+        default: { body: Error, ui: toast error; dialog tetap terbuka }
+    deleteHub:
+      service: { file: src/service/hubService.ts, fn: deleteHub }
+      request: { method: DELETE, path: "/hub/{id}" }
+      responses:
+        "204":
+          body: none
+          ui: "toast 'Subscription removed' → tutup konfirmasi → mundur halaman / reload (sama dengan delete algorithm)"
+        default: { body: Error, ui: toast error }
+    retrieveHub:
+      service: { file: src/service/hubService.ts, fn: getHub }
+      request: { method: GET, path: "/hub/{id}" }
+      ui: none
+  events:
+    - name: partyRevSharingAlgorithmAttributeValueChangeEvent
+      path: /listener/partyRevSharingAlgorithmAttributeValueChangeEvent
+    - { name: partyRevSharingAlgorithmCreateEvent, path: /listener/partyRevSharingAlgorithmCreateEvent }
+    - { name: partyRevSharingAlgorithmDeleteEvent, path: /listener/partyRevSharingAlgorithmDeleteEvent }
+    - { name: partyRevSharingAlgorithmStateChangeEvent, path: /listener/partyRevSharingAlgorithmStateChangeEvent }
+  pages:
+    home:
+      summary:
+        apiInfo:
+          description: Revenue Sharing Algorithm Management API goal is to provide the Algorithm to calculate a revenue share.
+        resources:
+          - name: PartyRevSharingAlgorithm
+            description: "Policy type of algorithm to calculate revenue share: a named set of policies plus the condition and action variables that parameterise it."
+            route: /party-rev-sharing-algorithm
+            pageLabel: Revenue Sharing Algorithms
+            collectionPath: /partyRevSharingAlgorithm
+            itemPath: "/partyRevSharingAlgorithm/{id}"
+            requiredOnCreate: [name, "@type"]
+            subResources:
+              - { name: policy, kind: ref, minItems: 1 }
+              - { name: conditionVariable, kind: entry }
+              - { name: actionVariable, kind: entry }
+    partyRevSharingAlgorithm:
+      config:
+        list:
+          breadcrumb: [Revenue Sharing Algorithm]
+          title: Party Revenue Sharing Algorithms
+          card:
+            title: Algorithms
+            description: Named policy sets plus condition/action variables that decide how revenue is split between parties.
+            noun: [algorithm, algorithms]
+            searchPlaceholder: Search algorithms by name
+            emptyTitle: No revenue sharing algorithms yet
+            emptyBody: Create the first one with “New Algorithm”.
+            primaryAction: { label: New Algorithm }
+          delete: { title: Delete revenue sharing algorithm? }
+        form:
+          title: Create revenue sharing algorithm
+          description: "A named policy set, plus the condition and action variables that decide how revenue is split. References are picked from their catalogues; ids and links are set by the server."
+          submitLabel: Create algorithm
+          edit: { toast: Revenue sharing algorithm updated successfully }
+          fields:
+            - kind: text
+              name: name
+              label: Name
+              ariaLabel: Name
+              placeholder: e.g. Standard 70/30 Split
+              required: { message: Enter a name. }
+            - kind: textarea
+              name: description
+              label: Description
+              placeholder: What this algorithm is for and when it applies
+              autoResize: true
+              minRows: 2
+              maxRows: 6
+            - kind: repeatable
+              name: policies
+              section: { title: Policies, required: true, hint: "At least one, from the policy catalogue" }
+              initialItems: 1
+              minItems: { path: policy.id, message: Select at least one policy. }
+              item:
+                title: "Policy {n}"
+                removeLabel: "Remove policy {n}"
+                canRemove: more-than-one
+                fields:
+                  - kind: ref
+                    name: policy
+                    lookup: policy
+                    label: Policy
+                    placeholder: Select a policy
+                    required: { message: Select a policy. }
+                    groupRuleOnFirst: true
+              addLabel: Add policy
+            - kind: repeatable
+              name: conditionVariables
+              section: { title: Condition variables, hint: When — optional }
+              initialItems: 0
+              emptyText: No condition variables — the rule applies unconditionally.
+              item:
+                title: "Condition variable {n}"
+                removeLabel: "Remove condition variable {n}"
+                canRemove: always
+                grid: 3
+                fields:
+                  - kind: ref
+                    name: policyCondition
+                    lookup: policyCondition
+                    label: Policy condition
+                    placeholder: Select a condition
+                    required: { message: Select a policy condition. }
+                  - kind: ref
+                    name: policyConditionVariable
+                    lookup: policyVariable
+                    label: Variable
+                    placeholder: Select a variable
+                    required: { message: Select a variable. }
+                  - kind: value
+                    name: value
+                    ariaLabel: "Condition variable {n} value"
+                    placeholder: e.g. 300
+                    required: { message: Enter a value. }
+              addLabel: Add condition variable
+            - kind: repeatable
+              name: actionVariables
+              section: { title: Action variables, hint: Then — optional }
+              initialItems: 0
+              emptyText: No action variables.
+              item:
+                title: "Action variable {n}"
+                removeLabel: "Remove action variable {n}"
+                canRemove: always
+                grid: 3
+                fields:
+                  - kind: ref
+                    name: policyAction
+                    lookup: policyAction
+                    label: Policy action
+                    placeholder: Select an action
+                    required: { message: Select a policy action. }
+                  - kind: ref
+                    name: policyActionVariable
+                    lookup: policyVariable
+                    label: Variable
+                    placeholder: Select a variable
+                    required: { message: Select a variable. }
+                  - kind: value
+                    name: value
+                    ariaLabel: "Action variable {n} value"
+                    placeholder: e.g. 30
+                    required: { message: Enter a value. }
+              addLabel: Add action variable
+          guard:
+            - { required: name, message: Name is required }
+            - { anyItem: policies, path: policy.id, message: At least one policy with an ID is required }
+          payload:
+            policy: { array: policies }
+            conditionVariable: { array: conditionVariables }
+            actionVariable: { array: actionVariables }
+          toast: Revenue sharing algorithm created successfully
+        detail:
+          breadcrumbRoot: Revenue Sharing Algorithm
+          loadingText: Loading revenue sharing algorithm…
+          notFound:
+            title: Algorithm not found
+            alertTitle: Revenue sharing algorithm not found
+            alertDescription: "No algorithm with id {id} could be loaded."
+          tabs:
+            - { key: overview, label: Overview, icon: { icon: FileText, size: 15 } }
+            - { key: policies, label: Policies, icon: { icon: ScrollText, size: 15 }, count: policy }
+            - key: conditions
+              label: Condition Variables
+              icon: { icon: GitBranch, size: 15 }
+              count: conditionVariable
+            - key: actions
+              label: Action Variables
+              icon: { icon: SlidersHorizontal, size: 15 }
+              count: actionVariable
+          overview:
+            stats:
+              label: Algorithm summary
+              items:
+                - key: policies
+                  label: Policies
+                  icon: { icon: ScrollText, size: 14 }
+                  value: { count: policy }
+                  hint: { join: policy, pick: [name, id], sep: ", ", empty: None referenced }
+                  goTo: policies
+                  ariaLabel:
+                    format: "{0} — open the Policies tab"
+                    args: [{ plural: { count: policy }, one: policy, many: policies }]
+                - key: conditions
+                  label: Condition variables
+                  icon: { icon: GitBranch, size: 14 }
+                  value: { count: conditionVariable }
+                  hint: { ifAny: conditionVariable, then: When these hold, else: No conditions }
+                  goTo: conditions
+                  ariaLabel:
+                    format: "{0} — open the tab"
+                    args: [{ plural: { count: conditionVariable }, one: condition variable, many: condition variables }]
+                - key: actions
+                  label: Action variables
+                  icon: { icon: SlidersHorizontal, size: 14 }
+                  value: { count: actionVariable }
+                  hint: { ifAny: actionVariable, then: Then these apply, else: No actions }
+                  goTo: actions
+                  ariaLabel:
+                    format: "{0} — open the tab"
+                    args: [{ plural: { count: actionVariable }, one: action variable, many: action variables }]
+                - key: updated
+                  label: Last update
+                  icon: { icon: Clock3, size: 14 }
+                  value: { relativeTime: lastUpdate, empty: "—" }
+                  hint: { dateTime: lastUpdate, empty: Not provided }
+            main:
+              - block: rule-flow
+                title: Sharing rule
+                count: { plural: { sumCount: [conditionVariable, actionVariable] }, one: variable, many: variables }
+                viewAll: { label: View all variables, goTo: conditions }
+                when:
+                  label: When
+                  icon: { icon: GitBranch, size: 15 }
+                  source: conditionVariable
+                  emptyText: No condition variables — the rule applies unconditionally.
+                  title: { pick: [policyCondition.name, policyCondition.id], empty: "Condition {n}" }
+                  variable: { pick: [policyConditionVariable.name, policyConditionVariable.id] }
+                  value: value
+                  ids:
+                    - { label: condition, path: policyCondition.id }
+                    - { label: variable, path: policyConditionVariable.id }
+                then:
+                  label: Then
+                  icon: { icon: SlidersHorizontal, size: 15 }
+                  source: actionVariable
+                  emptyText: No action variables.
+                  title: { pick: [policyAction.name, policyAction.id], empty: "Action {n}" }
+                  variable: { pick: [policyActionVariable.name, policyActionVariable.id] }
+                  value: value
+                  ids: [{ label: action, path: policyAction.id }, { label: variable, path: policyActionVariable.id }]
+              - block: entity-rows
+                title: Policies
+                source: policy
+                viewAll: { label: View all policies, goTo: policies }
+                emptyText: No policies.
+                icon: { icon: ScrollText, size: 16 }
+                itemTitle: { pick: [name, id] }
+                subtitle:
+                  parts:
+                    - { expr: { path: version }, format: "Version {0}" }
+                    - { expr: { pick: ["@referredType", "@type"] } }
+                  sep: " · "
+                meta: id
+          collections:
+            - tab: policies
+              source: policy
+              title: Policies
+              count: { one: policy, many: policies }
+              search: { label: Search policies, placeholder: Search policies }
+              defaultView: card
+              card:
+                icon: { icon: ScrollText, size: 18 }
+                title: { pick: [name, id] }
+                subtitle: { pick: ["@referredType"], empty: Policy }
+                fields:
+                  - { label: ID, value: { path: id }, mono: true }
+                  - { label: Version, value: { path: version }, mono: true }
+                  - { label: Type, value: { path: "@type" }, mono: true }
+                  - { label: Base type, value: { path: "@baseType" }, mono: true }
+                  - { label: Schema, value: { path: "@schemaLocation" }, mono: true }
+                  - { label: Href, value: { path: href }, mono: true }
+              columns:
+                - { key: name, label: Name, render: primary, value: { pick: [name, id] } }
+                - { key: id, label: ID, width: 200, render: mono-muted }
+                - { key: version, label: Version, width: 110, render: mono-plain, empty: em-dash }
+            - tab: conditions
+              source: conditionVariable
+              title: Condition variables
+              count: { one: variable, many: variables }
+              search: { label: Search condition variables, placeholder: Search variables }
+              defaultView: table
+              card:
+                icon: { icon: GitBranch, size: 18 }
+                title: { pick: [policyCondition.name, policyCondition.id], empty: "Condition variable {n}" }
+                subtitle: { text: Policy condition }
+                fields:
+                  - { label: Value, value: { path: value } }
+                  - { label: Entry ID, value: { path: id }, mono: true }
+                  - { label: Entry type, value: { path: "@type" }, mono: true }
+                  - { refOf: policyCondition, role: Condition }
+                  - { label: Variable, value: { path: policyConditionVariable.name } }
+                  - { refOf: policyConditionVariable, role: Variable }
+                  - { label: Entry href, value: { path: href }, mono: true }
+                  - { label: Base type, value: { path: "@baseType" }, mono: true }
+                  - { label: Schema, value: { path: "@schemaLocation" }, mono: true }
+              columns:
+                - { key: value, label: Value, width: 140, render: primary-plain, empty: em-dash }
+                - { key: policyCondition, label: Policy Condition, render: ref-stack }
+                - { key: policyConditionVariable, label: Condition Variable, render: ref-stack }
+            - tab: actions
+              source: actionVariable
+              title: Action variables
+              count: { one: variable, many: variables }
+              search: { label: Search action variables, placeholder: Search variables }
+              defaultView: table
+              card:
+                icon: { icon: SlidersHorizontal, size: 18 }
+                title: { pick: [policyAction.name, policyAction.id], empty: "Action variable {n}" }
+                subtitle: { text: Policy action }
+                fields:
+                  - { label: Value, value: { path: value } }
+                  - { label: Entry ID, value: { path: id }, mono: true }
+                  - { label: Entry type, value: { path: "@type" }, mono: true }
+                  - { refOf: policyAction, role: Action }
+                  - { label: Variable, value: { path: policyActionVariable.name } }
+                  - { refOf: policyActionVariable, role: Variable }
+                  - { label: Entry href, value: { path: href }, mono: true }
+                  - { label: Base type, value: { path: "@baseType" }, mono: true }
+                  - { label: Schema, value: { path: "@schemaLocation" }, mono: true }
+              columns:
+                - { key: value, label: Value, width: 140, render: primary-plain, empty: em-dash }
+                - { key: policyAction, label: Policy Action, render: ref-stack }
+                - { key: policyActionVariable, label: Action Variable, render: ref-stack }
+    hub:
+      config:
+        list:
+          breadcrumb: [Revenue Sharing Algorithm, Event Hub]
+          card: { description: "Listeners notified on revenue sharing algorithm create, change and delete events." }
+  mock:
+    lookups:
+      policy:
+        - { id: pol-001, name: Standard Partner Split }
+        - { id: pol-002, name: Premium Content Share }
+        - { id: pol-003, name: Handset Bundle Incentive }
+        - { id: pol-004, name: Roaming Settlement }
+        - { id: pol-005, name: App Store Commission }
+        - { id: pol-006, name: Wholesale Voice Share }
+        - { id: pol-007, name: IoT Connectivity Share }
+        - { id: pol-008, name: Loyalty Co-funding }
+      policyCondition:
+        - { id: pcond-001, name: "Sold price of single handset > 300$" }
+        - { id: pcond-002, name: Monthly revenue above threshold }
+        - { id: pcond-003, name: Subscriber in premium tier }
+        - { id: pcond-004, name: Partner is tier-1 }
+        - { id: pcond-005, name: Usage within home network }
+      policyAction:
+        - { id: pact-001, name: Apply percentage share }
+        - { id: pact-002, name: Apply fixed fee }
+        - { id: pact-003, name: Apply tiered rate }
+        - { id: pact-004, name: Cap partner payout }
+        - { id: pact-005, name: Defer settlement }
+      policyVariable:
+        - { id: pvar-001, name: sharePercentage }
+        - { id: pvar-002, name: fixedFeeAmount }
+        - { id: pvar-003, name: revenueThreshold }
+        - { id: pvar-004, name: tierLevel }
+        - { id: pvar-005, name: payoutCap }
+        - { id: pvar-006, name: settlementDelayDays }
+    resources:
+      - path: /partyRevSharingAlgorithm
+        label: PartyRevSharingAlgorithm
+        items:
+          - id: "838e431b-2bf5-4b80-aed9-bf2b3e758cd6"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/838e431b-2bf5-4b80-aed9-bf2b3e758cd6
+            name: Standard 70/30 Split
+            description: Default split between operator and content partner.
+            createdDate: "2026-09-01T08:00:00.000Z"
+            lastUpdate: "2026-09-01T13:00:00.000Z"
+            policy:
+              - id: pol-001
+                name: Standard Partner Split
+                href: /tmf-api/policyManagement/v5/policy/pol-001
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable:
+              - id: cv-1-1
+                value: "300"
+                policyCondition:
+                  id: pcond-001
+                  name: "Sold price of single handset > 300$"
+                  href: /tmf-api/policyManagement/v5/policyCondition/pcond-001
+                  "@type": PolicyConditionRef
+                  "@referredType": PolicyCondition
+                policyConditionVariable:
+                  id: pvar-003
+                  name: revenueThreshold
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-003
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyConditionVariable
+            actionVariable:
+              - id: av-1-1
+                value: "30"
+                policyAction:
+                  id: pact-001
+                  name: Apply percentage share
+                  href: /tmf-api/policyManagement/v5/policyAction/pact-001
+                  "@type": PolicyActionRef
+                  "@referredType": PolicyAction
+                policyActionVariable:
+                  id: pvar-001
+                  name: sharePercentage
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyActionVariable
+            "@type": PartyRevSharingAlgorithm
+          - id: "1d2941ba-941a-47fa-aa67-4119146f40c9"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/1d2941ba-941a-47fa-aa67-4119146f40c9
+            name: Premium Video 60/40
+            description: Premium content partners with a higher share.
+            createdDate: "2026-09-02T10:00:00.000Z"
+            lastUpdate: "2026-09-02T15:00:00.000Z"
+            policy:
+              - id: pol-002
+                name: Premium Content Share
+                href: /tmf-api/policyManagement/v5/policy/pol-002
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+              - id: pol-001
+                name: Standard Partner Split
+                href: /tmf-api/policyManagement/v5/policy/pol-001
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable: []
+            "@type": PartyRevSharingAlgorithm
+          - id: "163ab63a-bc6c-4798-aa6b-dab44f8063ab"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/163ab63a-bc6c-4798-aa6b-dab44f8063ab
+            name: Handset Bundle Q3
+            description: Incentive for bundled handset sales above 300$.
+            createdDate: "2026-09-03T12:00:00.000Z"
+            lastUpdate: "2026-09-03T17:00:00.000Z"
+            policy:
+              - id: pol-003
+                name: Handset Bundle Incentive
+                href: /tmf-api/policyManagement/v5/policy/pol-003
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable:
+              - id: av-3-1
+                value: "32"
+                policyAction:
+                  id: pact-003
+                  name: Apply tiered rate
+                  href: /tmf-api/policyManagement/v5/policyAction/pact-003
+                  "@type": PolicyActionRef
+                  "@referredType": PolicyAction
+                policyActionVariable:
+                  id: pvar-001
+                  name: sharePercentage
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyActionVariable
+            "@type": PartyRevSharingAlgorithm
+          - id: "02d01967-efcb-49a0-a601-8e2e594ceeb7"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/02d01967-efcb-49a0-a601-8e2e594ceeb7
+            name: Roaming Partner EU
+            createdDate: "2026-09-04T14:00:00.000Z"
+            lastUpdate: "2026-09-04T19:00:00.000Z"
+            policy:
+              - id: pol-004
+                name: Roaming Settlement
+                href: /tmf-api/policyManagement/v5/policy/pol-004
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable:
+              - id: cv-4-1
+                value: "330"
+                policyCondition:
+                  id: pcond-004
+                  name: Partner is tier-1
+                  href: /tmf-api/policyManagement/v5/policyCondition/pcond-004
+                  "@type": PolicyConditionRef
+                  "@referredType": PolicyCondition
+                policyConditionVariable:
+                  id: pvar-003
+                  name: revenueThreshold
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-003
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyConditionVariable
+            actionVariable: []
+            "@type": PartyRevSharingAlgorithm
+          - id: cd56f2ea-0670-4e47-a57d-ac2d5dacee60
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/cd56f2ea-0670-4e47-a57d-ac2d5dacee60
+            name: App Store Tier 1
+            description: Commission for tier-1 app store partners.
+            createdDate: "2026-09-05T16:00:00.000Z"
+            lastUpdate: "2026-09-05T21:00:00.000Z"
+            policy:
+              - id: pol-005
+                name: App Store Commission
+                href: /tmf-api/policyManagement/v5/policy/pol-005
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable:
+              - id: av-5-1
+                value: "34"
+                policyAction:
+                  id: pact-005
+                  name: Defer settlement
+                  href: /tmf-api/policyManagement/v5/policyAction/pact-005
+                  "@type": PolicyActionRef
+                  "@referredType": PolicyAction
+                policyActionVariable:
+                  id: pvar-001
+                  name: sharePercentage
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyActionVariable
+            "@type": PartyRevSharingAlgorithm
+          - id: d004b2a7-9054-4772-a457-6a5d5c8827f7
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/d004b2a7-9054-4772-a457-6a5d5c8827f7
+            name: Wholesale Voice APAC
+            description: Wholesale voice revenue sharing for APAC carriers.
+            createdDate: "2026-09-06T18:00:00.000Z"
+            lastUpdate: "2026-09-06T23:00:00.000Z"
+            policy:
+              - id: pol-006
+                name: Wholesale Voice Share
+                href: /tmf-api/policyManagement/v5/policy/pol-006
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable: []
+            "@type": PartyRevSharingAlgorithm
+          - id: f41237d5-8ef4-4c37-adb2-2620d3842095
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/f41237d5-8ef4-4c37-adb2-2620d3842095
+            name: IoT Fleet Connectivity
+            createdDate: "2026-09-07T20:00:00.000Z"
+            lastUpdate: "2026-09-08T01:00:00.000Z"
+            policy:
+              - id: pol-007
+                name: IoT Connectivity Share
+                href: /tmf-api/policyManagement/v5/policy/pol-007
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+              - id: pol-004
+                name: Roaming Settlement
+                href: /tmf-api/policyManagement/v5/policy/pol-004
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable:
+              - id: cv-7-1
+                value: "360"
+                policyCondition:
+                  id: pcond-002
+                  name: Monthly revenue above threshold
+                  href: /tmf-api/policyManagement/v5/policyCondition/pcond-002
+                  "@type": PolicyConditionRef
+                  "@referredType": PolicyCondition
+                policyConditionVariable:
+                  id: pvar-003
+                  name: revenueThreshold
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-003
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyConditionVariable
+            actionVariable:
+              - id: av-7-1
+                value: "36"
+                policyAction:
+                  id: pact-002
+                  name: Apply fixed fee
+                  href: /tmf-api/policyManagement/v5/policyAction/pact-002
+                  "@type": PolicyActionRef
+                  "@referredType": PolicyAction
+                policyActionVariable:
+                  id: pvar-001
+                  name: sharePercentage
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyActionVariable
+            "@type": PartyRevSharingAlgorithm
+          - id: "7b71f56d-c155-406f-a740-c769be25bea5"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/7b71f56d-c155-406f-a740-c769be25bea5
+            name: Loyalty Co-funding 2026
+            description: Co-funded loyalty rewards with retail partners.
+            createdDate: "2026-09-08T22:00:00.000Z"
+            lastUpdate: "2026-09-09T03:00:00.000Z"
+            policy:
+              - id: pol-008
+                name: Loyalty Co-funding
+                href: /tmf-api/policyManagement/v5/policy/pol-008
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable: []
+            "@type": PartyRevSharingAlgorithm
+          - id: d43fe26e-b3ec-4a59-af03-9d0d9187bbc8
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/d43fe26e-b3ec-4a59-af03-9d0d9187bbc8
+            name: Music Streaming 65/35
+            description: "Streaming partners, monthly settlement."
+            createdDate: "2026-09-10T00:00:00.000Z"
+            lastUpdate: "2026-09-10T05:00:00.000Z"
+            policy:
+              - id: pol-002
+                name: Premium Content Share
+                href: /tmf-api/policyManagement/v5/policy/pol-002
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable:
+              - id: av-9-1
+                value: "38"
+                policyAction:
+                  id: pact-004
+                  name: Cap partner payout
+                  href: /tmf-api/policyManagement/v5/policyAction/pact-004
+                  "@type": PolicyActionRef
+                  "@referredType": PolicyAction
+                policyActionVariable:
+                  id: pvar-001
+                  name: sharePercentage
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyActionVariable
+            "@type": PartyRevSharingAlgorithm
+          - id: "23e87aff-f33e-4e82-a888-c7b1cc113a73"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/23e87aff-f33e-4e82-a888-c7b1cc113a73
+            name: MVNO Wholesale Base
+            description: Baseline share for MVNO partners.
+            createdDate: "2026-09-11T02:00:00.000Z"
+            lastUpdate: "2026-09-11T07:00:00.000Z"
+            policy:
+              - id: pol-006
+                name: Wholesale Voice Share
+                href: /tmf-api/policyManagement/v5/policy/pol-006
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+              - id: pol-001
+                name: Standard Partner Split
+                href: /tmf-api/policyManagement/v5/policy/pol-001
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable:
+              - id: cv-10-1
+                value: "390"
+                policyCondition:
+                  id: pcond-005
+                  name: Usage within home network
+                  href: /tmf-api/policyManagement/v5/policyCondition/pcond-005
+                  "@type": PolicyConditionRef
+                  "@referredType": PolicyCondition
+                policyConditionVariable:
+                  id: pvar-003
+                  name: revenueThreshold
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-003
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyConditionVariable
+            actionVariable: []
+            "@type": PartyRevSharingAlgorithm
+          - id: "975a4fc9-fd76-4e42-ada4-c35a786cc0bf"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/975a4fc9-fd76-4e42-ada4-c35a786cc0bf
+            name: Gaming Content Share
+            createdDate: "2026-09-12T04:00:00.000Z"
+            lastUpdate: "2026-09-12T09:00:00.000Z"
+            policy:
+              - id: pol-002
+                name: Premium Content Share
+                href: /tmf-api/policyManagement/v5/policy/pol-002
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+              - id: pol-005
+                name: App Store Commission
+                href: /tmf-api/policyManagement/v5/policy/pol-005
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable:
+              - id: av-11-1
+                value: "40"
+                policyAction:
+                  id: pact-001
+                  name: Apply percentage share
+                  href: /tmf-api/policyManagement/v5/policyAction/pact-001
+                  "@type": PolicyActionRef
+                  "@referredType": PolicyAction
+                policyActionVariable:
+                  id: pvar-001
+                  name: sharePercentage
+                  href: /tmf-api/policyManagement/v5/policyVariable/pvar-001
+                  "@type": PolicyVariableRef
+                  "@referredType": PolicyVariable
+                "@type": PartyRevSharingPolicyActionVariable
+            "@type": PartyRevSharingAlgorithm
+          - id: "51220dd2-b28f-4017-af5e-44c9a9dbb1fd"
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/partyRevSharingAlgorithm/51220dd2-b28f-4017-af5e-44c9a9dbb1fd
+            name: Enterprise Reseller Split
+            description: Reseller channel share for enterprise plans.
+            createdDate: "2026-09-13T06:00:00.000Z"
+            lastUpdate: "2026-09-13T11:00:00.000Z"
+            policy:
+              - id: pol-001
+                name: Standard Partner Split
+                href: /tmf-api/policyManagement/v5/policy/pol-001
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+              - id: pol-008
+                name: Loyalty Co-funding
+                href: /tmf-api/policyManagement/v5/policy/pol-008
+                "@type": PolicyRef
+                "@referredType": Policy
+                version: "1.0"
+            conditionVariable: []
+            actionVariable: []
+            "@type": PartyRevSharingAlgorithm
+        rules:
+          - { field: name, kind: string, message: name is required }
+          - { field: policy, kind: nonEmptyArray, message: policy must contain at least 1 element }
+        patch: true
+        timestamps: true
+      - path: /hub
+        label: Hub
+        items:
+          - id: ae8001b8-444a-43b1-a4f1-81ba48a08676
+            callback: "https://billing.example.com/listener/rev-sharing"
+            query: eventType=PartyRevSharingAlgorithmCreateEvent
+            "@type": Hub
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/hub/ae8001b8-444a-43b1-a4f1-81ba48a08676
+          - id: b16b9290-7c72-46f9-a288-f8ed7afd9e94
+            callback: "https://partner-portal.example.com/hooks/tmf736"
+            "@type": Hub
+            href: /tmf-api/revenueSharingAlgorithmManagement/v5/hub/b16b9290-7c72-46f9-a288-f8ed7afd9e94
+        rules: [{ field: callback, kind: string, message: callback is required }]
+        patch: false
+        timestamps: false
+        createFields: [callback, query]
+        type: Hub

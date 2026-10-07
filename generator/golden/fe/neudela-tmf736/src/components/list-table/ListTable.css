@@ -1,0 +1,950 @@
+/* List card — Neudela Logistics Dashboard "Work queue", mapped from its hard-coded hex
+   values onto neudela tokens so light and dark both follow `.dark-theme`:
+     #ffffff → --color-bg-surface      #d0d5dd → --color-border     #f9fafb → --color-bg-subtle
+     #101828/#344054 → --color-text-primary   #475467 → --color-text-secondary
+     brand-50 / 200 / 600 / 700 → --color-primary-light / -border / -hover / --color-nav-active-text */
+
+.lt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  /* No overflow:hidden — neudela renders popovers inline (no portal), so the date
+     picker / dropdowns in the filter panel must be able to overhang the card.
+     Edge children with a background round their own corners instead. */
+}
+
+.lt > :first-child {
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.lt > :last-child {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.lt-head {
+  padding: 16px 18px 14px;
+}
+
+.lt-head__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.lt-head__title {
+  margin: 0;
+  font-size: var(--fs-text-md);
+  line-height: var(--lh-text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.lt-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.lt-head__desc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: var(--lh-text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ─── Toolbar ────────────────────────────────────────────────────────────── */
+
+.lt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lt-toolbar__left,
+.lt-toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.lt-toolbar__left {
+  flex-wrap: wrap;
+}
+
+.lt-toolbar__right {
+  flex: 1 1 320px;
+  justify-content: flex-end;
+}
+
+.lt-toolbar__selected {
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filter button while a filter is applied: brand-tinted, as in the design. */
+.lt-toolbar__btn.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+}
+
+/* Refresh: the icon spins while a request is in flight. */
+.lt-toolbar__refresh.is-spinning svg {
+  animation: lt-spin 0.9s linear infinite;
+}
+
+@keyframes lt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lt-toolbar__refresh.is-spinning svg {
+    animation: none;
+  }
+}
+
+.lt-toolbar__search {
+  flex: 1 1 200px;
+  min-width: 0;
+  max-width: 340px;
+}
+
+/* NeuronInput's icon slots are decorative (pointer-events: none); the clear button
+   in the trailing slot has to opt back in. */
+.lt-toolbar__search .neuron-input-icon--trailing {
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.lt-toolbar__clear {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.lt-toolbar__clear:hover {
+  background: var(--color-bg-surface-hover);
+  color: var(--color-text-primary);
+}
+
+/* ─── Advanced filter panel ──────────────────────────────────────────────── */
+
+.lt-filters {
+  position: relative;
+  z-index: 6; /* its popovers sit above the sticky table cells (z 2–3) */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lt-filters__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lt-filters__row {
+  display: grid;
+  grid-template-columns: 52px minmax(160px, 220px) 86px minmax(220px, 360px) 32px;
+  align-items: center;
+  gap: 10px;
+}
+
+.lt-filters__conj,
+.lt-filters__op {
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.lt-filters__conj {
+  text-align: right;
+}
+
+.lt-filters__value {
+  min-width: 0;
+}
+
+.lt-filters__remove.neuron-btn {
+  width: 32px;
+  height: 32px;
+  color: var(--color-text-secondary);
+}
+
+.lt-filters__remove.neuron-btn:hover:not(:disabled) {
+  color: var(--color-danger);
+}
+
+.lt-filters__empty {
+  margin: 0;
+  font-size: var(--fs-text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.lt-filters__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-left: 62px; /* align with the field column */
+}
+
+.lt-filters__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ─── Applied filter chips ───────────────────────────────────────────────── */
+
+.lt-fchips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lt-fchips__label {
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.lt-fchips__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lt-fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 4px 0 10px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+  font-size: var(--fs-text-xs);
+  white-space: nowrap;
+}
+
+.lt-fchip__label {
+  font-weight: var(--font-weight-medium);
+}
+
+.lt-fchip__value {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: var(--font-weight-semibold);
+}
+
+.lt-fchip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.lt-fchip__remove:hover {
+  background: var(--color-primary-border);
+}
+
+.lt-fchip__remove:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.lt-fchips__clear.neuron-btn {
+  margin-left: auto;
+}
+
+/* ─── Table (NeuronTable inside the card) ────────────────────────────────── */
+
+.lt-table {
+  min-width: 0;
+  transition: opacity .15s;
+}
+
+.lt-table.is-refreshing,
+.is-refreshing .lt-cards {
+  opacity: .55;
+}
+
+/* The card is the frame: drop NeuronTable's own border, radius and shadow. */
+.lt-table .neuron-table-container {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Fixed layout: every column declares a `width` except one flexible text column, which
+   absorbs the remaining space and ellipsizes. Below --lt-min-width the wrapper scrolls
+   horizontally and the sticky Actions column keeps its shadow. (With auto layout a
+   nowrap cell claimed its full text width and pushed Last Update under Actions.) */
+.lt-table .neuron-table {
+  table-layout: fixed;
+  min-width: var(--lt-min-width, 960px);
+}
+
+/* Header row: 12px semibold on the subtle band (md size bumps it to 14px). */
+.lt-table .neuron-table--md .neuron-table__th {
+  font-size: var(--fs-text-xs);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+}
+
+.lt-table .neuron-table__tr:last-child .neuron-table__td {
+  border-bottom: 0;
+}
+
+.lt-table .neuron-table--hoverable .neuron-table__tr:hover .neuron-table__td {
+  background: var(--color-primary-light);
+}
+
+.lt-table .neuron-table__tr--clickable {
+  cursor: pointer;
+}
+
+/* Record id link: mono, brand-600 (the hover token) for contrast on white. */
+.lt-table .neuron-table__link,
+.lt-id {
+  font-family: var(--lab-font-mono);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary-hover);
+}
+
+.lt-table .neuron-table__link:hover {
+  color: var(--color-nav-active-text);
+}
+
+.lt-cell-primary,
+.lt-cell-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lt-cell-primary {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Inside NeuronTable's inline-flex link button the span needs its own cap. */
+.lt-cell-id {
+  max-width: 100%;
+}
+
+.lt-table .neuron-table__link {
+  max-width: 100%;
+}
+
+.lt-cell-mono {
+  font-family: var(--lab-font-mono);
+  font-size: 13px;
+}
+
+.lt-cell-no {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.lt-cell-muted {
+  color: var(--color-text-secondary);
+}
+
+.lt-cell-empty {
+  color: var(--color-text-tertiary);
+}
+
+/* Two-line cell: value + muted context line. */
+.lt-cell-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lt-cell-stack__main {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.lt-cell-stack__sub {
+  font-size: var(--fs-text-xs);
+  line-height: var(--lh-text-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Row actions: 32px icon buttons; brand = the row's main action. */
+.lt-actions {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.lt-action.neuron-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+}
+
+.lt-action--brand.neuron-btn {
+  color: var(--color-primary-hover);
+}
+
+.lt-action.neuron-btn:hover:not(:disabled) {
+  background: var(--color-bg-surface-hover);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.lt-action--danger.neuron-btn:hover:not(:disabled) {
+  color: var(--color-danger);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-light);
+}
+
+/* "⋯" trigger (buttonActionVariant="menu") */
+.lt-action--menu.neuron-btn.is-open {
+  background: var(--color-bg-surface-hover);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+/* Row action menu — portalled to <body>, fixed next to its trigger. */
+.lt-rowmenu {
+  position: fixed;
+  z-index: 1050; /* above sticky cells and the card; below the toast (1100) */
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-surface);
+  box-shadow: 0 12px 24px -4px rgba(16, 24, 40, .14), 0 4px 8px -2px rgba(16, 24, 40, .06);
+}
+
+.lt-rowmenu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--fs-text-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+}
+
+.lt-rowmenu__item:hover,
+.lt-rowmenu__item:focus-visible {
+  outline: none;
+  background: var(--color-bg-surface-hover);
+}
+
+.lt-rowmenu__item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.lt-rowmenu__icon {
+  display: inline-flex;
+  color: var(--color-text-secondary);
+}
+
+.lt-rowmenu__item--brand .lt-rowmenu__icon {
+  color: var(--color-primary-hover);
+}
+
+.lt-rowmenu__item--danger {
+  color: var(--color-danger);
+}
+
+.lt-rowmenu__item--danger .lt-rowmenu__icon {
+  color: var(--color-danger);
+}
+
+.lt-rowmenu__item--danger:hover,
+.lt-rowmenu__item--danger:focus-visible {
+  background: var(--color-danger-light);
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+
+.lt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.lt-footer__size {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lt-footer__label,
+.lt-footer__range {
+  font-size: var(--fs-text-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.lt-footer__label {
+  font-weight: var(--font-weight-medium);
+}
+
+.lt-footer__range {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows per page (ListTablePageSize) — design: Work queue footer dropdown. */
+.lt-psize {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lt-psize__anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.lt-psize__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 34px;
+  min-width: 68px;
+  padding: 0 10px 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.lt-psize__trigger:hover {
+  border-color: var(--color-border-hover);
+}
+
+.lt-psize__trigger.is-open,
+.lt-psize__trigger:focus-visible {
+  outline: none;
+  border-color: var(--color-primary-hover);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.lt-psize__value {
+  flex: 1;
+  text-align: left;
+}
+
+.lt-psize__chevron {
+  color: var(--color-text-tertiary);
+  transition: transform .15s;
+}
+
+.lt-psize__trigger.is-open .lt-psize__chevron {
+  transform: rotate(180deg);
+}
+
+/* opens upward: the footer sits at the bottom of the card */
+.lt-psize__popover {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 41;
+  min-width: 100%;
+  width: max-content;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-surface);
+  box-shadow: 0 12px 24px -4px rgba(16, 24, 40, .14), 0 4px 8px -2px rgba(16, 24, 40, .06);
+}
+
+.lt-psize__caption {
+  padding: 6px 10px 4px;
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.lt-psize__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  outline: none;
+}
+
+.lt-psize__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.lt-psize__option.is-active {
+  background: var(--color-bg-surface-hover);
+}
+
+.lt-psize__option.is-selected {
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* keyboard focus ring on the active option */
+.lt-psize__list:focus-visible .lt-psize__option.is-active {
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.lt-psize__check {
+  color: var(--color-primary-hover);
+}
+
+.lt-footer__pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lt-page {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.lt-page:hover {
+  background: var(--color-bg-surface-hover);
+}
+
+.lt-page.is-active {
+  background: var(--color-primary-light);
+  color: var(--color-nav-active-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lt-page:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.lt-page--gap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.lt-page--gap:hover {
+  background: transparent;
+}
+
+.lt-footer__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ─── States ─────────────────────────────────────────────────────────────── */
+
+.lt-state {
+  padding: 18px;
+}
+
+.lt-state--inline {
+  padding-bottom: 0;
+}
+
+.lt-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.lt-empty__icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-tertiary);
+}
+
+.lt-empty__title {
+  margin: 0 0 4px;
+  font-size: var(--fs-text-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.lt-empty__body {
+  margin: 0 0 16px;
+  max-width: 360px;
+  font-size: var(--fs-text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ─── Mobile cards (< 768px) ─────────────────────────────────────────────── */
+
+.lt-cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lt-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lt-card:last-child {
+  border-bottom: 0;
+}
+
+.lt-card.is-selected {
+  background: var(--color-primary-light);
+}
+
+.lt-card__no {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding-top: 1px;
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.lt-card__check {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.lt-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.lt-card__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lt-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.lt-card__id {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--lab-font-mono);
+  font-size: var(--fs-text-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary-hover);
+}
+
+.lt-card__title {
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.lt-card__sub,
+.lt-card__meta {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* long URLs / query strings have no spaces: let them wrap inside the card */
+.lt-card__title,
+.lt-card__sub,
+.lt-card__meta {
+  overflow-wrap: anywhere;
+}
+
+.lt-card__meta {
+  font-weight: var(--font-weight-medium);
+}
+
+.lt-card__actions {
+  display: flex;
+  flex-wrap: wrap; /* three actions (view, edit, delete) wrap instead of squeezing their labels */
+  gap: var(--space-2);
+  margin-top: 10px;
+}
+
+.lt-card__action.neuron-btn {
+  flex: 1 1 auto;
+  height: 44px; /* touch target */
+  white-space: nowrap;
+}
+
+.lt-card__action--brand.neuron-btn {
+  color: var(--color-primary-hover);
+}
+
+.lt-card__action--danger.neuron-btn {
+  color: var(--color-danger);
+}
+
+@media (max-width: 767px) {
+  /* search on its own line, primary action full width under it */
+  .lt-toolbar__right {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+  }
+
+  .lt-toolbar__search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .lt-toolbar__right > .neuron-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  /* filter rows stack: field + remove on one line, operator + value below */
+  .lt-filters__row {
+    grid-template-columns: minmax(0, 1fr) 32px;
+    grid-template-areas:
+      "field remove"
+      "value value";
+  }
+
+  .lt-filters__conj,
+  .lt-filters__op {
+    display: none;
+  }
+
+  .lt-filters__field { grid-area: field; }
+  .lt-filters__value { grid-area: value; }
+  .lt-filters__remove { grid-area: remove; }
+
+  .lt-filters__footer {
+    padding-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .lt-fchips__clear.neuron-btn {
+    margin-left: 0;
+  }
+}

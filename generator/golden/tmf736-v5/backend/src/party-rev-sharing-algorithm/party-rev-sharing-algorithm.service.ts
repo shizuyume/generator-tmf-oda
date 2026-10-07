@@ -5,7 +5,8 @@ import { DataSource, IsNull, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { TMF736_BASE_PATH } from '../common/constants/tmf.constants';
 import { projectFields, applyVersionBump } from '../common/utils/tmf-resource.util';
-import { applyBaseFilters } from '../common/utils/query-helper.util';
+import { applyQueryFilters } from '../common/filter/filter-typeorm';
+import { PARTY_REV_SHARING_ALGORITHM_FILTER } from './party-rev-sharing-algorithm.filter';
 import { EventEmitterService } from '../event/event-emitter.service';
 import { RevenueSharingAlgorithmEventType } from '../event/event-types';
 import { PartyRevSharingAlgorithm } from './entities/party-rev-sharing-algorithm.entity';
@@ -95,7 +96,7 @@ export class PartyRevSharingAlgorithmService {
   }
 
   async findAll(query: QueryPartyRevSharingAlgorithmDto): Promise<{ data: Record<string, any>[]; total: number }> {
-    // house filters available for this resource: name, q, sort
+    // TMF630 filters (attribute style + JSONPath filter=), sort, q / name: PARTY_REV_SHARING_ALGORITHM_FILTER
     const qb = this.repository.createQueryBuilder('e')
       .leftJoinAndSelect('e.actionVariable', 'actionVariable')
       .leftJoinAndSelect('e.conditionVariable', 'conditionVariable')
@@ -106,10 +107,7 @@ export class PartyRevSharingAlgorithmService {
       .leftJoinAndSelect('conditionVariable.policyConditionVariable', 'conditionVariablePolicyConditionVariable')
       .where('e.deletedAt IS NULL');
 
-    applyBaseFilters(qb, query, 'e');
-    if (query.id) {
-      qb.andWhere('e.id = :id', { id: query.id });
-    }
+    applyQueryFilters(qb, query as Record<string, unknown>, PARTY_REV_SHARING_ALGORITHM_FILTER, 'e');
 
     const total = await qb.getCount();
     qb.skip(query.offset ?? 0).take(query.limit ?? 20);
