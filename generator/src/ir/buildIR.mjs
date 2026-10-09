@@ -334,6 +334,14 @@ export function buildIR({ doc, dialect, specPath }, options = {}) {
       else fields.push(c);
     }
 
+    const reportClashes = (sub, path) => {
+      for (const clash of sub.polymorphicConflicts ?? []) {
+        warnings.push(`${path}: subtypes declare ${clash} with different types; one column cannot hold both.`);
+      }
+      for (const child of sub.children ?? []) reportClashes(child, `${path}.${child.propertyName}`);
+    };
+    for (const sub of subResources) reportClashes(sub, `${name}.${sub.propertyName}`);
+
     const createVariant = firstExistingSchema(doc, createVariantNames(name));
     const updateVariant = firstExistingSchema(doc, updateVariantNames(name));
     if (!createVariant) {

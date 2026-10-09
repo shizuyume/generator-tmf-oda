@@ -10,7 +10,7 @@ import { renderController, renderModule, renderHooks, extraControllerFor } from 
 import { renderSeedData, renderLocalSeedStub, orderSeedsByReference } from './seed.mjs';
 import { moduleNaming, SCAFFOLD_OWNED_ROUTES } from './moduleNaming.mjs';
 import { nestedRouteInfo, parentKeyColumn } from './nestedRoutes.mjs';
-import { buildEagerGraph, countEagerJoinPaths, SQLITE_MAX_JOIN_TABLES, JOIN_WARN_THRESHOLD } from './eagerJoins.mjs';
+import { buildEagerGraph, countEagerJoinPaths, findEagerCycles, SQLITE_MAX_JOIN_TABLES, JOIN_WARN_THRESHOLD } from './eagerJoins.mjs';
 import { scaffoldContext } from '../scaffold/newService.mjs';
 import { readManifest, writeManifest, componentEntry, writeWiring, orderedComponents } from './wiring.mjs';
 import { emitSpecs } from './spec/index.mjs';
@@ -93,6 +93,21 @@ export function emitResources(ir, options) {
   // Eager relations expand transitively across SHARED entity classes, so the real
   // join width is far above any single resource's relation list. See eagerJoins.mjs.
   const eagerGraph = buildEagerGraph(plans, resolve);
+
+  // A cycle here compiles and passes the mocked unit tests, then makes the first
+  // create spin until the heap is exhausted. Refuse to emit it. See eagerJoins.mjs.
+  const eagerCycles = findEagerCycles(eagerGraph);
+  if (eagerCycles.length) {
+    const err = new Error(
+      'eager relation cycle(s) - every relation is emitted eager + cascade, so these make ' +
+      'create/read loop until "JavaScript heap out of memory" at runtime:\n  - ' +
+      eagerCycles.join('\n  - ') +
+      '\n  Keep the reference on one side only (drop the reverse $ref from the spec).',
+    );
+    err.errors = eagerCycles;
+    throw err;
+  }
+
   for (const { resource, plan } of plans) {
     const rootEntity = plan.entities.find(e => e.kind === 'root');
     const rootClass = rootEntity ? resolve(rootEntity.key)?.className : null;

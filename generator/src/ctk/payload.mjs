@@ -34,7 +34,7 @@ function scalarFor(field) {
 
   if (type === 'boolean') return true;
   if (type === 'int' || type === 'bigint') return 1;
-  if (type === 'float') return 1.5;
+  if (type === 'float' || type === 'numeric') return 1.5;
   if (type === 'datetime' || type === 'timestamp') return '2026-01-15T09:30:00.000Z';
 
   // string-ish

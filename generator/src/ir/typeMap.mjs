@@ -60,6 +60,49 @@ const FORMAT_RULES = {
 };
 
 /**
+ * Exact decimals (money, exchange rates, percentages).
+ *
+ * `number` and `float`/`double` map to a binary `float` column, which is wrong for
+ * money: 0.1 + 0.2 != 0.3, and a "total must equal project value" rule compares
+ * sums. TMF itself marks such values `format: decimal` (TMF684 `weight`), so that
+ * format - or an explicit x-db-precision / x-db-scale - selects `numeric(p,s)`.
+ *
+ *   precision  x-db-precision, else 18
+ *   scale      x-db-scale, else derived from multipleOf (0.01 -> 2), else 2
+ *
+ * The API keeps `number` on the wire (TMF Money.value is a number). Postgres hands
+ * numeric back as a string, so the column carries a transformer that converts it
+ * to a number on read (emit/entity.mjs). Storage and SQL arithmetic stay exact;
+ * hand-written hooks that add amounts must use a decimal library rather than `+`.
+ */
+export const DECIMAL_DEFAULT = Object.freeze({ precision: 18, scale: 2 });
+
+function scaleFromMultipleOf(multipleOf) {
+  if (typeof multipleOf !== 'number' || !(multipleOf > 0) || multipleOf >= 1) return null;
+  const text = multipleOf.toString();
+  const exp = /e-(\d+)$/i.exec(text);
+  if (exp) return Number(exp[1]);
+  const dot = text.indexOf('.');
+  return dot === -1 ? null : text.length - dot - 1;
+}
+
+export function isDecimalSchema(schema = {}) {
+  return schema.format === 'decimal' || schema['x-db-precision'] != null || schema['x-db-scale'] != null;
+}
+
+export function decimalColumn(schema = {}) {
+  const precision = Number(schema['x-db-precision'] ?? DECIMAL_DEFAULT.precision);
+  const scale = Number(schema['x-db-scale'] ?? scaleFromMultipleOf(schema.multipleOf) ?? DECIMAL_DEFAULT.scale);
+  if (!Number.isInteger(precision) || precision < 1 || precision > 1000) {
+    throw new Error(`x-db-precision must be an integer 1..1000, got ${schema['x-db-precision']}`);
+  }
+  if (!Number.isInteger(scale) || scale < 0 || scale > precision) {
+    throw new Error(`decimal scale must be an integer 0..precision (${precision}), got ${scale}`);
+  }
+  return { type: 'numeric', precision, scale, transformer: 'decimal' };
+}
+
+/**
  * @param {string} fieldName
  * @param {object} schema  a resolved (non-$ref) scalar schema
  * @param {'sqlite'|'postgres'} dbTarget
@@ -73,6 +116,9 @@ export function mapScalar(fieldName, schema = {}, dbTarget = 'sqlite') {
   if (format === 'date-time' || format === 'date') {
     const column = DATE_COLUMN[dbTarget] ?? DATE_COLUMN.sqlite;
     return { tsType: 'Date', column: { ...column }, validators: [], enumValues: null };
+  }
+  if ((type === 'number' || type === 'integer') && isDecimalSchema(schema)) {
+    return { tsType: 'number', column: decimalColumn(schema), validators: [], enumValues: null };
   }
   if (format && FORMAT_RULES[format]) {
     const r = FORMAT_RULES[format];

@@ -1,4 +1,4 @@
-import { flattenSchema, scalarProps, refName, resolveRef } from '../ingest/schemaUtils.mjs';
+import { flattenSchema, scalarProps, subtypeProps, refName, resolveRef } from '../ingest/schemaUtils.mjs';
 import { pascal, camel, snake } from './naming.mjs';
 import { mapScalar, jsonColumn } from './typeMap.mjs';
 
@@ -149,22 +149,37 @@ export function classifyProperty(doc, fieldName, rawSchema, ctx) {
         column: jsonColumn(dbTarget), nullable: true, reason: 'object with no scalar props',
       };
     }
+    // The non-scalar props (Price.taxIncludedAmount -> Money, arrays, $refs) used to be
+    // dropped here without a trace, losing data on the round trip. A $ref to a scalar
+    // becomes a column like any other; anything structured is kept whole as JSON.
+    const extra = Object.entries(flattenSchema(doc, schema).properties)
+      .filter(([prop]) => !(prop in props))
+      .map(([prop, propSchema]) => {
+        const { schema: eff } = resolveEffective(doc, propSchema);
+        if (isScalar(eff)) return { prop, mapped: mapScalar(prop, eff, dbTarget) };
+        const isArray = eff?.type === 'array';
+        return {
+          prop, kind: 'json',
+          mapped: { tsType: isArray ? 'Record<string, any>[]' : 'Record<string, any>', column: jsonColumn(dbTarget) },
+        };
+      });
     return {
       kind: 'flattenedRef',
       name: safeName,
       targetRef: schema.$ref ? refName(schema.$ref) : null,
       description: schema.description || '',
       // prefixed columns; `sourceProp` is what makes the inverse (toResponse) mechanical
-      columns: keys.map(prop => {
-        const mapped = mapScalar(prop, props[prop], dbTarget);
-        return {
-          name: `${camel(fieldName)}${pascal(prop)}`,
-          sourceProp: prop,
-          tsType: mapped.tsType,
-          column: mapped.column,
-          nullable: true,
-        };
-      }),
+      columns: [
+        ...keys.map(prop => ({ prop, mapped: mapScalar(prop, props[prop], dbTarget) })),
+        ...extra,
+      ].map(({ prop, kind, mapped }) => ({
+        name: `${camel(fieldName)}${pascal(prop)}`,
+        sourceProp: prop,
+        ...(kind ? { kind } : {}),
+        tsType: mapped.tsType,
+        column: mapped.column,
+        nullable: true,
+      })),
     };
   }
 
@@ -267,8 +282,10 @@ export function expandSubResource(doc, parentPrefix, sub, depth, overrides = {},
   const fields = [];
   const flattenedRefs = [];
   const children = [];
+  // discriminator subtypes (EmailContactMedium.emailAddress, ...) share the base table
+  const poly = subtypeProps(doc, sub.itemSchema, flat.properties);
 
-  for (const [propName, propSchema] of Object.entries(flat.properties)) {
+  for (const [propName, propSchema] of Object.entries({ ...flat.properties, ...poly.properties })) {
     const c = classifyProperty(doc, propName, propSchema, { required: flat.required, dbTarget });
     if (c.kind === 'infra') continue;
     if (c.kind === 'subResource') {
@@ -327,5 +344,6 @@ export function expandSubResource(doc, parentPrefix, sub, depth, overrides = {},
     fields,
     flattenedRefs,
     children,
+    polymorphicConflicts: poly.conflicts,
   };
 }

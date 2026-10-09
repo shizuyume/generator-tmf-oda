@@ -424,7 +424,7 @@ dan `id`. Ada dua gaya, dan keduanya bisa dipakai bersamaan (di-AND).
 - `timestamps`: `createdDate`/`lastUpdate` milik generator, bisa difilter di `$` dan bisa di-sort;
 - `reserved`: param parent pada nested route.
 
-Atribut di luar whitelist, sintaks salah, atau tipe nilai salah dijawab **400** dengan body TMF Error yang menyebutkan atribut yang bisa difilter.
+**Parameter gaya atribut** yang tidak dikenal resource (nama lain, atribut di luar whitelist, mis. `?depth=2`) **diabaikan**, sama seperti sebelum modul filter ada. Dengan begitu parameter tambahan dari klien atau CTK tidak pernah menggagalkan list. **`filter=` JSONPath** bersifat eksplisit, jadi atribut tak dikenal, sintaks salah, atau tipe nilai salah dijawab **400** dengan body TMF Error yang menyebutkan atribut yang bisa difilter. Nilai yang salah tipe untuk atribut yang dikenal (mis. `?count=abc` pada atribut angka) juga dijawab 400.
 
 **Runtime: `common/filter`**
 - Parser dan AST berada di `filter-parser.ts`.
@@ -435,6 +435,22 @@ Atribut di luar whitelist, sintaks salah, atau tipe nilai salah dijawab **400** 
 - `sort` juga di-whitelist. Dulu nilainya masuk ke SQL tanpa dicek.
 
 **Gate:** `tools/filter-smoke.mjs` (live TMF736, ikut di `check-all --runtime`) dan unit test `test/common/filter.spec.ts` di setiap servis. FE neudela dan mock `dev:mock` memakai grammar yang sama.
+
+### Angka desimal pasti (uang, kurs, persen): `numeric(p,s)`, bukan `float`
+
+`type: number` biasa dan `format: float`/`double` tetap dipetakan ke kolom `float`. Untuk uang, `float` salah: `0.1 + 0.2 != 0.3`, dan aturan seperti "total harus sama dengan nilai proyek" membandingkan hasil penjumlahan. Karena itu, sebuah field `number`/`integer` menjadi kolom **`numeric(precision, scale)`** bila memenuhi salah satu syarat berikut (`src/ir/typeMap.mjs`):
+
+| Penanda di spec | Hasil |
+|---|---|
+| `format: decimal` (dipakai TMF sendiri, mis. TMF684 `weight`) | `numeric(18, 2)` |
+| `x-db-precision: <p>` dan/atau `x-db-scale: <s>` | `numeric(p, s)`; yang tidak diisi memakai default 18 / 2 |
+| `multipleOf: 0.0001` (tanpa `x-db-scale`) | scale diturunkan dari `multipleOf` (contoh ini → 4) |
+
+- Nilai di luar rentang ditolak saat build IR: precision 1–1000 dan scale 0–precision.
+- **Kontrak API tidak berubah.** Nilainya tetap `number` di JSON, karena TMF `Money.value` memang number.
+- **Transformer.** Driver `pg` mengembalikan `numeric` sebagai string, jadi kolom diberi `transformer` yang mengubahnya ke number saat dibaca (`src/emit/entity.mjs`). Penyimpanan dan agregasi SQL tetap pasti.
+- **Hooks.** Hooks tulisan tangan yang menjumlah uang wajib memakai library desimal, bukan `+` pada number.
+- **Spec tanpa penanda.** Spec yang tidak memakai penanda ini menghasilkan output yang sama byte per byte (golden tidak berubah).
 
 ## 10. Troubleshooting
 

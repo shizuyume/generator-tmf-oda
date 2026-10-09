@@ -94,6 +94,16 @@ class SubmittedGeographicAddressDto {
   @IsOptional()
   @IsString()
   '@type'?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  geographicLocation?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  geographicSubAddress?: string;
 }
 
 class ValidGeographicAddressDto {
@@ -186,6 +196,16 @@ class ValidGeographicAddressDto {
   @IsOptional()
   @IsString()
   '@type'?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  geographicLocation?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  geographicSubAddress?: string;
 }
 
 class GeographicLocationDto {
@@ -223,6 +243,10 @@ class GeographicLocationDto {
   @IsOptional()
   @IsString()
   '@referredType'?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  bbox?: any[];
 }
 
 class GeographicSubAddressDto {

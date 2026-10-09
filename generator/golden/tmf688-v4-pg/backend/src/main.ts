@@ -1,12 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const logger = new Logger('Bootstrap');
+
+  // TMF conformance makes JSON Merge mandatory for PATCH, sent as
+  // application/merge-patch+json. Express only parses application/json, so such a
+  // body arrived empty and PATCH answered 200 having changed nothing.
+  app.useBodyParser('json', { type: ['application/json', 'application/merge-patch+json'] });
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN || '*',

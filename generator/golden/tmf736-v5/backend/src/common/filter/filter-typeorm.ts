@@ -10,7 +10,10 @@ import type { FilterAttr, FilterCondition, FilterExpr, FilterNode, FilterSchema,
  *     stay complete (a filter on policy[] never drops the other policies of a match);
  *   - `q` = name or description contains, `name` = name contains (house filters);
  *   - `sort=-attr,attr` on the resource's own attributes.
- * Unknown attributes, bad syntax and wrong value types answer 400 with a TMF Error body.
+ * Attribute-style keys the resource cannot filter on are IGNORED, as before this module existed:
+ * a client (or a conformance kit) sending an extra query parameter still gets its list. A
+ * `filter=` expression is explicit, so there an unknown attribute, bad syntax or a wrong value
+ * type answers 400 with a TMF Error body — as does a wrong value for a known attribute key.
  */
 
 /** Query keys that are never attribute filters. */
@@ -144,15 +147,30 @@ function anyOf(c: FilterCondition): FilterExpr {
 const isText = (raw: unknown): raw is string | string[] =>
   typeof raw === 'string' || (Array.isArray(raw) && raw.every((v) => typeof v === 'string'));
 
-/** Groups attribute-style conditions per scope: `policy.name=x&policy.id=1` → one policy element. */
+const ATTRIBUTE_KEY = /^@?[A-Za-z_]\w*(\.@?[A-Za-z_]\w*)*$/;
+
+/** Can the resource filter on this attribute path (root, a single ref, or one embedded list)? */
+function isKnownPath(schema: FilterSchema, path: string[]): boolean {
+  const inNode = (node: FilterNode, p: string[]) =>
+    (p.length === 1 && !!node.attrs[p[0]]) || (p.length === 2 && !!node.refs[p[0]]?.attrs[p[1]]);
+  const [head] = path;
+  if (schema.arrays[head] && path.length > 1) return inNode(schema.arrays[head], path.slice(1));
+  return inNode({ ...schema, attrs: { ...schema.attrs, ...schema.timestamps } }, path);
+}
+
+/**
+ * Groups attribute-style conditions per scope: `policy.name=x&policy.id=1` → one policy element.
+ * Keys that are not attribute paths of this resource are skipped (TMF630 leniency, see above).
+ */
 function attributeScopes(schema: FilterSchema, query: Record<string, unknown>): FilterScope[] {
   const root: FilterExpr[] = [];
   const perArray = new Map<string, FilterExpr[]>();
   const reserved = new Set([...RESERVED, ...schema.reserved]);
   for (const [key, raw] of Object.entries(query)) {
-    if (raw === '' || reserved.has(key) || !isText(raw)) continue;
+    if (raw === '' || reserved.has(key) || !isText(raw) || !ATTRIBUTE_KEY.test(key)) continue;
     if (key === 'name' && schema.attrs.name) continue; // house filter
     const conds = parseAttributeParam(key, raw);
+    if (!isKnownPath(schema, conds[0].path)) continue;
     const head = conds[0].path[0];
     if (schema.arrays[head] && conds[0].path.length > 1) {
       const items = perArray.get(head) ?? [];

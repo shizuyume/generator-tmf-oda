@@ -1,0 +1,2465 @@
+{
+  "meta": {
+    "tmfNumber": "663",
+    "specTitle": "Shopping Cart",
+    "specVersion": "5.0.0",
+    "versionMajor": "5",
+    "dialect": "oas3",
+    "basePath": "tmf-api/shoppingCart/v5",
+    "databaseType": "sqlite",
+    "basePathSource": "derived from info.title",
+    "basePathConstant": "TMF663_BASE_PATH",
+    "eventExchange": "shoppingCart.events",
+    "eventExchangeConstant": "TMF663_EVENT_EXCHANGE",
+    "eventTypeEnum": "ShoppingCartEventType",
+    "serviceNameSuggestion": "shopping-cart-service",
+    "sourceSpec": "D:/oh-my-tmf-agent-workspace/documents/tmf663/5.0.0/openapi/TMF663-Shopping_Cart-v5.0.0.oas.yaml",
+    "generatorVersion": "0.1.0",
+    "markdownSupplement": "documents/tmf663/5.0.0/tmf663-enrichment.md",
+    "markdownEnrichments": [
+      "ShoppingCart: 12 business rule note(s)"
+    ]
+  },
+  "resources": [
+    {
+      "name": "ShoppingCart",
+      "specName": "ShoppingCart",
+      "camelName": "shoppingCart",
+      "kebabName": "shopping-cart",
+      "tableName": "shopping_cart",
+      "pathSegment": "shoppingCart",
+      "pathKey": "shoppingCart",
+      "parentSegments": [],
+      "nested": false,
+      "description": "Base entity schema for use in TMForum Open-APIs. Property.",
+      "composedFrom": [
+        "Entity",
+        "Extensible",
+        "Addressable"
+      ],
+      "required": [
+        "@type"
+      ],
+      "infraFields": [
+        "@type",
+        "@baseType",
+        "@schemaLocation",
+        "href",
+        "id"
+      ],
+      "fields": [
+        {
+          "kind": "scalar",
+          "name": "creationDate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The date on which the shopping cart was created"
+        },
+        {
+          "kind": "scalar",
+          "name": "lastUpdate",
+          "tsType": "Date",
+          "column": {
+            "type": "datetime"
+          },
+          "validators": [],
+          "enumValues": null,
+          "enumRef": null,
+          "nullable": true,
+          "description": "The date and time that the shopping cart was last updated"
+        }
+      ],
+      "flattenedRefs": [
+        {
+          "kind": "flattenedRef",
+          "name": "validFor",
+          "targetRef": "TimePeriod",
+          "description": "",
+          "columns": [
+            {
+              "name": "validForStartDateTime",
+              "sourceProp": "startDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            },
+            {
+              "name": "validForEndDateTime",
+              "sourceProp": "endDateTime",
+              "tsType": "Date",
+              "column": {
+                "type": "datetime"
+              },
+              "nullable": true
+            }
+          ]
+        }
+      ],
+      "resourceRefs": [],
+      "subResources": [
+        {
+          "className": "ContactMedium",
+          "tableName": "contact_medium",
+          "nameCandidates": [
+            "ContactMedium",
+            "ShoppingCartContactMedium"
+          ],
+          "refLike": false,
+          "propertyName": "contactMedium",
+          "itemRef": "ContactMedium",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "preferred",
+              "tsType": "boolean",
+              "column": {
+                "type": "boolean"
+              },
+              "validators": [
+                "IsBoolean"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "If true, indicates that is the preferred contact medium"
+            },
+            {
+              "kind": "scalar",
+              "name": "contactType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Type of the contact medium to qualifiy it like pro email / personal email. This is not used to define the contact medium used."
+            },
+            {
+              "kind": "scalar",
+              "name": "phoneNumber",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "The phone number of the contact"
+            },
+            {
+              "kind": "scalar",
+              "name": "emailAddress",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Full email address in standard format"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "validFor",
+              "targetRef": "TimePeriod",
+              "description": "",
+              "columns": [
+                {
+                  "name": "validForStartDateTime",
+                  "sourceProp": "startDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "validForEndDateTime",
+                  "sourceProp": "endDateTime",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [],
+          "polymorphicConflicts": []
+        },
+        {
+          "className": "CartPrice",
+          "tableName": "cart_price",
+          "nameCandidates": [
+            "CartPrice",
+            "ShoppingCartCartTotalPrice"
+          ],
+          "refLike": false,
+          "propertyName": "cartTotalPrice",
+          "itemRef": "CartPrice",
+          "description": "Total amount of the shopping cart, usually of money, that represents the actual price paid by the Customer for cart (considering only \"Active\" cart items)",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "description",
+              "tsType": "string",
+              "column": {
+                "type": "text"
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A narrative that explains in detail the semantics of this cart or cart item price."
+            },
+            {
+              "kind": "scalar",
+              "name": "name",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A short descriptive name such as \"Subscription price\"."
+            },
+            {
+              "kind": "scalar",
+              "name": "priceType",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "A category that describes the price, such as recurring, discount, allowance, penalty, and so forth"
+            },
+            {
+              "kind": "scalar",
+              "name": "recurringChargePeriod",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Could be month, week..."
+            },
+            {
+              "kind": "scalar",
+              "name": "unitOfMeasure",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 255
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Could be minutes, GB..."
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "productOfferingPrice",
+              "targetRef": "ProductOfferingPriceRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOfferingPriceType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingPriceVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            },
+            {
+              "kind": "flattenedRef",
+              "name": "price",
+              "targetRef": "Price",
+              "description": "",
+              "columns": [
+                {
+                  "name": "priceType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "pricePercentage",
+                  "sourceProp": "percentage",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceTaxRate",
+                  "sourceProp": "taxRate",
+                  "tsType": "number",
+                  "column": {
+                    "type": "float"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceDutyFreeAmount",
+                  "sourceProp": "dutyFreeAmount",
+                  "kind": "json",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "priceTaxIncludedAmount",
+                  "sourceProp": "taxIncludedAmount",
+                  "kind": "json",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "PriceAlteration",
+              "tableName": "price_alteration",
+              "nameCandidates": [
+                "PriceAlteration",
+                "CartPricePriceAlteration"
+              ],
+              "refLike": false,
+              "propertyName": "priceAlteration",
+              "itemRef": "PriceAlteration",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "applicationDuration",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Duration during which the alteration applies on the order item price (for instance 2 months free of charge for the recurring charge)"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail the semantics of this order item price alteration"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of the order item price alteration"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A category that describes the price such as recurring, one time and usage."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priority",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Priority level for applying this alteration among all the defined alterations on the order item price"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be month, week..."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be minutes, GB..."
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "price",
+                  "targetRef": "Price",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "priceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "pricePercentage",
+                      "sourceProp": "percentage",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxRate",
+                      "sourceProp": "taxRate",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceDutyFreeAmount",
+                      "sourceProp": "dutyFreeAmount",
+                      "kind": "json",
+                      "tsType": "Record<string, any>",
+                      "column": {
+                        "type": "simple-json"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxIncludedAmount",
+                      "sourceProp": "taxIncludedAmount",
+                      "kind": "json",
+                      "tsType": "Record<string, any>",
+                      "column": {
+                        "type": "simple-json"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": [],
+              "polymorphicConflicts": []
+            }
+          ],
+          "polymorphicConflicts": []
+        },
+        {
+          "className": "CartItem",
+          "tableName": "cart_item",
+          "nameCandidates": [
+            "CartItem",
+            "ShoppingCartCartItem"
+          ],
+          "refLike": false,
+          "propertyName": "cartItem",
+          "itemRef": "CartItem",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "action",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "add",
+                "modify",
+                "delete",
+                "noChange"
+              ],
+              "enumRef": "CartItemActionType",
+              "nullable": true,
+              "description": "action to be performed on the product"
+            },
+            {
+              "kind": "scalar",
+              "name": "quantity",
+              "tsType": "number",
+              "column": {
+                "type": "int"
+              },
+              "validators": [],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Quantity of cart items"
+            },
+            {
+              "kind": "scalar",
+              "name": "status",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 100
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": [
+                "active",
+                "saveForLater"
+              ],
+              "enumRef": "CartItemStatusType",
+              "nullable": true,
+              "description": "Possible values for the status of the cart item, saveForLater items are not calculated in the cart prices"
+            },
+            {
+              "kind": "json",
+              "name": "product",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [
+            {
+              "kind": "flattenedRef",
+              "name": "productOffering",
+              "targetRef": "ProductOfferingRef",
+              "description": "",
+              "columns": [
+                {
+                  "name": "productOfferingType",
+                  "sourceProp": "@type",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingBaseType",
+                  "sourceProp": "@baseType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingSchemaLocation",
+                  "sourceProp": "@schemaLocation",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingHref",
+                  "sourceProp": "href",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 1000
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingId",
+                  "sourceProp": "id",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingName",
+                  "sourceProp": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingReferredType",
+                  "sourceProp": "@referredType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "nullable": true
+                },
+                {
+                  "name": "productOfferingVersion",
+                  "sourceProp": "version",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 50
+                  },
+                  "nullable": true
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "className": "CartTerm",
+              "tableName": "cart_term",
+              "nameCandidates": [
+                "CartTerm",
+                "CartItemItemTerm"
+              ],
+              "refLike": false,
+              "propertyName": "itemTerm",
+              "itemRef": "CartTerm",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Description of the product term"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Name of product term"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "duration",
+                  "targetRef": "Duration",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "durationAmount",
+                      "sourceProp": "amount",
+                      "tsType": "number",
+                      "column": {
+                        "type": "int"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "durationUnits",
+                      "sourceProp": "units",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": [],
+              "polymorphicConflicts": []
+            },
+            {
+              "className": "CartItem",
+              "tableName": "cart_item",
+              "nameCandidates": [
+                "CartItem",
+                "CartItem"
+              ],
+              "refLike": false,
+              "propertyName": "cartItem",
+              "itemRef": "CartItem",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "action",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "add",
+                    "modify",
+                    "delete",
+                    "noChange"
+                  ],
+                  "enumRef": "CartItemActionType",
+                  "nullable": true,
+                  "description": "action to be performed on the product"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "quantity",
+                  "tsType": "number",
+                  "column": {
+                    "type": "int"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Quantity of cart items"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "status",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": [
+                    "active",
+                    "saveForLater"
+                  ],
+                  "enumRef": "CartItemStatusType",
+                  "nullable": true,
+                  "description": "Possible values for the status of the cart item, saveForLater items are not calculated in the cart prices"
+                },
+                {
+                  "kind": "json",
+                  "name": "itemTerm",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "cartItem",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "note",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "itemTotalPrice",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "product",
+                  "tsType": "Record<string, any>",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "object with no scalar props"
+                },
+                {
+                  "kind": "json",
+                  "name": "itemPrice",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                },
+                {
+                  "kind": "json",
+                  "name": "cartItemRelationship",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOffering",
+                  "targetRef": "ProductOfferingRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": [],
+              "polymorphicConflicts": []
+            },
+            {
+              "className": "Note",
+              "tableName": "note",
+              "nameCandidates": [
+                "Note",
+                "CartItemNote"
+              ],
+              "refLike": false,
+              "propertyName": "note",
+              "itemRef": "Note",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "author",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Author of the note"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "date",
+                  "tsType": "Date",
+                  "column": {
+                    "type": "datetime"
+                  },
+                  "validators": [],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Date of the note"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "text",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Text of the note"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": [],
+              "polymorphicConflicts": []
+            },
+            {
+              "className": "CartPrice",
+              "tableName": "cart_price",
+              "nameCandidates": [
+                "CartPrice",
+                "CartItemItemTotalPrice"
+              ],
+              "refLike": false,
+              "propertyName": "itemTotalPrice",
+              "itemRef": "CartPrice",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail the semantics of this cart or cart item price."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A short descriptive name such as \"Subscription price\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A category that describes the price, such as recurring, discount, allowance, penalty, and so forth"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be month, week..."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be minutes, GB..."
+                },
+                {
+                  "kind": "json",
+                  "name": "priceAlteration",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "price",
+                  "targetRef": "Price",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "priceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "pricePercentage",
+                      "sourceProp": "percentage",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxRate",
+                      "sourceProp": "taxRate",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceDutyFreeAmount",
+                      "sourceProp": "dutyFreeAmount",
+                      "kind": "json",
+                      "tsType": "Record<string, any>",
+                      "column": {
+                        "type": "simple-json"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxIncludedAmount",
+                      "sourceProp": "taxIncludedAmount",
+                      "kind": "json",
+                      "tsType": "Record<string, any>",
+                      "column": {
+                        "type": "simple-json"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": [],
+              "polymorphicConflicts": []
+            },
+            {
+              "className": "CartPrice",
+              "tableName": "cart_price",
+              "nameCandidates": [
+                "CartPrice",
+                "CartItemItemPrice"
+              ],
+              "refLike": false,
+              "propertyName": "itemPrice",
+              "itemRef": "CartPrice",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "description",
+                  "tsType": "string",
+                  "column": {
+                    "type": "text"
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A narrative that explains in detail the semantics of this cart or cart item price."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "name",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A short descriptive name such as \"Subscription price\"."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "priceType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "A category that describes the price, such as recurring, discount, allowance, penalty, and so forth"
+                },
+                {
+                  "kind": "scalar",
+                  "name": "recurringChargePeriod",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be month, week..."
+                },
+                {
+                  "kind": "scalar",
+                  "name": "unitOfMeasure",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 255
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Could be minutes, GB..."
+                },
+                {
+                  "kind": "json",
+                  "name": "priceAlteration",
+                  "tsType": "Record<string, any>[]",
+                  "column": {
+                    "type": "simple-json"
+                  },
+                  "nullable": true,
+                  "reason": "nesting depth cap"
+                }
+              ],
+              "flattenedRefs": [
+                {
+                  "kind": "flattenedRef",
+                  "name": "productOfferingPrice",
+                  "targetRef": "ProductOfferingPriceRef",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "productOfferingPriceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceHref",
+                      "sourceProp": "href",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceId",
+                      "sourceProp": "id",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceName",
+                      "sourceProp": "name",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 255
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceReferredType",
+                      "sourceProp": "@referredType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "productOfferingPriceVersion",
+                      "sourceProp": "version",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 50
+                      },
+                      "nullable": true
+                    }
+                  ]
+                },
+                {
+                  "kind": "flattenedRef",
+                  "name": "price",
+                  "targetRef": "Price",
+                  "description": "",
+                  "columns": [
+                    {
+                      "name": "priceType",
+                      "sourceProp": "@type",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceBaseType",
+                      "sourceProp": "@baseType",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 100
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceSchemaLocation",
+                      "sourceProp": "@schemaLocation",
+                      "tsType": "string",
+                      "column": {
+                        "type": "varchar",
+                        "length": 1000
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "pricePercentage",
+                      "sourceProp": "percentage",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxRate",
+                      "sourceProp": "taxRate",
+                      "tsType": "number",
+                      "column": {
+                        "type": "float"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceDutyFreeAmount",
+                      "sourceProp": "dutyFreeAmount",
+                      "kind": "json",
+                      "tsType": "Record<string, any>",
+                      "column": {
+                        "type": "simple-json"
+                      },
+                      "nullable": true
+                    },
+                    {
+                      "name": "priceTaxIncludedAmount",
+                      "sourceProp": "taxIncludedAmount",
+                      "kind": "json",
+                      "tsType": "Record<string, any>",
+                      "column": {
+                        "type": "simple-json"
+                      },
+                      "nullable": true
+                    }
+                  ]
+                }
+              ],
+              "children": [],
+              "polymorphicConflicts": []
+            },
+            {
+              "className": "CartItemRelationship",
+              "tableName": "cart_item_relationship",
+              "nameCandidates": [
+                "CartItemRelationship",
+                "CartItemRelationship"
+              ],
+              "refLike": false,
+              "propertyName": "cartItemRelationship",
+              "itemRef": "CartItemRelationship",
+              "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+              "minItems": null,
+              "requiredFields": [
+                "@type"
+              ],
+              "depth": 2,
+              "fields": [
+                {
+                  "kind": "scalar",
+                  "name": "relationshipType",
+                  "tsType": "string",
+                  "column": {
+                    "type": "varchar",
+                    "length": 100
+                  },
+                  "validators": [
+                    "IsString"
+                  ],
+                  "enumValues": null,
+                  "enumRef": null,
+                  "nullable": true,
+                  "description": "Type of the cart item relationship"
+                }
+              ],
+              "flattenedRefs": [],
+              "children": [],
+              "polymorphicConflicts": []
+            }
+          ],
+          "polymorphicConflicts": []
+        },
+        {
+          "className": "RelatedPartyOrPartyRole",
+          "tableName": "related_party_or_party_role",
+          "nameCandidates": [
+            "RelatedPartyOrPartyRole",
+            "ShoppingCartRelatedParty"
+          ],
+          "refLike": false,
+          "propertyName": "relatedParty",
+          "itemRef": "RelatedPartyOrPartyRole",
+          "description": "Base Extensible schema for use in TMForum Open-APIs - When used for in a schema it means that the Entity described by the schema  MUST be extended with the @type",
+          "minItems": null,
+          "requiredFields": [
+            "@type"
+          ],
+          "depth": 1,
+          "fields": [
+            {
+              "kind": "scalar",
+              "name": "role",
+              "tsType": "string",
+              "column": {
+                "type": "varchar",
+                "length": 50
+              },
+              "validators": [
+                "IsString"
+              ],
+              "enumValues": null,
+              "enumRef": null,
+              "nullable": true,
+              "description": "Role played by the related party or party role in the context of the specific entity it is linked to. Such as 'initiator', 'customer',  'salesAgent', 'user'"
+            },
+            {
+              "kind": "json",
+              "name": "partyOrPartyRole",
+              "tsType": "Record<string, any>",
+              "column": {
+                "type": "simple-json"
+              },
+              "nullable": true,
+              "reason": "object with no scalar props"
+            }
+          ],
+          "flattenedRefs": [],
+          "children": [],
+          "polymorphicConflicts": []
+        }
+      ],
+      "createShape": {
+        "schemaName": "ShoppingCart_FVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "id",
+          "validFor",
+          "contactMedium",
+          "cartItem",
+          "relatedParty"
+        ],
+        "omitsHref": true,
+        "allowsClientId": true
+      },
+      "updateShape": {
+        "schemaName": "ShoppingCart_MVO",
+        "required": [
+          "@type"
+        ],
+        "properties": [
+          "@type",
+          "@baseType",
+          "@schemaLocation",
+          "validFor",
+          "contactMedium",
+          "cartItem",
+          "relatedParty"
+        ],
+        "omitsHref": true,
+        "allowsClientId": false
+      },
+      "houseFilters": {
+        "name": false,
+        "q": false,
+        "sort": true,
+        "lifecycleStatus": false
+      },
+      "seedExamples": [
+        {
+          "label": "ShoppingCart_create_example_for_existing_customer",
+          "value": {
+            "@type": "ShoppingCart",
+            "cartItem": [
+              {
+                "action": "add",
+                "quantity": 1,
+                "status": "active",
+                "@type": "CartItem",
+                "itemTerm": [
+                  {
+                    "description": "Tariff plan 12 Months commitment",
+                    "name": "12Months",
+                    "@type": "CartTerm",
+                    "duration": {
+                      "amount": 12,
+                      "units": "month"
+                    }
+                  }
+                ],
+                "note": [
+                  {
+                    "id": "88",
+                    "author": "Jack Smith",
+                    "date": "2019-05-28T12:02:41.791Z",
+                    "text": "Please wrap with double bag",
+                    "@type": "Note"
+                  }
+                ],
+                "product": {
+                  "name": "Talk Simple 25",
+                  "@type": "Product",
+                  "productCharacteristic": [
+                    {
+                      "name": "TEL_MSISDN",
+                      "valueType": "string",
+                      "value": "415 279 7439",
+                      "@type": "StringCharacteristic"
+                    }
+                  ],
+                  "relatedParty": [
+                    {
+                      "role": "member",
+                      "@type": "RelatedPartyOrPartyRole",
+                      "partyOrPartyRole": {
+                        "id": "9866",
+                        "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/individual/9866",
+                        "name": "Sandy Smith",
+                        "@type": "PartyOrPartyRole",
+                        "@referredType": "Individual"
+                      }
+                    }
+                  ]
+                },
+                "productOffering": {
+                  "id": "142456",
+                  "href": "https://mycsp.com:8080/tmf-api/productCatalogManagement/v5/productOffering/142456",
+                  "name": "Talk Simple 25",
+                  "@referredType": "ProductOffering",
+                  "@type": "ProductOfferingRef"
+                }
+              }
+            ],
+            "relatedParty": [
+              {
+                "role": "customer",
+                "@type": "RelatedPartyOrPartyRole",
+                "partyOrPartyRole": {
+                  "id": "9176",
+                  "href": "https://mycsp.com:8080/tmf-api/partyManagement/v5/customer/9176",
+                  "name": "Jack Smith",
+                  "@type": "PartyRoleRef",
+                  "@referredType": "Customer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "ShoppingCart_create_example_for_prospect_customer",
+          "value": {
+            "@type": "ShoppingCart",
+            "cartItem": [
+              {
+                "status": "active",
+                "action": "add",
+                "quantity": 1,
+                "@type": "CartItem",
+                "itemPrice": [
+                  {
+                    "description": "Total Recurring Price.",
+                    "name": "Monthly Price",
+                    "priceType": "recurring",
+                    "recurringChargePeriod": "month",
+                    "@type": "CartPrice",
+                    "price": {
+                      "taxRate": 10,
+                      "dutyFreeAmount": {
+                        "unit": "EUR",
+                        "value": 29
+                      },
+                      "taxIncludedAmount": {
+                        "unit": "EUR",
+                        "value": 31.9
+                      },
+                      "@type": "Price"
+                    },
+                    "priceAlteration": [
+                      {
+                        "@type": "PriceAlteration",
+                        "applicationDuration": 3,
+                        "description": "First 3 month get 50% off",
+                        "name": "WelcomeDiscount",
+                        "priceType": "recurring",
+                        "priority": 1,
+                        "recurringChargePeriod": "month",
+                        "price": {
+                          "percentage": 50,
+                          "@type": "Price"
+                        }
+                      }
+                    ],
+                    "productOfferingPrice": {
+                      "id": "1788",
+                      "href": "https://mycsp.com:8080/tmf-api/productCatalogManagement/v4/productOfferingPrice/1788",
+                      "name": "Recurring Monthly Price for Talk Simple 25",
+                      "@type": "ProductOfferingPriceRef",
+                      "@referredType": "ProductOfferingPrice"
+                    }
+                  }
+                ],
+                "itemTerm": [
+                  {
+                    "description": "Tariff plan 12 Months commitment",
+                    "name": "12Months",
+                    "@type": "CartTerm",
+                    "duration": {
+                      "amount": 12,
+                      "units": "month"
+                    }
+                  }
+                ],
+                "note": [
+                  {
+                    "id": "88",
+                    "author": "Jack Smith",
+                    "date": "2019-05-28T12:02:41.791Z",
+                    "text": "This is a gift",
+                    "@type": "Note"
+                  }
+                ],
+                "product": {
+                  "name": "Talk Simple 25",
+                  "@type": "Product",
+                  "productCharacteristic": [
+                    {
+                      "name": "TEL_MSISDN",
+                      "valueType": "string",
+                      "value": "415 279 7439",
+                      "@type": "StringCharacteristic"
+                    }
+                  ]
+                },
+                "productOffering": {
+                  "id": "142456",
+                  "href": "https://mycsp.com:8080/tmf-api/productCatalogManagement/v4/productOffering/142456",
+                  "name": "Talk Simple 25",
+                  "@referredType": "ProductOffering",
+                  "@type": "ProductOfferingRef"
+                }
+              }
+            ],
+            "contactMedium": [
+              {
+                "@type": "EmailContactMedium",
+                "emailAddress": "JackSmith@mail.com"
+              }
+            ],
+            "creationDate": "2021-08-28T12:02:41.791Z",
+            "validFor": {
+              "endDateTime": "2022-05-28T12:02:41.791Z",
+              "startDateTime": "2021-08-28T12:02:41.791Z"
+            }
+          }
+        }
+      ],
+      "operations": {
+        "list": {
+          "operationId": "listShoppingCart",
+          "summary": "List or find ShoppingCart objects",
+          "description": "List or find ShoppingCart objects",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Requested index for start of resources to be provided in response",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "Requested number of resources to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "create": {
+          "operationId": "createShoppingCart",
+          "summary": "Creates a ShoppingCart",
+          "description": "This operation creates a ShoppingCart entity.",
+          "params": [
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "201",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "retrieve": {
+          "operationId": "retrieveShoppingCart",
+          "summary": "Retrieves a ShoppingCart by ID",
+          "description": "This operation retrieves a ShoppingCart entity. Attribute selection enabled for all first level attributes.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "update": {
+          "operationId": "patchShoppingCart",
+          "summary": "Updates partially a ShoppingCart",
+          "description": "This operation updates partially a ShoppingCart entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            },
+            {
+              "name": "fields",
+              "in": "query",
+              "description": "Comma-separated properties to be provided in response",
+              "required": false
+            }
+          ],
+          "statuses": [
+            "200",
+            "202",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        },
+        "delete": {
+          "operationId": "deleteShoppingCart",
+          "summary": "Deletes a ShoppingCart",
+          "description": "This operation deletes a ShoppingCart entity.",
+          "params": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Identifier of the Resource",
+              "required": true
+            }
+          ],
+          "statuses": [
+            "202",
+            "204",
+            "400",
+            "401",
+            "403",
+            "404",
+            "405",
+            "409",
+            "500",
+            "501",
+            "503"
+          ]
+        }
+      },
+      "paths": {
+        "collection": "/shoppingCart",
+        "item": "/shoppingCart/{id}"
+      },
+      "notificationEvents": [
+        {
+          "eventName": "shoppingCartAttributeValueChangeEvent",
+          "eventKind": "AttributeValueChange",
+          "enumMember": "SHOPPING_CART_ATTRIBUTE_VALUE_CHANGE"
+        },
+        {
+          "eventName": "shoppingCartCreateEvent",
+          "eventKind": "Create",
+          "enumMember": "SHOPPING_CART_CREATE"
+        },
+        {
+          "eventName": "shoppingCartDeleteEvent",
+          "eventKind": "Delete",
+          "enumMember": "SHOPPING_CART_DELETE"
+        }
+      ],
+      "businessRules": [
+        {
+          "text": "On create (POST), only `@type` is mandatory (userguide \"Mandatory Attributes\" table and conformance profile agree); a cart may be created empty or with any subset of `cartItem`, `contactMedium`, `relatedParty`, `validFor`.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "PATCH must use JSON Merge (mandatory per conformance); only `cartItem`, `contactMedium`, `relatedParty` and `validFor` are patchable.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`cartTotalPrice`, `creationDate`, `lastUpdate`, `href`, `id`, `@baseType`, `@schemaLocation` and `@type` are non-patchable — `cartTotalPrice`, `creationDate` and `lastUpdate` are server-maintained, not client-supplied.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`cartTotalPrice` is the total of the cart \"considering only Active cart items\": items with `status = saveForLater` are not calculated in the cart prices (CartItem `status` description).",
+          "provenance": "markdown"
+        },
+        {
+          "text": "A cart references the customer via `relatedParty` (party or party role), or carries `contactMedium` instead when the customer is unknown/does not exist yet (prospect use case).",
+          "provenance": "markdown"
+        },
+        {
+          "text": "`cartItem.id` is identifier of the item within the cart, generally a sequence number (01, 02, 03, ...); `cartItemRelationship.id` refers to another cart item's `id` in the same cart (e.g. `relyOn`, `dependentOn`, `shipping`).",
+          "provenance": "markdown"
+        },
+        {
+          "text": "PATCH on `cartItem` is a merge-patch of the whole array: the userguide example passes the entire `cartItem` array to add a note to one existing item, and RFC 7386 merge-patch replaces arrays wholesale, so an item omitted from the array is removed.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "When a PATCH creates new sub-resources, the same mandatory sub-resource attribute rules as POST apply (userguide PATCH description).",
+          "provenance": "markdown"
+        },
+        {
+          "text": "Conformance (response): `href` is mandatory in response messages; every present sub-resource requires `@type`, and nested refs require `id` (e.g. `cartItem.productOffering.id`, `cartItem.itemPrice.productOfferingPrice.id`, `relatedParty.partyOrPartyRole.id`); `cartItem.itemPrice`/`itemTotalPrice` require `priceType` and `price` when present.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "Checkout (turning the cart into a draft product order) is described in the use cases but is not an operation of this API; it belongs to a TMF622 Product Ordering client, not this service.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "Three notification events are declared (`Create`, `AttributeValueChange`, `Delete`) and the IR emits the same three listeners; there is no `StateChange` event and no `lifecycleStatus` field, consistent with the IR warning. The conformance profile marks no notification as mandatory.",
+          "provenance": "markdown"
+        },
+        {
+          "text": "Mandatory operations per conformance: GET, POST, DELETE; PATCH is optional but specified.",
+          "provenance": "markdown"
+        }
+      ]
+    }
+  ],
+  "hub": {
+    "present": true,
+    "specMethods": {
+      "post": true,
+      "delete": true,
+      "get": false,
+      "retrieve": false
+    }
+  },
+  "listeners": [
+    {
+      "path": "/listener/shoppingCartAttributeValueChangeEvent",
+      "eventName": "shoppingCartAttributeValueChangeEvent",
+      "resource": "ShoppingCart",
+      "eventKind": "AttributeValueChange",
+      "operationId": "shoppingCartAttributeValueChangeEvent"
+    },
+    {
+      "path": "/listener/shoppingCartCreateEvent",
+      "eventName": "shoppingCartCreateEvent",
+      "resource": "ShoppingCart",
+      "eventKind": "Create",
+      "operationId": "shoppingCartCreateEvent"
+    },
+    {
+      "path": "/listener/shoppingCartDeleteEvent",
+      "eventName": "shoppingCartDeleteEvent",
+      "resource": "ShoppingCart",
+      "eventKind": "Delete",
+      "operationId": "shoppingCartDeleteEvent"
+    }
+  ],
+  "warnings": [
+    "No usable base path in the spec (servers[0].url = https://serverRoot/shoppingCart/v5/); derived from info.title instead - verify it, or pass --base-path.",
+    "ShoppingCart has no lifecycleStatus field; lifecycleStatus filter and column are NOT emitted (database-pattern.md lists it as mandatory - applied conditionally on purpose)."
+  ]
+}

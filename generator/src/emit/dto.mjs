@@ -127,7 +127,7 @@ function nestedClass(registry, ownerClass, fieldName, spec, requiredNames = []) 
       fields: fr.columns.map(c => ({
         name: c.sourceProp,
         tsType: c.tsType === 'Date' ? 'string' : c.tsType,
-        kind: 'scalar',
+        kind: c.kind === 'json' ? 'json' : 'scalar',
       })),
     });
     members.push(renderMember(fr.name, { kind: 'scalar', tsType: 'any' }, false, { dto: inner }));
@@ -207,7 +207,7 @@ export function renderPayloadDto(resource, mode) {
       fields: fr.columns.map(c => ({
         name: c.sourceProp,
         tsType: c.tsType === 'Date' ? 'string' : c.tsType,
-        kind: 'scalar',
+        kind: c.kind === 'json' ? 'json' : 'scalar',
       })),
     });
     members.push(renderMember(fr.name, { kind: 'scalar', tsType: 'any' }, requiredNames.includes(fr.name), { dto }));

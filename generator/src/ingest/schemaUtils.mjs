@@ -82,3 +82,44 @@ export function scalarProps(doc, schema) {
   }
   return result;
 }
+
+/**
+ * Properties the discriminator SUBTYPES of a schema add on top of it. A ContactMedium
+ * item may really be an EmailContactMedium, whose `emailAddress` lives only on the
+ * subtype; modelling just the base dropped it on the round trip. They become ordinary
+ * (always optional) columns of the base table.
+ *
+ * A name that two subtypes declare with different shapes (Characteristic.value is a
+ * string on one, an object on another) cannot share one column: the first declaration
+ * wins and the clash is returned so the IR can warn about it.
+ *
+ * @returns {{ properties: Record<string, object>, conflicts: string[] }}
+ */
+export function subtypeProps(doc, schema, baseProps = {}) {
+  const out = { properties: {}, conflicts: [] };
+  const resolved = schema?.$ref ? resolveRef(doc, schema.$ref) : null;
+  const mapping = (resolved?.schema ?? schema)?.discriminator?.mapping;
+  if (!mapping) return out;
+
+  const baseName = resolved?.name;
+  const shape = (p) => JSON.stringify({ $ref: p.$ref, type: p.type, format: p.format, items: p.items?.$ref ?? p.items?.type });
+  const clashes = new Map(); // prop -> subtypes declaring it with a different shape
+  const owner = {};
+  for (const [subName, ref] of Object.entries(mapping)) {
+    const target = refName(ref);
+    // the mapping lists the base itself, and FVO/MVO variants only matter for input shapes
+    if (target === baseName || /_(FVO|MVO)$/.test(target)) continue;
+    for (const [prop, propSchema] of Object.entries(flattenSchema(doc, { $ref: ref }).properties)) {
+      if (prop in baseProps) continue;
+      if (!(prop in out.properties)) {
+        out.properties[prop] = propSchema;
+        owner[prop] = subName;
+      } else if (shape(out.properties[prop]) !== shape(propSchema)) {
+        if (!clashes.has(prop)) clashes.set(prop, [owner[prop]]);
+        clashes.get(prop).push(subName);
+      }
+    }
+  }
+  out.conflicts = [...clashes].map(([prop, subs]) => `${prop} (kept ${subs[0]}'s, ignored ${subs.slice(1).join('/')})`);
+  return out;
+}

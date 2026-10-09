@@ -51,6 +51,10 @@ class GeographicLocationDto {
   @IsOptional()
   @IsString()
   '@type'?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  geometry?: any[];
 }
 
 export class UpdateRetrieveGeographicLocationDto {

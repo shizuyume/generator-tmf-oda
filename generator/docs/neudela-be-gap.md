@@ -188,3 +188,9 @@ Semua item di §3 dan §7 berstatus **terbuka** per 2026-10-03. Setiap perbaikan
 | F4: gate | G3c, G12c, G17, G18, G20 | belum mulai |
 | F5: verifikasi akhir | semua | belum mulai |
 | di luar cakupan | G15 (go-gin), G21 | tercatat |
+
+---
+
+## 9. Catatan perubahan
+
+- **2026-10-07, toleransi parameter (permintaan user, menjaga kepatuhan CTK).** Parameter gaya atribut yang tidak dikenal kembali **diabaikan**, seperti sebelum modul filter ada. Parameter yang dikenal tetap difilter. `filter=` JSONPath yang salah tetap 400. Implementasi di `templates/src/common/filter/filter-typeorm.ts` (`isKnownPath`). Bukti: unit test `filter.spec.ts`, `tools/filter-smoke.mjs` 50/50, `check-all --runtime` hijau (boot smoke 1× flake G18, 10/10 saat diulang).

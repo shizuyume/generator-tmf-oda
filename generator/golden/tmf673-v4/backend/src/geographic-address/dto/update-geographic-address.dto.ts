@@ -39,6 +39,10 @@ class GeographicLocationDto {
   @IsOptional()
   @IsString()
   '@referredType'?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  bbox?: any[];
 }
 
 class GeographicSubAddressDto {

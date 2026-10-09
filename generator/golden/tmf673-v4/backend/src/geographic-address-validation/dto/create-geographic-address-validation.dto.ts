@@ -94,6 +94,16 @@ class SubmittedGeographicAddressDto {
   @IsOptional()
   @IsString()
   '@type'?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  geographicLocation?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  geographicSubAddress?: string;
 }
 
 export class CreateGeographicAddressValidationDto {

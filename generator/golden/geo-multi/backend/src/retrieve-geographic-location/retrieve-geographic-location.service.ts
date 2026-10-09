@@ -146,6 +146,7 @@ export class RetrieveGeographicLocationService {
     e.geometryType = input?.['geometryType'];
     e.spatialRef = input?.['spatialRef'];
     e.accuracy = input?.['accuracy'];
+    e.geometry = input?.['geometry'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
@@ -188,6 +189,7 @@ export class RetrieveGeographicLocationService {
     out.geometryType = e.geometryType;
     out.spatialRef = e.spatialRef;
     out.accuracy = e.accuracy;
+    out.geometry = e.geometry;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;

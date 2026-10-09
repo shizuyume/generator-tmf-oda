@@ -28,13 +28,24 @@ export function columnTypeFor(type, dbType = 'sqlite') {
   return row[dbType] ?? type;
 }
 
+/**
+ * Read-side converter for exact decimals (ir/typeMap.mjs decimalColumn). The pg
+ * driver returns `numeric` as a string to avoid precision loss; the API contract
+ * is a JSON number, so it is converted on read and passed through on write.
+ */
+const DECIMAL_TRANSFORMER =
+  '{ to: (value?: number | null) => value, from: (value?: string | number | null) => (value === null || value === undefined ? value : Number(value)) }';
+
 /** Serialise column options in the reference's key order. */
 function columnOptions(col, dbType) {
   const parts = [];
   if (col.type) parts.push(`type: '${columnTypeFor(col.type, dbType)}'`);
   if (col.length) parts.push(`length: ${col.length}`);
+  if (col.precision != null) parts.push(`precision: ${col.precision}`);
+  if (col.scale != null) parts.push(`scale: ${col.scale}`);
   if (col.nullable) parts.push('nullable: true');
   if (col.default !== undefined && col.default !== null) parts.push(`default: '${col.default}'`);
+  if (col.transformer === 'decimal') parts.push(`transformer: ${DECIMAL_TRANSFORMER}`);
   return `{ ${parts.join(', ')} }`;
 }
 

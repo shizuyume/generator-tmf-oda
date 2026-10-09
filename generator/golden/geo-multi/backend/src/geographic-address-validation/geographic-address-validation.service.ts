@@ -222,6 +222,7 @@ export class GeographicAddressValidationService {
     e.href = input?.['href'];
     e.name = input?.['name'];
     e.referredType = input?.['@referredType'];
+    e.bbox = input?.['bbox'];
     e.atType = input?.['@type'];
     e.atSchemaLocation = input?.['@schemaLocation'];
     e.atBaseType = input?.['@baseType'];
@@ -315,6 +316,7 @@ export class GeographicAddressValidationService {
     out.href = e.href;
     out.name = e.name;
     out['@referredType'] = e.referredType;
+    out.bbox = e.bbox;
     out['@type'] = e.atType;
     out['@schemaLocation'] = e.atSchemaLocation;
     out['@baseType'] = e.atBaseType;

@@ -55,6 +55,48 @@ export function buildEagerGraph(plans, resolve) {
 }
 
 /**
+ * Cycles in the eager graph, e.g. A.b -> B and B.a -> A.
+ *
+ * Every non-owner relation is emitted `eager: true, cascade: true`, so a cycle
+ * means loading or saving A pulls B, which pulls A again. The generated service
+ * does not fail fast on that: the first `POST` on either resource spins until the
+ * process dies with "JavaScript heap out of memory", while build and the mocked
+ * unit tests stay green. Seen on BSM C12, where ProcurementRequest referenced
+ * ExternalOrderCandidate and ExternalOrderCandidate referenced ProcurementRequest.
+ *
+ * @returns Array<string>  one readable path per distinct cycle,
+ *          e.g. "ProcurementRequest.externalOrderCandidate -> ExternalOrderCandidate.procurementRequest -> ProcurementRequest"
+ */
+export function findEagerCycles(graph) {
+  const cycles = new Map(); // canonical key -> readable path
+  const state = new Map(); // cls -> 'open' | 'done'
+  const stack = []; // [{ cls, prop }] edges on the current DFS path
+
+  const visit = cls => {
+    state.set(cls, 'open');
+    for (const r of graph.get(cls) ?? []) {
+      stack.push({ cls, prop: r.prop, target: r.target });
+      const s = state.get(r.target);
+      if (s === 'open') {
+        const start = stack.findIndex(e => e.cls === r.target);
+        const edges = stack.slice(start);
+        const key = edges.map(e => `${e.cls}.${e.prop}`).sort().join('|');
+        if (!cycles.has(key)) {
+          cycles.set(key, `${edges.map(e => `${e.cls}.${e.prop}`).join(' -> ')} -> ${r.target}`);
+        }
+      } else if (s !== 'done') {
+        visit(r.target);
+      }
+      stack.pop();
+    }
+    state.set(cls, 'done');
+  };
+
+  for (const cls of [...graph.keys()].sort()) if (!state.has(cls)) visit(cls);
+  return [...cycles.values()];
+}
+
+/**
  * Distinct eager join paths reachable from `rootClass`.
  *
  * A class already open in the current chain is not re-expanded, which is what keeps a

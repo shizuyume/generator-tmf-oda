@@ -140,6 +140,21 @@ async function buildIrFrom(opts, config) {
   return { ir, specPath, mdPath, merge };
 }
 
+/**
+ * emitResources() throws on spec shapes that cannot produce a working service
+ * (entity naming collisions, eager relation cycles). Those are input errors, not
+ * generator crashes: print them plainly and exit non-zero instead of a stack trace.
+ */
+function runEmit(ir, emitOpts) {
+  try {
+    return emitResources(ir, emitOpts);
+  } catch (err) {
+    if (!Array.isArray(err?.errors)) throw err;
+    console.error(`error: ${err.message}`);
+    process.exit(9);
+  }
+}
+
 const program = new Command();
 program.name('tmfgen').description('Deterministic code generator for TM Forum ODA components');
 
@@ -280,7 +295,7 @@ specOptions(program
       console.error("error: --db must be 'sqlite' or 'postgres', got '" + emitOpts.dbType + "'");
       process.exit(2);
     }
-    const result = emitResources(ir, emitOpts);
+    const result = runEmit(ir, emitOpts);
 
     console.log('TMF' + ir.meta.tmfNumber + '  ' + ir.meta.specTitle + '  (' + ir.meta.dialect + ')');
     console.log('  service       ' + toPosix(backendDir));
@@ -375,7 +390,7 @@ specOptions(program
     if (!opts.apply) {
       // Plan the emit for real (without writing) so the preview reports the actual
       // entities and modules, not an empty set.
-      const planned = emitResources(ir, {
+      const planned = runEmit(ir, {
         backendDir,
         refStrategy: opts.refStrategy || config.refStrategy || 'table',
         softDelete: opts.softDelete || config.softDelete || 'roots',
@@ -405,7 +420,7 @@ specOptions(program
       return;
     }
 
-    const result = emitResources(ir, {
+    const result = runEmit(ir, {
       backendDir,
       refStrategy: opts.refStrategy || config.refStrategy || 'table',
       softDelete: opts.softDelete || config.softDelete || 'roots',

@@ -19,6 +19,9 @@ export class GeographicLocationRefOrValue {
   @Column({ type: 'varchar', length: 100, nullable: true })
   referredType?: string;
 
+  @Column({ type: 'simple-json', nullable: true })
+  bbox?: Record<string, any>[];
+
   @Expose({ name: '@type' })
   @Column({ type: 'varchar', length: 100, nullable: true })
   atType?: string;

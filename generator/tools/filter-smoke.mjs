@@ -196,7 +196,10 @@ try {
 
   console.log('\n  refused (400, TMF Error body)');
   await expect400('unknown attribute lists the filterable ones', [['filter', "$[?(@.nope=='x')]"]], 'filterable: id, name');
-  await expect400('unknown attribute key', [['nope', 'x']], 'unknown attribute "nope"');
+  // attribute-style keys the resource cannot filter on are ignored (as before), so an extra
+  // parameter from a client or a conformance kit never fails the list
+  await expectRows('unknown attribute key is ignored', [['nope', 'x'], ['depth', '2']], ['A', 'B', 'C']);
+  await expectRows('unknown key ignored, known key still filters', [['nope', 'x'], ['description', 'Gold partners']], ['B']);
   await expect400('server timestamps are top-level only', [['filter', "policy[?(@.createdDate>'2020-01-01')]"]], 'unknown attribute');
   await expect400('unknown list', [['filter', "party[?(@.name=='x')]"]], 'unknown list "party"');
   await expect400('syntax error', [['filter', "$[?(@.name=='x']"]], 'expected');

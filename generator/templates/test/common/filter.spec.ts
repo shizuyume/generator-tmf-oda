@@ -327,8 +327,8 @@ describe('applyQueryFilters', () => {
   it.each([
     [{ filter: "$[?(@.nope=='x')]" }, 'unknown attribute "nope" in $ (filterable: id, name, description, count, active, validFrom, @type, createdDate, category.id)'],
     [{ filter: "item[?(@.product.nope=='x')]" }, 'unknown attribute "product.nope" in item'],
-    [{ nope: 'x' }, 'unknown attribute "nope"'],
     [{ filter: "party[?(@.name=='x')]" }, 'unknown list "party" (lists: item)'],
+    [{ count: 'many' }, 'count expects a number'],
     [{ filter: '$[?(@.count=~/1/)]' }, 'count: =~ only applies to text'],
     [{ filter: "item[?(@.qty=='many')]" }, 'item.qty expects a number'],
     [{ filter: '$[?(@.count==true)]' }, 'count expects a number'],
@@ -341,6 +341,18 @@ describe('applyQueryFilters', () => {
     [{ sort: 'name;DROP TABLE x' }, 'cannot sort by "name;DROP TABLE x" (sortable: id, name'],
   ])('refuses %j', (query, part) => {
     refused(() => run(query), part);
+  });
+
+  it('ignores attribute-style keys the resource cannot filter on, as before this module', () => {
+    // extra parameters (another client's, a conformance kit's) must not fail the list
+    const qb = run({ nope: 'x', 'a-b': '1', 'item.nope': 'y', 'category.nope': 'z', depth: '2', 'count.gte': '3' });
+    expect(qb.wheres).toEqual(['e.id IN (from Root fs0; select fs0.id WHERE fs0.count >= :flt1)']);
+    expect(qb.params()).toEqual({ existing: 1, flt1: 3 });
+  });
+
+  it('adds nothing when every attribute-style key is unknown', () => {
+    const qb = run({ nope: 'x', expand: 'all' });
+    expect(qb.wheres).toEqual([]);
   });
 
   it('reports "none" for a resource without lists', () => {

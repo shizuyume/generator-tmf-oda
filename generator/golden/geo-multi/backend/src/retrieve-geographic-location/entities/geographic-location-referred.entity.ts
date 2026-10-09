@@ -25,6 +25,9 @@ export class GeographicLocationReferred {
   @Column({ type: 'varchar', length: 255, nullable: true })
   accuracy?: string;
 
+  @Column({ type: 'simple-json', nullable: true })
+  geometry?: Record<string, any>[];
+
   @Expose({ name: '@type' })
   @Column({ type: 'varchar', length: 100, nullable: true })
   atType?: string;
